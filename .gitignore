@@ -1,0 +1,5 @@
+/_ReSharper.TeamPilgrim
+bin
+obj
+*.user
+*.suo
