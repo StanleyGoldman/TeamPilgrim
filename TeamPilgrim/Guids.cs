@@ -1,8 +1,9 @@
 ﻿// Guids.cs
 // MUST match guids.h
+
 using System;
 
-namespace JustAProgrammer.TeamPilgrim
+namespace JustAProgrammer.TeamPilgrim.VisualStudio
 {
     static class GuidList
     {

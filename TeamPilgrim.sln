@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamPilgrim", "TeamPilgrim\TeamPilgrim.csproj", "{A8E17ADD-F572-4150-A153-F14C43A06B30}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{93E53AB6-9E54-4DF8-BE70-79A5E8F10335}"
 	ProjectSection(SolutionItems) = preProject
 		IntegrationTests.testsettings = IntegrationTests.testsettings
 		UnitTests.testsettings = UnitTests.testsettings
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamPilgrim.VisualStudio", "TeamPilgrim\TeamPilgrim.VisualStudio.csproj", "{A8E17ADD-F572-4150-A153-F14C43A06B30}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
