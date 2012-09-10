@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using System.Windows.Input;
 using Microsoft.VisualStudio.Shell;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio
@@ -13,16 +14,16 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
     /// implementation of the IVsUIElementPane interface.
     /// </summary>
     [Guid("62e88c94-e7e0-4bdc-98ff-1e308fcda7fa")]
-    public class MyToolWindow : ToolWindowPane
+    public class TeamPilgrimToolWindow : ToolWindowPane
     {
         /// <summary>
         /// Standard constructor for the tool window.
         /// </summary>
-        public MyToolWindow() :
-            base(null)
+        public TeamPilgrimToolWindow() : base(null)
         {
             // Set the window title reading it from the resources.
             this.Caption = Resources.ToolWindowTitle;
+
             // Set the image that will appear on the tab of the window frame
             // when docked with an other window
             // The resource ID correspond to the one defined in the resx file
@@ -34,7 +35,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             // This is the user control hosted by the tool window; Note that, even if this class implements IDisposable,
             // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on 
             // the object returned by the Content property.
-            base.Content = new MyControl();
+            base.Content = new TeamPilgrimControl();
         }
     }
 }
