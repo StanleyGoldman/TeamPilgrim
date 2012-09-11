@@ -16,7 +16,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
 
         public bool TryGetCollections(out PilgrimProjectCollection[] collections)
         {
-
             try
             {
                 collections = _teamPilgrimService.GetPilgrimProjectCollections();
@@ -25,6 +24,19 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             catch (Exception) { }
 
             collections = null;
+            return false;
+        }
+
+        public bool TryGetProjects(out PilgrimProject[] projects, Uri tpcAddress)
+        {
+            try
+            {
+                projects = _teamPilgrimService.GetPilgrimProjects(tpcAddress);
+                return true;
+            }
+            catch (Exception) { }
+
+            projects = null;
             return false;
         }
     }

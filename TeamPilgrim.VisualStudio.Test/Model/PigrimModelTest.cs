@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 using System.Windows.Threading;
 using FluentAssertions;
@@ -14,13 +15,20 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Test.Model
     {
         public class TestPilgrimModelProvider : IPilgrimModelProvider
         {
-            public PilgrimProjectCollection[] LastPilgrimProjectCollection { get; private set; }
+            public PilgrimProjectCollection[] LastPilgrimProjectCollections { get; private set; }
 
             public bool TryGetCollections(out PilgrimProjectCollection[] collections)
             {
                 collections = new PilgrimProjectCollection[] { };
-                LastPilgrimProjectCollection = collections;
+                LastPilgrimProjectCollections = collections;
                 return true;
+            }
+
+            public PilgrimProject[] LastPilgrimProjects { get; private set; }
+
+            public bool TryGetProjects(out PilgrimProject[] projects, Uri tpcAddress)
+            {
+                throw new NotImplementedException();
             }
         }
 
@@ -45,7 +53,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Test.Model
         [TestMethod]
         public void TestInitialModelState()
         {
-            var pilgrimModel = new PilgrimModel(new TestPilgrimModelProvider());
+            var pilgrimModel = new PilgrimProjectCollectionModel(new TestPilgrimModelProvider());
 
             pilgrimModel.Collections.Should().BeNull();
             pilgrimModel.State.Should().Be(ModelStateEnum.Fetching);

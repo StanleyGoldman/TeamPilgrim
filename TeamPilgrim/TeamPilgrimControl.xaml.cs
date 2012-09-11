@@ -12,12 +12,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
     public partial class TeamPilgrimControl : UserControl
     {
         readonly RoutedCommand _myCommand = new RoutedCommand();
+        private PilgrimProjectCollectionModel _pilgrimProjectCollectionModel;
 
         public TeamPilgrimControl()
         {
             InitializeComponent();
             CommandBindings.Add(new CommandBinding(MyCommand, OnExecute, OnQueryCommandEnabled));
-            DataContext = new PilgrimModel(new PilgrimModelProvider());
+            DataContext = _pilgrimProjectCollectionModel = new PilgrimProjectCollectionModel(new PilgrimModelProvider());
         }
 
         public RoutedCommand MyCommand

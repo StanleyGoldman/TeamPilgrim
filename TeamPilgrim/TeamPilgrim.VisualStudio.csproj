@@ -124,7 +124,8 @@
     <Compile Include="Common\ActivateModel.cs" />
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Common\ModelStateEnum.cs" />
-    <Compile Include="Model\PilgrimModel.cs" />
+    <Compile Include="Model\PilgrimProjectCollectionModel.cs" />
+    <Compile Include="Model\PilgrimProjectModel.cs" />
     <Compile Include="Providers\PilgrimModelProvider.cs" />
     <Compile Include="TeamPilgrimControl.xaml.cs">
       <DependentUpon>TeamPilgrimControl.xaml</DependentUpon>

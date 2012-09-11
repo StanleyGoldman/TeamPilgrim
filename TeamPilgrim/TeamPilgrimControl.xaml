@@ -11,11 +11,16 @@
              Name="MyToolWindow">
     <Grid>
         <StackPanel Orientation="Vertical" Common:ActivateModel.Model="{Binding}">
-            <TextBlock Text="{Binding Path=Collections.Length}"/>
-            <TreeView>
-                <TreeViewItem Header="Server">
+            <TreeView DataContext="{Binding Path=Collections}">
+                <TreeViewItem Header="{Binding Path=ProjectCollection.Name}">
+                    <TreeViewItem Header="Work Items">
+                        <TreeViewItem Header="My Queries"/>
+                        <TreeViewItem Header="Team Queries"/>
+                    </TreeViewItem>
+                    <TreeViewItem Header="Reports"/>
                     <TreeViewItem Header="Builds"/>
-                    <TreeViewItem Header="Builds"/>
+                    <TreeViewItem Header="Team Members"/>
+                    <TreeViewItem Header="Source Control"/>
                 </TreeViewItem>
             </TreeView>
         </StackPanel>

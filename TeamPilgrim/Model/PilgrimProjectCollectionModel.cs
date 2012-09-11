@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Windows.Threading;
 using JustAProgrammer.TeamPilgrim.Domain.Entities;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
@@ -6,13 +7,17 @@ using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
-    public class PilgrimModel : BaseModel
+    public class PilgrimProjectCollectionModel : BaseModel
     {
         private readonly IPilgrimModelProvider _pilgrimModelProvider;
 
-        public PilgrimModel(IPilgrimModelProvider pilgrimModelProvider)
+        private Dictionary<string, PilgrimProjectModel> _projectModelDictionary;
+
+        public PilgrimProjectCollectionModel(IPilgrimModelProvider pilgrimModelProvider)
         {
             _pilgrimModelProvider = pilgrimModelProvider;
+            _projectModelDictionary = new Dictionary<string, PilgrimProjectModel>();
+
             State = ModelStateEnum.Invalid;
         }
 
@@ -28,7 +33,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         #region Collections
 
-        private PilgrimProjectCollection[] _collections;
+        private PilgrimProjectCollection[] _collections = new PilgrimProjectCollection[0];
 
         public PilgrimProjectCollection[] Collections
         {

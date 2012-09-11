@@ -1,9 +1,11 @@
-﻿using JustAProgrammer.TeamPilgrim.Domain.Entities;
+﻿using System;
+using JustAProgrammer.TeamPilgrim.Domain.Entities;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
 {
     public interface IPilgrimModelProvider
     {
         bool TryGetCollections(out PilgrimProjectCollection[] collections);
+        bool TryGetProjects(out PilgrimProject[] projects, Uri tpcAddress);
     }
 }

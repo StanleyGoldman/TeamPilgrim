@@ -1,4 +1,5 @@
-﻿using JustAProgrammer.TeamPilgrim.Business.Services;
+﻿using System.Linq;
+using JustAProgrammer.TeamPilgrim.Business.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace JustAProgrammer.TeamPilgrim.Business.Test
@@ -12,6 +13,15 @@ namespace JustAProgrammer.TeamPilgrim.Business.Test
         public void Initialize()
         {
             _teamPilgrimService = new TeamPilgrimService();
+        }
+
+        [TestMethod]
+        public void Test()
+        {
+            var pilgrimProjectCollections = _teamPilgrimService.GetPilgrimProjectCollections();
+            var pilgrimProjectCollection = pilgrimProjectCollections.First();
+
+            var pilgrimProjects = _teamPilgrimService.GetPilgrimProjects(pilgrimProjectCollection.ProjectCollection.Uri);
         }
     }
 }
