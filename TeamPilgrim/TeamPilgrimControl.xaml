@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:Common="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common"
+             xmlns:Model="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
@@ -12,7 +13,15 @@
     <Grid>
         <StackPanel Orientation="Vertical" Common:ActivateModel.Model="{Binding}">
             <TreeView>
-                <TreeViewItem Header="Team Foundation Servers"  />
+                <TreeView.Resources>
+                    
+                    <HierarchicalDataTemplate DataType="{x:Type Model:PilgrimProjectCollectionModel}">
+                        <TextBlock Text="{Binding Path=Name}"/>
+                    </HierarchicalDataTemplate>
+                    
+                </TreeView.Resources>
+
+                <TreeViewItem Header="Team Foundation Servers" ItemsSource="{Binding Path=CollectionModels}"></TreeViewItem>
             </TreeView>
         </StackPanel>
     </Grid>
