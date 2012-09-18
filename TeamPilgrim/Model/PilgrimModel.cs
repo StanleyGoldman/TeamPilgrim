@@ -1,4 +1,4 @@
-using System;
+﻿using System.Linq;
 using System.Threading;
 using System.Windows.Threading;
 using JustAProgrammer.TeamPilgrim.Domain.Entities;
@@ -7,15 +7,13 @@ using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
-    public class PilgrimProjectModel : BaseModel
+    public class PilgrimModel : BaseModel
     {
         private readonly IPilgrimModelProvider _pilgrimModelProvider;
-        private readonly Uri _tpcUri;
 
-        public PilgrimProjectModel(IPilgrimModelProvider pilgrimModelProvider, Uri tpcUri)
+        public PilgrimModel(IPilgrimModelProvider pilgrimModelProvider)
         {
             _pilgrimModelProvider = pilgrimModelProvider;
-            _tpcUri = tpcUri;
             State = ModelStateEnum.Invalid;
         }
 
@@ -23,50 +21,50 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
         {
             VerifyCalledOnUiThread();
 
-            if (ThreadPool.QueueUserWorkItem(PilgrimProjectCallback))
+            if (ThreadPool.QueueUserWorkItem(PilgrimModelCallback))
             {
                 State = ModelStateEnum.Fetching;
             }
         }
 
-        #region Projects
+        #region Collections
 
-        private PilgrimProject[] _projects = new PilgrimProject[0];
+        private PilgrimProjectCollectionModel[] _collections = new PilgrimProjectCollectionModel[0];
 
-        public PilgrimProject[] Projects
+        public PilgrimProjectCollectionModel[] CollectionModels
         {
             get
             {
                 VerifyCalledOnUiThread();
-                return _projects;
+                return _collections;
             }
             private set
             {
                 VerifyCalledOnUiThread();
-                if (_projects == value) return;
+                if (_collections == value) return;
 
-                _projects = value;
-                SendPropertyChanged("Projects");
+                _collections = value;
+                SendPropertyChanged("CollectionModels");
             }
         }
 
-        private void PilgrimProjectCallback(object state)
+        private void PilgrimModelCallback(object state)
         {
-            PilgrimProject[] fetchedProjects;
-            if (_pilgrimModelProvider.TryGetProjects(out fetchedProjects, _tpcUri))
+            PilgrimProjectCollection[] fetchedCollections;
+            if (_pilgrimModelProvider.TryGetCollections(out fetchedCollections))
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
-                    {
-                        Projects = fetchedProjects;
-                        State = ModelStateEnum.Active;
-                    }));
+                {
+                    CollectionModels = fetchedCollections.Select(collection => new PilgrimProjectCollectionModel(_pilgrimModelProvider, collection)).ToArray();
+                    State = ModelStateEnum.Active;
+                }));
             }
             else
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
-                    {
-                        State = ModelStateEnum.Invalid;
-                    }));
+                {
+                    State = ModelStateEnum.Invalid;
+                }));
             }
         }
 

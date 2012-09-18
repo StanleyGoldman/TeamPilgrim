@@ -11,17 +11,8 @@
              Name="MyToolWindow">
     <Grid>
         <StackPanel Orientation="Vertical" Common:ActivateModel.Model="{Binding}">
-            <TreeView DataContext="{Binding Path=Collections}">
-                <TreeViewItem Header="{Binding Path=ProjectCollection.Name}">
-                    <TreeViewItem Header="Work Items">
-                        <TreeViewItem Header="My Queries"/>
-                        <TreeViewItem Header="Team Queries"/>
-                    </TreeViewItem>
-                    <TreeViewItem Header="Reports"/>
-                    <TreeViewItem Header="Builds"/>
-                    <TreeViewItem Header="Team Members"/>
-                    <TreeViewItem Header="Source Control"/>
-                </TreeViewItem>
+            <TreeView>
+                <TreeViewItem Header="Team Foundation Servers"  />
             </TreeView>
         </StackPanel>
     </Grid>

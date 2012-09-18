@@ -53,14 +53,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Test.Model
         [TestMethod]
         public void TestInitialModelState()
         {
-            var pilgrimModel = new PilgrimProjectCollectionModel(new TestPilgrimModelProvider());
+            var pilgrimModel = new PilgrimModel(new TestPilgrimModelProvider());
 
-            pilgrimModel.Collections.Should().BeNull();
+            pilgrimModel.CollectionModels.Should().BeNull();
             pilgrimModel.State.Should().Be(ModelStateEnum.Fetching);
 
             PushDispatcherFrame(pilgrimModel);
 
-            pilgrimModel.Collections.Should().NotBeNull();
+            pilgrimModel.CollectionModels.Should().NotBeNull();
         }
     }
 }

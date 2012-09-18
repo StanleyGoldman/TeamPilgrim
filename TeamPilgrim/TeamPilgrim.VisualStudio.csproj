@@ -40,6 +40,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.TeamFoundation.Client, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.OLE.Interop" />
     <Reference Include="Microsoft.VisualStudio.Shell.Interop" />
     <Reference Include="Microsoft.VisualStudio.Shell.Interop.8.0" />
@@ -122,10 +123,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\ActivateModel.cs" />
+    <Compile Include="Common\BindingErrorTraceListener.cs" />
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Common\ModelStateEnum.cs" />
+    <Compile Include="Common\FactoryDictionary.cs" />
+    <Compile Include="Model\PilgrimModel.cs" />
     <Compile Include="Model\PilgrimProjectCollectionModel.cs" />
-    <Compile Include="Model\PilgrimProjectModel.cs" />
     <Compile Include="Providers\PilgrimModelProvider.cs" />
     <Compile Include="TeamPilgrimControl.xaml.cs">
       <DependentUpon>TeamPilgrimControl.xaml</DependentUpon>
