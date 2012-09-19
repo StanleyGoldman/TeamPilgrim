@@ -15,13 +15,18 @@
             <TreeView>
                 <TreeView.Resources>
                     
-                    <HierarchicalDataTemplate DataType="{x:Type Model:PilgrimProjectCollectionModel}">
-                        <TextBlock Text="{Binding Path=Name}"/>
+                    <HierarchicalDataTemplate DataType="{x:Type Model:PilgrimProjectCollectionModel}" ItemsSource="{Binding Path=ProjectModels}">
+                        <TextBlock Text="{Binding Path=Name}" />
+                    </HierarchicalDataTemplate>
+                    
+                    <HierarchicalDataTemplate DataType="{x:Type Model:PilgrimProjectModel}">
+                        <TextBlock Text="{Binding Path=Name}" />
                     </HierarchicalDataTemplate>
                     
                 </TreeView.Resources>
 
-                <TreeViewItem Header="Team Foundation Servers" ItemsSource="{Binding Path=CollectionModels}"></TreeViewItem>
+                <TreeViewItem Header="Team Foundation Servers" ItemsSource="{Binding Path=CollectionModels}" >
+                </TreeViewItem>
             </TreeView>
         </StackPanel>
     </Grid>

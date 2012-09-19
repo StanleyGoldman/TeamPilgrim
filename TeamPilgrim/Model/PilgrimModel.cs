@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Windows.Threading;
 using JustAProgrammer.TeamPilgrim.Domain.Entities;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 
@@ -10,10 +11,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
     public class PilgrimModel : BaseModel
     {
         private readonly IPilgrimModelProvider _pilgrimModelProvider;
+        private readonly TestCommandModel _testCommand;
 
         public PilgrimModel(IPilgrimModelProvider pilgrimModelProvider)
         {
             _pilgrimModelProvider = pilgrimModelProvider;
+            _testCommand = new TestCommandModel(); 
+
             State = ModelStateEnum.Invalid;
         }
 
@@ -25,6 +29,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             {
                 State = ModelStateEnum.Fetching;
             }
+        }
+
+        public TestCommandModel TestCommand
+        {
+            get { return _testCommand; }
         }
 
         #region Collections
@@ -55,8 +64,15 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
                 {
-                    CollectionModels = fetchedCollections.Select(collection => new PilgrimProjectCollectionModel(_pilgrimModelProvider, collection)).ToArray();
+                    var pilgrimProjectCollectionModels = fetchedCollections.Select(collection => new PilgrimProjectCollectionModel(_pilgrimModelProvider, collection)).ToArray();
+
+                    CollectionModels = pilgrimProjectCollectionModels;
                     State = ModelStateEnum.Active;
+                    
+                    foreach (var pilgrimProjectCollectionModel in pilgrimProjectCollectionModels)
+                    {
+                        pilgrimProjectCollectionModel.Activate();
+                    }
                 }));
             }
             else

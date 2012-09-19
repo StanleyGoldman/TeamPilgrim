@@ -5,7 +5,6 @@ using System.Windows;
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common
 {
     //http://www.switchonthecode.com/tutorials/wpf-snippet-detecting-binding-errors
-
     public class BindingErrorTraceListener : DefaultTraceListener
     {
         private static BindingErrorTraceListener _Listener;
