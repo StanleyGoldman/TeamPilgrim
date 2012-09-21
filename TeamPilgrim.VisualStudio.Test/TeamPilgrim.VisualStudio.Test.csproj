@@ -74,7 +74,7 @@
       <Project>{0D3D9230-6152-4695-95B9-3D8347C49F67}</Project>
       <Name>TeamPilgrim.Domain</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TeamPilgrim\TeamPilgrim.VisualStudio.csproj">
+    <ProjectReference Include="..\TeamPilgrim.VisualStudio\TeamPilgrim.VisualStudio.csproj">
       <Project>{A8E17ADD-F572-4150-A153-F14C43A06B30}</Project>
       <Name>TeamPilgrim.VisualStudio</Name>
     </ProjectReference>
