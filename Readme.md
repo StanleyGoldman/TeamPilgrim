@@ -1,4 +1,4 @@
-## Team Pilgraim
+## Team Pilgrim
 
 ### Launching & Debugging:
 
