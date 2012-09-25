@@ -1,3 +1,4 @@
+using System.Linq;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.Domain.Entities

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using JustAProgrammer.TeamPilgrim.Business.Services;
+using JustAProgrammer.TeamPilgrim.Domain.Entities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace JustAProgrammer.TeamPilgrim.Business.Test
@@ -22,6 +23,8 @@ namespace JustAProgrammer.TeamPilgrim.Business.Test
             var pilgrimProjectCollection = pilgrimProjectCollections.First();
 
             var pilgrimProjects = _teamPilgrimService.GetPilgrimProjects(pilgrimProjectCollection.ProjectCollection.Uri);
+
+            PilgrimProject pilgrimProject = pilgrimProjects.First();
         }
     }
 }

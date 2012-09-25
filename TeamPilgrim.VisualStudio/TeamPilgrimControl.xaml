@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:Common="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common"
              xmlns:Model="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model"
+             xmlns:Views="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Views"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
@@ -18,11 +19,23 @@
                     <HierarchicalDataTemplate DataType="{x:Type Model:PilgrimProjectCollectionModel}" ItemsSource="{Binding Path=ProjectModels}">
                         <TextBlock Text="{Binding Path=Name}" />
                     </HierarchicalDataTemplate>
-                    
-                    <HierarchicalDataTemplate DataType="{x:Type Model:PilgrimProjectModel}">
+
+                    <HierarchicalDataTemplate DataType="{x:Type Model:PilgrimProjectModel}" ItemsSource="{Binding Path=ChildObjects}">
+                        <TextBlock Text="{Binding Path=Name}" />
+                    </HierarchicalDataTemplate>
+
+                    <HierarchicalDataTemplate DataType="{x:Type Views:QueryHierachyView}" ItemsSource="{Binding Path=QueryItems}">
+                        <TextBlock Text="Work Items" />
+                    </HierarchicalDataTemplate>
+
+                    <HierarchicalDataTemplate DataType="{x:Type Views:QueryFolderView}" ItemsSource="{Binding Path=QueryItems}">
                         <TextBlock Text="{Binding Path=Name}" />
                     </HierarchicalDataTemplate>
                     
+                    <HierarchicalDataTemplate DataType="{x:Type Views:QueryDefinitionView}">
+                        <TextBlock Text="{Binding Path=Name}" />
+                    </HierarchicalDataTemplate>
+
                 </TreeView.Resources>
 
                 <TreeViewItem Header="Team Foundation Servers" ItemsSource="{Binding Path=CollectionModels}" >

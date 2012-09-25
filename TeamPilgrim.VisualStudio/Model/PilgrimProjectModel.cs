@@ -2,6 +2,7 @@
 using JustAProgrammer.TeamPilgrim.Domain.Entities;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Views;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
@@ -33,9 +34,17 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             get { return _pilgrimProject.Project.Name; }
         }
 
+        public object[] ChildObjects
+        {
+            get
+            {
+                return new object[] { new QueryHierachyView(_pilgrimProject.Project.QueryHierarchy) };
+            }
+        }
+
         private void PilgrimProjectCallback(object state)
         {
-            
+
         }
     }
 }

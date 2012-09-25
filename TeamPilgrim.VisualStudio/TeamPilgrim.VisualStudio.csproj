@@ -150,6 +150,11 @@
     <Compile Include="TeamPilgrimPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PkgCmdID.cs" />
+    <Compile Include="Views\EnumerableQueryItemExtensions.cs" />
+    <Compile Include="Views\QueryDefinitionView.cs" />
+    <Compile Include="Views\QueryFolderView.cs" />
+    <Compile Include="Views\QueryHierachyView.cs" />
+    <Compile Include="Views\QueryItemView.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">
