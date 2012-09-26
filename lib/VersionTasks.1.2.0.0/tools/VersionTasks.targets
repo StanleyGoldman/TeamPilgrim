@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <VersionTasksPath Condition="'$(VersionTasksPath)' == ''">.</VersionTasksPath>
+    <VersionTasksLib>$(VersionTasksPath)\VersionTasks.dll</VersionTasksLib>
+  </PropertyGroup>
+
+  <UsingTask AssemblyFile="$(VersionTasksLib)" TaskName="GitVersionFile" />
+  <UsingTask AssemblyFile="$(VersionTasksLib)" TaskName="HgVersionFile" />
+  <UsingTask AssemblyFile="$(VersionTasksLib)" TaskName="TfsVersionFile" />
+</Project>
