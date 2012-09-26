@@ -2,6 +2,7 @@
 *.user
 *.[Cc]ache
 *.docstates
+*.ncrunchsolution
 bin/
 obj/
 build/
