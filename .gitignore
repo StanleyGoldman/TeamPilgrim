@@ -5,4 +5,4 @@
 bin/
 obj/
 build/
-/_ReSharper*
+_ReSharper*/
