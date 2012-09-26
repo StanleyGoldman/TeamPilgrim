@@ -1,5 +1,9 @@
 ## Team Pilgrim
 
+### Downloads:
+
+* Visual Stuaio 2012 SDK: http://www.microsoft.com/en-us/download/details.aspx?id=30668
+
 ### Launching & Debugging:
 
 * Set TeamPilgrim.VisualStudio as the startup Project
