@@ -1,5 +1,8 @@
-/_ReSharper.TeamPilgrim
-bin
-obj
-*.user
 *.suo
+*.user
+*.[Cc]ache
+*.docstates
+bin/
+obj/
+build/
+/_ReSharper*
