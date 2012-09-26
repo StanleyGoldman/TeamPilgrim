@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamPilgrim.VisualStudio.Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamPilgrim.VisualStudio", "TeamPilgrim.VisualStudio\TeamPilgrim.VisualStudio.csproj", "{A8E17ADD-F572-4150-A153-F14C43A06B30}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamPilgrim.Core", "TeamPilgrim.Core\TeamPilgrim.Core.csproj", "{6D661FC1-0805-4E2B-91D1-6C56B0044818}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{A8E17ADD-F572-4150-A153-F14C43A06B30}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A8E17ADD-F572-4150-A153-F14C43A06B30}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A8E17ADD-F572-4150-A153-F14C43A06B30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D661FC1-0805-4E2B-91D1-6C56B0044818}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D661FC1-0805-4E2B-91D1-6C56B0044818}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D661FC1-0805-4E2B-91D1-6C56B0044818}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D661FC1-0805-4E2B-91D1-6C56B0044818}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
