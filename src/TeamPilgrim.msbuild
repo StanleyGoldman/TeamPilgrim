@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- Initialization -->
+
+  <PropertyGroup>
+    <SolutionName>TeamPilgrim</SolutionName>
+    <Configuration Condition="'$(Configuration)'==''">Release</Configuration>
+    <Platform Condition="'$(Platform)'==''">Any CPU</Platform>
+
+    <RootDirectory>$(MSBuildProjectDirectory)\..</RootDirectory>
+    <SrcDirectory>$(RootDirectory)\src</SrcDirectory>
+    <LibDirectory>$(RootDirectory)\lib</LibDirectory>
+    <BuildDirectory>$(RootDirectory)\build</BuildDirectory>
+    <BuildCompileDirectory>$(BuildDirectory)\$(SolutionName)</BuildCompileDirectory>
+
+    <MSBuildCommunityTasksPath>.</MSBuildCommunityTasksPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <NunitPackagePath Include="$(LibDirectory)\NUnit.*\tools\nunit-console.exe"/>
+  </ItemGroup>
+
+  <!-- Import -->
+
+  <Import Project="$(LibDirectory)\MSBuildTasks.*\tools\MSBuild.Community.Tasks.Targets"/>
+
+  <!-- Coordinate targets -->
+
+  <Target Name="Build">
+    <CallTarget Targets="Clean;Compile;CompileLocal;Test" />
+  </Target>
+
+  <!-- Clean -->
+
+  <Target Name="Clean">
+    <MSBuild
+      Projects="$(SrcDirectory)\$(SolutionName).sln"
+      Targets="Clean" />
+    <RemoveDir Directories="$(BuildDirectory)" />
+  </Target>
+
+  <!-- Compile to "BuildDirectory" -->
+
+  <Target Name="Compile">
+    <MSBuild
+      Projects="$(SrcDirectory)\$(SolutionName).sln"
+      Properties="Configuration=$(Configuration);Platform=$(Platform);OutputPath=$(BuildCompileDirectory)"
+      Targets="Build" />
+  </Target>
+
+  <!-- Compile to "regular" build directory for developers using Visual Studio locally -->
+
+  <Target Name="CompileLocal">
+    <MSBuild
+      Projects="$(SrcDirectory)\$(SolutionName).sln"
+      Properties="Configuration=$(Configuration);Platform=$(Platform)"
+      Targets="Build" />
+  </Target>
+
+  <!-- Test -->
+
+  <Target Name="Test">
+    <CreateItem Include="$(BuildCompileDirectory)\*.Tests.*dll">
+      <Output
+        TaskParameter="Include"
+        ItemName="TestAssemblies" />
+    </CreateItem>
+    <NUnit
+      Assemblies="@(TestAssemblies)"
+      ToolPath="@(NunitPackagePath->'%(relativedir)')"
+      WorkingDirectory="$(BuildCompileDirectory)"
+      OutputXmlFile="$(BuildDirectory)\$(SolutionName).Tests.xml" />
+  </Target>
+
+</Project>
