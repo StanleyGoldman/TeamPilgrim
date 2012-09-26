@@ -1,22 +1,22 @@
 ﻿using System.Linq;
 using JustAProgrammer.TeamPilgrim.Business.Services;
 using JustAProgrammer.TeamPilgrim.Domain.Entities;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace JustAProgrammer.TeamPilgrim.Business.Test
 {
-    [TestClass]
+    [TestFixture]
     public class TeamPilgrimServiceTest
     {
         private TeamPilgrimService _teamPilgrimService;
 
-        [TestInitialize]
+        [SetUp]
         public void Initialize()
         {
             _teamPilgrimService = new TeamPilgrimService();
         }
 
-        [TestMethod]
+        [Test]
         public void Test()
         {
             var pilgrimProjectCollections = _teamPilgrimService.GetPilgrimProjectCollections();

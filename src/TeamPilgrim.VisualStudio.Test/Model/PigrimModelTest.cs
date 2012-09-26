@@ -1,16 +1,15 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Threading;
-using FluentAssertions;
 using JustAProgrammer.TeamPilgrim.Domain.Entities;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Test.Model
 {
-    [TestClass]
+    [TestFixture]
     public class PigrimModelTest
     {
         public class TestPilgrimModelProvider : IPilgrimModelProvider
@@ -50,17 +49,17 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Test.Model
             Dispatcher.PushFrame(frame);
         }
 
-        [TestMethod]
+        [Test]
         public void TestInitialModelState()
         {
             var pilgrimModel = new PilgrimModel(new TestPilgrimModelProvider());
 
-            pilgrimModel.CollectionModels.Should().BeNull();
-            pilgrimModel.State.Should().Be(ModelStateEnum.Fetching);
+            Assert.That(pilgrimModel.CollectionModels, Is.Null);
+            Assert.That(pilgrimModel.State, Is.EqualTo(ModelStateEnum.Fetching));
 
             PushDispatcherFrame(pilgrimModel);
 
-            pilgrimModel.CollectionModels.Should().NotBeNull();
+            Assert.That(pilgrimModel.CollectionModels, Is.Not.Null);
         }
     }
 }

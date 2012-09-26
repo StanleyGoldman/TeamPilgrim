@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{93E53AB6-9E54-4DF8-BE70-79A5E8F10335}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamPilgrim.Domain", "TeamPilgrim.Domain\TeamPilgrim.Domain.csproj", "{0D3D9230-6152-4695-95B9-3D8347C49F67}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamPilgrim.Business", "TeamPilgrim.Business\TeamPilgrim.Business.csproj", "{4A132D5B-6DA8-4CDF-B237-346B8FAB56E5}"
