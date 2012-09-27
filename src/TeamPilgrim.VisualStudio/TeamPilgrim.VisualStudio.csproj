@@ -150,6 +150,9 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="TeamPilgrimPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="..\TeamPilgrim.Core\Properties\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="PkgCmdID.cs" />
     <Compile Include="Views\ProjectNodes\BuildsNode.cs" />
     <Compile Include="Common\EnumerableQueryItemExtensions.cs" />

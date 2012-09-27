@@ -5,7 +5,7 @@
 using System;
 
 // ReSharper disable CheckNamespace
-namespace Bootstrap.Common.Core
+namespace JustAProgrammer.TeamPilgrim.Core
 // ReSharper restore CheckNamespace
 {
     public static class VersionInfo

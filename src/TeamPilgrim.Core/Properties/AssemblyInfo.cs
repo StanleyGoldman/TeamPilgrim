@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Bootstrap.Common.Core;
+using JustAProgrammer.TeamPilgrim.Core;
 
 [assembly: AssemblyTitle("TeamPilgrim.Core" + VersionInfo.DebugBuild + VersionInfo.DirtyBuild)]
 
@@ -10,7 +10,7 @@ using Bootstrap.Common.Core;
 [assembly: AssemblyCulture("")]
 
 [assembly: ComVisible(false)]
-[assembly: CLSCompliant(true)]
+[assembly: CLSCompliant(false)]
 
 [assembly: Guid("d9e0ab67-2f70-4433-8560-6e40899ef805")]
 

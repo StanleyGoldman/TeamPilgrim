@@ -1,5 +1,5 @@
 using System.Reflection;
-using Bootstrap.Common.Core;
+using JustAProgrammer.TeamPilgrim.Core;
 
 [assembly: AssemblyProduct("TeamPilgrim")]
 
