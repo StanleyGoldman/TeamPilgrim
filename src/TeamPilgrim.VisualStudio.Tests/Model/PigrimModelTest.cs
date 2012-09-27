@@ -31,33 +31,39 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Tests.Model
             }
         }
 
-        protected static void PushDispatcherFrame(BaseModel baseModel)
+        [Test]
+        public void TestInitialState()
         {
-            var frame = new DispatcherFrame();
+            var pilgrimModel = new PilgrimModel(new TestPilgrimModelProvider());
 
-            var waitForModelHandler = new PropertyChangedEventHandler(
-                delegate(object sender, PropertyChangedEventArgs e)
-                {
-                    if (e.PropertyName == "State" && baseModel.State != ModelStateEnum.Fetching)
-                    {
-                        frame.Continue = false;
-                    }
-                });
-
-            baseModel.PropertyChanged += waitForModelHandler;
-
-            Dispatcher.PushFrame(frame);
+            Assert.That(pilgrimModel.CollectionModels, Is.Not.Null);
+            Assert.That(pilgrimModel.State, Is.EqualTo(ModelStateEnum.Invalid));
         }
 
         [Test]
-        public void TestInitialModelState()
+        public void TestActivation()
         {
             var pilgrimModel = new PilgrimModel(new TestPilgrimModelProvider());
 
             Assert.That(pilgrimModel.CollectionModels, Is.Not.Null);
             Assert.That(pilgrimModel.State, Is.EqualTo(ModelStateEnum.Invalid));
 
-            PushDispatcherFrame(pilgrimModel);
+            pilgrimModel.Activate();
+
+            var frame = new DispatcherFrame();
+
+            var waitForModelHandler = new PropertyChangedEventHandler(
+                delegate(object sender, PropertyChangedEventArgs e)
+                    {
+                        if (e.PropertyName == "State" && pilgrimModel.State != ModelStateEnum.Invalid)
+                        {
+                            frame.Continue = false;
+                        }
+                    });
+
+            pilgrimModel.PropertyChanged += waitForModelHandler;
+
+            Dispatcher.PushFrame(frame);
 
             Assert.That(pilgrimModel.CollectionModels, Is.Not.Null);
         }
