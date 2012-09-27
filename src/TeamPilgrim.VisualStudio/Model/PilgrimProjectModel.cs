@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
+using System.Windows.Threading;
 using JustAProgrammer.TeamPilgrim.Domain.Entities;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
@@ -23,7 +25,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
                 {
                     new WorkItemsNode(_pilgrimProject.Project.QueryHierarchy), 
                     new ReportsNode(),
-                    new BuildsNode(),
+                    new BuildsNode(pilgrimModelProvider, _collection, _pilgrimProject),
                     new TeamMembersNode(),
                     new SourceControlNode()
                 };
@@ -54,7 +56,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         private void PilgrimProjectCallback(object state)
         {
-
+            
         }
     }
 }

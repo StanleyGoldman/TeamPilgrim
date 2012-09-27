@@ -39,5 +39,18 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             projects = null;
             return false;
         }
+
+        public bool TryGetBuildServer(out PilgrimBuildServer pilgrimBuildServer, Uri tpcAddress)
+        {
+            try
+            {
+                pilgrimBuildServer = _teamPilgrimService.GetPilgrimBuildServer(tpcAddress);
+                return true;
+            }
+            catch (Exception) { }
+
+            pilgrimBuildServer = null;
+            return false;
+        }
     }
 }

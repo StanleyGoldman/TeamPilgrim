@@ -16,7 +16,6 @@ namespace JustAProgrammer.TeamPilgrim.Business.Tests
             _teamPilgrimService = new TeamPilgrimService();
         }
 
-        [Test]
         public void Test()
         {
             var pilgrimProjectCollections = _teamPilgrimService.GetPilgrimProjectCollections();

@@ -25,7 +25,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
         {
             VerifyCalledOnUiThread();
 
-            if (ThreadPool.QueueUserWorkItem(PilgrimProjectCollectionCallback))
+            if (ThreadPool.QueueUserWorkItem(LoadPilgrimProjectModelsCallback))
             {
                 State = ModelStateEnum.Fetching;
             }
@@ -72,7 +72,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             }
         }
 
-        private void PilgrimProjectCollectionCallback(object state)
+        private void LoadPilgrimProjectModelsCallback(object state)
         {
             PilgrimProject[] projects;
             var blah = this;
