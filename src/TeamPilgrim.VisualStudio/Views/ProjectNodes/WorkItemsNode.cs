@@ -1,12 +1,13 @@
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Views
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Views.ProjectNodes
 {
-    public class QueryHierachyView
+    public class WorkItemsNode : ProjectNode
     {
         private readonly QueryHierarchy _queryHierarchy;
 
-        public QueryHierachyView(QueryHierarchy queryHierarchy)
+        public WorkItemsNode(QueryHierarchy queryHierarchy)
         {
             _queryHierarchy = queryHierarchy;
         }

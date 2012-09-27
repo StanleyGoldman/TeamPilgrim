@@ -154,11 +154,16 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="PkgCmdID.cs" />
-    <Compile Include="Views\EnumerableQueryItemExtensions.cs" />
+    <Compile Include="Views\ProjectNodes\BuildsNode.cs" />
+    <Compile Include="Common\EnumerableQueryItemExtensions.cs" />
+    <Compile Include="Views\ProjectNodes\ProjectNode.cs" />
+    <Compile Include="Views\ProjectNodes\SourceControlNode.cs" />
+    <Compile Include="Views\ProjectNodes\TeamMembersNode.cs" />
     <Compile Include="Views\QueryDefinitionView.cs" />
     <Compile Include="Views\QueryFolderView.cs" />
-    <Compile Include="Views\QueryHierachyView.cs" />
+    <Compile Include="Views\ProjectNodes\WorkItemsNode.cs" />
     <Compile Include="Views\QueryItemView.cs" />
+    <Compile Include="Views\ProjectNodes\ReportsNode.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">
