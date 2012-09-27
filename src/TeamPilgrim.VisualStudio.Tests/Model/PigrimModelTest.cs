@@ -55,7 +55,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Tests.Model
             var pilgrimModel = new PilgrimModel(new TestPilgrimModelProvider());
 
             Assert.That(pilgrimModel.CollectionModels, Is.Not.Null);
-            Assert.That(pilgrimModel.State, Is.EqualTo(ModelStateEnum.Invalid)); // TODO, MB, 9/26/2012: This test was original: ModelStateEnum.Fetching but failed
+            Assert.That(pilgrimModel.State, Is.EqualTo(ModelStateEnum.Invalid));
 
             PushDispatcherFrame(pilgrimModel);
 
