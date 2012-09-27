@@ -55,6 +55,10 @@
     <Compile Include="Services\TeamPilgrimService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TeamPilgrim.Core\TeamPilgrim.Core.csproj">
+      <Project>{6d661fc1-0805-4e2b-91d1-6c56b0044818}</Project>
+      <Name>TeamPilgrim.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TeamPilgrim.Domain\TeamPilgrim.Domain.csproj">
       <Project>{0D3D9230-6152-4695-95B9-3D8347C49F67}</Project>
       <Name>TeamPilgrim.Domain</Name>

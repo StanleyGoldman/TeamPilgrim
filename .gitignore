@@ -2,9 +2,9 @@
 *.user
 *.[Cc]ache
 *.docstates
-*.ncrunchsolution
 bin/
 obj/
 build/
+_NCrunch*/
 _ReSharper*/
 VersionInfo.cs

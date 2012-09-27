@@ -47,6 +47,9 @@
     <None Include="Properties\VersionInfo.cs.tmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- Generic way of supporting different NuGet versions. Disabled because NCrunch doesn't like that.
+  <Import Project="..\..\lib\VersionTasks.*\tools\VersionTasks.targets" />
+   -->
   <Import Project="..\..\lib\VersionTasks.1.2.0.0\tools\VersionTasks.targets" />
   <Target Name="BeforeBuild">
     <GitVersionFile TemplateFile="Properties\VersionInfo.cs.tmp" DestinationFile="Properties\VersionInfo.cs" />

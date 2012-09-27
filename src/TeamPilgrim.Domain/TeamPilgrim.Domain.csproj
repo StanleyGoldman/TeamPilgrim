@@ -55,6 +55,12 @@
   <ItemGroup>
     <None Include="Key.snk" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TeamPilgrim.Core\TeamPilgrim.Core.csproj">
+      <Project>{6d661fc1-0805-4e2b-91d1-6c56b0044818}</Project>
+      <Name>TeamPilgrim.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
