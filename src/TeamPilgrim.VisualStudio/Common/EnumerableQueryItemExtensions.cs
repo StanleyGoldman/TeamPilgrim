@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Views;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Views
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common
 {
     public static class EnumerableQueryItemExtensions
     {

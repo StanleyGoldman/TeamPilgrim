@@ -6,6 +6,7 @@
              xmlns:Common="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common"
              xmlns:Model="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model"
              xmlns:Views="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Views"
+             xmlns:ProjectNodes="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Views.ProjectNodes"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
@@ -24,7 +25,7 @@
                         <TextBlock Text="{Binding Path=Name}" />
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type Views:QueryHierachyView}" ItemsSource="{Binding Path=QueryItems}">
+                    <HierarchicalDataTemplate DataType="{x:Type ProjectNodes:WorkItemsNode}" ItemsSource="{Binding Path=QueryItems}">
                         <TextBlock Text="Work Items" />
                     </HierarchicalDataTemplate>
 
@@ -34,6 +35,22 @@
                     
                     <HierarchicalDataTemplate DataType="{x:Type Views:QueryDefinitionView}">
                         <TextBlock Text="{Binding Path=Name}" />
+                    </HierarchicalDataTemplate>
+                    
+                    <HierarchicalDataTemplate DataType="{x:Type ProjectNodes:BuildsNode}">
+                        <TextBlock Text="Builds" />
+                    </HierarchicalDataTemplate>
+                    
+                    <HierarchicalDataTemplate DataType="{x:Type ProjectNodes:ReportsNode}">
+                        <TextBlock Text="Reports" />
+                    </HierarchicalDataTemplate>
+                    
+                    <HierarchicalDataTemplate DataType="{x:Type ProjectNodes:TeamMembersNode}">
+                        <TextBlock Text="Team Members" />
+                    </HierarchicalDataTemplate>
+                    
+                    <HierarchicalDataTemplate DataType="{x:Type ProjectNodes:SourceControlNode}">
+                        <TextBlock Text="Source Control" />
                     </HierarchicalDataTemplate>
 
                 </TreeView.Resources>

@@ -1,3 +1,4 @@
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Views
