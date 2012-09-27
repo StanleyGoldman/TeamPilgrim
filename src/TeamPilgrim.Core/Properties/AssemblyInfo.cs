@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Bootstrap.Common.Core;
+using JustAProgrammer.TeamPilgrim.Core;
 
 [assembly: AssemblyTitle("TeamPilgrim.Core" + VersionInfo.DebugBuild + VersionInfo.DirtyBuild)]
 
