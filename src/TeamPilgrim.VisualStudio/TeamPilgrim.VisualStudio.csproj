@@ -198,6 +198,10 @@
       <Project>{4A132D5B-6DA8-4CDF-B237-346B8FAB56E5}</Project>
       <Name>TeamPilgrim.Business</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TeamPilgrim.Core\TeamPilgrim.Core.csproj">
+      <Project>{6d661fc1-0805-4e2b-91d1-6c56b0044818}</Project>
+      <Name>TeamPilgrim.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TeamPilgrim.Domain\TeamPilgrim.Domain.csproj">
       <Project>{0D3D9230-6152-4695-95B9-3D8347C49F67}</Project>
       <Name>TeamPilgrim.Domain</Name>
