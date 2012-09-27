@@ -9,6 +9,6 @@ using JustAProgrammer.TeamPilgrim.Core;
 [assembly: AssemblyCulture("")]
 
 [assembly: ComVisible(false)]
-[assembly: CLSCompliant(true)]
+[assembly: CLSCompliant(false)]
 
 [assembly: Guid("451d7494-cdde-4c03-84b7-4e2065de4af9")]
