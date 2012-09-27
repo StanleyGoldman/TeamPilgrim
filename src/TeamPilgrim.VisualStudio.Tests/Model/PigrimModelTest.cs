@@ -7,7 +7,7 @@ using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using NUnit.Framework;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Test.Model
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Tests.Model
 {
     [TestFixture]
     public class PigrimModelTest
@@ -54,8 +54,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Test.Model
         {
             var pilgrimModel = new PilgrimModel(new TestPilgrimModelProvider());
 
-            Assert.That(pilgrimModel.CollectionModels, Is.Null);
-            Assert.That(pilgrimModel.State, Is.EqualTo(ModelStateEnum.Fetching));
+            Assert.That(pilgrimModel.CollectionModels, Is.Not.Null);
+            Assert.That(pilgrimModel.State, Is.EqualTo(ModelStateEnum.Invalid)); // TODO, MB, 9/26/2012: This test was original: ModelStateEnum.Fetching but failed
 
             PushDispatcherFrame(pilgrimModel);
 

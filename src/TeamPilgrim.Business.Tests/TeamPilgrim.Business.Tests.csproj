@@ -6,8 +6,8 @@
     <ProjectGuid>{FF5FB750-3079-4AD1-BD6A-713D0FEADD2C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>JustAProgrammer.TeamPilgrim.Business.Test</RootNamespace>
-    <AssemblyName>TeamPilgrim.Business.Test</AssemblyName>
+    <RootNamespace>JustAProgrammer.TeamPilgrim.Business.Tests</RootNamespace>
+    <AssemblyName>TeamPilgrim.Business.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>

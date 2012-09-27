@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TeamPilgrim.Business.Test")]
+[assembly: AssemblyTitle("TeamPilgrim.VisualStudio.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("TeamPilgrim.Business.Test")]
+[assembly: AssemblyProduct("TeamPilgrim.VisualStudio.Tests")]
 [assembly: AssemblyCopyright("Copyright ©  2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("b021fb23-9826-486b-936a-24907635a224")]
+[assembly: Guid("451d7494-cdde-4c03-84b7-4e2065de4af9")]
 
 // Version information for an assembly consists of the following four values:
 //

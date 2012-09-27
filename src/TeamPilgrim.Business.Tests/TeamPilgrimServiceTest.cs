@@ -3,7 +3,7 @@ using JustAProgrammer.TeamPilgrim.Business.Services;
 using JustAProgrammer.TeamPilgrim.Domain.Entities;
 using NUnit.Framework;
 
-namespace JustAProgrammer.TeamPilgrim.Business.Test
+namespace JustAProgrammer.TeamPilgrim.Business.Tests
 {
     [TestFixture]
     public class TeamPilgrimServiceTest

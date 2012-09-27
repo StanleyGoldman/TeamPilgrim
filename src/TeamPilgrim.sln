@@ -5,11 +5,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamPilgrim.Domain", "TeamP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamPilgrim.Business", "TeamPilgrim.Business\TeamPilgrim.Business.csproj", "{4A132D5B-6DA8-4CDF-B237-346B8FAB56E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamPilgrim.Business.Test", "TeamPilgrim.Business.Test\TeamPilgrim.Business.Test.csproj", "{FF5FB750-3079-4AD1-BD6A-713D0FEADD2C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamPilgrim.Business.Tests", "TeamPilgrim.Business.Tests\TeamPilgrim.Business.Tests.csproj", "{FF5FB750-3079-4AD1-BD6A-713D0FEADD2C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{14A28DB2-B3E6-42EE-970C-7C0FBB5FC11B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamPilgrim.VisualStudio.Test", "TeamPilgrim.VisualStudio.Test\TeamPilgrim.VisualStudio.Test.csproj", "{A1665C09-1291-43CA-8E1F-EE1B40E34563}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamPilgrim.VisualStudio.Tests", "TeamPilgrim.VisualStudio.Tests\TeamPilgrim.VisualStudio.Tests.csproj", "{A1665C09-1291-43CA-8E1F-EE1B40E34563}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamPilgrim.VisualStudio", "TeamPilgrim.VisualStudio\TeamPilgrim.VisualStudio.csproj", "{A8E17ADD-F572-4150-A153-F14C43A06B30}"
 EndProject
