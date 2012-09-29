@@ -2,16 +2,16 @@
 {
     public class BuildsNode : ProjectNode
     {
-        private readonly PilgrimProjectBuildModel _pilgrimServiceModelProvider;
+        private readonly PilgrimProjectBuildModel _pilgrimProjectBuildModel;
 
-        public BuildsNode(PilgrimProjectBuildModel pilgrimServiceModelProvider)
+        public BuildsNode(PilgrimProjectBuildModel pilgrimProjectBuildModel)
         {
-            _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
+            _pilgrimProjectBuildModel = pilgrimProjectBuildModel;
         }
 
-        public PilgrimProjectBuildModel PilgrimServiceModelProvider
+        public PilgrimProjectBuildModel PilgrimProjectBuildModel
         {
-            get { return _pilgrimServiceModelProvider; }
+            get { return _pilgrimProjectBuildModel; }
         }
     }
 }

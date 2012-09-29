@@ -16,7 +16,12 @@ namespace JustAProgrammer.TeamPilgrim.Business.Services
 
         public PilgrimBuildDetail[] QueryBuilds(string teamProject)
         {
-            return _buildServer.QueryBuilds(teamProject).Select(detail => new PilgrimBuildDetail { Detail = detail }).ToArray();
+            return _buildServer.QueryBuilds(teamProject).Select(
+                delegate(IBuildDetail detail)
+                    {
+                        return new PilgrimBuildDetail();
+                        //{Detail = detail};
+                    }).ToArray();
         }
     }
 }

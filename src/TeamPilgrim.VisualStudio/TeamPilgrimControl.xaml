@@ -7,6 +7,7 @@
              xmlns:Model="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model"
              xmlns:Views="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Views"
              xmlns:ProjectNodes="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.ProjectNodes"
+             xmlns:Entities="clr-namespace:JustAProgrammer.TeamPilgrim.Domain.Entities;assembly=TeamPilgrim.Domain"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
@@ -36,11 +37,14 @@
                     <HierarchicalDataTemplate DataType="{x:Type Views:QueryDefinitionView}">
                         <TextBlock Text="{Binding Path=Name}" />
                     </HierarchicalDataTemplate>
-                    
-                    <HierarchicalDataTemplate DataType="{x:Type ProjectNodes:BuildsNode}">
+
+                    <HierarchicalDataTemplate DataType="{x:Type ProjectNodes:BuildsNode}" ItemsSource="{Binding Path=PilgrimProjectBuildModel.PilgrimBuildDetails}">
                         <TextBlock Text="Builds" />
                     </HierarchicalDataTemplate>
-                    
+
+                    <HierarchicalDataTemplate DataType="{x:Type Entities:PilgrimBuildDetail}">
+                    </HierarchicalDataTemplate>
+
                     <HierarchicalDataTemplate DataType="{x:Type ProjectNodes:ReportsNode}">
                         <TextBlock Text="Reports" />
                     </HierarchicalDataTemplate>

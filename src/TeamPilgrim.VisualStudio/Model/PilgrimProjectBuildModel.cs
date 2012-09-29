@@ -40,7 +40,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
                     {
-                        PilgrimPilgrimBuildDetails = pilgrimBuildDetails;
+                        PilgrimBuildDetails = pilgrimBuildDetails;
                         State = ModelStateEnum.Active;
                     }));
             }
@@ -57,7 +57,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         private PilgrimBuildDetail[] _pilgrimBuildDetails;
 
-        public PilgrimBuildDetail[] PilgrimPilgrimBuildDetails
+        public PilgrimBuildDetail[] PilgrimBuildDetails
         {
             get
             {
