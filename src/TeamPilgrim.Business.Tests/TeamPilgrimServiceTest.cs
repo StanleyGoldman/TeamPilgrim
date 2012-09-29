@@ -1,6 +1,6 @@
 ﻿using System.Linq;
-using JustAProgrammer.TeamPilgrim.Business.Services;
-using JustAProgrammer.TeamPilgrim.Domain.Entities;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities;
 using NUnit.Framework;
 
 namespace JustAProgrammer.TeamPilgrim.Business.Tests

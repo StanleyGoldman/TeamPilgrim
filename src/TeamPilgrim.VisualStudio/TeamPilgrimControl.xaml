@@ -3,11 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:Common="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common"
              xmlns:Model="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model"
-             xmlns:Views="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Views"
+             xmlns:Common="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common"
              xmlns:ProjectNodes="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.ProjectNodes"
-             xmlns:Entities="clr-namespace:JustAProgrammer.TeamPilgrim.Domain.Entities;assembly=TeamPilgrim.Domain"
+             xmlns:Views="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Views"
+             xmlns:Entities="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
@@ -43,6 +43,7 @@
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type Entities:PilgrimBuildDetail}">
+                        <TextBlock Text="{Binding Path=Detail.LabelName}" />
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type ProjectNodes:ReportsNode}">

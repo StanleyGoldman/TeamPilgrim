@@ -1,7 +1,7 @@
 ﻿using System;
-using JustAProgrammer.TeamPilgrim.Business.Services;
-using JustAProgrammer.TeamPilgrim.Domain.BusinessInterfaces;
-using JustAProgrammer.TeamPilgrim.Domain.Entities;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
 {

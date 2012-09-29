@@ -1,6 +1,6 @@
 using Microsoft.TeamFoundation.Client;
 
-namespace JustAProgrammer.TeamPilgrim.Domain.Entities
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities
 {
     public class PilgrimProjectCollection
     {

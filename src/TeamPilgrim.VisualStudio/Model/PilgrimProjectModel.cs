@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Windows.Threading;
-using JustAProgrammer.TeamPilgrim.Domain.Entities;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.ProjectNodes;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Views;
@@ -36,6 +36,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
         protected override void OnActivated()
         {
             VerifyCalledOnUiThread();
+
+            _pilgrimProjectBuildModel.Activate();
 
             if (ThreadPool.QueueUserWorkItem(PilgrimProjectCallback))
             {

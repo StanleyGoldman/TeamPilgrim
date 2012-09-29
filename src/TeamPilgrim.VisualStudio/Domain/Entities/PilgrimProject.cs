@@ -1,7 +1,6 @@
-using System.Linq;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
-namespace JustAProgrammer.TeamPilgrim.Domain.Entities
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities
 {
     public class PilgrimProject
     {

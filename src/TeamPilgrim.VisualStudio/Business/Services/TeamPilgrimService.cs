@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
-using JustAProgrammer.TeamPilgrim.Domain.BusinessInterfaces;
-using JustAProgrammer.TeamPilgrim.Domain.Entities;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities;
 using Microsoft.TeamFoundation.Build.Client;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
-namespace JustAProgrammer.TeamPilgrim.Business.Services
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 {
     public class TeamPilgrimService : ITeamPilgrimService
     {

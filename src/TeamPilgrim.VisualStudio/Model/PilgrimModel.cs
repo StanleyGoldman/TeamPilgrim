@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Windows.Threading;
-using JustAProgrammer.TeamPilgrim.Domain.Entities;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model

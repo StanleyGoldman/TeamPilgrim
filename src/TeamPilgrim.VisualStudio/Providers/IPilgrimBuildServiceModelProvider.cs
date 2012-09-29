@@ -1,4 +1,4 @@
-using JustAProgrammer.TeamPilgrim.Domain.Entities;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
 {
