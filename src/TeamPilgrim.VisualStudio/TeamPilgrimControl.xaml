@@ -6,7 +6,7 @@
              xmlns:Common="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common"
              xmlns:Model="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model"
              xmlns:Views="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Views"
-             xmlns:ProjectNodes="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Views.ProjectNodes"
+             xmlns:ProjectNodes="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.ProjectNodes"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"

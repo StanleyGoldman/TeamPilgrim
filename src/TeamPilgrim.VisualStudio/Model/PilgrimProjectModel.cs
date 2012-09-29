@@ -3,9 +3,9 @@ using System.Threading;
 using System.Windows.Threading;
 using JustAProgrammer.TeamPilgrim.Domain.Entities;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.ProjectNodes;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Views;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Views.ProjectNodes;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
@@ -27,7 +27,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
                 {
                     new WorkItemsNode(_pilgrimProject.Project.QueryHierarchy), 
                     new ReportsNode(),
-                    new BuildsNode(pilgrimServiceModelProvider, _collection, _pilgrimProject),
+                    new BuildsNode(pilgrimProjectBuildModel),
                     new TeamMembersNode(),
                     new SourceControlNode()
                 };
