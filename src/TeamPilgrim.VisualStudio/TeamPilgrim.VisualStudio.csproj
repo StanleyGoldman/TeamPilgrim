@@ -132,16 +132,19 @@
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Common\ModelStateEnum.cs" />
     <Compile Include="Common\FactoryDictionary.cs" />
+    <Compile Include="Model\PilgrimBuildModel.cs" />
     <Compile Include="Model\PilgrimModel.cs" />
     <Compile Include="Model\PilgrimProjectCollectionModel.cs" />
     <Compile Include="Model\PilgrimProjectModel.cs" />
-    <Compile Include="Providers\PilgrimModelProvider.cs" />
+    <Compile Include="Providers\PilgrimBuildServiceModelProvider.cs" />
+    <Compile Include="Providers\IPilgrimBuildServiceModelProvider.cs" />
+    <Compile Include="Providers\PilgrimServiceServiceModelProvider.cs" />
     <Compile Include="TeamPilgrimControl.xaml.cs">
       <DependentUpon>TeamPilgrimControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="TeamPilgrimToolWindow.cs" />
     <Compile Include="Guids.cs" />
-    <Compile Include="Providers\IPilgrimModelProvider.cs" />
+    <Compile Include="Providers\IPilgrimServiceModelProvider.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

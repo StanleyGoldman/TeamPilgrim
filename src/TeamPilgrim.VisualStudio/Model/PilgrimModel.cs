@@ -10,12 +10,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
     public class PilgrimModel : BaseModel
     {
-        private readonly IPilgrimModelProvider _pilgrimModelProvider;
+        private readonly IPilgrimServiceModelProvider _pilgrimServiceModelProvider;
         private readonly TestCommandModel _testCommand;
 
-        public PilgrimModel(IPilgrimModelProvider pilgrimModelProvider)
+        public PilgrimModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider)
         {
-            _pilgrimModelProvider = pilgrimModelProvider;
+            _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
             _testCommand = new TestCommandModel(); 
 
             State = ModelStateEnum.Invalid;
@@ -60,11 +60,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
         private void PilgrimModelCallback(object state)
         {
             PilgrimProjectCollection[] fetchedCollections;
-            if (_pilgrimModelProvider.TryGetCollections(out fetchedCollections))
+            if (_pilgrimServiceModelProvider.TryGetCollections(out fetchedCollections))
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
                 {
-                    var pilgrimProjectCollectionModels = fetchedCollections.Select(collection => new PilgrimProjectCollectionModel(_pilgrimModelProvider, collection)).ToArray();
+                    var pilgrimProjectCollectionModels = fetchedCollections.Select(collection => new PilgrimProjectCollectionModel(_pilgrimServiceModelProvider, collection)).ToArray();
 
                     CollectionModels = pilgrimProjectCollectionModels;
                     State = ModelStateEnum.Active;

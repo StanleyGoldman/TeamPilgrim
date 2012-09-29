@@ -11,21 +11,21 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
     public class PilgrimProjectModel : BaseModel
     {
-        private readonly IPilgrimModelProvider _pilgrimModelProvider;
+        private readonly IPilgrimServiceModelProvider _pilgrimServiceModelProvider;
         private readonly PilgrimProjectCollection _collection;
         private readonly PilgrimProject _pilgrimProject;
         private readonly ProjectNode[] _childObjects;
 
-        public PilgrimProjectModel(IPilgrimModelProvider pilgrimModelProvider, PilgrimProjectCollection collection, PilgrimProject pilgrimProject)
+        public PilgrimProjectModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, PilgrimProjectCollection collection, PilgrimProject pilgrimProject)
         {
-            _pilgrimModelProvider = pilgrimModelProvider;
+            _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
             _collection = collection;
             _pilgrimProject = pilgrimProject;
             _childObjects = new ProjectNode[]
                 {
                     new WorkItemsNode(_pilgrimProject.Project.QueryHierarchy), 
                     new ReportsNode(),
-                    new BuildsNode(pilgrimModelProvider, _collection, _pilgrimProject),
+                    new BuildsNode(pilgrimServiceModelProvider, _collection, _pilgrimProject),
                     new TeamMembersNode(),
                     new SourceControlNode()
                 };

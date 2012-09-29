@@ -5,7 +5,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Views.ProjectNodes
 {
     public class BuildsNode : ProjectNode
     {
-        public BuildsNode(IPilgrimModelProvider pilgrimModelProvider, PilgrimProjectCollection pilgrimProjectCollection, PilgrimProject pilgrimProject)
+        public BuildsNode(IPilgrimServiceModelProvider pilgrimServiceModelProvider, PilgrimProjectCollection pilgrimProjectCollection, PilgrimProject pilgrimProject)
         {
             
         }

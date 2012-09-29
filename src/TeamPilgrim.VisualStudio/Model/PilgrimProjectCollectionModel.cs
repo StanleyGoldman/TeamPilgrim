@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Windows.Threading;
+using JustAProgrammer.TeamPilgrim.Domain.BusinessInterfaces;
 using JustAProgrammer.TeamPilgrim.Domain.Entities;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
@@ -10,12 +11,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
     public class PilgrimProjectCollectionModel : BaseModel
     {
-        private readonly IPilgrimModelProvider _pilgrimModelProvider;
+        private readonly IPilgrimServiceModelProvider _pilgrimServiceModelProvider;
         private readonly PilgrimProjectCollection _collection;
 
-        public PilgrimProjectCollectionModel(IPilgrimModelProvider pilgrimModelProvider, PilgrimProjectCollection collection)
+        public PilgrimProjectCollectionModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, PilgrimProjectCollection collection)
         {
-            _pilgrimModelProvider = pilgrimModelProvider;
+            _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
             _collection = collection;
 
             State = ModelStateEnum.Invalid;
@@ -25,7 +26,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
         {
             VerifyCalledOnUiThread();
 
-            if (ThreadPool.QueueUserWorkItem(LoadPilgrimProjectModelsCallback))
+            if (ThreadPool.QueueUserWorkItem(PopulatePilgrimProjectCollectionModelCallback))
             {
                 State = ModelStateEnum.Fetching;
             }
@@ -51,6 +52,44 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             get { return _collection.ProjectCollection.AutoReconnect; }
         }
 
+        private void PopulatePilgrimProjectCollectionModelCallback(object state)
+        {
+            PilgrimProject[] projects;
+            IPilgrimBuildServiceModelProvider buildServiceModelProvider;
+            
+            var projectCollectionModel = this;
+
+            if (_pilgrimServiceModelProvider.TryGetProjectsAndBuildServiceProvider(out projects, out buildServiceModelProvider, Uri))
+            {
+                Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
+                    {
+                        var pilgrimProjectModels = projects
+                            .Select(project => new PilgrimProjectModel(_pilgrimServiceModelProvider, projectCollectionModel._collection, project))
+                            .ToArray();
+
+                        ProjectModels = pilgrimProjectModels;
+
+                        BuildModel = new PilgrimBuildModel(_pilgrimServiceModelProvider, buildServiceModelProvider, projectCollectionModel._collection);
+
+                        State = ModelStateEnum.Active;
+
+                        foreach (var pilgrimProjectModel in pilgrimProjectModels)
+                        {
+                            pilgrimProjectModel.Activate();
+                        }
+
+                        BuildModel.Activate();
+                    }));
+            }
+            else
+            {
+                Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
+                    {
+                        State = ModelStateEnum.Invalid;
+                    }));
+            }
+        }
+
         #region ProjectModels
 
         private PilgrimProjectModel[] _projectModels = new PilgrimProjectModel[0];
@@ -72,32 +111,26 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             }
         }
 
-        private void LoadPilgrimProjectModelsCallback(object state)
+        #endregion
+
+        #region BuildModel
+
+        private PilgrimBuildModel _buildModel;
+
+        public PilgrimBuildModel BuildModel
         {
-            PilgrimProject[] projects;
-            var blah = this;
-
-            if (_pilgrimModelProvider.TryGetProjects(out projects, Uri))
+            get
             {
-                Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
-                    {
-                        var pilgrimProjectModels = projects.Select(project => new PilgrimProjectModel(_pilgrimModelProvider, blah._collection, project)).ToArray();
-
-                        ProjectModels = pilgrimProjectModels;
-                        State = ModelStateEnum.Active;
-
-                        foreach (var pilgrimProjectModel in pilgrimProjectModels)
-                        {
-                            pilgrimProjectModel.Activate();
-                        }
-                    }));
+                VerifyCalledOnUiThread();
+                return _buildModel;
             }
-            else
+            set
             {
-                Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
-                    {
-                        State = ModelStateEnum.Invalid;
-                    }));
+                VerifyCalledOnUiThread();
+                if (_buildModel == value) return;
+
+                _buildModel = value;
+                SendPropertyChanged("BuildModel");
             }
         }
 

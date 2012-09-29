@@ -20,7 +20,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             BindingErrorTraceListener.SetTrace(); 
 
             InitializeComponent();
-            DataContext = _pilgrimModel = new PilgrimModel(new PilgrimModelProvider());
+            DataContext = _pilgrimModel = new PilgrimModel(new PilgrimServiceServiceModelProvider());
         }
 
         private void OnQueryCommandEnabled(object sender, CanExecuteRoutedEventArgs e)
