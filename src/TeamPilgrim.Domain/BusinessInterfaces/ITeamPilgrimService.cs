@@ -10,8 +10,7 @@ namespace JustAProgrammer.TeamPilgrim.Domain.BusinessInterfaces
 
         PilgrimProject[] GetPilgrimProjects(Uri tpcAddress);
         PilgrimProject[] GetPilgrimProjects(TfsTeamProjectCollection tfsTeamProjectCollection);
-
-        PilgrimBuildServer GetPilgrimBuildServer(Uri tpcAddress);
-        PilgrimBuildServer GetPilgrimBuildServer(TfsTeamProjectCollection collection);
+        ITeamPilgrimBuildService GetTeamPilgrimBuildService(Uri tpcAddress);
+        ITeamPilgrimBuildService GetTeamPilgrimBuildService(TfsTeamProjectCollection collection);
     }
 }

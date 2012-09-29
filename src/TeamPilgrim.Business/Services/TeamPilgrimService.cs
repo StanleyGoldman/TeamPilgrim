@@ -52,20 +52,17 @@ namespace JustAProgrammer.TeamPilgrim.Business.Services
                         }).ToArray();
         }
 
-        public PilgrimBuildServer GetPilgrimBuildServer(Uri tpcAddress)
+        public ITeamPilgrimBuildService GetTeamPilgrimBuildService(Uri tpcAddress)
         {
             var collection = GetTfsTeamProjectCollection(tpcAddress);
-            return GetPilgrimBuildServer(collection);
+            return GetTeamPilgrimBuildService(collection);
         }
 
-        public PilgrimBuildServer GetPilgrimBuildServer(TfsTeamProjectCollection collection)
+        public ITeamPilgrimBuildService GetTeamPilgrimBuildService(TfsTeamProjectCollection collection)
         {
             var buildServer = collection.GetService<IBuildServer>();
 
-            return new PilgrimBuildServer
-                {
-                    BuildServer = buildServer
-                };
+            return new TeamPilgrimBuildService(buildServer);
         }
     }
 }

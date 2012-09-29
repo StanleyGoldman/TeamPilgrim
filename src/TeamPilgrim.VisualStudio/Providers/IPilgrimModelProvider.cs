@@ -8,7 +8,5 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
         bool TryGetCollections(out PilgrimProjectCollection[] collections);
         
         bool TryGetProjects(out PilgrimProject[] projects, Uri tpcAddress);
-        
-        bool TryGetBuildServer(out PilgrimBuildServer pilgrimBuildServer, Uri tpcAddress);
     }
 }

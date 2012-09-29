@@ -48,8 +48,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BusinessInterfaces\ITeamPilgrimBuildService.cs" />
     <Compile Include="BusinessInterfaces\ITeamPilgrimService.cs" />
-    <Compile Include="Entities\PilgrimBuildServer.cs" />
     <Compile Include="Entities\PilgrimProject.cs" />
     <Compile Include="Entities\PilgrimProjectCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

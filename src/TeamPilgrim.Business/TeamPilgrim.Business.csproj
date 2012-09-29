@@ -55,6 +55,7 @@
     <Compile Include="..\TeamPilgrim.Core\Properties\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Services\TeamPilgrimBuildService.cs" />
     <Compile Include="Services\TeamPilgrimService.cs" />
   </ItemGroup>
   <ItemGroup>
