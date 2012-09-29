@@ -64,12 +64,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
                 Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
                     {
                         var pilgrimProjectModels = projects
-                            .Select(project => new PilgrimProjectModel(_pilgrimServiceModelProvider, projectCollectionModel._collection, project))
+                            .Select(project => new PilgrimProjectModel(_pilgrimServiceModelProvider, projectCollectionModel._collection, project, new PilgrimProjectBuildModel(_pilgrimServiceModelProvider, buildServiceModelProvider, projectCollectionModel._collection, project)))
                             .ToArray();
 
                         ProjectModels = pilgrimProjectModels;
 
-                        BuildModel = new PilgrimBuildModel(_pilgrimServiceModelProvider, buildServiceModelProvider, projectCollectionModel._collection);
 
                         State = ModelStateEnum.Active;
 
@@ -77,8 +76,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
                         {
                             pilgrimProjectModel.Activate();
                         }
-
-                        BuildModel.Activate();
                     }));
             }
             else
@@ -108,29 +105,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
                 _projectModels = value;
                 SendPropertyChanged("ProjectModels");
-            }
-        }
-
-        #endregion
-
-        #region BuildModel
-
-        private PilgrimBuildModel _buildModel;
-
-        public PilgrimBuildModel BuildModel
-        {
-            get
-            {
-                VerifyCalledOnUiThread();
-                return _buildModel;
-            }
-            set
-            {
-                VerifyCalledOnUiThread();
-                if (_buildModel == value) return;
-
-                _buildModel = value;
-                SendPropertyChanged("BuildModel");
             }
         }
 

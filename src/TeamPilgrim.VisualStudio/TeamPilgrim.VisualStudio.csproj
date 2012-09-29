@@ -132,7 +132,7 @@
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Common\ModelStateEnum.cs" />
     <Compile Include="Common\FactoryDictionary.cs" />
-    <Compile Include="Model\PilgrimBuildModel.cs" />
+    <Compile Include="Model\PilgrimProjectBuildModel.cs" />
     <Compile Include="Model\PilgrimModel.cs" />
     <Compile Include="Model\PilgrimProjectCollectionModel.cs" />
     <Compile Include="Model\PilgrimProjectModel.cs" />

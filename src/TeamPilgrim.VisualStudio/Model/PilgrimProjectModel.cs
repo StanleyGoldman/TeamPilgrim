@@ -15,10 +15,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
         private readonly PilgrimProjectCollection _collection;
         private readonly PilgrimProject _pilgrimProject;
         private readonly ProjectNode[] _childObjects;
+        private readonly PilgrimProjectBuildModel _pilgrimProjectBuildModel;
 
-        public PilgrimProjectModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, PilgrimProjectCollection collection, PilgrimProject pilgrimProject)
+        public PilgrimProjectModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, PilgrimProjectCollection collection, PilgrimProject pilgrimProject, PilgrimProjectBuildModel pilgrimProjectBuildModel)
         {
             _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
+            _pilgrimProjectBuildModel = pilgrimProjectBuildModel;
             _collection = collection;
             _pilgrimProject = pilgrimProject;
             _childObjects = new ProjectNode[]
@@ -46,7 +48,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             get { return _pilgrimProject.Project.Name; }
         }
 
-        public object[] ChildObjects
+        public ProjectNode[] ChildObjects
         {
             get
             {
@@ -54,9 +56,17 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             }
         }
 
+        public PilgrimProjectBuildModel PilgrimProjectBuildModel
+        {
+            get { return _pilgrimProjectBuildModel; }
+        }
+
         private void PilgrimProjectCallback(object state)
         {
-            
+            Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
+                {
+                    State = ModelStateEnum.Active;
+                }));
         }
     }
 }

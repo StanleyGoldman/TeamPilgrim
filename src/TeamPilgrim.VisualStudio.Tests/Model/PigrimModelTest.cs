@@ -46,7 +46,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Tests.Model
 
         public class TestPilgrimBuildServiceModelProvider : IPilgrimBuildServiceModelProvider
         {
-            
+            public bool TryGetBuildsByProjectName(out PilgrimBuildDetail[] pilgrimBuildDetails, string teamProject)
+            {
+                throw new NotImplementedException();
+            }
         }
 
         [Test]
