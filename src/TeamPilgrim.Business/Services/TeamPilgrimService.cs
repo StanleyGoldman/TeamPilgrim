@@ -40,7 +40,7 @@ namespace JustAProgrammer.TeamPilgrim.Business.Services
             return GetPilgrimProjects(GetTfsTeamProjectCollection(tpcAddress));
         }
 
-        public PilgrimProject[] GetPilgrimProjects(TfsTeamProjectCollection tfsTeamProjectCollection)
+        private PilgrimProject[] GetPilgrimProjects(TfsTeamProjectCollection tfsTeamProjectCollection)
         {
             var workItemStore = new WorkItemStore(tfsTeamProjectCollection);
 
@@ -58,7 +58,7 @@ namespace JustAProgrammer.TeamPilgrim.Business.Services
             return GetTeamPilgrimBuildService(collection);
         }
 
-        public ITeamPilgrimBuildService GetTeamPilgrimBuildService(TfsTeamProjectCollection collection)
+        private ITeamPilgrimBuildService GetTeamPilgrimBuildService(TfsTeamProjectCollection collection)
         {
             var buildServer = collection.GetService<IBuildServer>();
 
