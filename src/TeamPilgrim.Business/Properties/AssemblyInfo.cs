@@ -14,4 +14,4 @@ using JustAProgrammer.TeamPilgrim.Core;
 
 [assembly: Guid("6c1adba0-88b6-4e5e-be78-397dc442b15b")]
 
-[assembly: InternalsVisibleTo("TeamPilgrim.Business.Tests")]
+[assembly: InternalsVisibleTo("TeamPilgrim.Business.Tests, PublicKey=1cdf4a734e978709")]

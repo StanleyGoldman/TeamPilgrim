@@ -13,5 +13,3 @@ using JustAProgrammer.TeamPilgrim.Core;
 [assembly: CLSCompliant(false)]
 
 [assembly: Guid("fc5482fa-441f-4f4c-9aba-5b3312261eec")]
-
-[assembly: InternalsVisibleTo("TeamPilgrim.Domain.Tests")]
