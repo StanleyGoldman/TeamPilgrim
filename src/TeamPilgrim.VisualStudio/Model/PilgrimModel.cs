@@ -1,22 +1,22 @@
-﻿using System.Linq;
+﻿using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Windows.Threading;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
+using Microsoft.VisualStudio.Shell;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
     public class PilgrimModel : BaseModel
     {
         private readonly IPilgrimServiceModelProvider _pilgrimServiceModelProvider;
-        private readonly TestCommandModel _testCommand;
 
         public PilgrimModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider)
         {
             _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
-            _testCommand = new TestCommandModel(); 
 
             State = ModelStateEnum.Invalid;
         }
@@ -29,11 +29,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             {
                 State = ModelStateEnum.Fetching;
             }
-        }
-
-        public TestCommandModel TestCommand
-        {
-            get { return _testCommand; }
         }
 
         #region Collections
@@ -64,7 +59,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
                 {
-                    var pilgrimProjectCollectionModels = fetchedCollections.Select(collection => new PilgrimProjectCollectionModel(_pilgrimServiceModelProvider, collection)).ToArray();
+                    var pilgrimProjectCollectionModels = fetchedCollections.Select(collection => new PilgrimProjectCollectionModel(this, collection, _pilgrimServiceModelProvider)).ToArray();
 
                     CollectionModels = pilgrimProjectCollectionModels;
                     State = ModelStateEnum.Active;

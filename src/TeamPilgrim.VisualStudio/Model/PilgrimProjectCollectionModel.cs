@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Windows.Threading;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
@@ -10,13 +11,19 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
     public class PilgrimProjectCollectionModel : BaseModel
     {
-        private readonly IPilgrimServiceModelProvider _pilgrimServiceModelProvider;
+        private readonly PilgrimModel _pilgrimModel;
         private readonly PilgrimProjectCollection _collection;
+        private readonly IPilgrimServiceModelProvider _pilgrimServiceModelProvider;
 
-        public PilgrimProjectCollectionModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, PilgrimProjectCollection collection)
+        private readonly OpenSourceControlExplorerCommand _openSourceControlExplorerCommand;
+
+        public PilgrimProjectCollectionModel(PilgrimModel pilgrimModel, PilgrimProjectCollection collection, IPilgrimServiceModelProvider pilgrimServiceModelProvider)
         {
             _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
             _collection = collection;
+            _pilgrimModel = pilgrimModel;
+
+            _openSourceControlExplorerCommand = new OpenSourceControlExplorerCommand(this); 
 
             State = ModelStateEnum.Invalid;
         }
@@ -29,6 +36,16 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             {
                 State = ModelStateEnum.Fetching;
             }
+        }
+
+        public OpenSourceControlExplorerCommand OpenSourceControlExplorerCommand
+        {
+            get { return _openSourceControlExplorerCommand; }
+        }
+
+        public PilgrimModel PilgrimModel
+        {
+            get { return _pilgrimModel; }
         }
 
         public string Name

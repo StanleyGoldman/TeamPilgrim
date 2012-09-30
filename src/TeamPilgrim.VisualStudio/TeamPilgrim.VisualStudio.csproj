@@ -131,7 +131,7 @@
     <Compile Include="Business\Services\TeamPilgrimBuildService.cs" />
     <Compile Include="Business\Services\TeamPilgrimService.cs" />
     <Compile Include="Command\CommandModel.cs" />
-    <Compile Include="Command\TestCommandModel.cs" />
+    <Compile Include="Command\OpenSourceControlExplorerCommand.cs" />
     <Compile Include="Common\ActivateModel.cs" />
     <Compile Include="Common\BindingErrorTraceListener.cs" />
     <Compile Include="Common\CreateCommandBinding.cs" />

@@ -15,7 +15,7 @@
              Name="MyToolWindow">
     <Grid>
         <StackPanel Orientation="Vertical" Common:ActivateModel.Model="{Binding}">
-            <TreeView>
+            <TreeView  MouseDoubleClick="treeview_mouseDoubleClick">
                 <TreeView.Resources>
                     
                     <HierarchicalDataTemplate DataType="{x:Type Model:PilgrimProjectCollectionModel}" ItemsSource="{Binding Path=ProjectModels}">

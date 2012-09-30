@@ -13,7 +13,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
     /// </summary>
     public partial class TeamPilgrimControl : UserControl
     {
-        private PilgrimModel _pilgrimModel;
+        private readonly PilgrimModel _pilgrimModel;
 
         public TeamPilgrimControl()
         {
@@ -33,5 +33,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
         {
         }
 
+        private void treeview_mouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+        }
     }
 }
