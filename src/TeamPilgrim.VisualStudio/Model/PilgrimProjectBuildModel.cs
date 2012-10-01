@@ -1,8 +1,10 @@
 ﻿using System.Threading;
 using System.Windows.Threading;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
+using Microsoft.TeamFoundation.Build.Client;
+using Microsoft.TeamFoundation.Client;
+using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
@@ -10,10 +12,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
     {
         private readonly IPilgrimServiceModelProvider _pilgrimServiceModelProvider;
         private readonly IPilgrimBuildServiceModelProvider _buildServiceModelProvider;
-        private readonly PilgrimProjectCollection _collection;
-        private readonly PilgrimProject _project;
+        private readonly TfsTeamProjectCollection _collection;
+        private readonly Project _project;
 
-        public PilgrimProjectBuildModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, IPilgrimBuildServiceModelProvider buildServiceModelProvider, PilgrimProjectCollection collection, PilgrimProject project)
+        public PilgrimProjectBuildModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, IPilgrimBuildServiceModelProvider buildServiceModelProvider, TfsTeamProjectCollection collection, Project project)
         {
             _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
             _buildServiceModelProvider = buildServiceModelProvider;
@@ -35,8 +37,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         private void PopulatePilgrimBuildModelCallback(object state)
         {
-            PilgrimBuildDetail[] pilgrimBuildDetails;
-            if (_buildServiceModelProvider.TryGetBuildsByProjectName(out pilgrimBuildDetails, _project.Project.Name))
+            IBuildDetail[] pilgrimBuildDetails;
+            if (_buildServiceModelProvider.TryGetBuildsByProjectName(out pilgrimBuildDetails, _project.Name))
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
                     {
@@ -55,9 +57,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         #region BuildModel
 
-        private PilgrimBuildDetail[] _pilgrimBuildDetails;
+        private IBuildDetail[] _pilgrimBuildDetails;
 
-        public PilgrimBuildDetail[] PilgrimBuildDetails
+        public IBuildDetail[] PilgrimBuildDetails
         {
             get
             {

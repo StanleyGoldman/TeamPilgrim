@@ -4,24 +4,24 @@ using System.Threading;
 using System.Windows.Input;
 using System.Windows.Threading;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.ProjectNodes;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Views;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.VersionControl.Client;
+using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
     public class PilgrimProjectModel : BaseModel
     {
         private readonly IPilgrimServiceModelProvider _pilgrimServiceModelProvider;
-        private readonly PilgrimProjectCollection _collection;
-        private readonly PilgrimProject _pilgrimProject;
+        private readonly TfsTeamProjectCollection _collection;
+        private readonly Project _pilgrimProject;
         private readonly ProjectNode[] _childObjects;
         private readonly PilgrimProjectBuildModel _pilgrimProjectBuildModel;
 
-        public PilgrimProjectModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, PilgrimProjectCollection collection, PilgrimProject pilgrimProject, PilgrimProjectBuildModel pilgrimProjectBuildModel)
+        public PilgrimProjectModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, TfsTeamProjectCollection collection, Project pilgrimProject, PilgrimProjectBuildModel pilgrimProjectBuildModel)
         {
             _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
             _pilgrimProjectBuildModel = pilgrimProjectBuildModel;
@@ -29,7 +29,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             _pilgrimProject = pilgrimProject;
             _childObjects = new ProjectNode[]
                 {
-                    new WorkItemsNode(_pilgrimProject.Project.QueryHierarchy), 
+                    new WorkItemsNode(_pilgrimProject.QueryHierarchy), 
                     new ReportsNode(),
                     new BuildsNode(pilgrimProjectBuildModel),
                     new TeamMembersNode(),
@@ -51,17 +51,17 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         public string Name
         {
-            get { return _pilgrimProject.Project.Name; }
+            get { return _pilgrimProject.Name; }
         }
 
         public Uri Path
         {
             get
             {
-                var tfsTeamProjectCollection = new TfsTeamProjectCollection(_collection.ProjectCollection.Uri);
+                var tfsTeamProjectCollection = new TfsTeamProjectCollection(_collection.Uri);
                 var versionControlServer = tfsTeamProjectCollection.GetService<VersionControlServer>();
 
-                return _pilgrimProject.Project.Store.TeamProjectCollection.Uri;
+                return _pilgrimProject.Store.TeamProjectCollection.Uri;
             }
         }
 

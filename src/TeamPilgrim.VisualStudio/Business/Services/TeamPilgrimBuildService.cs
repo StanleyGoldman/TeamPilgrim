@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities;
+﻿using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
 using Microsoft.TeamFoundation.Build.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
@@ -14,9 +12,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
             _buildServer = buildServer;
         }
 
-        public PilgrimBuildDetail[] QueryBuilds(string teamProject)
+        public IBuildDetail[] QueryBuilds(string teamProject)
         {
-            return _buildServer.QueryBuilds(teamProject).Select(detail => new PilgrimBuildDetail {Detail = detail}).ToArray();
+            return _buildServer.QueryBuilds(teamProject);
         }
     }
 }

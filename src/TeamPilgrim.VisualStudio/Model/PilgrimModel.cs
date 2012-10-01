@@ -3,8 +3,8 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Threading;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
+using Microsoft.TeamFoundation.Client;
 using Microsoft.VisualStudio.Shell;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
@@ -53,7 +53,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         private void PilgrimModelCallback(object state)
         {
-            PilgrimProjectCollection[] fetchedCollections;
+            TfsTeamProjectCollection[] fetchedCollections;
             if (_pilgrimServiceModelProvider.TryGetCollections(out fetchedCollections))
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate

@@ -7,7 +7,7 @@
              xmlns:Common="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common"
              xmlns:ProjectNodes="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.ProjectNodes"
              xmlns:Views="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Views"
-             xmlns:Entities="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities"
+             xmlns:Client="clr-namespace:Microsoft.TeamFoundation.Build.Client;assembly=Microsoft.TeamFoundation.Build.Client"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
@@ -42,7 +42,7 @@
                         <TextBlock Text="Builds" />
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type Entities:PilgrimBuildDetail}">
+                    <HierarchicalDataTemplate DataType="{x:Type Client:IBuildDetail}">
                         <TextBlock Text="{Binding Path=Detail.LabelName}" />
                     </HierarchicalDataTemplate>
 

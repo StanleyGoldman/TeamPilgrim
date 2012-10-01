@@ -1,6 +1,6 @@
 ﻿using System;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities;
+using Microsoft.TeamFoundation.Build.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
 {
@@ -13,7 +13,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             _teamPilgrimBuildService = teamPilgrimBuildService;
         }
 
-        public bool TryGetBuildsByProjectName(out PilgrimBuildDetail[] pilgrimBuildDetails, string teamProject)
+        public bool TryGetBuildsByProjectName(out IBuildDetail[] pilgrimBuildDetails, string teamProject)
         {
             try
             {

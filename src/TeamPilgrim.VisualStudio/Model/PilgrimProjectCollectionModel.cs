@@ -3,18 +3,19 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Threading;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
+using Microsoft.TeamFoundation.Client;
+using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
     public class PilgrimProjectCollectionModel : BaseModel
     {
         private readonly PilgrimModel _pilgrimModel;
-        private readonly PilgrimProjectCollection _pilgrimProjectCollection;
+        private readonly TfsTeamProjectCollection _pilgrimProjectCollection;
         private readonly IPilgrimServiceModelProvider _pilgrimServiceModelProvider;
 
-        public PilgrimProjectCollectionModel(PilgrimProjectCollection pilgrimProjectCollection, PilgrimModel pilgrimModel, IPilgrimServiceModelProvider pilgrimServiceModelProvider)
+        public PilgrimProjectCollectionModel(TfsTeamProjectCollection pilgrimProjectCollection, PilgrimModel pilgrimModel, IPilgrimServiceModelProvider pilgrimServiceModelProvider)
         {
             _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
             _pilgrimProjectCollection = pilgrimProjectCollection;
@@ -38,34 +39,24 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             get { return _pilgrimModel; }
         }
 
-        public PilgrimProjectCollection PilgrimProjectCollection
+        public TfsTeamProjectCollection TfsTeamProjectCollection
         {
             get { return _pilgrimProjectCollection; }
         }
 
         public string Name
         {
-            get { return PilgrimProjectCollection.ProjectCollection.Name; }
+            get { return TfsTeamProjectCollection.Name; }
         }
 
         public Uri Uri
         {
-            get { return PilgrimProjectCollection.ProjectCollection.Uri; }
-        }
-
-        public bool Offline
-        {
-            get { return PilgrimProjectCollection.ProjectCollection.Offline; }
-        }
-
-        public bool AutoReconnect
-        {
-            get { return PilgrimProjectCollection.ProjectCollection.AutoReconnect; }
+            get { return TfsTeamProjectCollection.Uri; }
         }
 
         private void PopulatePilgrimProjectCollectionModelCallback(object state)
         {
-            PilgrimProject[] projects;
+            Project[] projects;
             IPilgrimBuildServiceModelProvider buildServiceModelProvider;
             
             var projectCollectionModel = this;
@@ -75,7 +66,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
                 Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
                     {
                         var pilgrimProjectModels = projects
-                            .Select(project => new PilgrimProjectModel(_pilgrimServiceModelProvider, projectCollectionModel.PilgrimProjectCollection, project, new PilgrimProjectBuildModel(_pilgrimServiceModelProvider, buildServiceModelProvider, projectCollectionModel.PilgrimProjectCollection, project)))
+                            .Select(project => new PilgrimProjectModel(_pilgrimServiceModelProvider, projectCollectionModel.TfsTeamProjectCollection, project, new PilgrimProjectBuildModel(_pilgrimServiceModelProvider, buildServiceModelProvider, projectCollectionModel.TfsTeamProjectCollection, project)))
                             .ToArray();
 
                         ProjectModels = pilgrimProjectModels;

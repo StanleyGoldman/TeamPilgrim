@@ -1,7 +1,8 @@
 ﻿using System;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities;
+using Microsoft.TeamFoundation.Client;
+using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
 {
@@ -14,11 +15,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             _teamPilgrimService = new TeamPilgrimService();
         }
 
-        public bool TryGetCollections(out PilgrimProjectCollection[] collections)
+        public bool TryGetCollections(out TfsTeamProjectCollection[] collections)
         {
             try
             {
-                collections = _teamPilgrimService.GetPilgrimProjectCollections();
+                collections = _teamPilgrimService.GetProjectCollections();
                 return true;
             }
             catch (Exception) { }
@@ -27,11 +28,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             return false;
         }
 
-        public bool TryGetProjects(out PilgrimProject[] projects, Uri tpcAddress)
+        public bool TryGetProjects(out Project[] projects, Uri tpcAddress)
         {
             try
             {
-                projects = _teamPilgrimService.GetPilgrimProjects(tpcAddress);
+                projects = _teamPilgrimService.GetProjects(tpcAddress);
                 return true;
             }
             catch (Exception) { }
@@ -53,9 +54,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             return false;
         }
 
-        public bool TryGetProjectsAndBuildServiceProvider(out PilgrimProject[] projects, out IPilgrimBuildServiceModelProvider buildServiceModelProvider, Uri tpcAddress)
+        public bool TryGetProjectsAndBuildServiceProvider(out Project[] projects, out IPilgrimBuildServiceModelProvider buildServiceModelProvider, Uri tpcAddress)
         {
-            PilgrimProject[] projects1;
+            Project[] projects1;
             IPilgrimBuildServiceModelProvider buildServiceModelProvider1 = null;
 
             var result = TryGetProjects(out projects1, tpcAddress)

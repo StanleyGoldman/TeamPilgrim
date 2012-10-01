@@ -2,9 +2,11 @@ using System;
 using System.ComponentModel;
 using System.Windows.Threading;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
+using Microsoft.TeamFoundation.Build.Client;
+using Microsoft.TeamFoundation.Client;
+using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using NUnit.Framework;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Tests.Model
@@ -14,18 +16,18 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Tests.Model
     {
         public class TestPilgrimServiceModelProvider : IPilgrimServiceModelProvider
         {
-            public PilgrimProjectCollection[] LastPilgrimProjectCollections { get; private set; }
+            public TfsTeamProjectCollection[] LastPilgrimProjectCollections { get; private set; }
 
-            public bool TryGetCollections(out PilgrimProjectCollection[] collections)
+            public bool TryGetCollections(out TfsTeamProjectCollection[] collections)
             {
-                collections = new PilgrimProjectCollection[0];
+                collections = new TfsTeamProjectCollection[0];
                 LastPilgrimProjectCollections = collections;
                 return true;
             }
 
-            public PilgrimProject[] LastPilgrimProjects { get; private set; }
+            public Project[] LastPilgrimProjects { get; private set; }
 
-            public bool TryGetProjects(out PilgrimProject[] projects, Uri tpcAddress)
+            public bool TryGetProjects(out Project[] projects, Uri tpcAddress)
             {
                 throw new NotImplementedException();
             }
@@ -35,9 +37,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Tests.Model
                 throw new NotImplementedException();
             }
 
-            public bool TryGetProjectsAndBuildServiceProvider(out PilgrimProject[] projects, out IPilgrimBuildServiceModelProvider buildService, Uri tpcAddress)
+            public bool TryGetProjectsAndBuildServiceProvider(out Project[] projects, out IPilgrimBuildServiceModelProvider buildService, Uri tpcAddress)
             {
-                projects = new PilgrimProject[0];
+                projects = new Project[0];
                 buildService = new TestPilgrimBuildServiceModelProvider();
                 return true;
             }
@@ -45,7 +47,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Tests.Model
 
         public class TestPilgrimBuildServiceModelProvider : IPilgrimBuildServiceModelProvider
         {
-            public bool TryGetBuildsByProjectName(out PilgrimBuildDetail[] pilgrimBuildDetails, string teamProject)
+            public bool TryGetBuildsByProjectName(out IBuildDetail[] pilgrimBuildDetails, string teamProject)
             {
                 throw new NotImplementedException();
             }
