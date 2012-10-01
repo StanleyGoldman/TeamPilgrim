@@ -11,15 +11,17 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
     public class PilgrimProjectCollectionModel : BaseModel
     {
-        private readonly PilgrimModel _pilgrimModel;
-        private readonly TfsTeamProjectCollection _pilgrimProjectCollection;
+        public PilgrimModel PilgrimModel { get; private set; }
+     
+        public TfsTeamProjectCollection TfsTeamProjectCollection { get; private set; }
+
         private readonly IPilgrimServiceModelProvider _pilgrimServiceModelProvider;
 
         public PilgrimProjectCollectionModel(TfsTeamProjectCollection pilgrimProjectCollection, PilgrimModel pilgrimModel, IPilgrimServiceModelProvider pilgrimServiceModelProvider)
         {
             _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
-            _pilgrimProjectCollection = pilgrimProjectCollection;
-            _pilgrimModel = pilgrimModel;
+            TfsTeamProjectCollection = pilgrimProjectCollection;
+            PilgrimModel = pilgrimModel;
 
             State = ModelStateEnum.Invalid;
         }
@@ -34,26 +36,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             }
         }
 
-        public PilgrimModel PilgrimModel
-        {
-            get { return _pilgrimModel; }
-        }
-
-        public TfsTeamProjectCollection TfsTeamProjectCollection
-        {
-            get { return _pilgrimProjectCollection; }
-        }
-
-        public string Name
-        {
-            get { return TfsTeamProjectCollection.Name; }
-        }
-
-        public Uri Uri
-        {
-            get { return TfsTeamProjectCollection.Uri; }
-        }
-
         private void PopulatePilgrimProjectCollectionModelCallback(object state)
         {
             Project[] projects;
@@ -61,7 +43,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             
             var projectCollectionModel = this;
 
-            if (_pilgrimServiceModelProvider.TryGetProjectsAndBuildServiceProvider(out projects, out buildServiceModelProvider, Uri))
+            if (_pilgrimServiceModelProvider.TryGetProjectsAndBuildServiceProvider(out projects, out buildServiceModelProvider, TfsTeamProjectCollection.Uri))
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
                     {

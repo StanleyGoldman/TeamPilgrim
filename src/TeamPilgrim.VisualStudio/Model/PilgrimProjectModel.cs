@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Input;
 using System.Windows.Threading;
+using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.ProjectNodes;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
@@ -10,26 +11,32 @@ using JustAProgrammer.TeamPilgrim.VisualStudio.Views;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.VersionControl.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
+using Microsoft.VisualStudio.TeamFoundation.VersionControl;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
     public class PilgrimProjectModel : BaseModel
     {
         private readonly IPilgrimServiceModelProvider _pilgrimServiceModelProvider;
-        private readonly TfsTeamProjectCollection _collection;
-        private readonly Project _pilgrimProject;
-        private readonly ProjectNode[] _childObjects;
-        private readonly PilgrimProjectBuildModel _pilgrimProjectBuildModel;
+
+        public TfsTeamProjectCollection Collection { get; private set; }
+
+        public Project PilgrimProject { get; private set; }
+
+        public PilgrimProjectBuildModel PilgrimProjectBuildModel { get; private set; }
+
+        public ProjectNode[] ChildObjects { get; private set; }
 
         public PilgrimProjectModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, TfsTeamProjectCollection collection, Project pilgrimProject, PilgrimProjectBuildModel pilgrimProjectBuildModel)
         {
             _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
-            _pilgrimProjectBuildModel = pilgrimProjectBuildModel;
-            _collection = collection;
-            _pilgrimProject = pilgrimProject;
-            _childObjects = new ProjectNode[]
+            PilgrimProject = pilgrimProject;
+            Collection = collection;
+            PilgrimProjectBuildModel = pilgrimProjectBuildModel;
+            OpenSourceControlCommand = new RelayCommand<string>(OpenSourceControl, CanOpenSourceControl);
+            ChildObjects = new ProjectNode[]
                 {
-                    new WorkItemsNode(_pilgrimProject.QueryHierarchy), 
+                    new WorkItemsNode(PilgrimProject.QueryHierarchy), 
                     new ReportsNode(),
                     new BuildsNode(pilgrimProjectBuildModel),
                     new TeamMembersNode(),
@@ -41,7 +48,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
         {
             VerifyCalledOnUiThread();
 
-            _pilgrimProjectBuildModel.Activate();
+            PilgrimProjectBuildModel.Activate();
 
             if (ThreadPool.QueueUserWorkItem(PilgrimProjectCallback))
             {
@@ -49,34 +56,24 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             }
         }
 
-        public string Name
+
+        #region OpenSourceControl
+
+        public RelayCommand<string> OpenSourceControlCommand { get; private set; }
+
+        private void OpenSourceControl(string s)
         {
-            get { return _pilgrimProject.Name; }
+            VersionControlExplorerExt versionControlExplorerExt = TeamPilgrimPackage.VersionControlExt.Explorer;
+            versionControlExplorerExt.Navigate("$/");
         }
 
-        public Uri Path
+        private bool CanOpenSourceControl(string s)
         {
-            get
-            {
-                var tfsTeamProjectCollection = new TfsTeamProjectCollection(_collection.Uri);
-                var versionControlServer = tfsTeamProjectCollection.GetService<VersionControlServer>();
-
-                return _pilgrimProject.Store.TeamProjectCollection.Uri;
-            }
+            return true;
         }
 
-        public ProjectNode[] ChildObjects
-        {
-            get
-            {
-                return _childObjects;
-            }
-        }
+        #endregion
 
-        public PilgrimProjectBuildModel PilgrimProjectBuildModel
-        {
-            get { return _pilgrimProjectBuildModel; }
-        }
 
         private void PilgrimProjectCallback(object state)
         {

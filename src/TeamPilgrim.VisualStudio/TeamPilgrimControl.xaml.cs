@@ -43,14 +43,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             var sourceControlNode = selectedItem as SourceControlNode;
             if(sourceControlNode != null)
             {
-                VersionControlExplorerExt versionControlExplorerExt = TeamPilgrimPackage.VersionControlExt.Explorer;
-                
-                //Wrong
-                var serverPath = sourceControlNode.PilgrimProjectModel.Path.ToString();
-
-                var path = "$/WiseMarkit/Design";
-
-                versionControlExplorerExt.Navigate(path);
+                sourceControlNode.PilgrimProjectModel.OpenSourceControlCommand.Execute(null);
             }
         }
     }

@@ -19,11 +19,11 @@
                 <TreeView.Resources>
                     
                     <HierarchicalDataTemplate DataType="{x:Type Model:PilgrimProjectCollectionModel}" ItemsSource="{Binding Path=ProjectModels}">
-                        <TextBlock Text="{Binding Path=Name}" />
+                        <TextBlock Text="{Binding Path=TfsTeamProjectCollection.Name}" />
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type Model:PilgrimProjectModel}" ItemsSource="{Binding Path=ChildObjects}">
-                        <TextBlock Text="{Binding Path=Name}" />
+                        <TextBlock Text="{Binding Path=PilgrimProject.Name}" />
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type ProjectNodes:WorkItemsNode}" ItemsSource="{Binding Path=QueryItems}">
@@ -43,7 +43,7 @@
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type Client:IBuildDetail}">
-                        <TextBlock Text="{Binding Path=Detail.LabelName}" />
+                        <TextBlock Text="{Binding Path=LabelName}" />
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type ProjectNodes:ReportsNode}">
