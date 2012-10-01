@@ -1,11 +1,15 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
+using System.Windows.Input;
 using System.Windows.Threading;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.ProjectNodes;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Views;
+using Microsoft.TeamFoundation.Client;
+using Microsoft.TeamFoundation.VersionControl.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
@@ -29,7 +33,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
                     new ReportsNode(),
                     new BuildsNode(pilgrimProjectBuildModel),
                     new TeamMembersNode(),
-                    new SourceControlNode()
+                    new SourceControlNode(this)
                 };
         }
 
@@ -48,6 +52,17 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
         public string Name
         {
             get { return _pilgrimProject.Project.Name; }
+        }
+
+        public Uri Path
+        {
+            get
+            {
+                var tfsTeamProjectCollection = new TfsTeamProjectCollection(_collection.ProjectCollection.Uri);
+                var versionControlServer = tfsTeamProjectCollection.GetService<VersionControlServer>();
+
+                return _pilgrimProject.Project.Store.TeamProjectCollection.Uri;
+            }
         }
 
         public ProjectNode[] ChildObjects

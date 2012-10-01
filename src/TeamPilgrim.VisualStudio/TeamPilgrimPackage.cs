@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.ComponentModel.Design;
+using EnvDTE;
+using EnvDTE80;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.TeamFoundation.VersionControl;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio
 {
@@ -31,6 +35,22 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
     [Guid(GuidList.guidTeamPilgrimPkgString)]
     public sealed class TeamPilgrimPackage : Package
     {
+        private static TeamPilgrimPackage _singleInstance;
+
+        public static DTE2 DTE2 { get; set; }
+
+        //public static ExtensionExceptionHandler ExceptionHandler { get; set; }
+
+        public static IVsExtensibility Extensibility { get; set; }
+
+        //public static ExtensionHost Host { get; set; }
+
+        public static MenuCommandService MenuCommandService { get; set; }
+
+        public static IVsUIShell UIShell { get; set; }
+
+        public static VersionControlExt VersionControlExt { get; set; }
+
         /// <summary>
         /// Default constructor of the package.
         /// Inside this method you can place any initialization code that does not require 
@@ -41,6 +61,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
         public TeamPilgrimPackage()
         {
             Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", this.ToString()));
+
+            TeamPilgrimPackage.Extensibility = (IVsExtensibility)Package.GetGlobalService(typeof(IVsExtensibility));
+            TeamPilgrimPackage.DTE2 = (DTE2)TeamPilgrimPackage.Extensibility.GetGlobalsObject(null).DTE;
+            TeamPilgrimPackage.VersionControlExt = TeamPilgrimPackage.DTE2.GetObject("Microsoft.VisualStudio.TeamFoundation.VersionControl.VersionControlExt") as VersionControlExt;
         }
 
         /// <summary>
@@ -73,23 +97,27 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
         /// </summary>
         protected override void Initialize()
         {
-            Debug.WriteLine (string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
+            Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
+            TeamPilgrimPackage._singleInstance = this;
             base.Initialize();
 
             // Add our command handlers for menu (commands must exist in the .vsct file)
             OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            if ( null != mcs )
+            if (null != mcs)
             {
                 // Create the command for the menu item.
-//                CommandID menuCommandID = new CommandID(GuidList.guidTeamPilgrimCmdSet, (int)PkgCmdIDList.cmdTeamPilgrim);
-//                MenuCommand menuItem = new MenuCommand(MenuItemCallback, menuCommandID );
-//                mcs.AddCommand( menuItem );
+                //                CommandID menuCommandID = new CommandID(GuidList.guidTeamPilgrimCmdSet, (int)PkgCmdIDList.cmdTeamPilgrim);
+                //                MenuCommand menuItem = new MenuCommand(MenuItemCallback, menuCommandID );
+                //                mcs.AddCommand( menuItem );
 
                 // Create the command for the tool window
                 CommandID toolwndCommandID = new CommandID(GuidList.guidTeamPilgrimCmdSet, (int)PkgCmdIDList.toolTeamPilgrim);
                 MenuCommand menuToolWin = new MenuCommand(ShowToolWindow, toolwndCommandID);
-                mcs.AddCommand( menuToolWin );
+                mcs.AddCommand(menuToolWin);
             }
+
+            TeamPilgrimPackage.UIShell = (IVsUIShell)base.GetService(typeof(SVsUIShell));
+            TeamPilgrimPackage.MenuCommandService = base.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
         }
         #endregion
 
@@ -116,6 +144,18 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
                        OLEMSGICON.OLEMSGICON_INFO,
                        0,        // false
                        out result));
+        }
+
+        public static object GetPackageService(Type serviceType)
+        {
+            if (TeamPilgrimPackage._singleInstance == null)
+            {
+                return null;
+            }
+            else
+            {
+                return TeamPilgrimPackage._singleInstance.GetService(serviceType);
+            }
         }
 
     }

@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading;
 using System.Windows.Threading;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
@@ -59,7 +58,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
                 {
-                    var pilgrimProjectCollectionModels = fetchedCollections.Select(collection => new PilgrimProjectCollectionModel(this, collection, _pilgrimServiceModelProvider)).ToArray();
+                    var pilgrimProjectCollectionModels = fetchedCollections.Select(collection => new PilgrimProjectCollectionModel(collection, this, _pilgrimServiceModelProvider)).ToArray();
 
                     CollectionModels = pilgrimProjectCollectionModels;
                     State = ModelStateEnum.Active;

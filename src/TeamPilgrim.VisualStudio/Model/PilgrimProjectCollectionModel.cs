@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Windows.Threading;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
@@ -12,18 +11,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
     public class PilgrimProjectCollectionModel : BaseModel
     {
         private readonly PilgrimModel _pilgrimModel;
-        private readonly PilgrimProjectCollection _collection;
+        private readonly PilgrimProjectCollection _pilgrimProjectCollection;
         private readonly IPilgrimServiceModelProvider _pilgrimServiceModelProvider;
 
-        private readonly OpenSourceControlExplorerCommand _openSourceControlExplorerCommand;
-
-        public PilgrimProjectCollectionModel(PilgrimModel pilgrimModel, PilgrimProjectCollection collection, IPilgrimServiceModelProvider pilgrimServiceModelProvider)
+        public PilgrimProjectCollectionModel(PilgrimProjectCollection pilgrimProjectCollection, PilgrimModel pilgrimModel, IPilgrimServiceModelProvider pilgrimServiceModelProvider)
         {
             _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
-            _collection = collection;
+            _pilgrimProjectCollection = pilgrimProjectCollection;
             _pilgrimModel = pilgrimModel;
-
-            _openSourceControlExplorerCommand = new OpenSourceControlExplorerCommand(this); 
 
             State = ModelStateEnum.Invalid;
         }
@@ -38,34 +33,34 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             }
         }
 
-        public OpenSourceControlExplorerCommand OpenSourceControlExplorerCommand
-        {
-            get { return _openSourceControlExplorerCommand; }
-        }
-
         public PilgrimModel PilgrimModel
         {
             get { return _pilgrimModel; }
         }
 
+        public PilgrimProjectCollection PilgrimProjectCollection
+        {
+            get { return _pilgrimProjectCollection; }
+        }
+
         public string Name
         {
-            get { return _collection.ProjectCollection.Name; }
+            get { return PilgrimProjectCollection.ProjectCollection.Name; }
         }
 
         public Uri Uri
         {
-            get { return _collection.ProjectCollection.Uri; }
+            get { return PilgrimProjectCollection.ProjectCollection.Uri; }
         }
 
         public bool Offline
         {
-            get { return _collection.ProjectCollection.Offline; }
+            get { return PilgrimProjectCollection.ProjectCollection.Offline; }
         }
 
         public bool AutoReconnect
         {
-            get { return _collection.ProjectCollection.AutoReconnect; }
+            get { return PilgrimProjectCollection.ProjectCollection.AutoReconnect; }
         }
 
         private void PopulatePilgrimProjectCollectionModelCallback(object state)
@@ -80,11 +75,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
                 Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
                     {
                         var pilgrimProjectModels = projects
-                            .Select(project => new PilgrimProjectModel(_pilgrimServiceModelProvider, projectCollectionModel._collection, project, new PilgrimProjectBuildModel(_pilgrimServiceModelProvider, buildServiceModelProvider, projectCollectionModel._collection, project)))
+                            .Select(project => new PilgrimProjectModel(_pilgrimServiceModelProvider, projectCollectionModel.PilgrimProjectCollection, project, new PilgrimProjectBuildModel(_pilgrimServiceModelProvider, buildServiceModelProvider, projectCollectionModel.PilgrimProjectCollection, project)))
                             .ToArray();
 
                         ProjectModels = pilgrimProjectModels;
-
 
                         State = ModelStateEnum.Active;
 
@@ -125,6 +119,5 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
         }
 
         #endregion
-
     }
 }
