@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Windows.Threading;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.Build.Client;
 using Microsoft.TeamFoundation.Client;
@@ -37,12 +38,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         private void PopulatePilgrimBuildModelCallback(object state)
         {
-            IBuildDetail[] pilgrimBuildDetails;
-            if (_buildServiceModelProvider.TryGetBuildsByProjectName(out pilgrimBuildDetails, _project.Name))
+            BuildDefinitionWrapper[] buildDefinitions;
+            if (_buildServiceModelProvider.TryGetBuildDefinitionsByProjectName(out buildDefinitions, _project.Name))
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
                     {
-                        PilgrimBuildDetails = pilgrimBuildDetails;
+                        BuildDefinitions = buildDefinitions;
                         State = ModelStateEnum.Active;
                     }));
             }
@@ -57,22 +58,22 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         #region BuildModel
 
-        private IBuildDetail[] _pilgrimBuildDetails;
+        private BuildDefinitionWrapper[] _buildDefinitions;
 
-        public IBuildDetail[] PilgrimBuildDetails
+        public BuildDefinitionWrapper[] BuildDefinitions
         {
             get
             {
                 VerifyCalledOnUiThread();
-                return _pilgrimBuildDetails;
+                return _buildDefinitions;
             }
             set
             {
                 VerifyCalledOnUiThread();
-                if (_pilgrimBuildDetails == value) return;
+                if (_buildDefinitions == value) return;
 
-                _pilgrimBuildDetails = value;
-                SendPropertyChanged("PilgrimBuildDetails");
+                _buildDefinitions = value;
+                SendPropertyChanged("BuildDefinitions");
             }
         }
 

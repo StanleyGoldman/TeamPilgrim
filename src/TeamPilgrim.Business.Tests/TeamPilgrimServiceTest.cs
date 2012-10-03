@@ -1,5 +1,7 @@
 ﻿using System.Linq;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities;
+using Microsoft.TeamFoundation.Build.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using NUnit.Framework;
 
@@ -27,7 +29,7 @@ namespace JustAProgrammer.TeamPilgrim.Business.Tests
             var pilgrimProjects = _teamPilgrimService.GetProjects(pilgrimProjectCollection.Uri);
             Project pilgrimProject = pilgrimProjects.First();
 
-            teamPilgrimBuildService.QueryBuilds(pilgrimProject.Name);
+            BuildDefinitionWrapper[] buildDefinitions = teamPilgrimBuildService.QueryBuildDefinitions(pilgrimProject.Name);
         }
     }
 }

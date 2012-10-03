@@ -152,6 +152,8 @@
     <Compile Include="Common\BindingErrorTraceListener.cs" />
     <Compile Include="Domain\BusinessInterfaces\ITeamPilgrimBuildService.cs" />
     <Compile Include="Domain\BusinessInterfaces\ITeamPilgrimService.cs" />
+    <Compile Include="Domain\Entities\BuildDefinitionWrapper.cs" />
+    <Compile Include="Domain\Entities\BuildDetailWrapper.cs" />
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Common\ModelStateEnum.cs" />
     <Compile Include="Common\FactoryDictionary.cs" />

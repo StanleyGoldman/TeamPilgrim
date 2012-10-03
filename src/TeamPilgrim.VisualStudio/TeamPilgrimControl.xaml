@@ -7,7 +7,7 @@
              xmlns:Common="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common"
              xmlns:ProjectNodes="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.ProjectNodes"
              xmlns:Views="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Views"
-             xmlns:Client="clr-namespace:Microsoft.TeamFoundation.Build.Client;assembly=Microsoft.TeamFoundation.Build.Client"
+             xmlns:Entities="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
@@ -38,12 +38,12 @@
                         <TextBlock Text="{Binding Path=Name}" />
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type ProjectNodes:BuildsNode}" ItemsSource="{Binding Path=PilgrimProjectBuildModel.PilgrimBuildDetails}">
+                    <HierarchicalDataTemplate DataType="{x:Type ProjectNodes:BuildsNode}" ItemsSource="{Binding Path=PilgrimProjectBuildModel.BuildDefinitions}">
                         <TextBlock Text="Builds" />
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type Client:IBuildDetail}">
-                        <TextBlock Text="{Binding Path=LabelName}" />
+                    <HierarchicalDataTemplate DataType="{x:Type Entities:BuildDefinitionWrapper}">
+                        <TextBlock Text="{Binding Path=Name}" />
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type ProjectNodes:ReportsNode}">

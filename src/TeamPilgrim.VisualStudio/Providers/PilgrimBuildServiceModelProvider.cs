@@ -1,5 +1,6 @@
 ﻿using System;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities;
 using Microsoft.TeamFoundation.Build.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
@@ -13,16 +14,16 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             _teamPilgrimBuildService = teamPilgrimBuildService;
         }
 
-        public bool TryGetBuildsByProjectName(out IBuildDetail[] pilgrimBuildDetails, string teamProject)
+        public bool TryGetBuildDefinitionsByProjectName(out BuildDefinitionWrapper[] buildDefinitions, string teamProject)
         {
             try
             {
-                pilgrimBuildDetails = _teamPilgrimBuildService.QueryBuilds(teamProject);
+                buildDefinitions = _teamPilgrimBuildService.QueryBuildDefinitions(teamProject);
                 return true;
             }
             catch (Exception) { }
             
-            pilgrimBuildDetails = null;
+            buildDefinitions = null;
             return false;
         }
     }

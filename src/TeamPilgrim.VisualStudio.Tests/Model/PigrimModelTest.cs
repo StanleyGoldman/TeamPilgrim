@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Windows.Threading;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.Build.Client;
@@ -47,7 +48,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Tests.Model
 
         public class TestPilgrimBuildServiceModelProvider : IPilgrimBuildServiceModelProvider
         {
-            public bool TryGetBuildsByProjectName(out IBuildDetail[] pilgrimBuildDetails, string teamProject)
+            public bool TryGetBuildDefinitionsByProjectName(out BuildDefinitionWrapper[] buildDefinitions, string teamProject)
             {
                 throw new NotImplementedException();
             }
