@@ -8,6 +8,7 @@ using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.TeamFoundation.Build;
 using Microsoft.VisualStudio.TeamFoundation.VersionControl;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio
@@ -51,6 +52,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
 
         public static VersionControlExt VersionControlExt { get; set; }
 
+        public static IVsTeamFoundationBuild TeamFouncationBuild { get; set; }
+
         /// <summary>
         /// Default constructor of the package.
         /// Inside this method you can place any initialization code that does not require 
@@ -65,6 +68,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             TeamPilgrimPackage.Extensibility = (IVsExtensibility)Package.GetGlobalService(typeof(IVsExtensibility));
             TeamPilgrimPackage.DTE2 = (DTE2)TeamPilgrimPackage.Extensibility.GetGlobalsObject(null).DTE;
             TeamPilgrimPackage.VersionControlExt = TeamPilgrimPackage.DTE2.GetObject("Microsoft.VisualStudio.TeamFoundation.VersionControl.VersionControlExt") as VersionControlExt;
+            TeamPilgrimPackage.TeamFouncationBuild = (IVsTeamFoundationBuild)base.GetService(typeof(IVsTeamFoundationBuild));
         }
 
         /// <summary>

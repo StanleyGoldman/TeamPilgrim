@@ -65,6 +65,10 @@
     <Reference Include="Microsoft.VisualStudio.Shell.Interop.11.0">
       <EmbedInteropTypes>true</EmbedInteropTypes>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.TeamFoundation.Build, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\PrivateAssemblies\Microsoft.VisualStudio.TeamFoundation.Build.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.TeamFoundation.VersionControl, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Windows\Microsoft.NET\assembly\GAC_MSIL\Microsoft.VisualStudio.TeamFoundation.VersionControl\v4.0_11.0.0.0__b03f5f7f11d50a3a\Microsoft.VisualStudio.TeamFoundation.VersionControl.dll</HintPath>
@@ -146,8 +150,11 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\MouseDoubleClick.cs" />
+    <Compile Include="Domain\BusinessInterfaces\ITeamPilgrimWorkItemStore.cs" />
     <Compile Include="Business\Services\TeamPilgrimBuildService.cs" />
     <Compile Include="Business\Services\TeamPilgrimService.cs" />
+    <Compile Include="Business\Services\TeamPilgrimWorkItemStore.cs" />
     <Compile Include="Common\ActivateModel.cs" />
     <Compile Include="Common\BindingErrorTraceListener.cs" />
     <Compile Include="Domain\BusinessInterfaces\ITeamPilgrimBuildService.cs" />

@@ -8,16 +8,28 @@
              xmlns:ProjectNodes="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.ProjectNodes"
              xmlns:Views="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Views"
              xmlns:Entities="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities"
+             xmlns:VisualStudio="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              Name="MyToolWindow">
     <Grid>
+        <Grid.Resources>
+            <Style TargetType="{x:Type TreeViewItem}"  x:Key="SourceControlNodeStyle">
+                <Setter Property="Common:MouseDoubleClick.Command" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=2}, Path=DataContext.OpenSourceControlCommand}"/>
+                <Setter Property="Common:MouseDoubleClick.CommandParameter" Value="{Binding RelativeSource={RelativeSource Self}}"/>
+                <Setter Property="Background" Value="Green" />
+            </Style>
+
+            <VisualStudio:TeamPilgrilViewStyleSelector
+                x:Key="teamPilgrilViewStyleSelector"
+                SourceControlNodeStyle="{StaticResource ResourceKey=SourceControlNodeStyle}" />
+        </Grid.Resources>
+        
         <StackPanel Orientation="Vertical" Common:ActivateModel.Model="{Binding}">
-            <TreeView  MouseDoubleClick="treeview_mouseDoubleClick">
+            <TreeView>
                 <TreeView.Resources>
-                    
                     <HierarchicalDataTemplate DataType="{x:Type Model:PilgrimProjectCollectionModel}" ItemsSource="{Binding Path=ProjectModels}">
                         <TextBlock Text="{Binding Path=TfsTeamProjectCollection.Name}" />
                     </HierarchicalDataTemplate>
@@ -33,7 +45,7 @@
                     <HierarchicalDataTemplate DataType="{x:Type Views:QueryFolderView}" ItemsSource="{Binding Path=QueryItems}">
                         <TextBlock Text="{Binding Path=Name}" />
                     </HierarchicalDataTemplate>
-                    
+
                     <HierarchicalDataTemplate DataType="{x:Type Views:QueryDefinitionView}">
                         <TextBlock Text="{Binding Path=Name}" />
                     </HierarchicalDataTemplate>
@@ -49,18 +61,19 @@
                     <HierarchicalDataTemplate DataType="{x:Type ProjectNodes:ReportsNode}">
                         <TextBlock Text="Reports" />
                     </HierarchicalDataTemplate>
-                    
+
                     <HierarchicalDataTemplate DataType="{x:Type ProjectNodes:TeamMembersNode}">
                         <TextBlock Text="Team Members" />
                     </HierarchicalDataTemplate>
-                    
+
                     <HierarchicalDataTemplate DataType="{x:Type ProjectNodes:SourceControlNode}">
                         <TextBlock Text="Source Control" />
                     </HierarchicalDataTemplate>
 
                 </TreeView.Resources>
 
-                <TreeViewItem Header="Team Foundation Servers" ItemsSource="{Binding Path=CollectionModels}" >
+                <TreeViewItem Header="Team Foundation Servers" ItemsSource="{Binding Path=CollectionModels}" ItemContainerStyleSelector="{StaticResource ResourceKey=teamPilgrilViewStyleSelector}">
+
                 </TreeViewItem>
             </TreeView>
         </StackPanel>

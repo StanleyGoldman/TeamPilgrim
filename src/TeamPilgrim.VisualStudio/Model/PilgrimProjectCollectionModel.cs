@@ -1,7 +1,9 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Windows.Threading;
+using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.Client;
@@ -11,6 +13,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
     public class PilgrimProjectCollectionModel : BaseModel
     {
+        public PilgrimProjectCollectionModel()
+        {
+            _openSourceControlCommand = new RelayCommand<object>(element =>
+            {
+                Debug.WriteLine("{0} clicked!", element.ToString());
+            });
+        }
+
         public PilgrimModel PilgrimModel { get; private set; }
      
         public TfsTeamProjectCollection TfsTeamProjectCollection { get; private set; }
@@ -92,5 +102,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
         }
 
         #endregion
+
+        public RelayCommand<object> OpenSourceControlCommand
+        {
+            get { return _openSourceControlCommand; }
+        }
+
+        private readonly RelayCommand<object> _openSourceControlCommand;
     }
 }

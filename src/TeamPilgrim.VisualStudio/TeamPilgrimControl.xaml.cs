@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
@@ -19,32 +20,26 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
 
         public TeamPilgrimControl()
         {
-            BindingErrorTraceListener.SetTrace(); 
+            BindingErrorTraceListener.SetTrace();
 
             InitializeComponent();
             DataContext = _pilgrimModel = new PilgrimModel(new PilgrimServiceServiceModelProvider());
         }
+    }
 
-        private void OnQueryCommandEnabled(object sender, CanExecuteRoutedEventArgs e)
+    public class TeamPilgrilViewStyleSelector : StyleSelector
+    {
+        public Style SourceControlNodeStyle { get; set; }
+
+        public override Style SelectStyle(object item, DependencyObject container)
         {
-            e.CanExecute = !string.IsNullOrEmpty(e.Parameter as string);
-            e.Handled = true;
-        }
-
-        private void OnExecute(object sender, ExecutedRoutedEventArgs e)
-        {
-        }
-
-        private void treeview_mouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            var treeView = (TreeView) sender;
-            var selectedItem = treeView.SelectedItem;
-
-            var sourceControlNode = selectedItem as SourceControlNode;
-            if(sourceControlNode != null)
+            var sourceControlNode = item as SourceControlNode;
+            if (sourceControlNode != null)
             {
-                sourceControlNode.PilgrimProjectModel.OpenSourceControlCommand.Execute(null);
+                return SourceControlNodeStyle;
             }
+
+            return base.SelectStyle(item, container);
         }
     }
 }

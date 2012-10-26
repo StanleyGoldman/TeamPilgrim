@@ -59,5 +59,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 
             return new TeamPilgrimBuildService(buildServer);
         }
+
+        public ITeamPilgrimWorkItemStore GetWorkItemStore(Uri tpcAddress)
+        {
+            var collection = GetTfsTeamProjectCollection(tpcAddress);
+            return new TeamPilgrimWorkItemStore(collection.GetService<WorkItemStore>());
+
+        }
+
     }
 }
