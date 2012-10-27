@@ -8,6 +8,7 @@ using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
+using Microsoft.VisualStudio.TeamFoundation.VersionControl;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
@@ -21,11 +22,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         public PilgrimProjectCollectionModel(TfsTeamProjectCollection pilgrimProjectCollection, PilgrimModel pilgrimModel, IPilgrimServiceModelProvider pilgrimServiceModelProvider)
         {
-            _openSourceControlCommand = new RelayCommand<object>(element =>
-            {
-                Debug.WriteLine("{0} clicked!", element.ToString());
-            });
-
             _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
             TfsTeamProjectCollection = pilgrimProjectCollection;
             PilgrimModel = pilgrimModel;
@@ -99,12 +95,5 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
         }
 
         #endregion
-
-        public RelayCommand<object> OpenSourceControlCommand
-        {
-            get { return _openSourceControlCommand; }
-        }
-
-        private readonly RelayCommand<object> _openSourceControlCommand;
     }
 }

@@ -17,7 +17,7 @@
     <Grid>
         <Grid.Resources>
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="SourceControlNodeStyle">
-                <Setter Property="Common:MouseDoubleClick.Command" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=2}, Path=DataContext.OpenSourceControlCommand}"/>
+                <Setter Property="Common:MouseDoubleClick.Command" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=1}, Path=DataContext.OpenSourceControlCommand}"/>
                 <Setter Property="Common:MouseDoubleClick.CommandParameter" Value="{Binding RelativeSource={RelativeSource Self}}"/>
                 <Setter Property="Background" Value="Green" />
             </Style>

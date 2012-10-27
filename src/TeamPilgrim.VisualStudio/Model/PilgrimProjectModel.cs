@@ -33,7 +33,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             PilgrimProject = pilgrimProject;
             Collection = collection;
             PilgrimProjectBuildModel = pilgrimProjectBuildModel;
-            OpenSourceControlCommand = new RelayCommand<string>(OpenSourceControl, CanOpenSourceControl);
+            OpenSourceControlCommand = new RelayCommand<object>(OpenSourceControl, CanOpenSourceControl);
             ChildObjects = new ProjectNode[]
                 {
                     new WorkItemsNode(PilgrimProject.QueryHierarchy), 
@@ -56,18 +56,17 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             }
         }
 
-
         #region OpenSourceControl
 
-        public RelayCommand<string> OpenSourceControlCommand { get; private set; }
+        public RelayCommand<object> OpenSourceControlCommand { get; private set; }
 
-        private void OpenSourceControl(string s)
+        private void OpenSourceControl(object sender)
         {
             VersionControlExplorerExt versionControlExplorerExt = TeamPilgrimPackage.VersionControlExt.Explorer;
-            versionControlExplorerExt.Navigate("$/");
+            versionControlExplorerExt.Navigate("$/" + PilgrimProject.Name);
         }
 
-        private bool CanOpenSourceControl(string s)
+        private bool CanOpenSourceControl(object sender)
         {
             return true;
         }
@@ -82,5 +81,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
                     State = ModelStateEnum.Active;
                 }));
         }
+
+
     }
 }
