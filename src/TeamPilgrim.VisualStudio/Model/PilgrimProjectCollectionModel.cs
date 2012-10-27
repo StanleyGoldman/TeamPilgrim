@@ -13,14 +13,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
     public class PilgrimProjectCollectionModel : BaseModel
     {
-        public PilgrimProjectCollectionModel()
-        {
-            _openSourceControlCommand = new RelayCommand<object>(element =>
-            {
-                Debug.WriteLine("{0} clicked!", element.ToString());
-            });
-        }
-
         public PilgrimModel PilgrimModel { get; private set; }
      
         public TfsTeamProjectCollection TfsTeamProjectCollection { get; private set; }
@@ -29,6 +21,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         public PilgrimProjectCollectionModel(TfsTeamProjectCollection pilgrimProjectCollection, PilgrimModel pilgrimModel, IPilgrimServiceModelProvider pilgrimServiceModelProvider)
         {
+            _openSourceControlCommand = new RelayCommand<object>(element =>
+            {
+                Debug.WriteLine("{0} clicked!", element.ToString());
+            });
+
             _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
             TfsTeamProjectCollection = pilgrimProjectCollection;
             PilgrimModel = pilgrimModel;
