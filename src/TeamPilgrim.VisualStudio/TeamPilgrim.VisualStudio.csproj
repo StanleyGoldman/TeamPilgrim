@@ -192,16 +192,16 @@
       <Link>Key.snk</Link>
     </None>
     <Compile Include="PkgCmdID.cs" />
-    <Compile Include="Model\ProjectNodes\BuildsNode.cs" />
+    <Compile Include="Model\Nodes\Project\BuildsNode.cs" />
     <Compile Include="Common\EnumerableQueryItemExtensions.cs" />
-    <Compile Include="Model\ProjectNodes\ProjectNode.cs" />
-    <Compile Include="Model\ProjectNodes\SourceControlNode.cs" />
-    <Compile Include="Model\ProjectNodes\TeamMembersNode.cs" />
-    <Compile Include="Views\QueryDefinitionView.cs" />
-    <Compile Include="Views\QueryFolderView.cs" />
-    <Compile Include="Model\ProjectNodes\WorkItemsNode.cs" />
-    <Compile Include="Views\QueryItemView.cs" />
-    <Compile Include="Model\ProjectNodes\ReportsNode.cs" />
+    <Compile Include="Model\Nodes\BaseNode.cs" />
+    <Compile Include="Model\Nodes\Project\SourceControlNode.cs" />
+    <Compile Include="Model\Nodes\Project\TeamMembersNode.cs" />
+    <Compile Include="Model\Nodes\QueryItems\QueryDefinitionNode.cs" />
+    <Compile Include="Model\Nodes\QueryItems\QueryFolderNode.cs" />
+    <Compile Include="Model\Nodes\Project\WorkItemsNode.cs" />
+    <Compile Include="Model\Nodes\QueryItems\QueryItemNode.cs" />
+    <Compile Include="Model\Nodes\Project\ReportsNode.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">

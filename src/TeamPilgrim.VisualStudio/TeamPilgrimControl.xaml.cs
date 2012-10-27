@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.ProjectNodes;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Nodes.Project;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TeamFoundation.VersionControl;

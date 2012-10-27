@@ -1,10 +1,10 @@
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Views;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Nodes.QueryItems;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ProjectNodes
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Nodes.Project
 {
-    public class WorkItemsNode : ProjectNode
+    public class WorkItemsNode : BaseNode
     {
         private readonly QueryHierarchy _queryHierarchy;
 
@@ -13,7 +13,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ProjectNodes
             _queryHierarchy = queryHierarchy;
         }
 
-        public QueryItemView[] QueryItems
+        public QueryItemNode[] QueryItems
         {
             get
             {

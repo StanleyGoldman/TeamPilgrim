@@ -5,9 +5,9 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.ProjectNodes;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Nodes;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Nodes.Project;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Views;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.VersionControl.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
@@ -25,7 +25,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         public PilgrimProjectBuildModel PilgrimProjectBuildModel { get; private set; }
 
-        public ProjectNode[] ChildObjects { get; private set; }
+        public BaseNode[] ChildObjects { get; private set; }
 
         public PilgrimProjectModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, TfsTeamProjectCollection collection, Project pilgrimProject, PilgrimProjectBuildModel pilgrimProjectBuildModel)
         {
@@ -33,14 +33,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             PilgrimProject = pilgrimProject;
             Collection = collection;
             PilgrimProjectBuildModel = pilgrimProjectBuildModel;
-            OpenSourceControlCommand = new RelayCommand<object>(OpenSourceControl, CanOpenSourceControl);
-            ChildObjects = new ProjectNode[]
+            OpenSourceControlCommand = new RelayCommand(OpenSourceControl, CanOpenSourceControl);
+            ChildObjects = new BaseNode[]
                 {
                     new WorkItemsNode(PilgrimProject.QueryHierarchy), 
                     new ReportsNode(),
                     new BuildsNode(pilgrimProjectBuildModel),
                     new TeamMembersNode(),
-                    new SourceControlNode(this)
+                    new SourceControlNode()
                 };
         }
 
@@ -58,15 +58,15 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         #region OpenSourceControl
 
-        public RelayCommand<object> OpenSourceControlCommand { get; private set; }
+        public RelayCommand OpenSourceControlCommand { get; private set; }
 
-        private void OpenSourceControl(object sender)
+        private void OpenSourceControl()
         {
             VersionControlExplorerExt versionControlExplorerExt = TeamPilgrimPackage.VersionControlExt.Explorer;
             versionControlExplorerExt.Navigate("$/" + PilgrimProject.Name);
         }
 
-        private bool CanOpenSourceControl(object sender)
+        private bool CanOpenSourceControl()
         {
             return true;
         }
