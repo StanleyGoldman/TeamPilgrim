@@ -1,3 +1,4 @@
+using System;
 using Microsoft.TeamFoundation.Build.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities
@@ -19,6 +20,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities
         public string Id
         {
             get { return _buildDefinition.Id; }
+        }
+
+        public Uri Uri
+        {
+            get { return _buildDefinition.Uri; }
         }
     }
 }

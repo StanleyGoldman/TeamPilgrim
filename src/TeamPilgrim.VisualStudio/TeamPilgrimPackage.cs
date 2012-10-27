@@ -8,6 +8,7 @@ using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.TeamFoundation;
 using Microsoft.VisualStudio.TeamFoundation.Build;
 using Microsoft.VisualStudio.TeamFoundation.VersionControl;
 
@@ -52,7 +53,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
 
         public static VersionControlExt VersionControlExt { get; set; }
 
-        public static IVsTeamFoundationBuild TeamFouncationBuild { get; set; }
+        public static TeamFoundationServerExt TeamFoundationServerExt { get; set; }
+
+        public static IVsTeamFoundationBuild TeamFoundationBuild
+        {
+            get { return (IVsTeamFoundationBuild) _singleInstance.GetService(typeof(IVsTeamFoundationBuild)); }
+        }
 
         /// <summary>
         /// Default constructor of the package.
@@ -64,12 +70,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
         public TeamPilgrimPackage()
         {
             Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", this.ToString()));
-
-            TeamPilgrimPackage.Extensibility = (IVsExtensibility)Package.GetGlobalService(typeof(IVsExtensibility));
-            TeamPilgrimPackage.DTE2 = (DTE2)TeamPilgrimPackage.Extensibility.GetGlobalsObject(null).DTE;
-            TeamPilgrimPackage.VersionControlExt = TeamPilgrimPackage.DTE2.GetObject("Microsoft.VisualStudio.TeamFoundation.VersionControl.VersionControlExt") as VersionControlExt;
-            TeamPilgrimPackage.TeamFouncationBuild = (IVsTeamFoundationBuild)base.GetService(typeof(IVsTeamFoundationBuild));
         }
+
 
         /// <summary>
         /// This function is called when the user clicks the menu item that shows the 
@@ -78,6 +80,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
         /// </summary>
         private void ShowToolWindow(object sender, EventArgs e)
         {
+            Extensibility = (IVsExtensibility)GetGlobalService(typeof(IVsExtensibility));
+            DTE2 = (DTE2)Extensibility.GetGlobalsObject(null).DTE;
+            VersionControlExt = DTE2.GetObject("Microsoft.VisualStudio.TeamFoundation.VersionControl.VersionControlExt") as VersionControlExt;
+            TeamFoundationServerExt = DTE2.GetObject("Microsoft.VisualStudio.TeamFoundation.TeamFoundationServerExt") as TeamFoundationServerExt;
+
             // Get the instance number 0 of this tool window. This window is single instance so this instance
             // is actually the only one.
             // The last flag is set to true so that if the tool window does not exists it will be created.

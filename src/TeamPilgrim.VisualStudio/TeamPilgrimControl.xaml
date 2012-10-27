@@ -16,16 +16,21 @@
              Name="MyToolWindow">
     <Grid>
         <Grid.Resources>
-            <Style TargetType="{x:Type TreeViewItem}"  x:Key="SourceControlNodeStyle">
-                <Setter Property="Common:MouseDoubleClick.Command" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=1}, Path=DataContext.OpenSourceControlCommand}"/>
-                <Setter Property="Background" Value="Green" />
+            <Style TargetType="{x:Type TreeViewItem}"  x:Key="BuildDefinitionWrapperStyle">
+                <Setter Property="Common:MouseDoubleClick.Command" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=1}, Path=DataContext.PilgrimProjectBuildModel.OpenBuildDefintionCommand}"/>
+                <Setter Property="Common:MouseDoubleClick.CommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}"/>
             </Style>
 
-            <VisualStudio:TeamPilgrilViewStyleSelector
+            <Style TargetType="{x:Type TreeViewItem}"  x:Key="SourceControlNodeStyle">
+                <Setter Property="Common:MouseDoubleClick.Command" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=1}, Path=DataContext.OpenSourceControlCommand}"/>
+            </Style>
+
+            <VisualStudio:TeamPilgrimControlStyleSelector
                 x:Key="teamPilgrilViewStyleSelector"
-                SourceControlNodeStyle="{StaticResource ResourceKey=SourceControlNodeStyle}" />
+                SourceControlNodeStyle="{StaticResource ResourceKey=SourceControlNodeStyle}"
+                BuildDefinitionWrapperStyle="{StaticResource ResourceKey=BuildDefinitionWrapperStyle}" />
         </Grid.Resources>
-        
+
         <StackPanel Orientation="Vertical" Common:ActivateModel.Model="{Binding}">
             <TreeView>
                 <TreeView.Resources>

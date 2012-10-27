@@ -1,5 +1,7 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Windows.Threading;
+using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
@@ -23,8 +25,27 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             _collection = collection;
             _project = project;
 
+            OpenBuildDefintionCommand = new RelayCommand<BuildDefinitionWrapper>(OpenBuildDefinition, CanOpenBuildDefinition);
+
             State = ModelStateEnum.Invalid;
         }
+
+        #region OpenBuildDefinition Command
+
+        private bool CanOpenBuildDefinition(BuildDefinitionWrapper buildDefinitionWrapper)
+        {
+            return true;
+        }
+
+        private void OpenBuildDefinition(BuildDefinitionWrapper buildDefinitionWrapper)
+        {
+            if (TeamPilgrimPackage.TeamFoundationBuild != null)
+                TeamPilgrimPackage.TeamFoundationBuild.DetailsManager.OpenBuild(buildDefinitionWrapper.Uri);
+        }
+
+        #endregion
+
+        public RelayCommand<BuildDefinitionWrapper> OpenBuildDefintionCommand { get; set; }
 
         protected override void OnActivated()
         {

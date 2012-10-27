@@ -65,6 +65,7 @@
     <Reference Include="Microsoft.VisualStudio.Shell.Interop.11.0">
       <EmbedInteropTypes>true</EmbedInteropTypes>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.TeamFoundation, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.TeamFoundation.Build, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\PrivateAssemblies\Microsoft.VisualStudio.TeamFoundation.Build.dll</HintPath>
@@ -164,6 +165,12 @@
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Common\ModelStateEnum.cs" />
     <Compile Include="Common\FactoryDictionary.cs" />
+    <Compile Include="Model\Nodes\Project\BuildsNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\Nodes\Project\ReportsNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Model\PilgrimProjectBuildModel.cs" />
     <Compile Include="Model\PilgrimModel.cs" />
     <Compile Include="Model\PilgrimProjectCollectionModel.cs" />
@@ -171,6 +178,7 @@
     <Compile Include="Providers\PilgrimBuildServiceModelProvider.cs" />
     <Compile Include="Providers\IPilgrimBuildServiceModelProvider.cs" />
     <Compile Include="Providers\PilgrimServiceServiceModelProvider.cs" />
+    <Compile Include="TeamPilgrimControlStyleSelector.cs" />
     <Compile Include="TeamPilgrimControl.xaml.cs">
       <DependentUpon>TeamPilgrimControl.xaml</DependentUpon>
     </Compile>
@@ -192,7 +200,6 @@
       <Link>Key.snk</Link>
     </None>
     <Compile Include="PkgCmdID.cs" />
-    <Compile Include="Model\Nodes\Project\BuildsNode.cs" />
     <Compile Include="Common\EnumerableQueryItemExtensions.cs" />
     <Compile Include="Model\Nodes\BaseNode.cs" />
     <Compile Include="Model\Nodes\Project\SourceControlNode.cs" />
@@ -201,7 +208,6 @@
     <Compile Include="Model\Nodes\QueryItems\QueryFolderNode.cs" />
     <Compile Include="Model\Nodes\Project\WorkItemsNode.cs" />
     <Compile Include="Model\Nodes\QueryItems\QueryItemNode.cs" />
-    <Compile Include="Model\Nodes\Project\ReportsNode.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">

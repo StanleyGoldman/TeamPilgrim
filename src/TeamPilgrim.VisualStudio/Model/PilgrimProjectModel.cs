@@ -33,7 +33,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             PilgrimProject = pilgrimProject;
             Collection = collection;
             PilgrimProjectBuildModel = pilgrimProjectBuildModel;
+            
             OpenSourceControlCommand = new RelayCommand(OpenSourceControl, CanOpenSourceControl);
+            
             ChildObjects = new BaseNode[]
                 {
                     new WorkItemsNode(PilgrimProject.QueryHierarchy), 
