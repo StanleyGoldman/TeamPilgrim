@@ -7,6 +7,7 @@ using System.ComponentModel.Design;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.TeamFoundation.WorkItemTracking.Controls;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.TeamFoundation;
@@ -37,11 +38,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
     // This attribute registers a tool window exposed by this package.
     [ProvideToolWindow(typeof(TeamPilgrimToolWindow))]
     [Guid(GuidList.guidTeamPilgrimPkgString)]
-    public sealed class TeamPilgrimPackage : Package
+    public sealed class TeamPilgrimPackage : Package, IVsShellPropertyEvents
     {
         private static TeamPilgrimPackage _singleInstance;
 
-        public static DTE2 DTE2 { get; set; }
+        public static DTE Dte { get; set; }
+        public static DTE2 Dte2 { get; set; }
 
         //public static ExtensionExceptionHandler ExceptionHandler { get; set; }
 
@@ -84,6 +86,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             }
         }
 
+        private uint _shellPropertyChangeCookie;
+
         /// <summary>
         /// Default constructor of the package.
         /// Inside this method you can place any initialization code that does not require 
@@ -94,8 +98,44 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
         public TeamPilgrimPackage()
         {
             Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", this.ToString()));
+
+            //http://blogs.msdn.com/b/vsxteam/archive/2008/06/09/dr-ex-why-does-getservice-typeof-envdte-dte-return-null.aspx
+            var shellService = GetGlobalService(typeof(SVsShell)) as IVsShell;
+            if (shellService != null)
+                ErrorHandler.ThrowOnFailure(shellService.AdviseShellPropertyChanges(this, out _shellPropertyChangeCookie));
         }
 
+        public int OnShellPropertyChange(int propid, object var)
+        {
+            // when zombie state changes to false, finish package initialization
+
+            if ((int)__VSSPROPID.VSSPROPID_Zombie == propid)
+            {
+                if ((bool)var == false)
+                {
+
+                    // zombie state dependent code
+
+                    Dte = GetService(typeof(SDTE)) as DTE;
+
+                    Extensibility = (IVsExtensibility)GetGlobalService(typeof(IVsExtensibility));
+                    Dte2 = (DTE2)Extensibility.GetGlobalsObject(null).DTE; 
+
+                    VersionControlExt = Dte2.GetObject("Microsoft.VisualStudio.TeamFoundation.VersionControl.VersionControlExt") as VersionControlExt;
+                    TeamFoundationServerExt = Dte2.GetObject("Microsoft.VisualStudio.TeamFoundation.TeamFoundationServerExt") as TeamFoundationServerExt;
+
+                    // eventlistener no longer needed
+
+                    var shellService = GetGlobalService(typeof(SVsShell)) as IVsShell;
+                    if (shellService != null)
+                        ErrorHandler.ThrowOnFailure(shellService.UnadviseShellPropertyChanges(_shellPropertyChangeCookie));
+
+                    _shellPropertyChangeCookie = 0;
+                }
+            }
+
+            return VSConstants.S_OK;
+        }
 
         /// <summary>
         /// This function is called when the user clicks the menu item that shows the 
@@ -104,11 +144,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
         /// </summary>
         private void ShowToolWindow(object sender, EventArgs e)
         {
-            Extensibility = (IVsExtensibility)GetGlobalService(typeof(IVsExtensibility));
-            DTE2 = (DTE2)Extensibility.GetGlobalsObject(null).DTE;
-            VersionControlExt = DTE2.GetObject("Microsoft.VisualStudio.TeamFoundation.VersionControl.VersionControlExt") as VersionControlExt;
-            TeamFoundationServerExt = DTE2.GetObject("Microsoft.VisualStudio.TeamFoundation.TeamFoundationServerExt") as TeamFoundationServerExt;
-
             // Get the instance number 0 of this tool window. This window is single instance so this instance
             // is actually the only one.
             // The last flag is set to true so that if the tool window does not exists it will be created.
@@ -117,8 +152,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             {
                 throw new NotSupportedException(Resources.CanNotCreateWindow);
             }
+
             IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
-            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
+            ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }
 
         /////////////////////////////////////////////////////////////////////////////
@@ -191,6 +227,5 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
                 return TeamPilgrimPackage._singleInstance.GetService(serviceType);
             }
         }
-
     }
 }
