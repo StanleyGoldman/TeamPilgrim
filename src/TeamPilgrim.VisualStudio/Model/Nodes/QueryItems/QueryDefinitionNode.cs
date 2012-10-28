@@ -12,7 +12,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Nodes.QueryItems
             _queryDefinition = queryDefinition;
         }
 
-        private QueryDefinition QueryDefinition
+        public QueryDefinition QueryDefinition
         {
             get { return _queryDefinition; }
         }
