@@ -17,29 +17,40 @@
              Name="MyToolWindow">
     <Grid>
         <Grid.Resources>
-            <Style TargetType="{x:Type TreeViewItem}"  x:Key="BuildDefinitionWrapperStyle">
+            <ContextMenu x:Key="TestContext">
+                <MenuItem Header="Test"/>
+            </ContextMenu>
+
+            <Style TargetType="{x:Type TreeViewItem}"  x:Key="DefaultStyle">
+                <EventSetter Event="TreeViewItem.PreviewMouseRightButtonDown" Handler="OnPreviewMouseRightButtonDown"/>
+            </Style>
+
+            <Style TargetType="{x:Type TreeViewItem}"  x:Key="BuildDefinitionWrapperStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
                 <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=1}, Path=DataContext.ProjectBuildModel.OpenBuildDefintionCommand}"/>
                 <Setter Property="AttachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}"/>
             </Style>
 
-            <Style TargetType="{x:Type TreeViewItem}"  x:Key="SourceControlNodeStyle">
+            <Style TargetType="{x:Type TreeViewItem}"  x:Key="SourceControlNodeStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
                 <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=1}, Path=DataContext.OpenSourceControlCommand}"/>
             </Style>
 
-            <Style TargetType="{x:Type TreeViewItem}"  x:Key="QueryDefinitionNodeStyle">
+            <Style TargetType="{x:Type TreeViewItem}"  x:Key="QueryDefinitionNodeStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
                 <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding Path=QueryItemCommandModel.OpenQueryDefinitionCommand}"/>
                 <Setter Property="AttachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}"/>
+                <Setter Property="ContextMenu" Value="{StaticResource ResourceKey=TestContext}"/>
             </Style>
 
             <VisualStudio:TeamPilgrimControlStyleSelector
                 x:Key="teamPilgrilViewStyleSelector"
+                DefaultStyle="{StaticResource ResourceKey=DefaultStyle}"
                 SourceControlNodeStyle="{StaticResource ResourceKey=SourceControlNodeStyle}"
                 BuildDefinitionWrapperStyle="{StaticResource ResourceKey=BuildDefinitionWrapperStyle}" 
                 QueryDefinitionNodeStyle="{StaticResource ResourceKey=QueryDefinitionNodeStyle}" />
         </Grid.Resources>
 
         <StackPanel Orientation="Vertical" AttachedProperties:ActivateModel.Model="{Binding}">
-            <TreeView>
+            <TreeView ItemsSource="{Binding}" ItemContainerStyleSelector="{StaticResource ResourceKey=teamPilgrilViewStyleSelector}">
+                
                 <TreeView.Resources>
                     <HierarchicalDataTemplate DataType="{x:Type Model:ProjectCollectionModel}" ItemsSource="{Binding Path=ProjectModels}">
                         <TextBlock Text="{Binding Path=TfsTeamProjectCollection.Name}" />

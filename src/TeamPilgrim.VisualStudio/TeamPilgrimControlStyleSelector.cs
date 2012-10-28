@@ -8,6 +8,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
 {
     public class TeamPilgrimControlStyleSelector : StyleSelector
     {
+        public Style DefaultStyle { get; set; }
+
         public Style SourceControlNodeStyle { get; set; }
 
         public Style QueryDefinitionNodeStyle { get; set; }
@@ -33,6 +35,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             if (buildDefinitionWrapper != null && BuildDefinitionWrapperStyle != null)
             {
                 return BuildDefinitionWrapperStyle;
+            }
+
+            if(DefaultStyle != null)
+            {
+                return DefaultStyle;
             }
 
             return base.SelectStyle(item, container);
