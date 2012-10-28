@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties
 {
     public static class ActivateModel
     {

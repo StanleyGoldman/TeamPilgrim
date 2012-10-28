@@ -6,11 +6,13 @@ using System.Runtime.InteropServices;
 using System.ComponentModel.Design;
 using EnvDTE;
 using EnvDTE80;
+using Microsoft.TeamFoundation.WorkItemTracking.Controls;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.TeamFoundation;
 using Microsoft.VisualStudio.TeamFoundation.Build;
 using Microsoft.VisualStudio.TeamFoundation.VersionControl;
+using Microsoft.VisualStudio.TeamFoundation.WorkItemTracking;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio
 {
@@ -55,9 +57,31 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
 
         public static TeamFoundationServerExt TeamFoundationServerExt { get; set; }
 
+        private static DocumentService _workItemTrackingDocumentService;
+        public static DocumentService WorkItemTrackingDocumentService
+        {
+            get
+            {
+                return _workItemTrackingDocumentService ?? (_workItemTrackingDocumentService = (DocumentService)GetGlobalService(typeof(DocumentService)));
+            }
+        }
+
+        private static IVsTeamFoundationBuild _teamFoundationBuild;
         public static IVsTeamFoundationBuild TeamFoundationBuild
         {
-            get { return (IVsTeamFoundationBuild) _singleInstance.GetService(typeof(IVsTeamFoundationBuild)); }
+            get
+            {
+                return _teamFoundationBuild ?? (_teamFoundationBuild = (IVsTeamFoundationBuild)_singleInstance.GetService(typeof(IVsTeamFoundationBuild)));
+            }
+        }
+
+        private static IWorkItemControlHost _workItemControlHost;
+        public static IWorkItemControlHost WorkItemControlHost
+        {
+            get
+            {
+                return _workItemControlHost ?? (_workItemControlHost = (IWorkItemControlHost)_singleInstance.GetService(typeof(IWorkItemControlHost)));
+            }
         }
 
         /// <summary>
@@ -96,7 +120,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
             Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }
-
 
         /////////////////////////////////////////////////////////////////////////////
         // Overridden Package Implementation

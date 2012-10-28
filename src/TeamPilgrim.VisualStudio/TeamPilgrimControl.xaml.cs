@@ -14,14 +14,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
     /// </summary>
     public partial class TeamPilgrimControl : UserControl
     {
-        private readonly PilgrimModel _pilgrimModel;
+        private readonly TeamPilgrimModel _teamPilgrimModel;
 
         public TeamPilgrimControl()
         {
             BindingErrorTraceListener.SetTrace();
 
             InitializeComponent();
-            DataContext = _pilgrimModel = new PilgrimModel(new PilgrimServiceServiceModelProvider());
+            DataContext = _teamPilgrimModel = new TeamPilgrimModel(new PilgrimServiceServiceModelProvider());
         }
     }
 }

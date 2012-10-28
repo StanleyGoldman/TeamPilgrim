@@ -7,7 +7,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Nodes.QueryItems
     {
         private readonly QueryFolder _folder;
 
-        public QueryFolderNode(QueryFolder folder)
+        public QueryFolderNode(QueryFolder folder, IQueryItemCommandModel queryItemCommandModel)
+            : base(queryItemCommandModel)
         {
             _folder = folder;
         }
@@ -26,7 +27,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Nodes.QueryItems
         {
             get
             {
-                return _folder.GetQueryItemViews();
+                return _folder.GetQueryItemViews(queryItemCommandModel);
             }
         }
     }

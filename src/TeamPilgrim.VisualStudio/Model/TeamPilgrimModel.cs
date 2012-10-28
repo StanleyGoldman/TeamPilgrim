@@ -9,11 +9,11 @@ using Microsoft.VisualStudio.Shell;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
-    public class PilgrimModel : BaseModel
+    public class TeamPilgrimModel : BaseModel
     {
         private readonly IPilgrimServiceModelProvider _pilgrimServiceModelProvider;
 
-        public PilgrimModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider)
+        public TeamPilgrimModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider)
         {
             _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
 
@@ -32,9 +32,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         #region Collections
 
-        private PilgrimProjectCollectionModel[] _collections = new PilgrimProjectCollectionModel[0];
+        private ProjectCollectionModel[] _collections = new ProjectCollectionModel[0];
 
-        public PilgrimProjectCollectionModel[] CollectionModels
+        public ProjectCollectionModel[] CollectionModels
         {
             get
             {
@@ -58,7 +58,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
                 {
-                    var pilgrimProjectCollectionModels = fetchedCollections.Select(collection => new PilgrimProjectCollectionModel(collection, this, _pilgrimServiceModelProvider)).ToArray();
+                    var pilgrimProjectCollectionModels = fetchedCollections.Select(collection => new ProjectCollectionModel(collection, this, _pilgrimServiceModelProvider)).ToArray();
 
                     CollectionModels = pilgrimProjectCollectionModels;
                     State = ModelStateEnum.Active;

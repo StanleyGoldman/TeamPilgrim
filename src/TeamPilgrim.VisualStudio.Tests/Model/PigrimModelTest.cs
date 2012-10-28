@@ -57,7 +57,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Tests.Model
         [Test]
         public void TestInitialState()
         {
-            var pilgrimModel = new PilgrimModel(new TestPilgrimServiceModelProvider());
+            var pilgrimModel = new TeamPilgrimModel(new TestPilgrimServiceModelProvider());
 
             Assert.That(pilgrimModel.CollectionModels, Is.Not.Null);
             Assert.That(pilgrimModel.State, Is.EqualTo(ModelStateEnum.Invalid));
@@ -66,7 +66,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Tests.Model
         [Test]
         public void TestActivation()
         {
-            var pilgrimModel = new PilgrimModel(new TestPilgrimServiceModelProvider());
+            var pilgrimModel = new TeamPilgrimModel(new TestPilgrimServiceModelProvider());
 
             Assert.That(pilgrimModel.CollectionModels, Is.Not.Null);
             Assert.That(pilgrimModel.CollectionModels, Is.Empty);

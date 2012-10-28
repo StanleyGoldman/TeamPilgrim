@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight.Command;
@@ -8,17 +9,18 @@ using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.Build.Client;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
+using Microsoft.VisualStudio.TeamFoundation.WorkItemTracking;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
-    public class PilgrimProjectBuildModel : BaseModel
+    public class ProjectBuildModel : BaseModel
     {
         private readonly IPilgrimServiceModelProvider _pilgrimServiceModelProvider;
         private readonly IPilgrimBuildServiceModelProvider _buildServiceModelProvider;
         private readonly TfsTeamProjectCollection _collection;
         private readonly Project _project;
 
-        public PilgrimProjectBuildModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, IPilgrimBuildServiceModelProvider buildServiceModelProvider, TfsTeamProjectCollection collection, Project project)
+        public ProjectBuildModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, IPilgrimBuildServiceModelProvider buildServiceModelProvider, TfsTeamProjectCollection collection, Project project)
         {
             _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
             _buildServiceModelProvider = buildServiceModelProvider;

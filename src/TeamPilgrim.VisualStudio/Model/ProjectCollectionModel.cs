@@ -12,19 +12,19 @@ using Microsoft.VisualStudio.TeamFoundation.VersionControl;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
-    public class PilgrimProjectCollectionModel : BaseModel
+    public class ProjectCollectionModel : BaseModel
     {
-        public PilgrimModel PilgrimModel { get; private set; }
+        public TeamPilgrimModel TeamPilgrimModel { get; private set; }
      
         public TfsTeamProjectCollection TfsTeamProjectCollection { get; private set; }
 
         private readonly IPilgrimServiceModelProvider _pilgrimServiceModelProvider;
 
-        public PilgrimProjectCollectionModel(TfsTeamProjectCollection pilgrimProjectCollection, PilgrimModel pilgrimModel, IPilgrimServiceModelProvider pilgrimServiceModelProvider)
+        public ProjectCollectionModel(TfsTeamProjectCollection pilgrimProjectCollection, TeamPilgrimModel teamPilgrimModel, IPilgrimServiceModelProvider pilgrimServiceModelProvider)
         {
             _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
             TfsTeamProjectCollection = pilgrimProjectCollection;
-            PilgrimModel = pilgrimModel;
+            TeamPilgrimModel = teamPilgrimModel;
 
             State = ModelStateEnum.Invalid;
         }
@@ -51,7 +51,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
                 Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
                     {
                         var pilgrimProjectModels = projects
-                            .Select(project => new PilgrimProjectModel(_pilgrimServiceModelProvider, projectCollectionModel.TfsTeamProjectCollection, project, new PilgrimProjectBuildModel(_pilgrimServiceModelProvider, buildServiceModelProvider, projectCollectionModel.TfsTeamProjectCollection, project)))
+                            .Select(project => new ProjectModel(_pilgrimServiceModelProvider, projectCollectionModel.TfsTeamProjectCollection, project, new ProjectBuildModel(_pilgrimServiceModelProvider, buildServiceModelProvider, projectCollectionModel.TfsTeamProjectCollection, project)))
                             .ToArray();
 
                         ProjectModels = pilgrimProjectModels;
@@ -75,9 +75,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         #region ProjectModels
 
-        private PilgrimProjectModel[] _projectModels = new PilgrimProjectModel[0];
+        private ProjectModel[] _projectModels = new ProjectModel[0];
 
-        public PilgrimProjectModel[] ProjectModels
+        public ProjectModel[] ProjectModels
         {
             get
             {

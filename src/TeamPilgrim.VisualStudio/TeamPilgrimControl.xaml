@@ -9,6 +9,7 @@
              xmlns:VisualStudio="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio"
              xmlns:Project="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Nodes.Project"
              xmlns:QueryItems="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Nodes.QueryItems"
+             xmlns:AttachedProperties="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
@@ -17,29 +18,35 @@
     <Grid>
         <Grid.Resources>
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="BuildDefinitionWrapperStyle">
-                <Setter Property="Common:MouseDoubleClick.Command" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=1}, Path=DataContext.PilgrimProjectBuildModel.OpenBuildDefintionCommand}"/>
-                <Setter Property="Common:MouseDoubleClick.CommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}"/>
+                <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=1}, Path=DataContext.ProjectBuildModel.OpenBuildDefintionCommand}"/>
+                <Setter Property="AttachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}"/>
             </Style>
 
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="SourceControlNodeStyle">
-                <Setter Property="Common:MouseDoubleClick.Command" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=1}, Path=DataContext.OpenSourceControlCommand}"/>
+                <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=1}, Path=DataContext.OpenSourceControlCommand}"/>
+            </Style>
+
+            <Style TargetType="{x:Type TreeViewItem}"  x:Key="QueryDefinitionNodeStyle">
+                <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding Path=QueryItemCommandModel.OpenQueryDefinitionCommand}"/>
+                <Setter Property="AttachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}"/>
             </Style>
 
             <VisualStudio:TeamPilgrimControlStyleSelector
                 x:Key="teamPilgrilViewStyleSelector"
                 SourceControlNodeStyle="{StaticResource ResourceKey=SourceControlNodeStyle}"
-                BuildDefinitionWrapperStyle="{StaticResource ResourceKey=BuildDefinitionWrapperStyle}" />
+                BuildDefinitionWrapperStyle="{StaticResource ResourceKey=BuildDefinitionWrapperStyle}" 
+                QueryDefinitionNodeStyle="{StaticResource ResourceKey=QueryDefinitionNodeStyle}" />
         </Grid.Resources>
 
-        <StackPanel Orientation="Vertical" Common:ActivateModel.Model="{Binding}">
+        <StackPanel Orientation="Vertical" AttachedProperties:ActivateModel.Model="{Binding}">
             <TreeView>
                 <TreeView.Resources>
-                    <HierarchicalDataTemplate DataType="{x:Type Model:PilgrimProjectCollectionModel}" ItemsSource="{Binding Path=ProjectModels}">
+                    <HierarchicalDataTemplate DataType="{x:Type Model:ProjectCollectionModel}" ItemsSource="{Binding Path=ProjectModels}">
                         <TextBlock Text="{Binding Path=TfsTeamProjectCollection.Name}" />
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type Model:PilgrimProjectModel}" ItemsSource="{Binding Path=ChildObjects}">
-                        <TextBlock Text="{Binding Path=PilgrimProject.Name}" />
+                    <HierarchicalDataTemplate DataType="{x:Type Model:ProjectModel}" ItemsSource="{Binding Path=ChildObjects}">
+                        <TextBlock Text="{Binding Path=Project.Name}" />
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type Project:WorkItemsNode}" ItemsSource="{Binding Path=QueryItems}">
@@ -54,7 +61,7 @@
                         <TextBlock Text="{Binding Path=Name}" />
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type Project:BuildsNode}" ItemsSource="{Binding Path=PilgrimProjectBuildModel.BuildDefinitions}">
+                    <HierarchicalDataTemplate DataType="{x:Type Project:BuildsNode}" ItemsSource="{Binding Path=ProjectBuildModel.BuildDefinitions}">
                         <TextBlock Text="Builds" />
                     </HierarchicalDataTemplate>
 

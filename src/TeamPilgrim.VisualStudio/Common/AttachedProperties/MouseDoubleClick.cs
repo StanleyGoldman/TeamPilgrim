@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties
 {
     public class MouseDoubleClick
     {

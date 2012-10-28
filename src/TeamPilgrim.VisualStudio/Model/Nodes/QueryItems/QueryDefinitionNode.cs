@@ -6,7 +6,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Nodes.QueryItems
     {
         private readonly QueryDefinition _queryDefinition;
 
-        public QueryDefinitionNode(QueryDefinition queryDefinition)
+        public QueryDefinitionNode(QueryDefinition queryDefinition, IQueryItemCommandModel queryItemCommandModel)
+            : base(queryItemCommandModel)
         {
             _queryDefinition = queryDefinition;
         }
