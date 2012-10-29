@@ -63,7 +63,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
         private void OpenQueryDefinition(QueryDefinitionNode queryDefinitionNode)
         {
             var queryDocument = TeamPilgrimPackage.WorkItemTrackingDocumentService.GetQuery(ProjectCollection, queryDefinitionNode.QueryDefinition.Id.ToString(), this);
-            var resultsDocument = TeamPilgrimPackage.WorkItemTrackingDocumentService.CreateLinkResults(queryDocument, this);
+            
+            var resultsDocument = TeamPilgrimPackage.WorkItemTrackingDocumentService.GetLinkResults(queryDocument, this) ??
+                                           TeamPilgrimPackage.WorkItemTrackingDocumentService.CreateLinkResults(queryDocument, this);
+
             TeamPilgrimPackage.WorkItemTrackingDocumentService.ShowResults(resultsDocument);
         }
 

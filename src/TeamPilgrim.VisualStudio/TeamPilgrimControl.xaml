@@ -92,8 +92,10 @@
             </ContextMenu>
 
             <ContextMenu x:Key="QueryDefinitionNodeContextMenu">
-                <MenuItem IsEnabled="False" Header="Open"/>
-                <MenuItem IsEnabled="False" Header="View Results"/>
+                <MenuItem Header="View Results" 
+                          Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=1}, Path=DataContext.QueryItemCommandModel.OpenQueryDefinitionCommand}" 
+                          CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=1}, Path=DataContext}"/>
+                
                 <MenuItem IsEnabled="False" Header="Edit Query" />
                 <Separator />
                 <MenuItem IsEnabled="False" Header="Open in Microsoft Excel (flat)" />
