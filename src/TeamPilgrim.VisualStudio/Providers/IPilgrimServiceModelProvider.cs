@@ -15,5 +15,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
         bool TryGetBuildServiceProvider(out IPilgrimBuildServiceModelProvider buildService, Uri tpcAddress);
 
         bool TryGetProjectsAndBuildServiceProvider(out Project[] projects, out IPilgrimBuildServiceModelProvider buildService, Uri tpcAddress);
+        
+        bool TryDeleteQueryDefinition(out bool result, TfsTeamProjectCollection teamProjectCollection, Project teamProject, Guid queryId);
     }
 }

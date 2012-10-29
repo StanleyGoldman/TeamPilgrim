@@ -31,6 +31,20 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
             return RegisteredTfsConnections.GetProjectCollections();
         }
 
+        public bool DeleteQueryDefintion(TfsTeamProjectCollection teamProjectCollection, Project teamProject, Guid queryId)
+        {
+            var workItemStore = GetWorkItemStore(teamProjectCollection);
+            var queryHierarchy = workItemStore.GetQueryHierarchy(teamProject);
+            var queryItem = queryHierarchy.Find(queryId);
+
+            if (queryItem == null)
+                return false;
+
+            queryItem.Delete();
+            queryHierarchy.Save();
+            return true;
+        }
+
         public TfsTeamProjectCollection[] GetProjectCollections()
         {
             RegisteredProjectCollection[] registeredProjectCollections = GetRegisteredProjectCollections();
@@ -63,12 +77,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
             return new TeamPilgrimBuildService(buildServer);
         }
 
-        public ITeamPilgrimWorkItemStore GetWorkItemStore(Uri tpcAddress)
+        private WorkItemStore GetWorkItemStore(Uri tpcAddress)
         {
-            var collection = GetProjectCollection(tpcAddress);
-            return new TeamPilgrimWorkItemStore(collection.GetService<WorkItemStore>());
-
+            return GetWorkItemStore(GetProjectCollection(tpcAddress));
         }
 
+        private WorkItemStore GetWorkItemStore(TfsTeamProjectCollection collection)
+        {
+            return collection.GetService<WorkItemStore>();
+        }
     }
 }

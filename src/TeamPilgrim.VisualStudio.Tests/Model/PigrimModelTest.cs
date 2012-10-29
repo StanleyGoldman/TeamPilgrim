@@ -49,6 +49,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Tests.Model
                 buildService = new TestPilgrimBuildServiceModelProvider();
                 return true;
             }
+
+            public bool TryDeleteQueryDefinition(out bool result, TfsTeamProjectCollection teamProjectCollection, Project teamProject, Guid queryId)
+            {
+                throw new NotImplementedException();
+            }
         }
 
         public class TestPilgrimBuildServiceModelProvider : IPilgrimBuildServiceModelProvider

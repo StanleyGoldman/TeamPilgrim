@@ -97,11 +97,16 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         private void DeleteQueryDefinition(QueryDefinitionNode queryDefinitionNode)
         {
-            var queryId = queryDefinitionNode.QueryDefinition.Id.ToString();
-//            TeamPilgrimPackage.TeamPilgrimVsService.DeleteQueryDefinition(ProjectCollection, queryDefinitionNode.QueryDefinition.Id);
-//            var queryDocument = TeamPilgrimPackage.WorkItemTrackingDocumentService.GetQuery(ProjectCollection, queryId, this);
-//            var document = TeamPilgrimPackage.WorkItemTrackingDocumentService.FindDocument(queryDocument.CanonicalId, this);
-//            document.IsDirty = true;
+            bool result;
+
+            var queryId = queryDefinitionNode.QueryDefinition.Id;
+            if(_pilgrimServiceModelProvider.TryDeleteQueryDefinition(out result, ProjectCollection, Project, queryId))
+            {
+                if(result)
+                {
+                    //TODO: Figure out how to close any open QueryDefinitions
+                }
+            }
         }
 
         private bool CanDeleteQueryDefinition(QueryDefinitionNode queryDefinitionNode)

@@ -12,5 +12,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces
         Project[] GetProjects(Uri tpcAddress);
         ITeamPilgrimBuildService GetTeamPilgrimBuildService(Uri tpcAddress);
         RegisteredProjectCollection[] GetRegisteredProjectCollections();
+        
+        bool DeleteQueryDefintion(TfsTeamProjectCollection teamProjectCollection, Project teamProject, Guid queryId);
     }
 }

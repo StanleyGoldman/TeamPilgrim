@@ -80,5 +80,21 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
 
             return result;
         }
+
+        public bool TryDeleteQueryDefinition(out bool result, TfsTeamProjectCollection teamProjectCollection, Project teamProject, Guid queryId)
+        {
+            try
+            {
+                result = _teamPilgrimTfsService.DeleteQueryDefintion(teamProjectCollection, teamProject, queryId);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                
+            }
+
+            result = false;
+            return false;
+        }
     }
 }

@@ -162,10 +162,8 @@
   <ItemGroup>
     <Compile Include="Common\AttachedProperties\MouseDoubleClick.cs" />
     <Compile Include="Domain\BusinessInterfaces\ITeamPilgrimVsService.cs" />
-    <Compile Include="Domain\BusinessInterfaces\ITeamPilgrimWorkItemStore.cs" />
     <Compile Include="Business\Services\TeamPilgrimBuildService.cs" />
     <Compile Include="Business\Services\TeamPilgrimTfsService.cs" />
-    <Compile Include="Business\Services\TeamPilgrimWorkItemStore.cs" />
     <Compile Include="Common\AttachedProperties\ActivateModel.cs" />
     <Compile Include="Common\BindingErrorTraceListener.cs" />
     <Compile Include="Domain\BusinessInterfaces\ITeamPilgrimBuildService.cs" />
