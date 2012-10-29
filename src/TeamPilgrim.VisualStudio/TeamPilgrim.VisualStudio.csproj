@@ -186,7 +186,7 @@
     <Compile Include="Model\ProjectModel.cs" />
     <Compile Include="Providers\PilgrimBuildServiceModelProvider.cs" />
     <Compile Include="Providers\IPilgrimBuildServiceModelProvider.cs" />
-    <Compile Include="Providers\PilgrimServiceServiceModelProvider.cs" />
+    <Compile Include="Providers\PilgrimServiceModelProvider.cs" />
     <Compile Include="TeamPilgrimControlStyleSelector.cs" />
     <Compile Include="TeamPilgrimControl.xaml.cs">
       <DependentUpon>TeamPilgrimControl.xaml</DependentUpon>
