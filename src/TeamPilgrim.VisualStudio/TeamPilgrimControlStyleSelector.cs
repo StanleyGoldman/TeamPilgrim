@@ -13,7 +13,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
 
         public Style SourceControlNodeStyle { get; set; }
 
-        public Style QueryDefinitionNodeStyle { get; set; }
         
         public Style BuildDefinitionWrapperStyle { get; set; }
         
@@ -22,7 +21,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
         public Style ProjectModelStyle { get; set; }
 
         public Style WorkItemsNodeStyle { get; set; }
+        
+        public Style QueryFolderNodeStyle { get; set; }
 
+        public Style QueryDefinitionNodeStyle { get; set; }
         public override Style SelectStyle(object item, DependencyObject container)
         {
             var projectCollectionModel = item as ProjectCollectionModel;
@@ -55,6 +57,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
                 return QueryDefinitionNodeStyle;
             }
 
+            var queryFolderNode = item as QueryFolderNode;
+            if (queryFolderNode != null && QueryFolderNodeStyle != null)
+            {
+                return QueryFolderNodeStyle;
+            }
 
             var buildDefinitionWrapper = item as BuildDefinitionWrapper;
             if (buildDefinitionWrapper != null && BuildDefinitionWrapperStyle != null)

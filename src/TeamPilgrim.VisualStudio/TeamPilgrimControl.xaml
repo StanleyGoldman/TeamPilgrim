@@ -77,6 +77,38 @@
                 <MenuItem IsEnabled="False" Header="Refresh"/>
             </ContextMenu>
 
+            <ContextMenu x:Key="QueryFolderNodeContextMenu">
+                <MenuItem IsEnabled="False" Header="New Query"/>
+                <MenuItem IsEnabled="False" Header="New Folder"/>
+                <MenuItem IsEnabled="False" Header="New Work Items with Microsoft Excel" />
+                <Separator />
+                <MenuItem IsEnabled="False" Header="Cut"/>
+                <MenuItem IsEnabled="False" Header="Copy"/>
+                <MenuItem IsEnabled="False" Header="Paste"/>
+                <MenuItem IsEnabled="False" Header="Delete"/>
+                <MenuItem IsEnabled="False" Header="Rename"/>
+                <Separator />
+                <MenuItem IsEnabled="False" Header="Security..." />
+            </ContextMenu>
+
+            <ContextMenu x:Key="QueryDefinitionNodeContextMenu">
+                <MenuItem IsEnabled="False" Header="Open"/>
+                <MenuItem IsEnabled="False" Header="View Results"/>
+                <MenuItem IsEnabled="False" Header="Edit Query" />
+                <Separator />
+                <MenuItem IsEnabled="False" Header="Open in Microsoft Excel (flat)" />
+                <MenuItem IsEnabled="False" Header="Send to Microsoft Outlook" />
+                <MenuItem IsEnabled="False" Header="Create Report in Microsoft Excel" />
+                <Separator />
+                <MenuItem IsEnabled="False" Header="Cut"/>
+                <MenuItem IsEnabled="False" Header="Copy"/>
+                <MenuItem IsEnabled="False" Header="Paste"/>
+                <MenuItem IsEnabled="False" Header="Delete"/>
+                <MenuItem IsEnabled="False" Header="Rename"/>
+                <Separator />
+                <MenuItem IsEnabled="False" Header="Security..." />
+            </ContextMenu>
+
             <ContextMenu x:Key="BuildDefinitionWrapperContextMenu">
                 <MenuItem Header="View Builds" 
                           Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=2}, Path=DataContext.ProjectBuildModel.ViewBuildsCommand}" 
@@ -112,7 +144,16 @@
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="WorkItemsNodeStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
                 <Setter Property="ContextMenu" Value="{StaticResource ResourceKey=WorkItemsNodeContextMenu}"/>
             </Style>
-            
+
+            <Style TargetType="{x:Type TreeViewItem}"  x:Key="QueryFolderNodeStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
+                <Setter Property="ContextMenu" Value="{StaticResource ResourceKey=QueryFolderNodeContextMenu}"/>
+            </Style>
+
+            <Style TargetType="{x:Type TreeViewItem}"  x:Key="QueryDefinitionNodeStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
+                <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding Path=QueryDefinitionCommandModel.OpenQueryDefinitionCommand}"/>
+                <Setter Property="AttachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}"/>
+                <Setter Property="ContextMenu" Value="{StaticResource ResourceKey=QueryDefinitionNodeContextMenu}"/>
+            </Style>
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="BuildDefinitionWrapperStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
                 <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=1}, Path=DataContext.ProjectBuildModel.ViewBuildsCommand}"/>
                 <Setter Property="AttachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}"/>
@@ -123,20 +164,16 @@
                 <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=1}, Path=DataContext.OpenSourceControlCommand}"/>
             </Style>
 
-            <Style TargetType="{x:Type TreeViewItem}"  x:Key="QueryDefinitionNodeStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
-                <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding Path=QueryItemCommandModel.OpenQueryDefinitionCommand}"/>
-                <Setter Property="AttachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}"/>
-            </Style>
-            
             <VisualStudio:TeamPilgrimControlStyleSelector
                 x:Key="teamPilgrilViewStyleSelector"
                 DefaultStyle="{StaticResource ResourceKey=DefaultStyle}"
                 ProjectCollectionModelStyle="{StaticResource ResourceKey=ProjectCollectionModelStyle}"
                 ProjectModelStyle="{StaticResource ResourceKey=ProjectModelStyle}"
                 WorkItemsNodeStyle="{StaticResource ResourceKey=WorkItemsNodeStyle}"
+                QueryFolderNodeStyle="{StaticResource ResourceKey=QueryFolderNodeStyle}"
+                QueryDefinitionNodeStyle="{StaticResource ResourceKey=QueryDefinitionNodeStyle}"
                 SourceControlNodeStyle="{StaticResource ResourceKey=SourceControlNodeStyle}"
-                BuildDefinitionWrapperStyle="{StaticResource ResourceKey=BuildDefinitionWrapperStyle}" 
-                QueryDefinitionNodeStyle="{StaticResource ResourceKey=QueryDefinitionNodeStyle}" />
+                BuildDefinitionWrapperStyle="{StaticResource ResourceKey=BuildDefinitionWrapperStyle}" />
         </Grid.Resources>
 
         <StackPanel Orientation="Vertical" AttachedProperties:ActivateModel.Model="{Binding}">
