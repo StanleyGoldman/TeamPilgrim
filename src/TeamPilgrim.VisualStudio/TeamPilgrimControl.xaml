@@ -96,8 +96,12 @@
                           Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=1}, Path=DataContext.QueryItemCommandModel.OpenQueryDefinitionCommand}" 
                           CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=1}, Path=DataContext}"/>
                 
-                <MenuItem IsEnabled="False" Header="Edit Query" />
+                <MenuItem Header="Edit Query"
+                          Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=1}, Path=DataContext.QueryItemCommandModel.EditQueryDefinitionCommand}" 
+                          CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=1}, Path=DataContext}"/>
+                
                 <Separator />
+                
                 <MenuItem IsEnabled="False" Header="Open in Microsoft Excel (flat)" />
                 <MenuItem IsEnabled="False" Header="Send to Microsoft Outlook" />
                 <MenuItem IsEnabled="False" Header="Create Report in Microsoft Excel" />

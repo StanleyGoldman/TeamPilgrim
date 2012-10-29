@@ -33,6 +33,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             
             OpenSourceControlCommand = new RelayCommand(OpenSourceControl, CanOpenSourceControl);
             OpenQueryDefinitionCommand = new RelayCommand<QueryDefinitionNode>(OpenQueryDefinition, CanOpenQueryDefinition);
+            EditQueryDefinitionCommand = new RelayCommand<QueryDefinitionNode>(EditQueryDefinition, CanEditQueryDefinition);
             
             ChildObjects = new BaseNode[]
                 {
@@ -71,6 +72,25 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
         }
 
         private bool CanOpenQueryDefinition(QueryDefinitionNode queryDefinitionNode)
+        {
+            return true;
+        }
+
+        #endregion
+
+
+        #region EditQueryItem
+
+        public RelayCommand<QueryDefinitionNode> EditQueryDefinitionCommand { get; private set; }
+
+        private void EditQueryDefinition(QueryDefinitionNode queryDefinitionNode)
+        {
+            var queryDocument = TeamPilgrimPackage.WorkItemTrackingDocumentService.GetQuery(ProjectCollection, queryDefinitionNode.QueryDefinition.Id.ToString(), this);
+
+            TeamPilgrimPackage.WorkItemTrackingDocumentService.ShowQuery(queryDocument);
+        }
+
+        private bool CanEditQueryDefinition(QueryDefinitionNode queryDefinitionNode)
         {
             return true;
         }
