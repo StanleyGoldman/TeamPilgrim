@@ -7,6 +7,7 @@ using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.Build.Client;
+using Microsoft.TeamFoundation.Build.Controls;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using Microsoft.VisualStudio.TeamFoundation.WorkItemTracking;
@@ -28,11 +29,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             _project = project;
 
             OpenBuildDefintionCommand = new RelayCommand<BuildDefinitionWrapper>(OpenBuildDefinition, CanOpenBuildDefinition);
+            ViewBuildsCommand = new RelayCommand<BuildDefinitionWrapper>(ViewBuilds, CanViewBuilds);
 
             State = ModelStateEnum.Invalid;
         }
 
         #region OpenBuildDefinition Command
+        
+        public RelayCommand<BuildDefinitionWrapper> OpenBuildDefintionCommand { get; set; }
 
         private bool CanOpenBuildDefinition(BuildDefinitionWrapper buildDefinitionWrapper)
         {
@@ -41,13 +45,26 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         private void OpenBuildDefinition(BuildDefinitionWrapper buildDefinitionWrapper)
         {
-            if (TeamPilgrimPackage.TeamFoundationBuild != null)
-                TeamPilgrimPackage.TeamFoundationBuild.DetailsManager.OpenBuild(buildDefinitionWrapper.Uri);
+            TeamPilgrimPackage.TeamFoundationBuild.DetailsManager.OpenBuild(buildDefinitionWrapper.Uri);
         }
 
         #endregion
 
-        public RelayCommand<BuildDefinitionWrapper> OpenBuildDefintionCommand { get; set; }
+        #region ViewBuilds Command
+
+        public RelayCommand<BuildDefinitionWrapper> ViewBuildsCommand { get; set; }
+
+        private bool CanViewBuilds(BuildDefinitionWrapper buildDefinitionWrapper)
+        {
+            return true;
+        }
+
+        private void ViewBuilds(BuildDefinitionWrapper buildDefinitionWrapper)
+        {
+            TeamPilgrimPackage.TeamFoundationBuild.BuildExplorer.CompletedView.Show(_project.Name, buildDefinitionWrapper.Name, String.Empty, DateFilter.Today);
+        }
+
+        #endregion
 
         protected override void OnActivated()
         {

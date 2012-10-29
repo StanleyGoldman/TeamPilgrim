@@ -76,7 +76,27 @@
                 <Separator />
                 <MenuItem Header="Refresh"/>
             </ContextMenu>
-            
+
+            <ContextMenu x:Key="BuildDefinitionWrapperContextMenu">
+                <MenuItem Header="View Builds" 
+                          Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=2}, Path=DataContext.ProjectBuildModel.ViewBuildsCommand}" 
+                          CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=1}, Path=DataContext}"/>
+                
+                <MenuItem Header="Queue New Build"/>
+                
+                <MenuItem Header="Edit Build Definition"
+                          Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=2}, Path=DataContext.ProjectBuildModel.OpenBuildDefintionCommand}" 
+                          CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=1}, Path=DataContext}"/>
+                
+                <MenuItem Header="Open Process File Location"/>
+                <MenuItem Header="Clone Build Definition"/>
+                <Separator />
+                <MenuItem Header="Delete"/>
+                <Separator />
+                <MenuItem Header="Security..." />
+                <MenuItem Header="Properties"/>
+            </ContextMenu>
+
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="DefaultStyle">
                 <EventSetter Event="TreeViewItem.PreviewMouseRightButtonDown" Handler="OnPreviewMouseRightButtonDown"/>
             </Style>
@@ -94,8 +114,9 @@
             </Style>
             
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="BuildDefinitionWrapperStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
-                <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=1}, Path=DataContext.ProjectBuildModel.OpenBuildDefintionCommand}"/>
+                <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=1}, Path=DataContext.ProjectBuildModel.ViewBuildsCommand}"/>
                 <Setter Property="AttachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}"/>
+                <Setter Property="ContextMenu" Value="{StaticResource ResourceKey=BuildDefinitionWrapperContextMenu}"/>
             </Style>
 
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="SourceControlNodeStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
