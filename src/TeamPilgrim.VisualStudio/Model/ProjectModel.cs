@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
@@ -34,6 +35,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             OpenSourceControlCommand = new RelayCommand(OpenSourceControl, CanOpenSourceControl);
             OpenQueryDefinitionCommand = new RelayCommand<QueryDefinitionNode>(OpenQueryDefinition, CanOpenQueryDefinition);
             EditQueryDefinitionCommand = new RelayCommand<QueryDefinitionNode>(EditQueryDefinition, CanEditQueryDefinition);
+            DeleteQueryDefinitionCommand = new RelayCommand<QueryDefinitionNode>(DeleteQueryDefinition, CanDeleteQueryDefinition);
             
             ChildObjects = new BaseNode[]
                 {
@@ -63,12 +65,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         private void OpenQueryDefinition(QueryDefinitionNode queryDefinitionNode)
         {
-            var queryDocument = TeamPilgrimPackage.WorkItemTrackingDocumentService.GetQuery(ProjectCollection, queryDefinitionNode.QueryDefinition.Id.ToString(), this);
-            
-            var resultsDocument = TeamPilgrimPackage.WorkItemTrackingDocumentService.GetLinkResults(queryDocument, this) ??
-                                           TeamPilgrimPackage.WorkItemTrackingDocumentService.CreateLinkResults(queryDocument, this);
-
-            TeamPilgrimPackage.WorkItemTrackingDocumentService.ShowResults(resultsDocument);
+            TeamPilgrimPackage.TeamPilgrimVsService.OpenQueryDefinition(ProjectCollection, queryDefinitionNode.QueryDefinition.Id);
         }
 
         private bool CanOpenQueryDefinition(QueryDefinitionNode queryDefinitionNode)
@@ -78,19 +75,36 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         #endregion
 
-
         #region EditQueryItem
 
         public RelayCommand<QueryDefinitionNode> EditQueryDefinitionCommand { get; private set; }
 
         private void EditQueryDefinition(QueryDefinitionNode queryDefinitionNode)
         {
-            var queryDocument = TeamPilgrimPackage.WorkItemTrackingDocumentService.GetQuery(ProjectCollection, queryDefinitionNode.QueryDefinition.Id.ToString(), this);
-
-            TeamPilgrimPackage.WorkItemTrackingDocumentService.ShowQuery(queryDocument);
+            TeamPilgrimPackage.TeamPilgrimVsService.EditQueryDefinition(ProjectCollection, queryDefinitionNode.QueryDefinition.Id);
         }
 
         private bool CanEditQueryDefinition(QueryDefinitionNode queryDefinitionNode)
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region DeleteQueryItem
+
+        public RelayCommand<QueryDefinitionNode> DeleteQueryDefinitionCommand { get; private set; }
+
+        private void DeleteQueryDefinition(QueryDefinitionNode queryDefinitionNode)
+        {
+            var queryId = queryDefinitionNode.QueryDefinition.Id.ToString();
+//            TeamPilgrimPackage.TeamPilgrimVsService.DeleteQueryDefinition(ProjectCollection, queryDefinitionNode.QueryDefinition.Id);
+//            var queryDocument = TeamPilgrimPackage.WorkItemTrackingDocumentService.GetQuery(ProjectCollection, queryId, this);
+//            var document = TeamPilgrimPackage.WorkItemTrackingDocumentService.FindDocument(queryDocument.CanonicalId, this);
+//            document.IsDirty = true;
+        }
+
+        private bool CanDeleteQueryDefinition(QueryDefinitionNode queryDefinitionNode)
         {
             return true;
         }
@@ -103,8 +117,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         private void OpenSourceControl()
         {
-            VersionControlExplorerExt versionControlExplorerExt = TeamPilgrimPackage.VersionControlExt.Explorer;
-            versionControlExplorerExt.Navigate("$/" + Project.Name);
+            TeamPilgrimPackage.TeamPilgrimVsService.OpenSourceControl(Project.Name);
         }
 
         private bool CanOpenSourceControl()

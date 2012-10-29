@@ -161,14 +161,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\AttachedProperties\MouseDoubleClick.cs" />
+    <Compile Include="Domain\BusinessInterfaces\ITeamPilgrimVsService.cs" />
     <Compile Include="Domain\BusinessInterfaces\ITeamPilgrimWorkItemStore.cs" />
     <Compile Include="Business\Services\TeamPilgrimBuildService.cs" />
-    <Compile Include="Business\Services\TeamPilgrimService.cs" />
+    <Compile Include="Business\Services\TeamPilgrimTfsService.cs" />
     <Compile Include="Business\Services\TeamPilgrimWorkItemStore.cs" />
     <Compile Include="Common\AttachedProperties\ActivateModel.cs" />
     <Compile Include="Common\BindingErrorTraceListener.cs" />
     <Compile Include="Domain\BusinessInterfaces\ITeamPilgrimBuildService.cs" />
-    <Compile Include="Domain\BusinessInterfaces\ITeamPilgrimService.cs" />
+    <Compile Include="Domain\BusinessInterfaces\ITeamPilgrimTfsService.cs" />
+    <Compile Include="Business\Services\TeamPilgrimVsService.cs" />
     <Compile Include="Domain\Entities\BuildDefinitionWrapper.cs" />
     <Compile Include="Domain\Entities\BuildDetailWrapper.cs" />
     <Compile Include="Model\BaseModel.cs" />

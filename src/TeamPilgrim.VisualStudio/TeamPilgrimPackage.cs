@@ -6,6 +6,8 @@ using System.Runtime.InteropServices;
 using System.ComponentModel.Design;
 using EnvDTE;
 using EnvDTE80;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Controls;
 using Microsoft.VisualStudio;
@@ -43,52 +45,24 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
     {
         private static TeamPilgrimPackage _singleInstance;
 
-        public static DTE Dte { get; set; }
-        public static DTE2 Dte2 { get; set; }
+        private static DTE Dte { get; set; }
+        private static DTE2 Dte2 { get; set; }
 
         //public static ExtensionExceptionHandler ExceptionHandler { get; set; }
 
-        public static IVsExtensibility Extensibility { get; set; }
+        private static IVsExtensibility Extensibility { get; set; }
 
         //public static ExtensionHost Host { get; set; }
 
-        public static MenuCommandService MenuCommandService { get; set; }
+        private static MenuCommandService MenuCommandService { get; set; }
 
-        public static IVsUIShell UIShell { get; set; }
+        private static IVsUIShell UIShell { get; set; }
 
-        public static VersionControlExt VersionControlExt { get; set; }
-
-        public static TeamFoundationServerExt TeamFoundationServerExt { get; set; }
-
-        private static DocumentService _workItemTrackingDocumentService;
-        public static DocumentService WorkItemTrackingDocumentService
+        private static TeamPilgrimVsService _teamPilgrimVsService;
+        public static ITeamPilgrimVsService TeamPilgrimVsService
         {
-            get
-            {
-                return _workItemTrackingDocumentService ?? (_workItemTrackingDocumentService = (DocumentService)GetGlobalService(typeof(DocumentService)));
-            }
+            get { return _teamPilgrimVsService; }
         }
-
-        private static IVsTeamFoundationBuild _teamFoundationBuild;
-        public static IVsTeamFoundationBuild TeamFoundationBuild
-        {
-            get
-            {
-                return _teamFoundationBuild ?? (_teamFoundationBuild = (IVsTeamFoundationBuild)_singleInstance.GetService(typeof(IVsTeamFoundationBuild)));
-            }
-        }
-
-        private static IWorkItemControlHost _workItemControlHost;
-        public static IWorkItemControlHost WorkItemControlHost
-        {
-            get
-            {
-                return _workItemControlHost ?? (_workItemControlHost = (IWorkItemControlHost)_singleInstance.GetService(typeof(IWorkItemControlHost)));
-            }
-        }
-
-        public delegate void ActiveProjectContextChanged(ProjectContextExt projectContext);
-        public static event ActiveProjectContextChanged ActiveProjectContextChangedEvent;
 
         private uint _shellPropertyChangeCookie;
 
@@ -102,6 +76,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
         public TeamPilgrimPackage()
         {
             Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", this.ToString()));
+
+            _teamPilgrimVsService = new TeamPilgrimVsService();
 
             //http://blogs.msdn.com/b/vsxteam/archive/2008/06/09/dr-ex-why-does-getservice-typeof-envdte-dte-return-null.aspx
             var shellService = GetGlobalService(typeof(SVsShell)) as IVsShell;
@@ -125,18 +101,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
                     Extensibility = (IVsExtensibility)GetGlobalService(typeof(IVsExtensibility));
                     Dte2 = (DTE2)Extensibility.GetGlobalsObject(null).DTE;
 
-                    VersionControlExt = Dte2.GetObject("Microsoft.VisualStudio.TeamFoundation.VersionControl.VersionControlExt") as VersionControlExt;
-                    TeamFoundationServerExt = Dte2.GetObject("Microsoft.VisualStudio.TeamFoundation.TeamFoundationServerExt") as TeamFoundationServerExt;
-
-                    if (TeamFoundationServerExt != null)
-                    {
-                        TeamFoundationServerExt.ProjectContextChanged += TeamFoundationServerExtOnProjectContextChanged;
-
-                        if (TeamFoundationServerExt.ActiveProjectContext != null)
-                        {
-                            TeamFoundationServerExtOnProjectContextChanged(null, EventArgs.Empty);
-                        }
-                    }
+                    _teamPilgrimVsService.InitializeGlobals(Dte2);
 
                     // eventlistener no longer needed
 
@@ -149,11 +114,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             }
 
             return VSConstants.S_OK;
-        }
-
-        private void TeamFoundationServerExtOnProjectContextChanged(object sender, EventArgs eventArgs)
-        {
-            ActiveProjectContextChangedEvent(TeamFoundationServerExt.ActiveProjectContext);
         }
 
         /// <summary>
@@ -207,6 +167,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
 
             TeamPilgrimPackage.UIShell = (IVsUIShell)base.GetService(typeof(SVsUIShell));
             TeamPilgrimPackage.MenuCommandService = base.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+            TeamPilgrimPackage._teamPilgrimVsService.InitializePackage(_singleInstance);
         }
         #endregion
 
@@ -235,16 +196,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
                        out result));
         }
 
-        public static object GetPackageService(Type serviceType)
+        public T GetPackageService<T>()
         {
-            if (TeamPilgrimPackage._singleInstance == null)
+            if (_singleInstance == null)
             {
-                return null;
+                return default(T);
             }
-            else
-            {
-                return TeamPilgrimPackage._singleInstance.GetService(serviceType);
-            }
+            
+            return (T) _singleInstance.GetService(typeof(T));
         }
     }
 }

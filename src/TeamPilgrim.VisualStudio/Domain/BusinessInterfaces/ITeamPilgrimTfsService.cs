@@ -4,7 +4,7 @@ using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces
 {
-    public interface ITeamPilgrimService
+    public interface ITeamPilgrimTfsService
     {
         TfsTeamProjectCollection[] GetProjectCollections();
         TfsTeamProjectCollection GetProjectCollection(Uri uri);

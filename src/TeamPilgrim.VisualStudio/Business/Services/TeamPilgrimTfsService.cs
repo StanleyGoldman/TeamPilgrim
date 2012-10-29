@@ -8,7 +8,7 @@ using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 {
-    public class TeamPilgrimService : ITeamPilgrimService
+    public class TeamPilgrimTfsService : ITeamPilgrimTfsService
     {
         private readonly ConcurrentDictionary<string, TfsTeamProjectCollection> _projectCollectionDictionary = new ConcurrentDictionary<string, TfsTeamProjectCollection>();
 

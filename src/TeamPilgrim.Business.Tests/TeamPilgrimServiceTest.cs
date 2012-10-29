@@ -10,23 +10,23 @@ namespace JustAProgrammer.TeamPilgrim.Business.Tests
     [TestFixture]
     public class TeamPilgrimServiceTest
     {
-        private TeamPilgrimService _teamPilgrimService;
+        private TeamPilgrimTfsService _teamPilgrimTfsService;
 
         [SetUp]
         public void Initialize()
         {
-            _teamPilgrimService = new TeamPilgrimService();
+            _teamPilgrimTfsService = new TeamPilgrimTfsService();
         }
 
         [Test]
         public void ManualTest()
         {
-            var pilgrimProjectCollections = _teamPilgrimService.GetProjectCollections();
+            var pilgrimProjectCollections = _teamPilgrimTfsService.GetProjectCollections();
             var pilgrimProjectCollection = pilgrimProjectCollections.First();
 
-            var teamPilgrimBuildService = _teamPilgrimService.GetTeamPilgrimBuildService(pilgrimProjectCollection.Uri);
+            var teamPilgrimBuildService = _teamPilgrimTfsService.GetTeamPilgrimBuildService(pilgrimProjectCollection.Uri);
 
-            var pilgrimProjects = _teamPilgrimService.GetProjects(pilgrimProjectCollection.Uri);
+            var pilgrimProjects = _teamPilgrimTfsService.GetProjects(pilgrimProjectCollection.Uri);
             Project pilgrimProject = pilgrimProjects.First();
 
             BuildDefinitionWrapper[] buildDefinitions = teamPilgrimBuildService.QueryBuildDefinitions(pilgrimProject.Name);

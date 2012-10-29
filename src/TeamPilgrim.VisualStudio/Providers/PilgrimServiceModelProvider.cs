@@ -8,18 +8,18 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
 {
     public class PilgrimServiceModelProvider : IPilgrimServiceModelProvider
     {
-        private readonly ITeamPilgrimService _teamPilgrimService;
+        private readonly ITeamPilgrimTfsService _teamPilgrimTfsService;
 
         public PilgrimServiceModelProvider()
         {
-            _teamPilgrimService = new TeamPilgrimService();
+            _teamPilgrimTfsService = new TeamPilgrimTfsService();
         }
 
         public bool TryGetCollections(out TfsTeamProjectCollection[] collections)
         {
             try
             {
-                collections = _teamPilgrimService.GetProjectCollections();
+                collections = _teamPilgrimTfsService.GetProjectCollections();
                 return true;
             }
             catch (Exception) { }
@@ -32,7 +32,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
         {
             try
             {
-                collection = _teamPilgrimService.GetProjectCollection(tpcAddress);
+                collection = _teamPilgrimTfsService.GetProjectCollection(tpcAddress);
                 return true;
             }
             catch (Exception) { }
@@ -45,7 +45,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
         {
             try
             {
-                projects = _teamPilgrimService.GetProjects(tpcAddress);
+                projects = _teamPilgrimTfsService.GetProjects(tpcAddress);
                 return true;
             }
             catch (Exception) { }
@@ -58,7 +58,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
         {
             try
             {
-                buildServiceModelProvider = new PilgrimBuildServiceModelProvider(_teamPilgrimService.GetTeamPilgrimBuildService(tpcAddress));
+                buildServiceModelProvider = new PilgrimBuildServiceModelProvider(_teamPilgrimTfsService.GetTeamPilgrimBuildService(tpcAddress));
                 return true;
             }
             catch (Exception) { }

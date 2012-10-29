@@ -21,7 +21,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
             State = ModelStateEnum.Invalid;
 
-            TeamPilgrimPackage.ActiveProjectContextChangedEvent += TeamPilgrimPackageOnActiveProjectContextChangedEvent;
+            TeamPilgrimPackage.TeamPilgrimVsService.ActiveProjectContextChangedEvent += TeamPilgrimPackageOnActiveProjectContextChangedEvent;
         }
 
         private void TeamPilgrimPackageOnActiveProjectContextChangedEvent(ProjectContextExt projectContext)
@@ -65,10 +65,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             TfsTeamProjectCollection collection;
 
             Uri tpcAddress = null;
-            if (TeamPilgrimPackage.TeamFoundationServerExt != null &&
-                TeamPilgrimPackage.TeamFoundationServerExt.ActiveProjectContext.DomainUri != null)
+            if (TeamPilgrimPackage.TeamPilgrimVsService != null &&
+                TeamPilgrimPackage.TeamPilgrimVsService.ActiveProjectContext.DomainUri != null)
             {
-                tpcAddress = new Uri(TeamPilgrimPackage.TeamFoundationServerExt.ActiveProjectContext.DomainUri);
+                tpcAddress = new Uri(TeamPilgrimPackage.TeamPilgrimVsService.ActiveProjectContext.DomainUri);
             }
 
             if (_pilgrimServiceModelProvider.TryGetCollection(out collection, tpcAddress))

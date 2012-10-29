@@ -45,7 +45,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         private void OpenBuildDefinition(BuildDefinitionWrapper buildDefinitionWrapper)
         {
-            TeamPilgrimPackage.TeamFoundationBuild.DetailsManager.OpenBuild(buildDefinitionWrapper.Uri);
+            TeamPilgrimPackage.TeamPilgrimVsService.OpenBuildDefinition(buildDefinitionWrapper.Uri);
         }
 
         #endregion
@@ -61,7 +61,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         private void ViewBuilds(BuildDefinitionWrapper buildDefinitionWrapper)
         {
-            TeamPilgrimPackage.TeamFoundationBuild.BuildExplorer.CompletedView.Show(_project.Name, buildDefinitionWrapper.Name, String.Empty, DateFilter.Today);
+            TeamPilgrimPackage.TeamPilgrimVsService.ViewBuilds(_project.Name, buildDefinitionWrapper.Name, String.Empty, DateFilter.Today);
+            //TeamPilgrimPackage.TeamFoundationBuild.BuildExplorer.CompletedView.Show(_project.Name, buildDefinitionWrapper.Name, String.Empty, DateFilter.Today);
         }
 
         #endregion

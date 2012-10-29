@@ -109,7 +109,11 @@
                 <MenuItem IsEnabled="False" Header="Cut"/>
                 <MenuItem IsEnabled="False" Header="Copy"/>
                 <MenuItem IsEnabled="False" Header="Paste"/>
-                <MenuItem IsEnabled="False" Header="Delete"/>
+                
+                <MenuItem Header="Delete"
+                          Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=1}, Path=DataContext.QueryItemCommandModel.DeleteQueryDefinitionCommand}" 
+                          CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=1}, Path=DataContext}"/>
+                
                 <MenuItem IsEnabled="False" Header="Rename"/>
                 <Separator />
                 <MenuItem IsEnabled="False" Header="Security..." />
