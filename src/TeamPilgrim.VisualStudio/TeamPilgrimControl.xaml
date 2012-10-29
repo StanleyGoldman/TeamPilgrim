@@ -37,13 +37,36 @@
                 <MenuItem Header="Alerts Explorer"/>
             </ContextMenu>
             
+            <ContextMenu x:Key="ProjectModelContextMenu">
+                <MenuItem Header="Project Alerts..."/>
+                <Separator />
+                <MenuItem Header="Remove"/>
+                <Separator />
+                <MenuItem Header="Refresh"/>
+                <Separator />
+                <MenuItem Header="Team Project Settings">
+                    <MenuItem Header="Security..."/>
+                    <MenuItem Header="Group Membership..."/>
+                    <MenuItem Header="Areas and Iterations..."/>
+                    <MenuItem Header="Portal Settings..."/>
+                    <MenuItem Header="Source Control..."/>
+                    <MenuItem Header="Team Members..."/>
+                </MenuItem>
+                <MenuItem Header="Properties"/>
+                <Separator />
+                <MenuItem Header="Alerts Explorer"/>
+            </ContextMenu>
+            
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="DefaultStyle">
                 <EventSetter Event="TreeViewItem.PreviewMouseRightButtonDown" Handler="OnPreviewMouseRightButtonDown"/>
-                <EventSetter Event="TreeViewItem.MouseRightButtonUp" Handler="OnPreviewMouseRightButtonDown"/>
             </Style>
 
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="ProjectCollectionModelStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
                 <Setter Property="ContextMenu" Value="{StaticResource ResourceKey=ProjectCollectionModelContextMenu}"/>
+            </Style>
+            
+            <Style TargetType="{x:Type TreeViewItem}"  x:Key="ProjectModelStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
+                <Setter Property="ContextMenu" Value="{StaticResource ResourceKey=ProjectModelContextMenu}"/>
             </Style>
             
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="BuildDefinitionWrapperStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
@@ -64,6 +87,7 @@
                 x:Key="teamPilgrilViewStyleSelector"
                 DefaultStyle="{StaticResource ResourceKey=DefaultStyle}"
                 ProjectCollectionModelStyle="{StaticResource ResourceKey=ProjectCollectionModelStyle}"
+                ProjectModelStyle="{StaticResource ResourceKey=ProjectModelStyle}"
                 SourceControlNodeStyle="{StaticResource ResourceKey=SourceControlNodeStyle}"
                 BuildDefinitionWrapperStyle="{StaticResource ResourceKey=BuildDefinitionWrapperStyle}" 
                 QueryDefinitionNodeStyle="{StaticResource ResourceKey=QueryDefinitionNodeStyle}" />

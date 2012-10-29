@@ -19,12 +19,20 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
         
         public Style ProjectCollectionModelStyle { get; set; }
 
+        public Style ProjectModelStyle { get; set; }
+
         public override Style SelectStyle(object item, DependencyObject container)
         {
             var projectCollectionModel = item as ProjectCollectionModel;
             if (projectCollectionModel != null && ProjectCollectionModelStyle != null)
             {
                 return ProjectCollectionModelStyle;
+            }
+
+            var projectModel = item as ProjectModel;
+            if (projectModel != null && ProjectModelStyle != null)
+            {
+                return ProjectModelStyle;
             }
             
             var sourceControlNode = item as SourceControlNode;
