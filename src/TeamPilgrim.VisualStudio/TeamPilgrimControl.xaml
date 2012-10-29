@@ -15,7 +15,7 @@
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
-             x:Name="MyToolWindow" Height="Auto">
+             Height="Auto">
     <UserControl.Resources>
 
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="DefaultStyle">
@@ -357,7 +357,7 @@
             
         </DockPanel.Resources>
         <ToolBar ToolBarTray.IsLocked="True" ToolBar.OverflowMode="Never" DockPanel.Dock="Top">
-            <Button>
+            <Button Command="{Binding Path=RefreshCommand}">
                 <Image Source="Resources\arrow_refresh.png" Width="16" Height="16" />
             </Button>
         </ToolBar>

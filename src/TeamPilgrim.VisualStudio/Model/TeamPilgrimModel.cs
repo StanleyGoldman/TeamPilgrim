@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Windows.Threading;
+using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.Client;
@@ -22,6 +23,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             State = ModelStateEnum.Invalid;
 
             TeamPilgrimPackage.TeamPilgrimVsService.ActiveProjectContextChangedEvent += TeamPilgrimPackageOnActiveProjectContextChangedEvent;
+
+            RefreshCommand = new RelayCommand(Refresh, CanRefresh);
+        }
+
+        protected override void OnActivated()
+        {
+            VerifyCalledOnUiThread();
         }
 
         private void TeamPilgrimPackageOnActiveProjectContextChangedEvent(ProjectContextExt projectContext)
@@ -31,32 +39,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             if (ThreadPool.QueueUserWorkItem(PilgrimModelCallback))
             {
                 State = ModelStateEnum.Fetching;
-            }
-        }
-
-        protected override void OnActivated()
-        {
-            VerifyCalledOnUiThread();
-        }
-
-        #region Collections
-
-        private ProjectCollectionModel[] _collections = new ProjectCollectionModel[0];
-
-        public ProjectCollectionModel[] CollectionModels
-        {
-            get
-            {
-                VerifyCalledOnUiThread();
-                return _collections;
-            }
-            private set
-            {
-                VerifyCalledOnUiThread();
-                if (_collections == value) return;
-
-                _collections = value;
-                SendPropertyChanged("CollectionModels");
             }
         }
 
@@ -98,6 +80,48 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
                     {
                         State = ModelStateEnum.Invalid;
                     }));
+            }
+        }
+
+        #region Refresh
+
+        public RelayCommand RefreshCommand { get; private set; }
+
+        private void Refresh()
+        {
+            VerifyCalledOnUiThread();
+
+            if (ThreadPool.QueueUserWorkItem(PilgrimModelCallback))
+            {
+                State = ModelStateEnum.Fetching;
+            }
+        }
+
+        private bool CanRefresh()
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region Collections
+
+        private ProjectCollectionModel[] _collections = new ProjectCollectionModel[0];
+
+        public ProjectCollectionModel[] CollectionModels
+        {
+            get
+            {
+                VerifyCalledOnUiThread();
+                return _collections;
+            }
+            private set
+            {
+                VerifyCalledOnUiThread();
+                if (_collections == value) return;
+
+                _collections = value;
+                SendPropertyChanged("CollectionModels");
             }
         }
 
