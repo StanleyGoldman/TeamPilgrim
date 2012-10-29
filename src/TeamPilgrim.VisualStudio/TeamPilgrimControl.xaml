@@ -177,7 +177,7 @@
         </Grid.Resources>
 
         <StackPanel Orientation="Vertical" AttachedProperties:ActivateModel.Model="{Binding}">
-            <TreeView ItemsSource="{Binding}" ItemContainerStyleSelector="{StaticResource ResourceKey=teamPilgrilViewStyleSelector}">
+            <TreeView ItemsSource="{Binding Path=CollectionModels}" ItemContainerStyleSelector="{StaticResource ResourceKey=teamPilgrilViewStyleSelector}">
                 
                 <TreeView.Resources>
                     <HierarchicalDataTemplate DataType="{x:Type Model:ProjectCollectionModel}" ItemsSource="{Binding Path=ProjectModels}">
@@ -221,10 +221,6 @@
                     </HierarchicalDataTemplate>
 
                 </TreeView.Resources>
-
-                <TreeViewItem Header="Team Foundation Servers" ItemsSource="{Binding Path=CollectionModels}" ItemContainerStyleSelector="{StaticResource ResourceKey=teamPilgrilViewStyleSelector}">
-
-                </TreeViewItem>
             </TreeView>
         </StackPanel>
     </Grid>

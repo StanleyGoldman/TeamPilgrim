@@ -25,7 +25,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             //BindingErrorTraceListener.SetTrace();
 
             InitializeComponent();
-            DataContext = _teamPilgrimModel = new TeamPilgrimModel(new PilgrimServiceServiceModelProvider());
+            DataContext = _teamPilgrimModel = new TeamPilgrimModel(new PilgrimServiceModelProvider());
         }
 
         private void OnPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
