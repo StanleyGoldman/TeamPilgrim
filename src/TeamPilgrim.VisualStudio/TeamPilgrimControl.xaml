@@ -56,6 +56,26 @@
                 <Separator />
                 <MenuItem Header="Alerts Explorer"/>
             </ContextMenu>
+
+            <ContextMenu x:Key="WorkItemsNodeContextMenu">
+                <MenuItem Header="1 New Task"/>
+                <MenuItem Header="2 New Bug"/>
+                <Separator />
+                <MenuItem Header="New Work Item">
+                    <MenuItem Header="Bug"/>
+                    <MenuItem Header="Issue"/>
+                    <MenuItem Header="Shared Steps"/>
+                    <MenuItem Header="Task"/>
+                    <MenuItem Header="Test Case"/>
+                    <MenuItem Header="User Story"/>
+                </MenuItem>
+                <MenuItem Header="Go to Work Item" />
+                <Separator />
+                <MenuItem Header="New Query"/>
+                <MenuItem Header="New Work Items with Microsoft Excel" />
+                <Separator />
+                <MenuItem Header="Refresh"/>
+            </ContextMenu>
             
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="DefaultStyle">
                 <EventSetter Event="TreeViewItem.PreviewMouseRightButtonDown" Handler="OnPreviewMouseRightButtonDown"/>
@@ -67,6 +87,10 @@
             
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="ProjectModelStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
                 <Setter Property="ContextMenu" Value="{StaticResource ResourceKey=ProjectModelContextMenu}"/>
+            </Style>
+
+            <Style TargetType="{x:Type TreeViewItem}"  x:Key="WorkItemsNodeStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
+                <Setter Property="ContextMenu" Value="{StaticResource ResourceKey=WorkItemsNodeContextMenu}"/>
             </Style>
             
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="BuildDefinitionWrapperStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
@@ -88,6 +112,7 @@
                 DefaultStyle="{StaticResource ResourceKey=DefaultStyle}"
                 ProjectCollectionModelStyle="{StaticResource ResourceKey=ProjectCollectionModelStyle}"
                 ProjectModelStyle="{StaticResource ResourceKey=ProjectModelStyle}"
+                WorkItemsNodeStyle="{StaticResource ResourceKey=WorkItemsNodeStyle}"
                 SourceControlNodeStyle="{StaticResource ResourceKey=SourceControlNodeStyle}"
                 BuildDefinitionWrapperStyle="{StaticResource ResourceKey=BuildDefinitionWrapperStyle}" 
                 QueryDefinitionNodeStyle="{StaticResource ResourceKey=QueryDefinitionNodeStyle}" />

@@ -21,6 +21,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
 
         public Style ProjectModelStyle { get; set; }
 
+        public Style WorkItemsNodeStyle { get; set; }
+
         public override Style SelectStyle(object item, DependencyObject container)
         {
             var projectCollectionModel = item as ProjectCollectionModel;
@@ -33,6 +35,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             if (projectModel != null && ProjectModelStyle != null)
             {
                 return ProjectModelStyle;
+            }
+            
+            var workItemsNode = item as WorkItemsNode;
+            if (workItemsNode != null && WorkItemsNodeStyle != null)
+            {
+                return WorkItemsNodeStyle;
             }
             
             var sourceControlNode = item as SourceControlNode;
