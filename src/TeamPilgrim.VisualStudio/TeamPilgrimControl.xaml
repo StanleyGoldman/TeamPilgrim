@@ -19,62 +19,62 @@
         <Grid.Resources>
 
             <ContextMenu x:Key="ProjectCollectionModelContextMenu">
-                <MenuItem Header="Connect to Team Project..."/>
-                <MenuItem Header="New Team Project..."/>
+                <MenuItem IsEnabled="False" Header="Connect to Team Project..."/>
+                <MenuItem IsEnabled="False" Header="New Team Project..."/>
                 <Separator />
-                <MenuItem Header="Disconnect"/>
+                <MenuItem IsEnabled="False" Header="Disconnect"/>
                 <Separator />
-                <MenuItem Header="Refresh"/>
+                <MenuItem IsEnabled="False" Header="Refresh"/>
                 <Separator />
-                <MenuItem Header="Team Project Collection Settings">
-                    <MenuItem Header="Security..."/>
-                    <MenuItem Header="Group Membership..."/>
-                    <MenuItem Header="Process Template Manager..."/>
-                    <MenuItem Header="Source Control File Types..."/>
+                <MenuItem IsEnabled="False" Header="Team Project Collection Settings">
+                    <MenuItem IsEnabled="False" Header="Security..."/>
+                    <MenuItem IsEnabled="False" Header="Group Membership..."/>
+                    <MenuItem IsEnabled="False" Header="Process Template Manager..."/>
+                    <MenuItem IsEnabled="False" Header="Source Control File Types..."/>
                 </MenuItem>
-                <MenuItem Header="Properties"/>
+                <MenuItem IsEnabled="False" Header="Properties"/>
                 <Separator />
-                <MenuItem Header="Alerts Explorer"/>
+                <MenuItem IsEnabled="False" Header="Alerts Explorer"/>
             </ContextMenu>
             
             <ContextMenu x:Key="ProjectModelContextMenu">
-                <MenuItem Header="Project Alerts..."/>
+                <MenuItem IsEnabled="False" Header="Project Alerts..."/>
                 <Separator />
-                <MenuItem Header="Remove"/>
+                <MenuItem IsEnabled="False" Header="Remove"/>
                 <Separator />
-                <MenuItem Header="Refresh"/>
+                <MenuItem IsEnabled="False" Header="Refresh"/>
                 <Separator />
-                <MenuItem Header="Team Project Settings">
-                    <MenuItem Header="Security..."/>
-                    <MenuItem Header="Group Membership..."/>
-                    <MenuItem Header="Areas and Iterations..."/>
-                    <MenuItem Header="Portal Settings..."/>
-                    <MenuItem Header="Source Control..."/>
-                    <MenuItem Header="Team Members..."/>
+                <MenuItem IsEnabled="False" Header="Team Project Settings">
+                    <MenuItem IsEnabled="False" Header="Security..."/>
+                    <MenuItem IsEnabled="False" Header="Group Membership..."/>
+                    <MenuItem IsEnabled="False" Header="Areas and Iterations..."/>
+                    <MenuItem IsEnabled="False" Header="Portal Settings..."/>
+                    <MenuItem IsEnabled="False" Header="Source Control..."/>
+                    <MenuItem IsEnabled="False" Header="Team Members..."/>
                 </MenuItem>
-                <MenuItem Header="Properties"/>
+                <MenuItem IsEnabled="False" Header="Properties"/>
                 <Separator />
-                <MenuItem Header="Alerts Explorer"/>
+                <MenuItem IsEnabled="False" Header="Alerts Explorer"/>
             </ContextMenu>
 
             <ContextMenu x:Key="WorkItemsNodeContextMenu">
-                <MenuItem Header="1 New Task"/>
-                <MenuItem Header="2 New Bug"/>
+                <MenuItem IsEnabled="False" Header="1 New Task"/>
+                <MenuItem IsEnabled="False" Header="2 New Bug"/>
                 <Separator />
-                <MenuItem Header="New Work Item">
-                    <MenuItem Header="Bug"/>
-                    <MenuItem Header="Issue"/>
-                    <MenuItem Header="Shared Steps"/>
-                    <MenuItem Header="Task"/>
-                    <MenuItem Header="Test Case"/>
-                    <MenuItem Header="User Story"/>
+                <MenuItem IsEnabled="False" Header="New Work Item">
+                    <MenuItem IsEnabled="False" Header="Bug"/>
+                    <MenuItem IsEnabled="False" Header="Issue"/>
+                    <MenuItem IsEnabled="False" Header="Shared Steps"/>
+                    <MenuItem IsEnabled="False" Header="Task"/>
+                    <MenuItem IsEnabled="False" Header="Test Case"/>
+                    <MenuItem IsEnabled="False" Header="User Story"/>
                 </MenuItem>
-                <MenuItem Header="Go to Work Item" />
+                <MenuItem IsEnabled="False" Header="Go to Work Item" />
                 <Separator />
-                <MenuItem Header="New Query"/>
-                <MenuItem Header="New Work Items with Microsoft Excel" />
+                <MenuItem IsEnabled="False" Header="New Query"/>
+                <MenuItem IsEnabled="False" Header="New Work Items with Microsoft Excel" />
                 <Separator />
-                <MenuItem Header="Refresh"/>
+                <MenuItem IsEnabled="False" Header="Refresh"/>
             </ContextMenu>
 
             <ContextMenu x:Key="BuildDefinitionWrapperContextMenu">
@@ -82,19 +82,19 @@
                           Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=2}, Path=DataContext.ProjectBuildModel.ViewBuildsCommand}" 
                           CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=1}, Path=DataContext}"/>
                 
-                <MenuItem Header="Queue New Build"/>
+                <MenuItem IsEnabled="False" Header="Queue New Build"/>
                 
                 <MenuItem Header="Edit Build Definition"
                           Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=2}, Path=DataContext.ProjectBuildModel.OpenBuildDefintionCommand}" 
                           CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=1}, Path=DataContext}"/>
                 
-                <MenuItem Header="Open Process File Location"/>
-                <MenuItem Header="Clone Build Definition"/>
+                <MenuItem IsEnabled="False" Header="Open Process File Location"/>
+                <MenuItem IsEnabled="False" Header="Clone Build Definition"/>
                 <Separator />
-                <MenuItem Header="Delete"/>
+                <MenuItem IsEnabled="False" Header="Delete"/>
                 <Separator />
-                <MenuItem Header="Security..." />
-                <MenuItem Header="Properties"/>
+                <MenuItem IsEnabled="False" Header="Security..." />
+                <MenuItem IsEnabled="False" Header="Properties"/>
             </ContextMenu>
 
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="DefaultStyle">
