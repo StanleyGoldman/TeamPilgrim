@@ -150,7 +150,7 @@
             </Style>
 
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="QueryDefinitionNodeStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
-                <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding Path=QueryDefinitionCommandModel.OpenQueryDefinitionCommand}"/>
+                <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding Path=QueryItemCommandModel.OpenQueryDefinitionCommand}"/>
                 <Setter Property="AttachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}"/>
                 <Setter Property="ContextMenu" Value="{StaticResource ResourceKey=QueryDefinitionNodeContextMenu}"/>
             </Style>

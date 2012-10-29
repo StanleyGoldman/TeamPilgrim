@@ -6,11 +6,11 @@ using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
 {
-    public class PilgrimServiceServiceModelProvider : IPilgrimServiceModelProvider
+    public class PilgrimServiceModelProvider : IPilgrimServiceModelProvider
     {
         private readonly ITeamPilgrimService _teamPilgrimService;
 
-        public PilgrimServiceServiceModelProvider()
+        public PilgrimServiceModelProvider()
         {
             _teamPilgrimService = new TeamPilgrimService();
         }
@@ -25,6 +25,19 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             catch (Exception) { }
 
             collections = null;
+            return false;
+        }
+
+        public bool TryGetCollection(out TfsTeamProjectCollection collection, Uri tpcAddress)
+        {
+            try
+            {
+                collection = _teamPilgrimService.GetProjectCollection(tpcAddress);
+                return true;
+            }
+            catch (Exception) { }
+
+            collection = null;
             return false;
         }
 

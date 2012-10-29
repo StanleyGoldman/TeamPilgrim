@@ -8,6 +8,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
     {
         bool TryGetCollections(out TfsTeamProjectCollection[] collections);
         
+        bool TryGetCollection(out TfsTeamProjectCollection collection, Uri tpcAddress);
+        
         bool TryGetProjects(out Project[] projects, Uri tpcAddress);
 
         bool TryGetBuildServiceProvider(out IPilgrimBuildServiceModelProvider buildService, Uri tpcAddress);

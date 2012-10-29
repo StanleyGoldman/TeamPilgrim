@@ -25,6 +25,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
         public Style QueryFolderNodeStyle { get; set; }
 
         public Style QueryDefinitionNodeStyle { get; set; }
+
         public override Style SelectStyle(object item, DependencyObject container)
         {
             var projectCollectionModel = item as ProjectCollectionModel;

@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.ComponentModel.Design;
 using EnvDTE;
 using EnvDTE80;
+using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Controls;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -86,6 +87,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             }
         }
 
+        public delegate void ActiveProjectContextChanged(ProjectContextExt projectContext);
+        public static event ActiveProjectContextChanged ActiveProjectContextChangedEvent;
+
         private uint _shellPropertyChangeCookie;
 
         /// <summary>
@@ -119,10 +123,20 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
                     Dte = GetService(typeof(SDTE)) as DTE;
 
                     Extensibility = (IVsExtensibility)GetGlobalService(typeof(IVsExtensibility));
-                    Dte2 = (DTE2)Extensibility.GetGlobalsObject(null).DTE; 
+                    Dte2 = (DTE2)Extensibility.GetGlobalsObject(null).DTE;
 
                     VersionControlExt = Dte2.GetObject("Microsoft.VisualStudio.TeamFoundation.VersionControl.VersionControlExt") as VersionControlExt;
                     TeamFoundationServerExt = Dte2.GetObject("Microsoft.VisualStudio.TeamFoundation.TeamFoundationServerExt") as TeamFoundationServerExt;
+
+                    if (TeamFoundationServerExt != null)
+                    {
+                        TeamFoundationServerExt.ProjectContextChanged += TeamFoundationServerExtOnProjectContextChanged;
+
+                        if (TeamFoundationServerExt.ActiveProjectContext != null)
+                        {
+                            TeamFoundationServerExtOnProjectContextChanged(null, EventArgs.Empty);
+                        }
+                    }
 
                     // eventlistener no longer needed
 
@@ -135,6 +149,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             }
 
             return VSConstants.S_OK;
+        }
+
+        private void TeamFoundationServerExtOnProjectContextChanged(object sender, EventArgs eventArgs)
+        {
+            ActiveProjectContextChangedEvent(TeamFoundationServerExt.ActiveProjectContext);
         }
 
         /// <summary>

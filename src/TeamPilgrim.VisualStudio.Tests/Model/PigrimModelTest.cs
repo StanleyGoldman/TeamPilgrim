@@ -26,6 +26,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Tests.Model
                 return true;
             }
 
+            public bool TryGetCollection(out TfsTeamProjectCollection collection, Uri tpcAddress)
+            {
+                throw new NotImplementedException();
+            }
+
             public Project[] LastPilgrimProjects { get; private set; }
 
             public bool TryGetProjects(out Project[] projects, Uri tpcAddress)

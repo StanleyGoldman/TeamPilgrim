@@ -12,8 +12,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
     {
         private readonly ConcurrentDictionary<string, TfsTeamProjectCollection> _projectCollectionDictionary = new ConcurrentDictionary<string, TfsTeamProjectCollection>();
 
-        private TfsTeamProjectCollection GetTfsTeamProjectCollection(Uri uri)
+        public TfsTeamProjectCollection GetProjectCollection(Uri uri)
         {
+            if (uri == null)
+                return null;
+
             return _projectCollectionDictionary.GetOrAdd(uri.ToString(), s =>
                 {
                     var tfsTeamProjectCollection = TfsTeamProjectCollectionFactory.GetTeamProjectCollection(uri);
@@ -37,7 +40,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 
         public Project[] GetProjects(Uri tpcAddress)
         {
-            return GetProjects(GetTfsTeamProjectCollection(tpcAddress));
+            return GetProjects(GetProjectCollection(tpcAddress));
         }
 
         private Project[] GetProjects(TfsTeamProjectCollection tfsTeamProjectCollection)
@@ -49,7 +52,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 
         public ITeamPilgrimBuildService GetTeamPilgrimBuildService(Uri tpcAddress)
         {
-            var collection = GetTfsTeamProjectCollection(tpcAddress);
+            var collection = GetProjectCollection(tpcAddress);
             return GetTeamPilgrimBuildService(collection);
         }
 
@@ -62,7 +65,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 
         public ITeamPilgrimWorkItemStore GetWorkItemStore(Uri tpcAddress)
         {
-            var collection = GetTfsTeamProjectCollection(tpcAddress);
+            var collection = GetProjectCollection(tpcAddress);
             return new TeamPilgrimWorkItemStore(collection.GetService<WorkItemStore>());
 
         }
