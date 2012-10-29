@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="JustAProgrammer.TeamPilgrim.VisualStudio.TeamPilgrimControl"
+﻿<UserControl
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -10,180 +10,181 @@
              xmlns:Project="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Nodes.Project"
              xmlns:QueryItems="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Nodes.QueryItems"
              xmlns:AttachedProperties="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties"
+             x:Class="JustAProgrammer.TeamPilgrim.VisualStudio.TeamPilgrimControl"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
-             Name="MyToolWindow" Height="Auto">
+             x:Name="MyToolWindow" Height="Auto">
     <UserControl.Resources>
 
-        <Style TargetType="{x:Type TreeViewItem}"  x:Key="DefaultStyle">
-            <EventSetter Event="UIElement.PreviewMouseRightButtonDown" Handler="OnPreviewMouseRightButtonDown"/>
-        </Style>
+            <Style TargetType="{x:Type TreeViewItem}"  x:Key="DefaultStyle">
+                <EventSetter Event="UIElement.PreviewMouseRightButtonDown" Handler="OnPreviewMouseRightButtonDown"/>
+            </Style>
 
-        <ContextMenu x:Key="BuildDefinitionWrapperContextMenu">
-            <MenuItem Header="View Builds" 
-				Command="{Binding DataContext.ProjectBuildModel.ViewBuildsCommand, RelativeSource={RelativeSource AncestorLevel=2, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}" 
-				CommandParameter="{Binding DataContext, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"/>
+            <ContextMenu x:Key="BuildDefinitionWrapperContextMenu">
+                <MenuItem Header="View Builds" 
+    				Command="{Binding DataContext.ProjectBuildModel.ViewBuildsCommand, RelativeSource={RelativeSource AncestorLevel=2, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}" 
+    				CommandParameter="{Binding DataContext, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"/>
 
-            <MenuItem IsEnabled="False" Header="Queue New Build"/>
+                <MenuItem IsEnabled="False" Header="Queue New Build"/>
 
-            <MenuItem Header="Edit Build Definition"
-				Command="{Binding DataContext.ProjectBuildModel.OpenBuildDefintionCommand, RelativeSource={RelativeSource AncestorLevel=2, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}" 
-				CommandParameter="{Binding DataContext, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"/>
+                <MenuItem Header="Edit Build Definition"
+    				Command="{Binding DataContext.ProjectBuildModel.OpenBuildDefintionCommand, RelativeSource={RelativeSource AncestorLevel=2, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}" 
+    				CommandParameter="{Binding DataContext, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"/>
 
-            <MenuItem IsEnabled="False" Header="Open Process File Location"/>
-            <MenuItem IsEnabled="False" Header="Clone Build Definition"/>
-            <Separator />
-            <MenuItem IsEnabled="False" Header="Delete"/>
-            <Separator />
-            <MenuItem IsEnabled="False" Header="Security..." />
-            <MenuItem IsEnabled="False" Header="Properties"/>
-        </ContextMenu>
+                <MenuItem IsEnabled="False" Header="Open Process File Location"/>
+                <MenuItem IsEnabled="False" Header="Clone Build Definition"/>
+                <Separator />
+                <MenuItem IsEnabled="False" Header="Delete"/>
+                <Separator />
+                <MenuItem IsEnabled="False" Header="Security..." />
+                <MenuItem IsEnabled="False" Header="Properties"/>
+            </ContextMenu>
 
-        <Style TargetType="{x:Type TreeViewItem}"  x:Key="BuildDefinitionWrapperStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
-            <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding DataContext.ProjectBuildModel.ViewBuildsCommand, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"/>
-            <Setter Property="AttachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding DataContext, RelativeSource={RelativeSource Self}}"/>
-            <Setter Property="ContextMenu" Value="{StaticResource ResourceKey=BuildDefinitionWrapperContextMenu}"/>
-        </Style>
+            <Style TargetType="{x:Type TreeViewItem}"  x:Key="BuildDefinitionWrapperStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
+                <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding DataContext.ProjectBuildModel.ViewBuildsCommand, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"/>
+                <Setter Property="AttachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding DataContext, RelativeSource={RelativeSource Self}}"/>
+                <Setter Property="ContextMenu" Value="{StaticResource ResourceKey=BuildDefinitionWrapperContextMenu}"/>
+            </Style>
 
-        <ContextMenu x:Key="ProjectCollectionModelContextMenu">
-            <MenuItem IsEnabled="False" Header="Connect to Team Project..."/>
-            <MenuItem IsEnabled="False" Header="New Team Project..."/>
-            <Separator />
-            <MenuItem IsEnabled="False" Header="Disconnect"/>
-            <Separator />
-            <MenuItem IsEnabled="False" Header="Refresh"/>
-            <Separator />
-            <MenuItem IsEnabled="False" Header="Team Project Collection Settings">
-                <MenuItem IsEnabled="False" Header="Security..."/>
-                <MenuItem IsEnabled="False" Header="Group Membership..."/>
-                <MenuItem IsEnabled="False" Header="Process Template Manager..."/>
-                <MenuItem IsEnabled="False" Header="Source Control File Types..."/>
-            </MenuItem>
-            <MenuItem IsEnabled="False" Header="Properties"/>
-            <Separator />
-            <MenuItem IsEnabled="False" Header="Alerts Explorer"/>
-        </ContextMenu>
+            <ContextMenu x:Key="ProjectCollectionModelContextMenu">
+                <MenuItem IsEnabled="False" Header="Connect to Team Project..."/>
+                <MenuItem IsEnabled="False" Header="New Team Project..."/>
+                <Separator />
+                <MenuItem IsEnabled="False" Header="Disconnect"/>
+                <Separator />
+                <MenuItem IsEnabled="False" Header="Refresh"/>
+                <Separator />
+                <MenuItem IsEnabled="False" Header="Team Project Collection Settings">
+                    <MenuItem IsEnabled="False" Header="Security..."/>
+                    <MenuItem IsEnabled="False" Header="Group Membership..."/>
+                    <MenuItem IsEnabled="False" Header="Process Template Manager..."/>
+                    <MenuItem IsEnabled="False" Header="Source Control File Types..."/>
+                </MenuItem>
+                <MenuItem IsEnabled="False" Header="Properties"/>
+                <Separator />
+                <MenuItem IsEnabled="False" Header="Alerts Explorer"/>
+            </ContextMenu>
 
-        <Style TargetType="{x:Type TreeViewItem}"  x:Key="ProjectCollectionModelStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
-            <Setter Property="ContextMenu" Value="{StaticResource ResourceKey=ProjectCollectionModelContextMenu}"/>
-        </Style>
+            <Style TargetType="{x:Type TreeViewItem}"  x:Key="ProjectCollectionModelStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
+                <Setter Property="ContextMenu" Value="{StaticResource ResourceKey=ProjectCollectionModelContextMenu}"/>
+            </Style>
 
-        <ContextMenu x:Key="ProjectModelContextMenu">
-            <MenuItem IsEnabled="False" Header="Project Alerts..."/>
-            <Separator />
-            <MenuItem IsEnabled="False" Header="Remove"/>
-            <Separator />
-            <MenuItem IsEnabled="False" Header="Refresh"/>
-            <Separator />
-            <MenuItem IsEnabled="False" Header="Team Project Settings">
-                <MenuItem IsEnabled="False" Header="Security..."/>
-                <MenuItem IsEnabled="False" Header="Group Membership..."/>
-                <MenuItem IsEnabled="False" Header="Areas and Iterations..."/>
-                <MenuItem IsEnabled="False" Header="Portal Settings..."/>
-                <MenuItem IsEnabled="False" Header="Source Control..."/>
-                <MenuItem IsEnabled="False" Header="Team Members..."/>
-            </MenuItem>
-            <MenuItem IsEnabled="False" Header="Properties"/>
-            <Separator />
-            <MenuItem IsEnabled="False" Header="Alerts Explorer"/>
-        </ContextMenu>
+            <ContextMenu x:Key="ProjectModelContextMenu">
+                <MenuItem IsEnabled="False" Header="Project Alerts..."/>
+                <Separator />
+                <MenuItem IsEnabled="False" Header="Remove"/>
+                <Separator />
+                <MenuItem IsEnabled="False" Header="Refresh"/>
+                <Separator />
+                <MenuItem IsEnabled="False" Header="Team Project Settings">
+                    <MenuItem IsEnabled="False" Header="Security..."/>
+                    <MenuItem IsEnabled="False" Header="Group Membership..."/>
+                    <MenuItem IsEnabled="False" Header="Areas and Iterations..."/>
+                    <MenuItem IsEnabled="False" Header="Portal Settings..."/>
+                    <MenuItem IsEnabled="False" Header="Source Control..."/>
+                    <MenuItem IsEnabled="False" Header="Team Members..."/>
+                </MenuItem>
+                <MenuItem IsEnabled="False" Header="Properties"/>
+                <Separator />
+                <MenuItem IsEnabled="False" Header="Alerts Explorer"/>
+            </ContextMenu>
 
-        <Style TargetType="{x:Type TreeViewItem}"  x:Key="ProjectModelStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
-            <Setter Property="ContextMenu" Value="{StaticResource ResourceKey=ProjectModelContextMenu}"/>
-        </Style>
+            <Style TargetType="{x:Type TreeViewItem}"  x:Key="ProjectModelStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
+                <Setter Property="ContextMenu" Value="{StaticResource ResourceKey=ProjectModelContextMenu}"/>
+            </Style>
 
-        <ContextMenu x:Key="QueryFolderNodeContextMenu">
-            <MenuItem IsEnabled="False" Header="New Query"/>
-            <MenuItem IsEnabled="False" Header="New Folder"/>
-            <MenuItem IsEnabled="False" Header="New Work Items with Microsoft Excel" />
-            <Separator />
-            <MenuItem IsEnabled="False" Header="Cut"/>
-            <MenuItem IsEnabled="False" Header="Copy"/>
-            <MenuItem IsEnabled="False" Header="Paste"/>
-            <MenuItem IsEnabled="False" Header="Delete"/>
-            <MenuItem IsEnabled="False" Header="Rename"/>
-            <Separator />
-            <MenuItem IsEnabled="False" Header="Security..." />
-        </ContextMenu>
+            <ContextMenu x:Key="QueryFolderNodeContextMenu">
+                <MenuItem IsEnabled="False" Header="New Query"/>
+                <MenuItem IsEnabled="False" Header="New Folder"/>
+                <MenuItem IsEnabled="False" Header="New Work Items with Microsoft Excel" />
+                <Separator />
+                <MenuItem IsEnabled="False" Header="Cut"/>
+                <MenuItem IsEnabled="False" Header="Copy"/>
+                <MenuItem IsEnabled="False" Header="Paste"/>
+                <MenuItem IsEnabled="False" Header="Delete"/>
+                <MenuItem IsEnabled="False" Header="Rename"/>
+                <Separator />
+                <MenuItem IsEnabled="False" Header="Security..." />
+            </ContextMenu>
 
-        <Style TargetType="{x:Type TreeViewItem}"  x:Key="QueryFolderNodeStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
-            <Setter Property="ContextMenu" Value="{StaticResource ResourceKey=QueryFolderNodeContextMenu}"/>
-        </Style>
+            <Style TargetType="{x:Type TreeViewItem}"  x:Key="QueryFolderNodeStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
+                <Setter Property="ContextMenu" Value="{StaticResource ResourceKey=QueryFolderNodeContextMenu}"/>
+            </Style>
 
-        <ContextMenu x:Key="QueryDefinitionNodeContextMenu">
-            <MenuItem Header="View Results" 
-				Command="{Binding DataContext.QueryItemCommandModel.OpenQueryDefinitionCommand, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}" 
-				CommandParameter="{Binding DataContext, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"/>
+            <ContextMenu x:Key="QueryDefinitionNodeContextMenu">
+                <MenuItem Header="View Results" 
+    				Command="{Binding DataContext.QueryItemCommandModel.OpenQueryDefinitionCommand, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}" 
+    				CommandParameter="{Binding DataContext, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"/>
 
-            <MenuItem Header="Edit Query"
-				Command="{Binding DataContext.QueryItemCommandModel.EditQueryDefinitionCommand, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}" 
-				CommandParameter="{Binding DataContext, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"/>
+                <MenuItem Header="Edit Query"
+    				Command="{Binding DataContext.QueryItemCommandModel.EditQueryDefinitionCommand, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}" 
+    				CommandParameter="{Binding DataContext, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"/>
 
-            <Separator />
+                <Separator />
 
-            <MenuItem IsEnabled="False" Header="Open in Microsoft Excel (flat)" />
-            <MenuItem IsEnabled="False" Header="Send to Microsoft Outlook" />
-            <MenuItem IsEnabled="False" Header="Create Report in Microsoft Excel" />
-            <Separator />
-            <MenuItem IsEnabled="False" Header="Cut"/>
-            <MenuItem IsEnabled="False" Header="Copy"/>
-            <MenuItem IsEnabled="False" Header="Paste"/>
+                <MenuItem IsEnabled="False" Header="Open in Microsoft Excel (flat)" />
+                <MenuItem IsEnabled="False" Header="Send to Microsoft Outlook" />
+                <MenuItem IsEnabled="False" Header="Create Report in Microsoft Excel" />
+                <Separator />
+                <MenuItem IsEnabled="False" Header="Cut"/>
+                <MenuItem IsEnabled="False" Header="Copy"/>
+                <MenuItem IsEnabled="False" Header="Paste"/>
 
-            <MenuItem Header="Delete"
-				Command="{Binding DataContext.QueryItemCommandModel.DeleteQueryDefinitionCommand, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}" 
-				CommandParameter="{Binding DataContext, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"/>
+                <MenuItem Header="Delete"
+    				Command="{Binding DataContext.QueryItemCommandModel.DeleteQueryDefinitionCommand, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}" 
+    				CommandParameter="{Binding DataContext, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"/>
 
-            <MenuItem IsEnabled="False" Header="Rename"/>
-            <Separator />
-            <MenuItem IsEnabled="False" Header="Security..." />
-        </ContextMenu>
+                <MenuItem IsEnabled="False" Header="Rename"/>
+                <Separator />
+                <MenuItem IsEnabled="False" Header="Security..." />
+            </ContextMenu>
 
-        <Style TargetType="{x:Type TreeViewItem}"  x:Key="QueryDefinitionNodeStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
-            <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding QueryItemCommandModel.OpenQueryDefinitionCommand}"/>
-            <Setter Property="AttachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding DataContext, RelativeSource={RelativeSource Self}}"/>
-            <Setter Property="ContextMenu" Value="{StaticResource ResourceKey=QueryDefinitionNodeContextMenu}"/>
-        </Style>
+            <Style TargetType="{x:Type TreeViewItem}"  x:Key="QueryDefinitionNodeStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
+                <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding QueryItemCommandModel.OpenQueryDefinitionCommand}"/>
+                <Setter Property="AttachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding DataContext, RelativeSource={RelativeSource Self}}"/>
+                <Setter Property="ContextMenu" Value="{StaticResource ResourceKey=QueryDefinitionNodeContextMenu}"/>
+            </Style>
 
-        <Style TargetType="{x:Type TreeViewItem}"  x:Key="SourceControlNodeStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
-            <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding DataContext.OpenSourceControlCommand, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"/>
-        </Style>
+            <Style TargetType="{x:Type TreeViewItem}"  x:Key="SourceControlNodeStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
+                <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding DataContext.OpenSourceControlCommand, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"/>
+            </Style>
 
-        <ContextMenu x:Key="WorkItemsNodeContextMenu">
-            <MenuItem IsEnabled="False" Header="1 New Task"/>
-            <MenuItem IsEnabled="False" Header="2 New Bug"/>
-            <Separator />
-            <MenuItem IsEnabled="False" Header="New Work Item">
-                <MenuItem IsEnabled="False" Header="Bug"/>
-                <MenuItem IsEnabled="False" Header="Issue"/>
-                <MenuItem IsEnabled="False" Header="Shared Steps"/>
-                <MenuItem IsEnabled="False" Header="Task"/>
-                <MenuItem IsEnabled="False" Header="Test Case"/>
-                <MenuItem IsEnabled="False" Header="User Story"/>
-            </MenuItem>
-            <MenuItem IsEnabled="False" Header="Go to Work Item" />
-            <Separator />
-            <MenuItem IsEnabled="False" Header="New Query"/>
-            <MenuItem IsEnabled="False" Header="New Work Items with Microsoft Excel" />
-            <Separator />
-            <MenuItem IsEnabled="False" Header="Refresh"/>
-        </ContextMenu>
+            <ContextMenu x:Key="WorkItemsNodeContextMenu">
+                <MenuItem IsEnabled="False" Header="1 New Task"/>
+                <MenuItem IsEnabled="False" Header="2 New Bug"/>
+                <Separator />
+                <MenuItem IsEnabled="False" Header="New Work Item">
+                    <MenuItem IsEnabled="False" Header="Bug"/>
+                    <MenuItem IsEnabled="False" Header="Issue"/>
+                    <MenuItem IsEnabled="False" Header="Shared Steps"/>
+                    <MenuItem IsEnabled="False" Header="Task"/>
+                    <MenuItem IsEnabled="False" Header="Test Case"/>
+                    <MenuItem IsEnabled="False" Header="User Story"/>
+                </MenuItem>
+                <MenuItem IsEnabled="False" Header="Go to Work Item" />
+                <Separator />
+                <MenuItem IsEnabled="False" Header="New Query"/>
+                <MenuItem IsEnabled="False" Header="New Work Items with Microsoft Excel" />
+                <Separator />
+                <MenuItem IsEnabled="False" Header="Refresh"/>
+            </ContextMenu>
 
-        <Style TargetType="{x:Type TreeViewItem}"  x:Key="WorkItemsNodeStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
-            <Setter Property="ContextMenu" Value="{StaticResource ResourceKey=WorkItemsNodeContextMenu}"/>
-        </Style>
+            <Style TargetType="{x:Type TreeViewItem}"  x:Key="WorkItemsNodeStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
+                <Setter Property="ContextMenu" Value="{StaticResource ResourceKey=WorkItemsNodeContextMenu}"/>
+            </Style>
 
-        <VisualStudio:TeamPilgrimControlStyleSelector
-			x:Key="teamPilgrilViewStyleSelector"
-			DefaultStyle="{StaticResource ResourceKey=DefaultStyle}"
-			ProjectCollectionModelStyle="{StaticResource ResourceKey=ProjectCollectionModelStyle}"
-			ProjectModelStyle="{StaticResource ResourceKey=ProjectModelStyle}"
-			WorkItemsNodeStyle="{StaticResource ResourceKey=WorkItemsNodeStyle}"
-			QueryFolderNodeStyle="{StaticResource ResourceKey=QueryFolderNodeStyle}"
-			QueryDefinitionNodeStyle="{StaticResource ResourceKey=QueryDefinitionNodeStyle}"
-			SourceControlNodeStyle="{StaticResource ResourceKey=SourceControlNodeStyle}"
-			BuildDefinitionWrapperStyle="{StaticResource ResourceKey=BuildDefinitionWrapperStyle}" />
+            <VisualStudio:TeamPilgrimControlStyleSelector
+    			x:Key="teamPilgrilViewStyleSelector"
+    			DefaultStyle="{StaticResource ResourceKey=DefaultStyle}"
+    			ProjectCollectionModelStyle="{StaticResource ResourceKey=ProjectCollectionModelStyle}"
+    			ProjectModelStyle="{StaticResource ResourceKey=ProjectModelStyle}"
+    			WorkItemsNodeStyle="{StaticResource ResourceKey=WorkItemsNodeStyle}"
+    			QueryFolderNodeStyle="{StaticResource ResourceKey=QueryFolderNodeStyle}"
+    			QueryDefinitionNodeStyle="{StaticResource ResourceKey=QueryDefinitionNodeStyle}"
+    			SourceControlNodeStyle="{StaticResource ResourceKey=SourceControlNodeStyle}"
+    			BuildDefinitionWrapperStyle="{StaticResource ResourceKey=BuildDefinitionWrapperStyle}" />
     </UserControl.Resources>
     <DockPanel AttachedProperties:ActivateModel.Model="{Binding}">
         <DockPanel.Resources>
@@ -353,9 +354,15 @@
 				QueryDefinitionNodeStyle="{StaticResource ResourceKey=QueryDefinitionNodeStyle}"
 				SourceControlNodeStyle="{StaticResource ResourceKey=SourceControlNodeStyle}"
 				BuildDefinitionWrapperStyle="{StaticResource ResourceKey=BuildDefinitionWrapperStyle}" />
+            
         </DockPanel.Resources>
+        <ToolBar ToolBarTray.IsLocked="True" ToolBar.OverflowMode="Never" DockPanel.Dock="Top">
+            <Button>
+                <Image Source="Resources\arrow_refresh.png" Width="16" Height="16" />
+            </Button>
+        </ToolBar>
         <ScrollViewer DockPanel.Dock="Bottom" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-            <TreeView ItemsSource="{Binding CollectionModels}">
+            <TreeView ItemsSource="{Binding CollectionModels}" ItemContainerStyleSelector="{StaticResource teamPilgrilViewStyleSelector}">
 
                 <TreeView.Resources>
                     <HierarchicalDataTemplate DataType="{x:Type Model:ProjectCollectionModel}" ItemsSource="{Binding ProjectModels}">
@@ -399,9 +406,6 @@
                     </HierarchicalDataTemplate>
 
                 </TreeView.Resources>
-                <TreeView.ItemContainerStyleSelector>
-                    <StaticResource ResourceKey="teamPilgrilViewStyleSelector"/>
-                </TreeView.ItemContainerStyleSelector>
             </TreeView>
         </ScrollViewer>
     </DockPanel>
