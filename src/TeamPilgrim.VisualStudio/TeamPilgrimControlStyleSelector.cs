@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Nodes.Project;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Nodes.QueryItems;
 
@@ -15,9 +16,17 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
         public Style QueryDefinitionNodeStyle { get; set; }
         
         public Style BuildDefinitionWrapperStyle { get; set; }
+        
+        public Style ProjectCollectionModelStyle { get; set; }
 
         public override Style SelectStyle(object item, DependencyObject container)
         {
+            var projectCollectionModel = item as ProjectCollectionModel;
+            if (projectCollectionModel != null && ProjectCollectionModelStyle != null)
+            {
+                return ProjectCollectionModelStyle;
+            }
+            
             var sourceControlNode = item as SourceControlNode;
             if (sourceControlNode != null && SourceControlNodeStyle != null)
             {

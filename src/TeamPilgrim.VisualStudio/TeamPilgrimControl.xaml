@@ -17,14 +17,35 @@
              Name="MyToolWindow">
     <Grid>
         <Grid.Resources>
-            <ContextMenu x:Key="TestContext">
-                <MenuItem Header="Test"/>
-            </ContextMenu>
 
+            <ContextMenu x:Key="ProjectCollectionModelContextMenu">
+                <MenuItem Header="Connect to Team Project..."/>
+                <MenuItem Header="New Team Project..."/>
+                <Separator />
+                <MenuItem Header="Disconnect"/>
+                <Separator />
+                <MenuItem Header="Refresh"/>
+                <Separator />
+                <MenuItem Header="Team Project Collection Settings">
+                    <MenuItem Header="Security..."/>
+                    <MenuItem Header="Group Membership..."/>
+                    <MenuItem Header="Process Template Manager..."/>
+                    <MenuItem Header="Source Control File Types..."/>
+                </MenuItem>
+                <MenuItem Header="Properties"/>
+                <Separator />
+                <MenuItem Header="Alerts Explorer"/>
+            </ContextMenu>
+            
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="DefaultStyle">
                 <EventSetter Event="TreeViewItem.PreviewMouseRightButtonDown" Handler="OnPreviewMouseRightButtonDown"/>
+                <EventSetter Event="TreeViewItem.MouseRightButtonUp" Handler="OnPreviewMouseRightButtonDown"/>
             </Style>
 
+            <Style TargetType="{x:Type TreeViewItem}"  x:Key="ProjectCollectionModelStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
+                <Setter Property="ContextMenu" Value="{StaticResource ResourceKey=ProjectCollectionModelContextMenu}"/>
+            </Style>
+            
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="BuildDefinitionWrapperStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
                 <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}, AncestorLevel=1}, Path=DataContext.ProjectBuildModel.OpenBuildDefintionCommand}"/>
                 <Setter Property="AttachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}"/>
@@ -37,12 +58,12 @@
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="QueryDefinitionNodeStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
                 <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding Path=QueryItemCommandModel.OpenQueryDefinitionCommand}"/>
                 <Setter Property="AttachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}"/>
-                <Setter Property="ContextMenu" Value="{StaticResource ResourceKey=TestContext}"/>
             </Style>
-
+            
             <VisualStudio:TeamPilgrimControlStyleSelector
                 x:Key="teamPilgrilViewStyleSelector"
                 DefaultStyle="{StaticResource ResourceKey=DefaultStyle}"
+                ProjectCollectionModelStyle="{StaticResource ResourceKey=ProjectCollectionModelStyle}"
                 SourceControlNodeStyle="{StaticResource ResourceKey=SourceControlNodeStyle}"
                 BuildDefinitionWrapperStyle="{StaticResource ResourceKey=BuildDefinitionWrapperStyle}" 
                 QueryDefinitionNodeStyle="{StaticResource ResourceKey=QueryDefinitionNodeStyle}" />
