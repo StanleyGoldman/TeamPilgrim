@@ -161,6 +161,7 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\VsWindowFrameEditorTypeIds.cs" />
     <Compile Include="Common\AttachedProperties\MouseDoubleClick.cs" />
     <Compile Include="Domain\BusinessInterfaces\ITeamPilgrimVsService.cs" />
     <Compile Include="Business\Services\TeamPilgrimBuildService.cs" />

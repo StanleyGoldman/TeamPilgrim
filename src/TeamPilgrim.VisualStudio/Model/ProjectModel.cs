@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
@@ -9,7 +8,6 @@ using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Nodes.QueryItems;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
-using Microsoft.VisualStudio.TeamFoundation.VersionControl;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
@@ -20,6 +18,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
         public TfsTeamProjectCollection ProjectCollection { get; private set; }
 
         public Project Project { get; private set; }
+
+        public TeamPilgrimModel TeamPilgrimModel { get; private set; }
 
         public ProjectBuildModel ProjectBuildModel { get; private set; }
 
@@ -100,11 +100,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             bool result;
 
             var queryId = queryDefinitionNode.QueryDefinition.Id;
+
             if(_pilgrimServiceModelProvider.TryDeleteQueryDefinition(out result, ProjectCollection, Project, queryId))
             {
                 if(result)
                 {
-                    //TODO: Figure out how to close any open QueryDefinitions
+                    TeamPilgrimPackage.TeamPilgrimVsService.CloseQueryDefinitionFrames(ProjectCollection, queryId);
+                    
                 }
             }
         }

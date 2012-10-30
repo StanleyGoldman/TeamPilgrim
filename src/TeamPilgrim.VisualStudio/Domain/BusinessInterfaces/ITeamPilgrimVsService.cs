@@ -16,6 +16,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces
         
         void OpenQueryDefinition(TfsTeamProjectCollection projectCollection, Guid queryDefinitionId);
         void EditQueryDefinition(TfsTeamProjectCollection projectCollection, Guid queryDefinitionId);
+        void CloseQueryDefinitionFrames(TfsTeamProjectCollection projectCollection, Guid queryDefinitionId);
         
         void OpenBuildDefinition(Uri uri);
         void ViewBuilds(string name, string s, string empty, DateFilter today);

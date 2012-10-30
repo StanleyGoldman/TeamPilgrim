@@ -167,7 +167,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
 
             TeamPilgrimPackage.UIShell = (IVsUIShell)base.GetService(typeof(SVsUIShell));
             TeamPilgrimPackage.MenuCommandService = base.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            TeamPilgrimPackage._teamPilgrimVsService.InitializePackage(_singleInstance);
+            TeamPilgrimPackage._teamPilgrimVsService.InitializePackage(_singleInstance, UIShell);
         }
         #endregion
 
