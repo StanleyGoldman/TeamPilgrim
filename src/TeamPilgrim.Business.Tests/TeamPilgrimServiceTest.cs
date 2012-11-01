@@ -18,18 +18,14 @@ namespace JustAProgrammer.TeamPilgrim.Business.Tests
             _teamPilgrimTfsService = new TeamPilgrimTfsService();
         }
 
-        [Test]
+        [Test, Ignore]
         public void ManualTest()
         {
             var pilgrimProjectCollections = _teamPilgrimTfsService.GetProjectCollections();
             var pilgrimProjectCollection = pilgrimProjectCollections.First();
 
-            var teamPilgrimBuildService = _teamPilgrimTfsService.GetTeamPilgrimBuildService(pilgrimProjectCollection.Uri);
-
             var pilgrimProjects = _teamPilgrimTfsService.GetProjects(pilgrimProjectCollection.Uri);
             Project pilgrimProject = pilgrimProjects.First();
-
-            BuildDefinitionWrapper[] buildDefinitions = teamPilgrimBuildService.QueryBuildDefinitions(pilgrimProject.Name);
         }
     }
 }

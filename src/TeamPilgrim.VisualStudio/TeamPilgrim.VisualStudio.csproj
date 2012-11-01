@@ -164,11 +164,9 @@
     <Compile Include="Common\VsWindowFrameEditorTypeIds.cs" />
     <Compile Include="Common\AttachedProperties\MouseDoubleClick.cs" />
     <Compile Include="Domain\BusinessInterfaces\ITeamPilgrimVsService.cs" />
-    <Compile Include="Business\Services\TeamPilgrimBuildService.cs" />
     <Compile Include="Business\Services\TeamPilgrimTfsService.cs" />
     <Compile Include="Common\AttachedProperties\ActivateModel.cs" />
     <Compile Include="Common\BindingErrorTraceListener.cs" />
-    <Compile Include="Domain\BusinessInterfaces\ITeamPilgrimBuildService.cs" />
     <Compile Include="Domain\BusinessInterfaces\ITeamPilgrimTfsService.cs" />
     <Compile Include="Business\Services\TeamPilgrimVsService.cs" />
     <Compile Include="Domain\Entities\BuildDefinitionWrapper.cs" />
@@ -186,8 +184,6 @@
     <Compile Include="Model\TeamPilgrimModel.cs" />
     <Compile Include="Model\ProjectCollectionModel.cs" />
     <Compile Include="Model\ProjectModel.cs" />
-    <Compile Include="Providers\PilgrimBuildServiceModelProvider.cs" />
-    <Compile Include="Providers\IPilgrimBuildServiceModelProvider.cs" />
     <Compile Include="Providers\PilgrimServiceModelProvider.cs" />
     <Compile Include="TeamPilgrimControlStyleSelector.cs" />
     <Compile Include="TeamPilgrimControl.xaml.cs">

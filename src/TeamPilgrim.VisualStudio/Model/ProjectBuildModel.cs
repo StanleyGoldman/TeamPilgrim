@@ -17,14 +17,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
     public class ProjectBuildModel : BaseModel
     {
         private readonly IPilgrimServiceModelProvider _pilgrimServiceModelProvider;
-        private readonly IPilgrimBuildServiceModelProvider _buildServiceModelProvider;
         private readonly TfsTeamProjectCollection _collection;
         private readonly Project _project;
 
-        public ProjectBuildModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, IPilgrimBuildServiceModelProvider buildServiceModelProvider, TfsTeamProjectCollection collection, Project project)
+        public ProjectBuildModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, TfsTeamProjectCollection collection, Project project)
         {
             _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
-            _buildServiceModelProvider = buildServiceModelProvider;
             _collection = collection;
             _project = project;
 
@@ -80,7 +78,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
         private void PopulatePilgrimBuildModelCallback(object state)
         {
             BuildDefinitionWrapper[] buildDefinitions;
-            if (_buildServiceModelProvider.TryGetBuildDefinitionsByProjectName(out buildDefinitions, _project.Name))
+            if (_pilgrimServiceModelProvider.TryGetBuildDefinitionsByProjectName(out buildDefinitions, _collection, _project.Name))
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
                     {

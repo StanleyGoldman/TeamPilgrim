@@ -42,16 +42,15 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
         private void PopulatePilgrimProjectCollectionModelCallback(object state)
         {
             Project[] projects;
-            IPilgrimBuildServiceModelProvider buildServiceModelProvider;
             
             var projectCollectionModel = this;
 
-            if (_pilgrimServiceModelProvider.TryGetProjectsAndBuildServiceProvider(out projects, out buildServiceModelProvider, TfsTeamProjectCollection.Uri))
+            if (_pilgrimServiceModelProvider.TryGetProjects(out projects, TfsTeamProjectCollection.Uri))
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
                     {
                         var pilgrimProjectModels = projects
-                            .Select(project => new ProjectModel(_pilgrimServiceModelProvider, projectCollectionModel.TfsTeamProjectCollection, project, new ProjectBuildModel(_pilgrimServiceModelProvider, buildServiceModelProvider, projectCollectionModel.TfsTeamProjectCollection, project)))
+                            .Select(project => new ProjectModel(_pilgrimServiceModelProvider, projectCollectionModel.TfsTeamProjectCollection, project, new ProjectBuildModel(_pilgrimServiceModelProvider, projectCollectionModel.TfsTeamProjectCollection, project)))
                             .ToArray();
 
                         ProjectModels = pilgrimProjectModels;

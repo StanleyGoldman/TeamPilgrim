@@ -19,6 +19,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Tests.Model
         {
             public TfsTeamProjectCollection[] LastPilgrimProjectCollections { get; private set; }
 
+            public Project[] LastPilgrimProjects { get; private set; }
+
             public bool TryGetCollections(out TfsTeamProjectCollection[] collections)
             {
                 collections = new TfsTeamProjectCollection[0];
@@ -31,22 +33,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Tests.Model
                 throw new NotImplementedException();
             }
 
-            public Project[] LastPilgrimProjects { get; private set; }
-
             public bool TryGetProjects(out Project[] projects, Uri tpcAddress)
             {
-                throw new NotImplementedException();
-            }
-
-            public bool TryGetBuildServiceProvider(out IPilgrimBuildServiceModelProvider buildService, Uri tpcAddress)
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool TryGetProjectsAndBuildServiceProvider(out Project[] projects, out IPilgrimBuildServiceModelProvider buildService, Uri tpcAddress)
-            {
                 projects = new Project[0];
-                buildService = new TestPilgrimBuildServiceModelProvider();
                 return true;
             }
 
@@ -54,11 +43,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Tests.Model
             {
                 throw new NotImplementedException();
             }
-        }
 
-        public class TestPilgrimBuildServiceModelProvider : IPilgrimBuildServiceModelProvider
-        {
-            public bool TryGetBuildDefinitionsByProjectName(out BuildDefinitionWrapper[] buildDefinitions, string teamProject)
+            public bool TryGetBuildDefinitionsByProjectName(out BuildDefinitionWrapper[] buildDefinitions, TfsTeamProjectCollection collection, string projectName)
             {
                 throw new NotImplementedException();
             }

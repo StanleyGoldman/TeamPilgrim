@@ -1,6 +1,7 @@
 ﻿using System;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
@@ -54,33 +55,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             return false;
         }
 
-        public bool TryGetBuildServiceProvider(out IPilgrimBuildServiceModelProvider buildServiceModelProvider, Uri tpcAddress)
-        {
-            try
-            {
-                buildServiceModelProvider = new PilgrimBuildServiceModelProvider(_teamPilgrimTfsService.GetTeamPilgrimBuildService(tpcAddress));
-                return true;
-            }
-            catch (Exception) { }
-
-            buildServiceModelProvider = null;
-            return false;
-        }
-
-        public bool TryGetProjectsAndBuildServiceProvider(out Project[] projects, out IPilgrimBuildServiceModelProvider buildServiceModelProvider, Uri tpcAddress)
-        {
-            Project[] projects1;
-            IPilgrimBuildServiceModelProvider buildServiceModelProvider1 = null;
-
-            var result = TryGetProjects(out projects1, tpcAddress)
-                && TryGetBuildServiceProvider(out buildServiceModelProvider1, tpcAddress);
-
-            projects = projects1;
-            buildServiceModelProvider = buildServiceModelProvider1;
-
-            return result;
-        }
-
         public bool TryDeleteQueryDefinition(out bool result, TfsTeamProjectCollection teamProjectCollection, Project teamProject, Guid queryId)
         {
             try
@@ -94,6 +68,22 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             }
 
             result = false;
+            return false;
+        }
+
+        public bool TryGetBuildDefinitionsByProjectName(out BuildDefinitionWrapper[] buildDefinitions, TfsTeamProjectCollection collection, string projectName)
+        {
+            try
+            {
+                buildDefinitions = _teamPilgrimTfsService.QueryBuildDefinitions(collection, projectName);
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            buildDefinitions = null;
             return false;
         }
     }
