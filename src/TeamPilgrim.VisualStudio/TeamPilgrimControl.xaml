@@ -90,14 +90,14 @@
                 <MenuItem IsEnabled="False" Header="Security..." />
             </ContextMenu>
 
-            <ContextMenu x:Key="QueryDefinitionNodeContextMenu">
+            <ContextMenu x:Key="QueryDefinitionModelContextMenu" d:DataContext="{d:DesignInstance QueryItemModels:QueryDefinitionModel}">
                 <MenuItem Header="View Results" 
-					Command="{Binding DataContext.QueryItemCommandModel.OpenQueryDefinitionCommand, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}" 
-					CommandParameter="{Binding DataContext, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"/>
+					Command="{Binding Path=QueryItemCommandModel.OpenQueryDefinitionCommand}" 
+					CommandParameter="{Binding}"/>
 
                 <MenuItem Header="Edit Query"
-					Command="{Binding DataContext.QueryItemCommandModel.EditQueryDefinitionCommand, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}" 
-					CommandParameter="{Binding DataContext, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"/>
+					Command="{Binding Path=QueryItemCommandModel.EditQueryDefinitionCommand}" 
+					CommandParameter="{Binding}"/>
 
                 <Separator />
 
@@ -110,8 +110,8 @@
                 <MenuItem IsEnabled="False" Header="Paste"/>
 
                 <MenuItem Header="Delete"
-					Command="{Binding DataContext.QueryItemCommandModel.DeleteQueryDefinitionCommand, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}" 
-					CommandParameter="{Binding DataContext, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"/>
+					Command="{Binding Path=QueryItemCommandModel.DeleteQueryDefinitionCommand}" 
+					CommandParameter="{Binding}"/>
 
                 <MenuItem IsEnabled="False" Header="Rename"/>
                 <Separator />
@@ -119,15 +119,15 @@
             </ContextMenu>
 
             <ContextMenu x:Key="BuildDefinitionWrapperContextMenu">
-                <MenuItem Header="View Builds" 
-					Command="{Binding DataContext.ProjectBuildModel.ViewBuildsCommand, RelativeSource={RelativeSource AncestorLevel=2, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}" 
-					CommandParameter="{Binding DataContext, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"/>
+                <MenuItem Header="View Builds" />
+                <!--Command="{Binding DataContext.ProjectBuildModel.ViewBuildsCommand, RelativeSource={RelativeSource AncestorLevel=2, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}" -->
+                <!--CommandParameter="{Binding DataContext, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"-->
 
                 <MenuItem IsEnabled="False" Header="Queue New Build"/>
 
-                <MenuItem Header="Edit Build Definition"
-					Command="{Binding DataContext.ProjectBuildModel.OpenBuildDefintionCommand, RelativeSource={RelativeSource AncestorLevel=2, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}" 
-					CommandParameter="{Binding DataContext, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"/>
+                <MenuItem Header="Edit Build Definition" />
+                <!--Command="{Binding DataContext.ProjectBuildModel.OpenBuildDefintionCommand, RelativeSource={RelativeSource AncestorLevel=2, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}" -->
+                <!--CommandParameter="{Binding DataContext, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"-->
 
                 <MenuItem IsEnabled="False" Header="Open Process File Location"/>
                 <MenuItem IsEnabled="False" Header="Clone Build Definition"/>
@@ -209,7 +209,7 @@
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type QueryItemModels:QueryDefinitionModel}">
-                        <TextBlock Text="{Binding Name}" ContextMenu="{StaticResource ResourceKey=QueryDefinitionNodeContextMenu}"  />
+                        <TextBlock Text="{Binding Name}" ContextMenu="{StaticResource ResourceKey=QueryDefinitionModelContextMenu}"  />
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type ProjectModels:BuildsModel}" ItemsSource="{Binding ProjectBuildModel.BuildDefinitions}">
