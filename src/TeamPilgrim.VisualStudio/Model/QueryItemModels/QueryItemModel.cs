@@ -1,10 +1,10 @@
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Nodes.QueryItems
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.QueryItemModels
 {
-    public abstract class QueryItemNode : BaseNode
+    public abstract class QueryItemModel : BaseModel
     {
         protected IQueryItemCommandModel queryItemCommandModel;
 
-        protected QueryItemNode(IQueryItemCommandModel queryItemCommandModel)
+        protected QueryItemModel(IQueryItemCommandModel queryItemCommandModel)
         {
             this.queryItemCommandModel = queryItemCommandModel;
         }

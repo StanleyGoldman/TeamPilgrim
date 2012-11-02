@@ -4,12 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:Model="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model"
-             xmlns:Common="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common"
              xmlns:Entities="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities"
              xmlns:VisualStudio="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio"
-             xmlns:Project="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Nodes.Project"
-             xmlns:QueryItems="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Nodes.QueryItems"
              xmlns:AttachedProperties="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties"
+             xmlns:ProjectModels="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.ProjectModels"
+             xmlns:QueryItemModels="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.QueryItemModels"
              x:Class="JustAProgrammer.TeamPilgrim.VisualStudio.TeamPilgrimControl"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
@@ -198,19 +197,19 @@
                         <TextBlock Text="{Binding Project.Name}" ContextMenu="{StaticResource ResourceKey=ProjectModelContextMenu}" />
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type Project:WorkItemsNode}" ItemsSource="{Binding QueryItems}">
+                    <HierarchicalDataTemplate DataType="{x:Type ProjectModels:WorkItemsModel}" ItemsSource="{Binding QueryItems}">
                         <TextBlock Text="Work Items" ContextMenu="{StaticResource ResourceKey=WorkItemsNodeContextMenu}"  />
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type QueryItems:QueryFolderNode}" ItemsSource="{Binding QueryItems}">
+                    <HierarchicalDataTemplate DataType="{x:Type QueryItemModels:QueryFolderModel}" ItemsSource="{Binding QueryItems}">
                         <TextBlock Text="{Binding Name}" ContextMenu="{StaticResource ResourceKey=QueryFolderNodeContextMenu}"  />
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type QueryItems:QueryDefinitionNode}">
+                    <HierarchicalDataTemplate DataType="{x:Type QueryItemModels:QueryDefinitionModel}">
                         <TextBlock Text="{Binding Name}" ContextMenu="{StaticResource ResourceKey=QueryDefinitionNodeContextMenu}"  />
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type Project:BuildsNode}" ItemsSource="{Binding ProjectBuildModel.BuildDefinitions}">
+                    <HierarchicalDataTemplate DataType="{x:Type ProjectModels:BuildsModel}" ItemsSource="{Binding ProjectBuildModel.BuildDefinitions}">
                         <TextBlock Text="Builds" />
                     </HierarchicalDataTemplate>
 
@@ -218,15 +217,15 @@
                         <TextBlock Text="{Binding Name}" ContextMenu="{StaticResource ResourceKey=BuildDefinitionWrapperContextMenu}"  />
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type Project:ReportsNode}">
+                    <HierarchicalDataTemplate DataType="{x:Type ProjectModels:ReportsModel}">
                         <TextBlock Text="Reports" />
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type Project:TeamMembersNode}">
+                    <HierarchicalDataTemplate DataType="{x:Type ProjectModels:TeamMembersModel}">
                         <TextBlock Text="Team Members" />
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type Project:SourceControlNode}">
+                    <HierarchicalDataTemplate DataType="{x:Type ProjectModels:SourceControlModel}">
                         <TextBlock Text="Source Control" />
                     </HierarchicalDataTemplate>
 

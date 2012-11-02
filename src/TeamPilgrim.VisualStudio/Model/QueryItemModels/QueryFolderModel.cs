@@ -1,13 +1,13 @@
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Nodes.QueryItems
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.QueryItemModels
 {
-    public class QueryFolderNode : QueryItemNode
+    public class QueryFolderModel : QueryItemModel
     {
         private readonly QueryFolder _folder;
 
-        public QueryFolderNode(QueryFolder folder, IQueryItemCommandModel queryItemCommandModel)
+        public QueryFolderModel(QueryFolder folder, IQueryItemCommandModel queryItemCommandModel)
             : base(queryItemCommandModel)
         {
             _folder = folder;
@@ -23,7 +23,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Nodes.QueryItems
             get { return Folder.Name; }
         }
 
-        public QueryItemNode[] QueryItems
+        public QueryItemModel[] QueryItems
         {
             get
             {

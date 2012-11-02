@@ -2,8 +2,8 @@ using System.Windows;
 using System.Windows.Controls;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Nodes.Project;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Nodes.QueryItems;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.ProjectModels;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.QueryItemModels;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio
 {
@@ -40,25 +40,25 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
                 return ProjectModelStyle;
             }
             
-            var workItemsNode = item as WorkItemsNode;
+            var workItemsNode = item as WorkItemsModel;
             if (workItemsNode != null && WorkItemsNodeStyle != null)
             {
                 return WorkItemsNodeStyle;
             }
             
-            var sourceControlNode = item as SourceControlNode;
+            var sourceControlNode = item as SourceControlModel;
             if (sourceControlNode != null && SourceControlNodeStyle != null)
             {
                 return SourceControlNodeStyle;
             }
 
-            var queryDefinitionNode = item as QueryDefinitionNode;
+            var queryDefinitionNode = item as QueryDefinitionModel;
             if (queryDefinitionNode != null && QueryDefinitionNodeStyle != null)
             {
                 return QueryDefinitionNodeStyle;
             }
 
-            var queryFolderNode = item as QueryFolderNode;
+            var queryFolderNode = item as QueryFolderModel;
             if (queryFolderNode != null && QueryFolderNodeStyle != null)
             {
                 return QueryFolderNodeStyle;

@@ -1,10 +1,10 @@
-﻿namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Nodes.Project
+﻿namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ProjectModels
 {
-    public class BuildsNode : BaseNode
+    public class BuildsModel : BaseModel
     {
         private readonly ProjectBuildModel _projectBuildModel;
 
-        public BuildsNode(ProjectBuildModel projectBuildModel)
+        public BuildsModel(ProjectBuildModel projectBuildModel)
         {
             _projectBuildModel = projectBuildModel;
         }

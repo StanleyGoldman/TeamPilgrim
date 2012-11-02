@@ -1,22 +1,21 @@
-using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Nodes.QueryItems;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.QueryItemModels;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Nodes.Project
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ProjectModels
 {
-    public class WorkItemsNode : BaseNode
+    public class WorkItemsModel : BaseModel
     {
         private readonly QueryHierarchy _queryHierarchy;
         private readonly IQueryItemCommandModel _queryItemCommandModel;
 
-        public WorkItemsNode(QueryHierarchy queryHierarchy, IQueryItemCommandModel queryItemCommandModel)
+        public WorkItemsModel(QueryHierarchy queryHierarchy, IQueryItemCommandModel queryItemCommandModel)
         {
             _queryHierarchy = queryHierarchy;
             _queryItemCommandModel = queryItemCommandModel;
         }
 
-        public QueryItemNode[] QueryItems
+        public QueryItemModel[] QueryItems
         {
             get
             {

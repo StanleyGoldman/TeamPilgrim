@@ -2,9 +2,8 @@
 using System.Windows.Threading;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Nodes;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Nodes.Project;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Nodes.QueryItems;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.ProjectModels;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.QueryItemModels;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
@@ -23,7 +22,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         public ProjectBuildModel ProjectBuildModel { get; private set; }
 
-        public BaseNode[] ChildObjects { get; private set; }
+        public BaseModel[] ChildObjects { get; private set; }
 
         public ProjectModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, TfsTeamProjectCollection projectCollection, Project project, ProjectBuildModel projectBuildModel)
         {
@@ -33,17 +32,17 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             ProjectBuildModel = projectBuildModel;
             
             OpenSourceControlCommand = new RelayCommand(OpenSourceControl, CanOpenSourceControl);
-            OpenQueryDefinitionCommand = new RelayCommand<QueryDefinitionNode>(OpenQueryDefinition, CanOpenQueryDefinition);
-            EditQueryDefinitionCommand = new RelayCommand<QueryDefinitionNode>(EditQueryDefinition, CanEditQueryDefinition);
-            DeleteQueryDefinitionCommand = new RelayCommand<QueryDefinitionNode>(DeleteQueryDefinition, CanDeleteQueryDefinition);
-            
-            ChildObjects = new BaseNode[]
+            OpenQueryDefinitionCommand = new RelayCommand<QueryDefinitionModel>(OpenQueryDefinition, CanOpenQueryDefinition);
+            EditQueryDefinitionCommand = new RelayCommand<QueryDefinitionModel>(EditQueryDefinition, CanEditQueryDefinition);
+            DeleteQueryDefinitionCommand = new RelayCommand<QueryDefinitionModel>(DeleteQueryDefinition, CanDeleteQueryDefinition);
+
+            ChildObjects = new BaseModel[]
                 {
-                    new WorkItemsNode(Project.QueryHierarchy, this), 
-                    new ReportsNode(),
-                    new BuildsNode(projectBuildModel),
-                    new TeamMembersNode(),
-                    new SourceControlNode()
+                    new WorkItemsModel(Project.QueryHierarchy, this), 
+                    new ReportsModel(),
+                    new BuildsModel(projectBuildModel),
+                    new TeamMembersModel(),
+                    new SourceControlModel()
                 };
         }
 
@@ -61,14 +60,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         #region OpenQueryItem
 
-        public RelayCommand<QueryDefinitionNode> OpenQueryDefinitionCommand { get; private set; }
+        public RelayCommand<QueryDefinitionModel> OpenQueryDefinitionCommand { get; private set; }
 
-        private void OpenQueryDefinition(QueryDefinitionNode queryDefinitionNode)
+        private void OpenQueryDefinition(QueryDefinitionModel queryDefinitionModel)
         {
-            TeamPilgrimPackage.TeamPilgrimVsService.OpenQueryDefinition(ProjectCollection, queryDefinitionNode.QueryDefinition.Id);
+            TeamPilgrimPackage.TeamPilgrimVsService.OpenQueryDefinition(ProjectCollection, queryDefinitionModel.QueryDefinition.Id);
         }
 
-        private bool CanOpenQueryDefinition(QueryDefinitionNode queryDefinitionNode)
+        private bool CanOpenQueryDefinition(QueryDefinitionModel queryDefinitionModel)
         {
             return true;
         }
@@ -77,14 +76,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         #region EditQueryItem
 
-        public RelayCommand<QueryDefinitionNode> EditQueryDefinitionCommand { get; private set; }
+        public RelayCommand<QueryDefinitionModel> EditQueryDefinitionCommand { get; private set; }
 
-        private void EditQueryDefinition(QueryDefinitionNode queryDefinitionNode)
+        private void EditQueryDefinition(QueryDefinitionModel queryDefinitionModel)
         {
-            TeamPilgrimPackage.TeamPilgrimVsService.EditQueryDefinition(ProjectCollection, queryDefinitionNode.QueryDefinition.Id);
+            TeamPilgrimPackage.TeamPilgrimVsService.EditQueryDefinition(ProjectCollection, queryDefinitionModel.QueryDefinition.Id);
         }
 
-        private bool CanEditQueryDefinition(QueryDefinitionNode queryDefinitionNode)
+        private bool CanEditQueryDefinition(QueryDefinitionModel queryDefinitionModel)
         {
             return true;
         }
@@ -93,13 +92,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         #region DeleteQueryItem
 
-        public RelayCommand<QueryDefinitionNode> DeleteQueryDefinitionCommand { get; private set; }
+        public RelayCommand<QueryDefinitionModel> DeleteQueryDefinitionCommand { get; private set; }
 
-        private void DeleteQueryDefinition(QueryDefinitionNode queryDefinitionNode)
+        private void DeleteQueryDefinition(QueryDefinitionModel queryDefinitionModel)
         {
             bool result;
 
-            var queryId = queryDefinitionNode.QueryDefinition.Id;
+            var queryId = queryDefinitionModel.QueryDefinition.Id;
 
             if(_pilgrimServiceModelProvider.TryDeleteQueryDefinition(out result, ProjectCollection, Project, queryId))
             {
@@ -111,7 +110,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             }
         }
 
-        private bool CanDeleteQueryDefinition(QueryDefinitionNode queryDefinitionNode)
+        private bool CanDeleteQueryDefinition(QueryDefinitionModel queryDefinitionModel)
         {
             return true;
         }

@@ -1,12 +1,12 @@
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Nodes.QueryItems
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.QueryItemModels
 {
-    public class QueryDefinitionNode : QueryItemNode
+    public class QueryDefinitionModel : QueryItemModel
     {
         private readonly QueryDefinition _queryDefinition;
 
-        public QueryDefinitionNode(QueryDefinition queryDefinition, IQueryItemCommandModel queryItemCommandModel)
+        public QueryDefinitionModel(QueryDefinition queryDefinition, IQueryItemCommandModel queryItemCommandModel)
             : base(queryItemCommandModel)
         {
             _queryDefinition = queryDefinition;

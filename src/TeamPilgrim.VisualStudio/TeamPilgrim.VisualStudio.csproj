@@ -173,13 +173,13 @@
     <Compile Include="Domain\Entities\BuildDetailWrapper.cs" />
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Common\ModelStateEnum.cs" />
-    <Compile Include="Model\Nodes\Project\BuildsNode.cs">
+    <Compile Include="Model\ProjectModels\BuildsModel.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\Nodes\Project\ReportsNode.cs">
+    <Compile Include="Model\ProjectModels\ReportsModel.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\Nodes\QueryItems\IQueryItemCommandModel.cs" />
+    <Compile Include="Model\QueryItemModels\IQueryItemCommandModel.cs" />
     <Compile Include="Model\ProjectBuildModel.cs" />
     <Compile Include="Model\TeamPilgrimModel.cs" />
     <Compile Include="Model\ProjectCollectionModel.cs" />
@@ -208,13 +208,12 @@
     </None>
     <Compile Include="PkgCmdID.cs" />
     <Compile Include="Common\EnumerableQueryItemExtensions.cs" />
-    <Compile Include="Model\Nodes\BaseNode.cs" />
-    <Compile Include="Model\Nodes\Project\SourceControlNode.cs" />
-    <Compile Include="Model\Nodes\Project\TeamMembersNode.cs" />
-    <Compile Include="Model\Nodes\QueryItems\QueryDefinitionNode.cs" />
-    <Compile Include="Model\Nodes\QueryItems\QueryFolderNode.cs" />
-    <Compile Include="Model\Nodes\Project\WorkItemsNode.cs" />
-    <Compile Include="Model\Nodes\QueryItems\QueryItemNode.cs" />
+    <Compile Include="Model\ProjectModels\SourceControlModel.cs" />
+    <Compile Include="Model\ProjectModels\TeamMembersModel.cs" />
+    <Compile Include="Model\QueryItemModels\QueryDefinitionModel.cs" />
+    <Compile Include="Model\QueryItemModels\QueryFolderModel.cs" />
+    <Compile Include="Model\ProjectModels\WorkItemsModel.cs" />
+    <Compile Include="Model\QueryItemModels\QueryItemModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">
