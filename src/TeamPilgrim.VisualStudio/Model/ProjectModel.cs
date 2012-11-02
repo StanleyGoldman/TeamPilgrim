@@ -1,7 +1,4 @@
-﻿using System.Threading;
-using System.Windows.Threading;
-using GalaSoft.MvvmLight.Command;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
+﻿using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.ProjectModels;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.QueryItemModels;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
@@ -44,18 +41,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
                     new TeamMembersModel(),
                     new SourceControlModel()
                 };
-        }
-
-        protected override void OnActivated()
-        {
-            VerifyCalledOnUiThread();
-
-            ProjectBuildModel.Activate();
-
-            if (ThreadPool.QueueUserWorkItem(PilgrimProjectCallback))
-            {
-                State = ModelStateEnum.Fetching;
-            }
         }
 
         #region OpenQueryItem
@@ -132,16 +117,5 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
         }
 
         #endregion
-
-
-        private void PilgrimProjectCallback(object state)
-        {
-            Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
-                {
-                    State = ModelStateEnum.Active;
-                }));
-        }
-
-
     }
 }

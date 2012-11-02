@@ -165,14 +165,12 @@
     <Compile Include="Common\AttachedProperties\MouseDoubleClick.cs" />
     <Compile Include="Domain\BusinessInterfaces\ITeamPilgrimVsService.cs" />
     <Compile Include="Business\Services\TeamPilgrimTfsService.cs" />
-    <Compile Include="Common\AttachedProperties\ActivateModel.cs" />
     <Compile Include="Common\BindingErrorTraceListener.cs" />
     <Compile Include="Domain\BusinessInterfaces\ITeamPilgrimTfsService.cs" />
     <Compile Include="Business\Services\TeamPilgrimVsService.cs" />
     <Compile Include="Domain\Entities\BuildDefinitionWrapper.cs" />
     <Compile Include="Domain\Entities\BuildDetailWrapper.cs" />
     <Compile Include="Model\BaseModel.cs" />
-    <Compile Include="Common\ModelStateEnum.cs" />
     <Compile Include="Model\ProjectModels\BuildsModel.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -29,7 +29,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             OpenBuildDefintionCommand = new RelayCommand<BuildDefinitionWrapper>(OpenBuildDefinition, CanOpenBuildDefinition);
             ViewBuildsCommand = new RelayCommand<BuildDefinitionWrapper>(ViewBuilds, CanViewBuilds);
 
-            State = ModelStateEnum.Invalid;
+            BuildDefinitionWrapper[] buildDefinitions;
+            if (_pilgrimServiceModelProvider.TryGetBuildDefinitionsByProjectName(out buildDefinitions, _collection, _project.Name))
+            {
+                BuildDefinitions = buildDefinitions;
+            }
         }
 
         #region OpenBuildDefinition Command
@@ -65,36 +69,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         #endregion
 
-        protected override void OnActivated()
-        {
-            VerifyCalledOnUiThread();
-
-            if (ThreadPool.QueueUserWorkItem(PopulatePilgrimBuildModelCallback))
-            {
-                State = ModelStateEnum.Fetching;
-            }
-        }
-
-        private void PopulatePilgrimBuildModelCallback(object state)
-        {
-            BuildDefinitionWrapper[] buildDefinitions;
-            if (_pilgrimServiceModelProvider.TryGetBuildDefinitionsByProjectName(out buildDefinitions, _collection, _project.Name))
-            {
-                Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
-                    {
-                        BuildDefinitions = buildDefinitions;
-                        State = ModelStateEnum.Active;
-                    }));
-            }
-            else
-            {
-                Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
-                {
-                    State = ModelStateEnum.Invalid;
-                }));
-            }
-        }
-
         #region BuildModel
 
         private BuildDefinitionWrapper[] _buildDefinitions;
@@ -103,12 +77,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
         {
             get
             {
-                VerifyCalledOnUiThread();
                 return _buildDefinitions;
             }
             set
             {
-                VerifyCalledOnUiThread();
                 if (_buildDefinitions == value) return;
 
                 _buildDefinitions = value;

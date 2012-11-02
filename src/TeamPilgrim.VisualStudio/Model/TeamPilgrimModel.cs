@@ -20,26 +20,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
         {
             _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
 
-            State = ModelStateEnum.Invalid;
-
             TeamPilgrimPackage.TeamPilgrimVsService.ActiveProjectContextChangedEvent += TeamPilgrimPackageOnActiveProjectContextChangedEvent;
 
             RefreshCommand = new RelayCommand(Refresh, CanRefresh);
         }
 
-        protected override void OnActivated()
-        {
-            VerifyCalledOnUiThread();
-        }
-
         private void TeamPilgrimPackageOnActiveProjectContextChangedEvent(ProjectContextExt projectContext)
         {
-            VerifyCalledOnUiThread();
-
-            if (ThreadPool.QueueUserWorkItem(PilgrimModelCallback))
-            {
-                State = ModelStateEnum.Fetching;
-            }
+            ThreadPool.QueueUserWorkItem(PilgrimModelCallback);
         }
 
         private void PilgrimModelCallback(object state)
@@ -55,31 +43,15 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
             if (_pilgrimServiceModelProvider.TryGetCollection(out collection, tpcAddress))
             {
-                Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
-                    {
-                        if (collection == null)
-                        {
-                            CollectionModels = new ProjectCollectionModel[0];
-                            State = ModelStateEnum.Active;
-                        }
-                        else
-                        {
-                            var pilgrimProjectCollectionModel = new ProjectCollectionModel(collection, this,
-                                                                                           _pilgrimServiceModelProvider);
-
-                            CollectionModels = new[] { pilgrimProjectCollectionModel };
-                            State = ModelStateEnum.Active;
-
-                            pilgrimProjectCollectionModel.Activate();
-                        }
-                    }));
-            }
-            else
-            {
-                Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
-                    {
-                        State = ModelStateEnum.Invalid;
-                    }));
+                if (collection == null)
+                {
+                    CollectionModels = new ProjectCollectionModel[0];
+                }
+                else
+                {
+                    var pilgrimProjectCollectionModel = new ProjectCollectionModel(collection, this, _pilgrimServiceModelProvider);
+                    CollectionModels = new[] { pilgrimProjectCollectionModel };
+                }
             }
         }
 
@@ -89,12 +61,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         private void Refresh()
         {
-            VerifyCalledOnUiThread();
-
-            if (ThreadPool.QueueUserWorkItem(PilgrimModelCallback))
-            {
-                State = ModelStateEnum.Fetching;
-            }
+            ThreadPool.QueueUserWorkItem(PilgrimModelCallback);
         }
 
         private bool CanRefresh()
@@ -112,12 +79,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
         {
             get
             {
-                VerifyCalledOnUiThread();
                 return _collections;
             }
             private set
             {
-                VerifyCalledOnUiThread();
                 if (_collections == value) return;
 
                 _collections = value;
