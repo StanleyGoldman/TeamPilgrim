@@ -78,9 +78,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         private void TfsConnect()
         {
-            // TODO: This doesn't work as expected, there's probably a better way to do this
-            EnvDTE.DTE dte = (EnvDTE.DTE)Marshal.GetActiveObject("VisualStudio.DTE.11.0");
-            dte.ExecuteCommand("Team.ConnecttoTeamFoundationServer");
+            TeamPilgrimPackage.TeamPilgrimVsService.TfsConnect();
         }
 
         private bool CanTfsConnect()

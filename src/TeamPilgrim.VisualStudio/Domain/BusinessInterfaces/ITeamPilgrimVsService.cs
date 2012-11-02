@@ -20,5 +20,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces
         
         void OpenBuildDefinition(Uri uri);
         void ViewBuilds(string name, string s, string empty, DateFilter today);
+        
+        void TfsConnect();
     }
 }

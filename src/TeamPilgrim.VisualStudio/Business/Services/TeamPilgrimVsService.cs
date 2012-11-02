@@ -162,5 +162,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
         {
             TeamFoundationBuild.BuildExplorer.CompletedView.Show(name, s, empty, today);
         }
+
+        public void TfsConnect()
+        {
+            Dte2.ExecuteCommand("Team.ConnecttoTeamFoundationServer");
+        }
     }
 }
