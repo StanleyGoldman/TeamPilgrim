@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
@@ -23,6 +24,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             TeamPilgrimPackage.TeamPilgrimVsService.ActiveProjectContextChangedEvent += TeamPilgrimPackageOnActiveProjectContextChangedEvent;
 
             RefreshCommand = new RelayCommand(Refresh, CanRefresh);
+            TfsConnectCommand = new RelayCommand(TfsConnect, CanTfsConnect);
         }
 
         private void TeamPilgrimPackageOnActiveProjectContextChangedEvent(ProjectContextExt projectContext)
@@ -58,6 +60,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
         #region Refresh
 
         public RelayCommand RefreshCommand { get; private set; }
+        public RelayCommand TfsConnectCommand { get; private set; }
 
         private void Refresh()
         {
@@ -65,6 +68,22 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
         }
 
         private bool CanRefresh()
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region TFS Connect
+
+        private void TfsConnect()
+        {
+            // TODO: This doesn't work as expected, there's probably a better way to do this
+            EnvDTE.DTE dte = (EnvDTE.DTE)Marshal.GetActiveObject("VisualStudio.DTE.11.0");
+            dte.ExecuteCommand("Team.ConnecttoTeamFoundationServer");
+        }
+
+        private bool CanTfsConnect()
         {
             return true;
         }

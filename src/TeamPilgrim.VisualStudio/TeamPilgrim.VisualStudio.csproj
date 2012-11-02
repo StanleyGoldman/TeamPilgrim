@@ -240,6 +240,7 @@
     <None Include="Resources\Images.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\tfs_connect.png" />
     <Resource Include="Resources\arrow_refresh.png" />
     <Content Include="Resources\Package.ico" />
   </ItemGroup>

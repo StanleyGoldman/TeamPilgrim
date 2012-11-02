@@ -184,6 +184,9 @@
             <Button Command="{Binding Path=RefreshCommand}">
                 <Image Source="Resources\arrow_refresh.png" Width="16" Height="16" />
             </Button>
+            <Button Command="{Binding Path=TfsConnectCommand}">
+                <Image Source="Resources\tfs_connect.png" Width="16" Height="16" />
+            </Button>
         </ToolBar>
         <ScrollViewer DockPanel.Dock="Bottom" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
             <TreeView ItemsSource="{Binding CollectionModels}" ItemContainerStyleSelector="{StaticResource teamPilgrilViewStyleSelector}">
