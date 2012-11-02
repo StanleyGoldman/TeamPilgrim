@@ -30,7 +30,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 
         public ProjectContextExt ActiveProjectContext
         {
-            get { return TeamFoundationServerExt.ActiveProjectContext; }
+            get {
+                return TeamFoundationServerExt == null ? null : TeamFoundationServerExt.ActiveProjectContext;
+            }
         }
 
         private TeamPilgrimPackage _packageInstance;

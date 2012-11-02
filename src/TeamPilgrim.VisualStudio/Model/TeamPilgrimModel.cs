@@ -36,6 +36,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
             Uri tpcAddress = null;
             if (TeamPilgrimPackage.TeamPilgrimVsService != null &&
+                TeamPilgrimPackage.TeamPilgrimVsService.ActiveProjectContext != null &&
                 TeamPilgrimPackage.TeamPilgrimVsService.ActiveProjectContext.DomainUri != null)
             {
                 tpcAddress = new Uri(TeamPilgrimPackage.TeamPilgrimVsService.ActiveProjectContext.DomainUri);
