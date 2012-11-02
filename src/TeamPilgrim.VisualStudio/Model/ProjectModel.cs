@@ -1,4 +1,6 @@
-﻿using GalaSoft.MvvmLight.Command;
+﻿using System.Collections.ObjectModel;
+using GalaSoft.MvvmLight.Command;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.ProjectModels;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.QueryItemModels;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
@@ -19,7 +21,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         public ProjectBuildModel ProjectBuildModel { get; private set; }
 
-        public BaseModel[] ChildObjects { get; private set; }
+        public ObservableCollection<BaseModel> ChildObjects { get; private set; }
 
         public ProjectModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, TfsTeamProjectCollection projectCollection, Project project, ProjectBuildModel projectBuildModel)
         {
@@ -33,9 +35,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             EditQueryDefinitionCommand = new RelayCommand<QueryDefinitionModel>(EditQueryDefinition, CanEditQueryDefinition);
             DeleteQueryDefinitionCommand = new RelayCommand<QueryDefinitionModel>(DeleteQueryDefinition, CanDeleteQueryDefinition);
 
-            ChildObjects = new BaseModel[]
+            QueryHierarchy queryHierarchy = Project.QueryHierarchy;
+            ChildObjects = new ObservableCollection<BaseModel>
                 {
-                    new WorkItemsModel(Project.QueryHierarchy, this), 
+                    new WorkItemsModel(queryHierarchy.GetQueryItemViewModels(this)), 
                     new ReportsModel(),
                     new BuildsModel(projectBuildModel),
                     new TeamMembersModel(),

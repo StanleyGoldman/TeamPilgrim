@@ -1,4 +1,5 @@
-using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.QueryItemModels
@@ -7,10 +8,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.QueryItemModels
     {
         private readonly QueryFolder _folder;
 
-        public QueryFolderModel(QueryFolder folder, IQueryItemCommandModel queryItemCommandModel)
+        public ObservableCollection<QueryItemModel> QueryItems { get; private set; }
+
+        public QueryFolderModel(QueryFolder folder, IQueryItemCommandModel queryItemCommandModel, IEnumerable<QueryItemModel> childQueryItemViewModels)
             : base(queryItemCommandModel)
         {
             _folder = folder;
+            QueryItems = new ObservableCollection<QueryItemModel>(childQueryItemViewModels);
         }
 
         private QueryFolder Folder
@@ -21,14 +25,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.QueryItemModels
         public string Name
         {
             get { return Folder.Name; }
-        }
-
-        public QueryItemModel[] QueryItems
-        {
-            get
-            {
-                return _folder.GetQueryItemViews(queryItemCommandModel);
-            }
         }
     }
 }

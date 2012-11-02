@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Windows.Threading;
@@ -17,40 +18,28 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         public ProjectCollectionModel(TfsTeamProjectCollection pilgrimProjectCollection, TeamPilgrimModel teamPilgrimModel, IPilgrimServiceModelProvider pilgrimServiceModelProvider)
         {
+            ProjectModels = new ObservableCollection<ProjectModel>();
+
             _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
             TfsTeamProjectCollection = pilgrimProjectCollection;
             TeamPilgrimModel = teamPilgrimModel;
-        
+
             Project[] projects;
             if (_pilgrimServiceModelProvider.TryGetProjects(out projects, TfsTeamProjectCollection.Uri))
             {
-                var pilgrimProjectModels = projects
-                    .Select(project => new ProjectModel(_pilgrimServiceModelProvider, TfsTeamProjectCollection, project, new ProjectBuildModel(_pilgrimServiceModelProvider, TfsTeamProjectCollection, project)))
-                    .ToArray();
+                Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
+                    {
+                        var pilgrimProjectModels = projects
+                            .Select(project => new ProjectModel(_pilgrimServiceModelProvider, TfsTeamProjectCollection, project, new ProjectBuildModel(_pilgrimServiceModelProvider, TfsTeamProjectCollection, project)));
 
-                ProjectModels = pilgrimProjectModels;
+                        foreach (var pilgrimProjectModel in pilgrimProjectModels)
+                        {
+                            ProjectModels.Add(pilgrimProjectModel);
+                        }
+                    }));
             }
         }
 
-        #region ProjectModels
-
-        private ProjectModel[] _projectModels = new ProjectModel[0];
-
-        public ProjectModel[] ProjectModels
-        {
-            get
-            {
-                return _projectModels;
-            }
-            private set
-            {
-                if (_projectModels == value) return;
-
-                _projectModels = value;
-                SendPropertyChanged("ProjectModels");
-            }
-        }
-
-        #endregion
+        public ObservableCollection<ProjectModel> ProjectModels { get; private set; }
     }
 }

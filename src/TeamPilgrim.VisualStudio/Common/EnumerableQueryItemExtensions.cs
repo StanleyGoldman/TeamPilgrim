@@ -9,14 +9,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common
 {
     public static class EnumerableQueryItemExtensions
     {
-        public static QueryItemModel[] GetQueryItemViews(this IEnumerable<QueryItem> queryHierarchy, IQueryItemCommandModel queryItemCommandModel)
+        public static QueryItemModel[] GetQueryItemViewModels(this IEnumerable<QueryItem> queryHierarchy, IQueryItemCommandModel queryItemCommandModel)
         {
-            var queryItems = queryHierarchy.Select<QueryItem, QueryItemModel>(item =>
+            return queryHierarchy.Select<QueryItem, QueryItemModel>(item =>
                 {
                     var queryFolder = item as QueryFolder;
                     if (queryFolder != null)
                     {
-                        return new QueryFolderModel(queryFolder, queryItemCommandModel);
+                        return new QueryFolderModel(queryFolder, queryItemCommandModel, queryFolder.GetQueryItemViewModels(queryItemCommandModel));
                     }
 
                     var queryDefinition = item as QueryDefinition;
@@ -27,7 +27,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common
 
                     throw new ArgumentException(item.GetType().ToString());
                 }).ToArray();
-            return queryItems;
         }
     }
 }

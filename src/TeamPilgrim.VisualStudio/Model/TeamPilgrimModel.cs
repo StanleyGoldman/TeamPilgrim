@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Linq;
+using System.Collections.ObjectModel;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight.Command;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.Client;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.TeamFoundation;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
@@ -18,6 +16,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         public TeamPilgrimModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider)
         {
+            CollectionModels = new ObservableCollection<ProjectCollectionModel>();
+
             _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
 
             TeamPilgrimPackage.TeamPilgrimVsService.ActiveProjectContextChangedEvent += TeamPilgrimPackageOnActiveProjectContextChangedEvent;
@@ -27,10 +27,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         private void TeamPilgrimPackageOnActiveProjectContextChangedEvent(ProjectContextExt projectContext)
         {
-            ThreadPool.QueueUserWorkItem(PilgrimModelCallback);
+            Task.Run(() => PopulatePilgrimModel());
         }
 
-        private void PilgrimModelCallback(object state)
+        private void PopulatePilgrimModel()
         {
             TfsTeamProjectCollection collection;
 
@@ -43,15 +43,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
             if (_pilgrimServiceModelProvider.TryGetCollection(out collection, tpcAddress))
             {
-                if (collection == null)
-                {
-                    CollectionModels = new ProjectCollectionModel[0];
-                }
-                else
-                {
-                    var pilgrimProjectCollectionModel = new ProjectCollectionModel(collection, this, _pilgrimServiceModelProvider);
-                    CollectionModels = new[] { pilgrimProjectCollectionModel };
-                }
+                Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
+                    {
+                        CollectionModels.Clear();
+                        if (collection != null)
+                        {
+                            CollectionModels.Add(new ProjectCollectionModel(collection, this, _pilgrimServiceModelProvider));
+                        }
+                    }));
             }
         }
 
@@ -61,7 +60,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         private void Refresh()
         {
-            ThreadPool.QueueUserWorkItem(PilgrimModelCallback);
+            Task.Run(() => PopulatePilgrimModel());
         }
 
         private bool CanRefresh()
@@ -71,24 +70,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         #endregion
 
-        #region Collections
+        #region CollectionModels
 
-        private ProjectCollectionModel[] _collections = new ProjectCollectionModel[0];
-
-        public ProjectCollectionModel[] CollectionModels
-        {
-            get
-            {
-                return _collections;
-            }
-            private set
-            {
-                if (_collections == value) return;
-
-                _collections = value;
-                SendPropertyChanged("CollectionModels");
-            }
-        }
+        public ObservableCollection<ProjectCollectionModel> CollectionModels { get; private set; }
 
         #endregion
     }

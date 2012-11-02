@@ -1,26 +1,16 @@
-using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.QueryItemModels;
-using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ProjectModels
 {
     public class WorkItemsModel : BaseModel
     {
-        private readonly QueryHierarchy _queryHierarchy;
-        private readonly IQueryItemCommandModel _queryItemCommandModel;
+        public ObservableCollection<QueryItemModel> QueryItems { get; private set; }
 
-        public WorkItemsModel(QueryHierarchy queryHierarchy, IQueryItemCommandModel queryItemCommandModel)
+        public WorkItemsModel(IEnumerable<QueryItemModel> queryItemModels)
         {
-            _queryHierarchy = queryHierarchy;
-            _queryItemCommandModel = queryItemCommandModel;
-        }
-
-        public QueryItemModel[] QueryItems
-        {
-            get
-            {
-                return _queryHierarchy.GetQueryItemViews(_queryItemCommandModel);
-            }
+            QueryItems = new ObservableCollection<QueryItemModel>(queryItemModels);
         }
     }
 }
