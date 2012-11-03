@@ -34,6 +34,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
             CloneBuildDefinitionCommand = new RelayCommand<BuildDefinitionModel>(CloneBuildDefinition, CanCloneBuildDefinition);
             QueueBuildCommand = new RelayCommand<BuildDefinitionModel>(QueueBuild, CanQueueBuild);
             OpenProcessFileLocationCommand = new RelayCommand<BuildDefinitionModel>(OpenProcessFileLocation, CanOpenProcessFileLocation);
+            ManageBuildDefinitionSecurityCommand = new RelayCommand<BuildDefinitionModel>(ManageBuildDefinitionSecurity, CanManageBuildDefinitionSecurity);
 
             NewBuildDefinitionCommand = new RelayCommand(NewBuildDefinition, CanNewBuildDefinition);
             ManageBuildControllersCommand = new RelayCommand(ManageBuildControllers, CanManageBuildControllers);
@@ -149,6 +150,22 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
             {
                 BuildDefinitions.Add(new BuildDefinitionModel(this, buildDefinition));
             }
+        }
+
+        #endregion
+
+        #region ManageBuildDefinitionSecurity Command
+
+        public RelayCommand<BuildDefinitionModel> ManageBuildDefinitionSecurityCommand { get; set; }
+
+        private bool CanManageBuildDefinitionSecurity(BuildDefinitionModel buildDefinitionModel)
+        {
+            return true;
+        }
+
+        private void ManageBuildDefinitionSecurity(BuildDefinitionModel buildDefinitionModel)
+        {
+            TeamPilgrimPackage.TeamPilgrimVsService.OpenBuildDefinitionSecurityDialog(_project.Name, _project.Uri.ToString(), buildDefinitionModel.Definition.Name, buildDefinitionModel.Definition.Uri.ToString());
         }
 
         #endregion

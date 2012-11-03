@@ -177,8 +177,10 @@
                     CommandParameter="{Binding}" />
 
                 <Separator />
-                
-                <MenuItem IsEnabled="False" Header="Security..." />
+
+                <MenuItem Header="Security..."
+                    Command="{Binding Path=BuildDefinitionCommandModel.ManageBuildDefinitionSecurityCommand}" 
+                    CommandParameter="{Binding}" />
             </ContextMenu>
 
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="DefaultStyle">

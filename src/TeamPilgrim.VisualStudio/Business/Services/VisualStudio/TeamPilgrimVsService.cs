@@ -4,6 +4,7 @@ using EnvDTE80;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
 using Microsoft.TeamFoundation;
+using Microsoft.TeamFoundation.Build.Common;
 using Microsoft.TeamFoundation.Build.Controls;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.Server;
@@ -193,6 +194,18 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
             var projectInfo = new ProjectInfo(projectUri, projectName, ProjectState.WellFormed);
             var artifactId = LinkingUtilities.DecodeUri(projectUri);
             _teamFoundationBuild.Value.BuildExplorerWrapper.OpenBuildSecurityDialog(projectInfo, projectInfo.Name, artifactId.ToolSpecificId);
+        }
+
+        public void OpenBuildDefinitionSecurityDialog(string projectName, string projectUri, string definitionName, string definitionUri)
+        {
+            var projectInfo = new ProjectInfo(projectUri, projectName, ProjectState.WellFormed);
+
+            var projectArtifactId = LinkingUtilities.DecodeUri(projectUri);
+            var definitionArtifactId = LinkingUtilities.DecodeUri(definitionUri);
+
+            var securityToken = string.Concat(projectArtifactId.ToolSpecificId, BuildSecurity.NamespaceSeparator, definitionArtifactId.ToolSpecificId);
+
+            _teamFoundationBuild.Value.BuildExplorerWrapper.OpenBuildSecurityDialog(projectInfo, definitionName, securityToken);
         }
 
         public void ViewBuilds(string projectName, string buildDefinition, string qualityFilter, DateFilter dateFilter)

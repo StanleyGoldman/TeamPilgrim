@@ -28,5 +28,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces
         void OpenControllerAgentManager(string projectName);
         void OpenQualityManager(string projectName);
         void OpenBuildSecurityDialog(string projectName, string projectUri);
+        void OpenBuildDefinitionSecurityDialog(string projectName, string projectUri, string definitionName, string definitionUri);
     }
 }
