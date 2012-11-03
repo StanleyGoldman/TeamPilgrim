@@ -1,20 +1,21 @@
+using System;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children
 {
     public class WorkItemQueryDefinitionModel : WorkItemQueryChildModel
     {
-        private readonly QueryDefinition _queryDefinition;
+        public QueryDefinition QueryDefinition { get; private set; }
 
         public WorkItemQueryDefinitionModel(QueryDefinition queryDefinition, IWorkItemQueryCommandModel workItemQueryCommandModel)
             : base(workItemQueryCommandModel)
         {
-            _queryDefinition = queryDefinition;
+            QueryDefinition = queryDefinition;
         }
 
-        public QueryDefinition QueryDefinition
+        public override Guid Id
         {
-            get { return _queryDefinition; }
+            get { return QueryDefinition.Id; }
         }
 
         public string Name

@@ -27,11 +27,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
             return RegisteredTfsConnections.GetProjectCollections();
         }
 
-        public bool DeleteQueryDefintion(TfsTeamProjectCollection teamProjectCollection, Project teamProject, Guid queryId)
+        public bool DeleteQueryItem(TfsTeamProjectCollection teamProjectCollection, Project teamProject, Guid queryItemId)
         {
             var workItemStore = GetWorkItemStore(teamProjectCollection);
             var queryHierarchy = workItemStore.GetQueryHierarchy(teamProject);
-            var queryItem = queryHierarchy.Find(queryId);
+            var queryItem = queryHierarchy.Find(queryItemId);
 
             if (queryItem == null)
                 return false;

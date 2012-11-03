@@ -55,11 +55,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             return false;
         }
 
-        public bool TryDeleteQueryDefinition(out bool result, TfsTeamProjectCollection teamProjectCollection, Project teamProject, Guid queryId)
+        public bool TryDeleteQueryItem(out bool result, TfsTeamProjectCollection teamProjectCollection, Project teamProject, Guid queryItemId)
         {
             try
             {
-                result = _teamPilgrimTfsService.DeleteQueryDefintion(teamProjectCollection, teamProject, queryId);
+                result = _teamPilgrimTfsService.DeleteQueryItem(teamProjectCollection, teamProject, queryItemId);
                 return true;
             }
             catch (Exception ex)

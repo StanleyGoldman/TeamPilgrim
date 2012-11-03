@@ -1,3 +1,5 @@
+using System;
+
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children
 {
     public abstract class WorkItemQueryChildModel : BaseModel
@@ -5,6 +7,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children
         public WorkItemQueryFolderModel ParentQueryFolder { get; protected internal set; }
 
         protected IWorkItemQueryCommandModel workItemQueryCommandModel;
+
+        public abstract Guid Id { get; }
 
         protected WorkItemQueryChildModel(IWorkItemQueryCommandModel workItemQueryCommandModel)
         {

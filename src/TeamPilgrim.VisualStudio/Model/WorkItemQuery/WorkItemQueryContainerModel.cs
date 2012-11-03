@@ -33,7 +33,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
 
             OpenQueryDefinitionCommand = new RelayCommand<WorkItemQueryDefinitionModel>(OpenQueryDefinition, CanOpenQueryDefinition);
             EditQueryDefinitionCommand = new RelayCommand<WorkItemQueryDefinitionModel>(EditQueryDefinition, CanEditQueryDefinition);
-            DeleteQueryDefinitionCommand = new RelayCommand<WorkItemQueryDefinitionModel>(DeleteQueryDefinition, CanDeleteQueryDefinition);
+            DeleteQueryItemCommand = new RelayCommand<WorkItemQueryChildModel>(DeleteQueryDefinition, CanDeleteQueryDefinition);
 
             var queryHierarchy = _project.QueryHierarchy;
             var queryItemModels = queryHierarchy.GetQueryItemViewModels(this);
@@ -150,15 +150,15 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
 
         #region DeleteQueryDefinition Command
 
-        public RelayCommand<WorkItemQueryDefinitionModel> DeleteQueryDefinitionCommand { get; private set; }
+        public RelayCommand<WorkItemQueryChildModel> DeleteQueryItemCommand { get; private set; }
 
-        private void DeleteQueryDefinition(WorkItemQueryDefinitionModel workItemQueryDefinitionModel)
+        private void DeleteQueryDefinition(WorkItemQueryChildModel workItemQueryDefinitionModel)
         {
             bool result;
 
-            var queryId = workItemQueryDefinitionModel.QueryDefinition.Id;
+            var queryId = workItemQueryDefinitionModel.Id;
 
-            if (_pilgrimServiceModelProvider.TryDeleteQueryDefinition(out result, _projectCollection, _project, queryId))
+            if (_pilgrimServiceModelProvider.TryDeleteQueryItem(out result, _projectCollection, _project, queryId))
             {
                 if (result)
                 {
@@ -168,7 +168,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
             }
         }
 
-        private bool CanDeleteQueryDefinition(WorkItemQueryDefinitionModel workItemQueryDefinitionModel)
+        private bool CanDeleteQueryDefinition(WorkItemQueryChildModel workItemQueryDefinitionModel)
         {
             return true;
         }

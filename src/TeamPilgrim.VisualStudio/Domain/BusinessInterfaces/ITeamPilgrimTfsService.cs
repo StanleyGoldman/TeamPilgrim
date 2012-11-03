@@ -13,12 +13,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces
         Project[] GetProjects(Uri tpcAddress);
         RegisteredProjectCollection[] GetRegisteredProjectCollections();
 
-        bool DeleteQueryDefintion(TfsTeamProjectCollection teamProjectCollection, Project teamProject, Guid queryId);
+        QueryFolder AddNewQueryFolder(TfsTeamProjectCollection teamProjectCollection, Project teamProject, Guid parentFolderId);
+        bool DeleteQueryItem(TfsTeamProjectCollection teamProjectCollection, Project teamProject, Guid queryItemId);
+
         IBuildDefinition[] QueryBuildDefinitions(TfsTeamProjectCollection collection, string teamProject);
         IBuildDetail[] QueryBuildDetails(TfsTeamProjectCollection collection, string teamProject);
 		
 		IBuildDefinition CloneBuildDefinition(TfsTeamProjectCollection collection, string projectName, IBuildDefinition sourceDefinition);
         void DeleteBuildDefinition(IBuildDefinition buildDefinition);
-        QueryFolder AddNewQueryFolder(TfsTeamProjectCollection teamProjectCollection, Project teamProject, Guid parentFolderId);
     }
 }

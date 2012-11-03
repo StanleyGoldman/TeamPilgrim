@@ -122,7 +122,11 @@
                 <MenuItem IsEnabled="False" Header="Cut"/>
                 <MenuItem IsEnabled="False" Header="Copy"/>
                 <MenuItem IsEnabled="False" Header="Paste"/>
-                <MenuItem IsEnabled="False" Header="Delete"/>
+                
+                <MenuItem Header="Delete"
+					Command="{Binding Path=WorkItemQueryCommandModel.DeleteQueryItemCommand}" 
+					CommandParameter="{Binding}" />
+                
                 <MenuItem IsEnabled="False" Header="Rename"/>
                 <Separator />
                 <MenuItem IsEnabled="False" Header="Security..." />
@@ -148,8 +152,8 @@
                 <MenuItem IsEnabled="False" Header="Paste"/>
 
                 <MenuItem Header="Delete"
-					Command="{Binding Path=WorkItemQueryCommandModel.DeleteQueryDefinitionCommand}" 
-					CommandParameter="{Binding}"/>
+					Command="{Binding Path=WorkItemQueryCommandModel.DeleteQueryItemCommand}" 
+					CommandParameter="{Binding}" />
 
                 <MenuItem IsEnabled="False" Header="Rename"/>
                 <Separator />

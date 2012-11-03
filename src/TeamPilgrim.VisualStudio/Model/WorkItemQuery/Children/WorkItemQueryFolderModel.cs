@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -7,14 +8,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children
 {
     public class WorkItemQueryFolderModel : WorkItemQueryChildModel
     {
-        private readonly QueryFolder _queryFolder;
-
         public ObservableCollection<WorkItemQueryChildModel> QueryItems { get; private set; }
+
+        public QueryFolder QueryFolder { get; private set; }
 
         public WorkItemQueryFolderModel(QueryFolder queryFolder, IWorkItemQueryCommandModel workItemQueryCommandModel, IEnumerable<WorkItemQueryChildModel> childQueryItemViewModels)
             : base(workItemQueryCommandModel)
         {
-            _queryFolder = queryFolder;
+            QueryFolder = queryFolder;
 
             var childQueryItemViewModelsArray = childQueryItemViewModels.ToArray();
 
@@ -26,10 +27,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children
             QueryItems = new ObservableCollection<WorkItemQueryChildModel>(childQueryItemViewModelsArray);
         }
 
-        public QueryFolder QueryFolder
+        public override Guid Id
         {
-            get { return _queryFolder; }
+            get { return QueryFolder.Id; }
         }
+
 
         public string Name
         {

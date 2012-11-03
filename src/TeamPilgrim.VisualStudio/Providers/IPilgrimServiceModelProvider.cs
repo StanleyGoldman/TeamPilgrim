@@ -13,7 +13,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
         
         bool TryGetProjects(out Project[] projects, Uri tpcAddress);
 
-        bool TryDeleteQueryDefinition(out bool result, TfsTeamProjectCollection teamProjectCollection, Project teamProject, Guid queryId);
+        bool TryDeleteQueryItem(out bool result, TfsTeamProjectCollection teamProjectCollection, Project teamProject, Guid queryItemId);
 
         bool TryGetBuildDefinitionsByProjectName(out IBuildDefinition[] buildDefinitions, TfsTeamProjectCollection collection, string projectName);
 
