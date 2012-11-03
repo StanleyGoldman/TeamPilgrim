@@ -49,14 +49,18 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
         private TeamPilgrimPackage _packageInstance;
 
         private readonly Lazy<VsTeamFoundationBuildWrapper> _teamFoundationBuild;
+
         private readonly Lazy<WorkItemTrackingPackageWrapper> _workItemTrackingPackage;
+
+        private readonly Lazy<QuerySecurityCommandHelpersWrapper> _querySecurityCommandHelpers;
 
         private IWorkItemControlHost _workItemControlHost;
 
         public TeamPilgrimVsService()
         {
             _teamFoundationBuild = new Lazy<VsTeamFoundationBuildWrapper>(() => new VsTeamFoundationBuildWrapper(_packageInstance.GetPackageService<IVsTeamFoundationBuild>()));
-            _workItemTrackingPackage = new Lazy<WorkItemTrackingPackageWrapper>(() => new WorkItemTrackingPackageWrapper());
+            _workItemTrackingPackage = new Lazy<WorkItemTrackingPackageWrapper>();
+            _querySecurityCommandHelpers = new Lazy<QuerySecurityCommandHelpersWrapper>();
         }
 
         private IWorkItemControlHost WorkItemControlHost
@@ -141,6 +145,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
 
             if (workItemsResultsViewFrame != null)
                 workItemsResultsViewFrame.CloseFrame((int)__FRAMECLOSE.FRAMECLOSE_NoSave);
+        }
+
+        public void OpenSecurityItemDialog(QueryItem queryItem)
+        {
+            _querySecurityCommandHelpers.Value.HandleSecurityCommand(queryItem);
         }
 
         private IVsWindowFrame GetVsWindowFrameByTypeAndMoniker(Guid editorTypeId, string moniker)

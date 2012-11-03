@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children;
@@ -33,7 +34,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
 
             OpenQueryDefinitionCommand = new RelayCommand<WorkItemQueryDefinitionModel>(OpenQueryDefinition, CanOpenQueryDefinition);
             EditQueryDefinitionCommand = new RelayCommand<WorkItemQueryDefinitionModel>(EditQueryDefinition, CanEditQueryDefinition);
+
             DeleteQueryItemCommand = new RelayCommand<WorkItemQueryChildModel>(DeleteQueryDefinition, CanDeleteQueryDefinition);
+            OpenSeurityDialogCommand = new RelayCommand<WorkItemQueryChildModel>(OpenSeurityDialog, CanOpenSeurityDialog);
 
             var queryHierarchy = _project.QueryHierarchy;
             var queryItemModels = queryHierarchy.GetQueryItemViewModels(this);
@@ -169,6 +172,37 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
         }
 
         private bool CanDeleteQueryDefinition(WorkItemQueryChildModel workItemQueryDefinitionModel)
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region OpenSeurityDialog Command
+
+        public RelayCommand<WorkItemQueryChildModel> OpenSeurityDialogCommand { get; private set; }
+
+        private void OpenSeurityDialog(WorkItemQueryChildModel workItemQueryDefinitionModel)
+        {
+            QueryItem queryItem = null;
+
+            var itemQueryDefinitionModel = workItemQueryDefinitionModel as WorkItemQueryDefinitionModel;
+            if (itemQueryDefinitionModel != null)
+            {
+                queryItem = itemQueryDefinitionModel.QueryDefinition;
+            }
+
+            var itemQueryFolderModel = workItemQueryDefinitionModel as WorkItemQueryFolderModel;
+            if (itemQueryFolderModel != null)
+            {
+                queryItem = itemQueryFolderModel.QueryFolder;
+            }
+
+            Debug.Assert(queryItem != null, "queryItem != null");
+            TeamPilgrimPackage.TeamPilgrimVsService.OpenSecurityItemDialog(queryItem);
+        }
+
+        private bool CanOpenSeurityDialog(WorkItemQueryChildModel workItemQueryDefinitionModel)
         {
             return true;
         }

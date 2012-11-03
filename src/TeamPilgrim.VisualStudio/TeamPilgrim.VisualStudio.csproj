@@ -165,6 +165,7 @@
     <Compile Include="Business\Services\VisualStudio\WorkItem\DocumentServiceWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\TeamFoundationHostWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\Builds\VsTeamFoundationBuildWrapper.cs" />
+    <Compile Include="Business\Services\VisualStudio\WorkItem\QuerySecurityCommandHelpersWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\WorkItem\WorkItemTrackingPackageWrapper.cs" />
     <Compile Include="Common\VsWindowFrameEditorTypeIds.cs" />
     <Compile Include="Common\AttachedProperties\MouseDoubleClick.cs" />

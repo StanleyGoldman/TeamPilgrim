@@ -5,6 +5,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children
     public interface IWorkItemQueryCommandModel
     {
         RelayCommand<WorkItemQueryChildModel> DeleteQueryItemCommand { get; }
+        RelayCommand<WorkItemQueryChildModel> OpenSeurityDialogCommand { get; }
 
         RelayCommand<WorkItemQueryFolderModel> NewQueryDefinitionCommand { get; }
         RelayCommand<WorkItemQueryFolderModel> NewQueryFolderCommand { get; }

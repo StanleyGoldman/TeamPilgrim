@@ -128,8 +128,12 @@
 					CommandParameter="{Binding}" />
                 
                 <MenuItem IsEnabled="False" Header="Rename"/>
+                
                 <Separator />
-                <MenuItem IsEnabled="False" Header="Security..." />
+
+                <MenuItem Header="Security..."
+					Command="{Binding Path=WorkItemQueryCommandModel.OpenSeurityDialogCommand}" 
+					CommandParameter="{Binding}" />
             </ContextMenu>
 
             <ContextMenu x:Key="WorkItemQueryDefinitionContextMenu" d:DataContext="{d:DesignInstance WorkItemQueryChildren:WorkItemQueryDefinitionModel}">
@@ -156,8 +160,12 @@
 					CommandParameter="{Binding}" />
 
                 <MenuItem IsEnabled="False" Header="Rename"/>
+                
                 <Separator />
-                <MenuItem IsEnabled="False" Header="Security..." />
+                
+                <MenuItem Header="Security..."
+					Command="{Binding Path=WorkItemQueryCommandModel.OpenSeurityDialogCommand}" 
+					CommandParameter="{Binding}" />
             </ContextMenu>
 
             <ContextMenu x:Key="BuildDefinitionsContextMenu" d:DataContext="{d:DesignInstance BuildDefinitions:BuildDefinitionsModel}">
