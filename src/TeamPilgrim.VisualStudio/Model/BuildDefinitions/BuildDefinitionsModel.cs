@@ -30,6 +30,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
 
             OpenBuildDefintionCommand = new RelayCommand<BuildDefinitionModel>(OpenBuildDefinition, CanOpenBuildDefinition);
             ViewBuildsCommand = new RelayCommand<BuildDefinitionModel>(ViewBuilds, CanViewBuilds);
+            DeleteBuildDefinitionCommand = new RelayCommand<BuildDefinitionModel>(DeleteBuildDefinition, CanDeleteBuildDefinition);
             CloneBuildDefinitionCommand = new RelayCommand<BuildDefinitionModel>(CloneBuildDefinition, CanCloneBuildDefinition);
             QueueBuildCommand = new RelayCommand<BuildDefinitionModel>(QueueBuild, CanQueueBuild);
             OpenProcessFileLocationCommand = new RelayCommand<BuildDefinitionModel>(OpenProcessFileLocation, CanOpenProcessFileLocation);
@@ -109,6 +110,25 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
         private void ManageBuildQualities()
         {
             TeamPilgrimPackage.TeamPilgrimVsService.OpenQualityManager(_project.Name);
+        }
+
+        #endregion
+
+        #region DeleteBuildDefinition Command
+
+        public RelayCommand<BuildDefinitionModel> DeleteBuildDefinitionCommand { get; set; }
+
+        private bool CanDeleteBuildDefinition(BuildDefinitionModel buildDefinitionModel)
+        {
+            return true;
+        }
+
+        private void DeleteBuildDefinition(BuildDefinitionModel buildDefinitionModel)
+        {
+            if(_pilgrimServiceModelProvider.TryDeleteBuildDefinition(buildDefinitionModel.Definition))
+            {
+                BuildDefinitions.Remove(buildDefinitionModel);
+            }
         }
 
         #endregion

@@ -18,5 +18,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
         bool TryGetBuildDefinitionsByProjectName(out IBuildDefinition[] buildDefinitions, TfsTeamProjectCollection collection, string projectName);
 
         bool TryCloneQueryDefinition(out IBuildDefinition buildDefinition, TfsTeamProjectCollection collection, Project project, IBuildDefinition definition);
+		
+        bool TryDeleteBuildDefinition(IBuildDefinition definition);
     }
 }

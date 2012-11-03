@@ -64,10 +64,15 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
             return GetWorkItemStore(GetProjectCollection(tpcAddress));
         }
 
-        public IBuildDefinition CloneBuildDefinition(TfsTeamProjectCollection collection, Project project, IBuildDefinition sourceDefinition)
+        public void DeleteBuildDefinition(IBuildDefinition buildDefinition)
+        {
+            buildDefinition.Delete();
+        }
+
+        public IBuildDefinition CloneBuildDefinition(TfsTeamProjectCollection collection, string projectName, IBuildDefinition sourceDefinition)
         {
             var buildServer = collection.GetService<IBuildServer>();
-            var clonedDefinition = buildServer.CreateBuildDefinition(project.Name);
+            var clonedDefinition = buildServer.CreateBuildDefinition(projectName);
             clonedDefinition.CopyFrom(sourceDefinition);
             clonedDefinition.Name = string.Format("Copy of {0}", clonedDefinition.Name);
             clonedDefinition.Save();

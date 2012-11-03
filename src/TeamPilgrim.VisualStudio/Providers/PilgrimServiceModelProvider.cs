@@ -91,7 +91,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
         {
             try
             {
-                buildDefinition = _teamPilgrimTfsService.CloneBuildDefinition(collection, project, definition);
+                buildDefinition = _teamPilgrimTfsService.CloneBuildDefinition(collection, project.Name, definition);
                 return true;
             }
             catch (Exception ex)
@@ -100,6 +100,21 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             }
             
             buildDefinition = null;
+            return false;
+        }
+
+        public bool TryDeleteBuildDefinition(IBuildDefinition definition)
+        {
+            try
+            {
+                _teamPilgrimTfsService.DeleteBuildDefinition(definition);
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+            }
+            
             return false;
         }
     }
