@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Linq;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
 using Microsoft.TeamFoundation.Build.Client;
@@ -96,6 +97,22 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
             return collection.GetService<IBuildServer>()
                 .QueryBuilds(teamProject)
                 .ToArray();
+        }
+
+        public QueryFolder AddNewQueryFolder(TfsTeamProjectCollection teamProjectCollection, Project teamProject, Guid parentFolderId)
+        {
+            var workItemStore = GetWorkItemStore(teamProjectCollection);
+            var queryHierarchy = workItemStore.GetQueryHierarchy(teamProject);
+            var loadedParentFolder = queryHierarchy.Find(parentFolderId) as QueryFolder;
+
+            var queryFolder = new QueryFolder("New Folder");
+            
+            Debug.Assert(loadedParentFolder != null, "loadedParentFolder != null");
+            loadedParentFolder.Add(queryFolder);
+
+            queryHierarchy.Save();
+
+            return queryFolder;
         }
     }
 }

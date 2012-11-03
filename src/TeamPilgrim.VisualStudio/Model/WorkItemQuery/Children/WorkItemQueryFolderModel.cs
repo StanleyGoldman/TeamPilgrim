@@ -20,7 +20,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children
 
             foreach (var workItemQueryChildModel in childQueryItemViewModelsArray)
             {
-                workItemQueryChildModel.ParentQueryFolderModel = this;
+                workItemQueryChildModel.ParentQueryFolder = this;
             }
 
             QueryItems = new ObservableCollection<WorkItemQueryChildModel>(childQueryItemViewModelsArray);

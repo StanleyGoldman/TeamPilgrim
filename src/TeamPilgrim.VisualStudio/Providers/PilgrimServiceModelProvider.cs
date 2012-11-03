@@ -117,5 +117,21 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             
             return false;
         }
+
+        public bool TryAddNewQueryFolder(out QueryFolder childFolder, TfsTeamProjectCollection tfsTeamProjectCollection, Project teamProject, Guid parentFolderId)
+        {
+            try
+            {
+                childFolder = _teamPilgrimTfsService.AddNewQueryFolder(tfsTeamProjectCollection, teamProject, parentFolderId);
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            childFolder = null;
+            return false;
+        }
     }
 }

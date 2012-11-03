@@ -20,5 +20,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
         bool TryCloneQueryDefinition(out IBuildDefinition buildDefinition, TfsTeamProjectCollection collection, Project project, IBuildDefinition definition);
 		
         bool TryDeleteBuildDefinition(IBuildDefinition definition);
+
+        bool TryAddNewQueryFolder(out QueryFolder childFolder, TfsTeamProjectCollection tfsTeamProjectCollection, Project teamProject, Guid parentFolderId);
     }
 }

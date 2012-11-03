@@ -13,28 +13,29 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
     {
         private readonly IPilgrimServiceModelProvider _pilgrimServiceModelProvider;
 
-        public TfsTeamProjectCollection ProjectCollection { get; private set; }
+        private readonly TfsTeamProjectCollection _projectCollection;
 
-        public Project Project { get; private set; }
+        private readonly Project _project;
 
         public ObservableCollection<WorkItemQueryChildModel> QueryItems { get; private set; }
 
         public WorkItemQueryContainerModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, TfsTeamProjectCollection projectCollection, Project project)
         {
             _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
-            ProjectCollection = projectCollection;
-            Project = project;
+            _projectCollection = projectCollection;
+            _project = project;
 
             NewWorkItemCommand = new RelayCommand<string>(NewWorkItem, CanNewWorkItem);
             GoToWorkItemCommand = new RelayCommand(GoToWorkItem, CanGoToWorkItem);
 
             NewQueryDefinitionCommand = new RelayCommand<WorkItemQueryFolderModel>(NewQueryDefinition, CanNewQueryDefinition);
+            NewQueryFolderCommand = new RelayCommand<WorkItemQueryFolderModel>(NewQueryFolder, CanNewQueryFolder);
 
             OpenQueryDefinitionCommand = new RelayCommand<WorkItemQueryDefinitionModel>(OpenQueryDefinition, CanOpenQueryDefinition);
             EditQueryDefinitionCommand = new RelayCommand<WorkItemQueryDefinitionModel>(EditQueryDefinition, CanEditQueryDefinition);
             DeleteQueryDefinitionCommand = new RelayCommand<WorkItemQueryDefinitionModel>(DeleteQueryDefinition, CanDeleteQueryDefinition);
 
-            var queryHierarchy = Project.QueryHierarchy;
+            var queryHierarchy = _project.QueryHierarchy;
             var queryItemModels = queryHierarchy.GetQueryItemViewModels(this);
 
             QueryItems = new ObservableCollection<WorkItemQueryChildModel>(queryItemModels);
@@ -62,10 +63,31 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
 
         private void NewWorkItem(string workItemType)
         {
-            TeamPilgrimPackage.TeamPilgrimVsService.NewWorkItem(ProjectCollection, Project.Name, workItemType);
+            TeamPilgrimPackage.TeamPilgrimVsService.NewWorkItem(_projectCollection, _project.Name, workItemType);
         }
 
         private bool CanNewWorkItem(string workItemType)
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region NewQueryFolder Command
+
+        public RelayCommand<WorkItemQueryFolderModel> NewQueryFolderCommand { get; private set; }
+
+        private void NewQueryFolder(WorkItemQueryFolderModel workItemQueryDefinitionModel)
+        {
+            QueryFolder queryFolder;
+            QueryFolder parentFolder = workItemQueryDefinitionModel.QueryFolder;
+            if (_pilgrimServiceModelProvider.TryAddNewQueryFolder(out queryFolder, _projectCollection, _project, parentFolder.Id))
+            {
+                workItemQueryDefinitionModel.QueryItems.Insert(0, new WorkItemQueryFolderModel(queryFolder, this, new WorkItemQueryChildModel[0]));
+            }
+        }
+
+        private bool CanNewQueryFolder(WorkItemQueryFolderModel workItemQueryDefinitionModel)
         {
             return true;
         }
@@ -84,7 +106,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
                 queryFolder = workItemQueryDefinitionModel.QueryFolder;
             }
 
-            TeamPilgrimPackage.TeamPilgrimVsService.NewQueryDefinition(Project, queryFolder);
+            TeamPilgrimPackage.TeamPilgrimVsService.NewQueryDefinition(_project, queryFolder);
         }
 
         private bool CanNewQueryDefinition(WorkItemQueryFolderModel workItemQueryDefinitionModel)
@@ -100,7 +122,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
 
         private void OpenQueryDefinition(WorkItemQueryDefinitionModel workItemQueryDefinitionModel)
         {
-            TeamPilgrimPackage.TeamPilgrimVsService.OpenQueryDefinition(ProjectCollection, workItemQueryDefinitionModel.QueryDefinition.Id);
+            TeamPilgrimPackage.TeamPilgrimVsService.OpenQueryDefinition(_projectCollection, workItemQueryDefinitionModel.QueryDefinition.Id);
         }
 
         private bool CanOpenQueryDefinition(WorkItemQueryDefinitionModel workItemQueryDefinitionModel)
@@ -116,7 +138,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
 
         private void EditQueryDefinition(WorkItemQueryDefinitionModel workItemQueryDefinitionModel)
         {
-            TeamPilgrimPackage.TeamPilgrimVsService.EditQueryDefinition(ProjectCollection, workItemQueryDefinitionModel.QueryDefinition.Id);
+            TeamPilgrimPackage.TeamPilgrimVsService.EditQueryDefinition(_projectCollection, workItemQueryDefinitionModel.QueryDefinition.Id);
         }
 
         private bool CanEditQueryDefinition(WorkItemQueryDefinitionModel workItemQueryDefinitionModel)
@@ -136,12 +158,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
 
             var queryId = workItemQueryDefinitionModel.QueryDefinition.Id;
 
-            if (_pilgrimServiceModelProvider.TryDeleteQueryDefinition(out result, ProjectCollection, Project, queryId))
+            if (_pilgrimServiceModelProvider.TryDeleteQueryDefinition(out result, _projectCollection, _project, queryId))
             {
                 if (result)
                 {
-                    TeamPilgrimPackage.TeamPilgrimVsService.CloseQueryDefinitionFrames(ProjectCollection, queryId);
-                    workItemQueryDefinitionModel.ParentQueryFolderModel.QueryItems.Remove(workItemQueryDefinitionModel);
+                    TeamPilgrimPackage.TeamPilgrimVsService.CloseQueryDefinitionFrames(_projectCollection, queryId);
+                    workItemQueryDefinitionModel.ParentQueryFolder.QueryItems.Remove(workItemQueryDefinitionModel);
                 }
             }
         }

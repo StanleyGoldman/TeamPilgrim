@@ -112,8 +112,11 @@
                 <MenuItem Header="New Query" 
                     Command="{Binding Path=WorkItemQueryCommandModel.NewQueryDefinitionCommand}" 
                     CommandParameter="{Binding}" />
+
+                <MenuItem Header="New Folder" 
+                    Command="{Binding Path=WorkItemQueryCommandModel.NewQueryFolderCommand}" 
+                    CommandParameter="{Binding}" />
                 
-                <MenuItem IsEnabled="False" Header="New Folder"/>
                 <MenuItem IsEnabled="False" Header="New Work Items with Microsoft Excel" />
                 <Separator />
                 <MenuItem IsEnabled="False" Header="Cut"/>

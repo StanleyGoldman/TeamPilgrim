@@ -2,7 +2,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children
 {
     public abstract class WorkItemQueryChildModel : BaseModel
     {
-        public WorkItemQueryFolderModel ParentQueryFolderModel { get; protected internal set; }
+        public WorkItemQueryFolderModel ParentQueryFolder { get; protected internal set; }
 
         protected IWorkItemQueryCommandModel workItemQueryCommandModel;
 
