@@ -31,5 +31,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces
         void OpenBuildDefinitionSecurityDialog(string projectName, string projectUri, string definitionName, string definitionUri);
 
         void NewWorkItem(TfsTeamProjectCollection projectCollection, string projectName, string typeName);
+        void GoToWorkItem();
     }
 }

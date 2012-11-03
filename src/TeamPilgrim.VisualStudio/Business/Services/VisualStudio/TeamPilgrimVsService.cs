@@ -215,6 +215,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
             _teamFoundationBuild.Value.BuildExplorer.CompletedView.Show(projectName, buildDefinition, qualityFilter, dateFilter);
         }
 
+        public void GoToWorkItem()
+        {
+            _workItemTrackingPackage.Value.GoToWorkItem();
+        }
+        
         public void NewWorkItem(TfsTeamProjectCollection projectCollection, string projectName, string typeName)
         {
             _workItemTrackingPackage.Value.OpenNewWorkItem(projectCollection, projectName, typeName);

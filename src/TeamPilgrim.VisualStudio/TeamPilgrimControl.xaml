@@ -93,7 +93,9 @@
                         CommandParameter="User Story" />
                 </MenuItem>
                 
-                <MenuItem IsEnabled="False" Header="Go to Work Item" />
+                <MenuItem Header="Go to Work Item" 
+                        Command="{Binding Path=GoToWorkItemCommand}" />
+                
                 <Separator />
                 <MenuItem IsEnabled="False" Header="New Query"/>
                 <MenuItem IsEnabled="False" Header="New Work Items with Microsoft Excel" />

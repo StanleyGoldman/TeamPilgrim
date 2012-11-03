@@ -26,6 +26,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
             Project = project;
 
             NewWorkItemCommand = new RelayCommand<string>(NewWorkItem, CanNewWorkItem);
+            GoToWorkItemCommand = new RelayCommand(GoToWorkItem, CanGoToWorkItem);
             OpenQueryDefinitionCommand = new RelayCommand<WorkItemQueryDefinitionModel>(OpenQueryDefinition, CanOpenQueryDefinition);
             EditQueryDefinitionCommand = new RelayCommand<WorkItemQueryDefinitionModel>(EditQueryDefinition, CanEditQueryDefinition);
             DeleteQueryDefinitionCommand = new RelayCommand<WorkItemQueryDefinitionModel>(DeleteQueryDefinition, CanDeleteQueryDefinition);
@@ -35,6 +36,22 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
 
             QueryItems = new ObservableCollection<WorkItemQueryChildModel>(queryItemModels);
         }
+
+        #region GoToWorkItemCommand
+
+        public RelayCommand GoToWorkItemCommand { get; private set; }
+
+        private void GoToWorkItem()
+        {
+            TeamPilgrimPackage.TeamPilgrimVsService.GoToWorkItem();
+        }
+
+        private bool CanGoToWorkItem()
+        {
+            return true;
+        }
+
+        #endregion
 
         #region NewWorkItemCommand
 
