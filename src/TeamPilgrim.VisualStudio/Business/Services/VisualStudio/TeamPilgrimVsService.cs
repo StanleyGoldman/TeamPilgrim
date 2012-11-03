@@ -168,6 +168,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
             _teamFoundationBuild.Value.DetailsManager.QueueBuild(projectName, buildDefinitionUri);
         }
 
+        public void OpenProcessFileLocation(Uri buildDefinitionUri)
+        {
+            _teamFoundationBuild.Value.BuildExplorerWrapper.NavigateToProcessFile(buildDefinitionUri);
+        }
+
         public void NewBuildDefinition(string projectName)
         {
             _teamFoundationBuild.Value.BuildExplorerWrapper.AddBuildDefinition(projectName);

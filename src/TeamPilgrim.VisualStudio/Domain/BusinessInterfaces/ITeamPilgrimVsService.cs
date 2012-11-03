@@ -21,6 +21,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces
         void ViewBuilds(string projectName, string buildDefinition, string qualityFilter, DateFilter dateFilter);
         void OpenBuildDefinition(Uri buildDefinitionUri);
         void QueueBuild(string projectName, Uri buildDefinitionUri);
+        void OpenProcessFileLocation(Uri buildDefinitionUri);
         
         void TfsConnect();
         void NewBuildDefinition(string projectName);

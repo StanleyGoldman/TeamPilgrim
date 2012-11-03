@@ -14,6 +14,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
         private readonly Lazy<MethodInfo> _openControllerAgentManagerMethod;
         private readonly Lazy<MethodInfo> _openQualityManagerMethod;
         private readonly Lazy<MethodInfo> _openBuildSecurityDialogMethod;
+        private readonly Lazy<MethodInfo> _navigateToProcessFileMethod;
 
         public BuildExplorerWrapper(IBuildExplorer buildExplorer)
         {
@@ -23,6 +24,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
             _openControllerAgentManagerMethod = new Lazy<MethodInfo>(() => _buildExplorerType.GetMethod("OpenControllerAgentManager", BindingFlags.Static | BindingFlags.Public));
             _openQualityManagerMethod = new Lazy<MethodInfo>(() => _buildExplorerType.GetMethod("OpenQualityManager", BindingFlags.Static | BindingFlags.Public));
             _openBuildSecurityDialogMethod = new Lazy<MethodInfo>(() => _buildExplorerType.GetMethod("OpenBuildSecurityDialog", BindingFlags.Static | BindingFlags.Public));
+            _navigateToProcessFileMethod = new Lazy<MethodInfo>(() => _buildExplorerType.GetMethod("NavigateToProcessFile", BindingFlags.Static | BindingFlags.Public));
         }
 
         public ICompletedView CompletedView
@@ -63,6 +65,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
         public void OpenBuildSecurityDialog(ProjectInfo projectInfo, string name, string securityToken)
         {
             _openBuildSecurityDialogMethod.Value.Invoke(null, new object[] {projectInfo, name, securityToken});
+        }
+
+        public void NavigateToProcessFile(Uri buildDefinitionUri)
+        {
+            _navigateToProcessFileMethod.Value.Invoke(null, new object[] {buildDefinitionUri});
         }
     }
 }

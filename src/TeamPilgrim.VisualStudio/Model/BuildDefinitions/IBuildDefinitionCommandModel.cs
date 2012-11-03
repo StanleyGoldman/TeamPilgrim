@@ -6,6 +6,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
     {
         RelayCommand NewBuildDefinitionCommand { get; set; }
         RelayCommand<BuildDefinitionModel> OpenBuildDefintionCommand { get; set; }
+        RelayCommand<BuildDefinitionModel> OpenProcessFileLocationCommand { get; set; }
         RelayCommand<BuildDefinitionModel> ViewBuildsCommand { get; set; }
         RelayCommand<BuildDefinitionModel> QueueBuildCommand { get; set; }
     }

@@ -25,6 +25,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
             OpenBuildDefintionCommand = new RelayCommand<BuildDefinitionModel>(OpenBuildDefinition, CanOpenBuildDefinition);
             ViewBuildsCommand = new RelayCommand<BuildDefinitionModel>(ViewBuilds, CanViewBuilds);
             QueueBuildCommand = new RelayCommand<BuildDefinitionModel>(QueueBuild, CanQueueBuild);
+            OpenProcessFileLocationCommand = new RelayCommand<BuildDefinitionModel>(OpenProcessFileLocation, CanOpenProcessFileLocation);
+
             NewBuildDefinitionCommand = new RelayCommand(NewBuildDefinition, CanNewBuildDefinition);
             ManageBuildControllersCommand = new RelayCommand(ManageBuildControllers, CanManageBuildControllers);
             ManageBuildQualitiesCommand = new RelayCommand(ManageBuildQualities, CanManageBuildQualities);
@@ -39,7 +41,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
             }
         }
 
-        #region OpenBuildDefinition Command
+        #region NewBuildDefinition Command
 
         public RelayCommand NewBuildDefinitionCommand { get; set; }
 
@@ -115,6 +117,22 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
         private void OpenBuildDefinition(BuildDefinitionModel buildDefinitionModel)
         {
             TeamPilgrimPackage.TeamPilgrimVsService.OpenBuildDefinition(buildDefinitionModel.Definition.Uri);
+        }
+
+        #endregion
+
+        #region OpenProcessFileLocation Command
+
+        public RelayCommand<BuildDefinitionModel> OpenProcessFileLocationCommand { get; set; }
+
+        private bool CanOpenProcessFileLocation(BuildDefinitionModel buildDefinitionModel)
+        {
+            return true;
+        }
+
+        private void OpenProcessFileLocation(BuildDefinitionModel buildDefinitionModel)
+        {
+            TeamPilgrimPackage.TeamPilgrimVsService.OpenProcessFileLocation(buildDefinitionModel.Definition.Uri);
         }
 
         #endregion
