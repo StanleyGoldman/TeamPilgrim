@@ -146,7 +146,6 @@
                 <Separator />
 
                 <MenuItem IsEnabled="False" Header="Security..." />
-                <MenuItem IsEnabled="False" Header="Properties"/>
             </ContextMenu>
 
             <ContextMenu x:Key="BuildDefinitionContextMenu" d:DataContext="{d:DesignInstance BuildDefinitions:BuildDefinitionModel}">
