@@ -27,6 +27,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
 
             NewWorkItemCommand = new RelayCommand<string>(NewWorkItem, CanNewWorkItem);
             GoToWorkItemCommand = new RelayCommand(GoToWorkItem, CanGoToWorkItem);
+
+            NewQueryDefinitionCommand = new RelayCommand<WorkItemQueryFolderModel>(NewQueryDefinition, CanNewQueryDefinition);
+
             OpenQueryDefinitionCommand = new RelayCommand<WorkItemQueryDefinitionModel>(OpenQueryDefinition, CanOpenQueryDefinition);
             EditQueryDefinitionCommand = new RelayCommand<WorkItemQueryDefinitionModel>(EditQueryDefinition, CanEditQueryDefinition);
             DeleteQueryDefinitionCommand = new RelayCommand<WorkItemQueryDefinitionModel>(DeleteQueryDefinition, CanDeleteQueryDefinition);
@@ -37,7 +40,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
             QueryItems = new ObservableCollection<WorkItemQueryChildModel>(queryItemModels);
         }
 
-        #region GoToWorkItemCommand
+        #region GoToWorkItem Command
 
         public RelayCommand GoToWorkItemCommand { get; private set; }
 
@@ -53,7 +56,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
 
         #endregion
 
-        #region NewWorkItemCommand
+        #region NewWorkItem Command
 
         public RelayCommand<string> NewWorkItemCommand { get; private set; }
 
@@ -69,7 +72,29 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
 
         #endregion
 
-        #region OpenQueryDefinition
+        #region NewQueryDefinition Command
+
+        public RelayCommand<WorkItemQueryFolderModel> NewQueryDefinitionCommand { get; private set; }
+
+        private void NewQueryDefinition(WorkItemQueryFolderModel workItemQueryDefinitionModel)
+        {
+            QueryFolder queryFolder = null;
+            if (workItemQueryDefinitionModel != null)
+            {
+                queryFolder = workItemQueryDefinitionModel.QueryFolder;
+            }
+
+            TeamPilgrimPackage.TeamPilgrimVsService.NewQueryDefinition(Project, queryFolder);
+        }
+
+        private bool CanNewQueryDefinition(WorkItemQueryFolderModel workItemQueryDefinitionModel)
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region OpenQueryDefinition Command
 
         public RelayCommand<WorkItemQueryDefinitionModel> OpenQueryDefinitionCommand { get; private set; }
 
@@ -85,7 +110,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
 
         #endregion
 
-        #region EditQueryDefinition
+        #region EditQueryDefinition Command
 
         public RelayCommand<WorkItemQueryDefinitionModel> EditQueryDefinitionCommand { get; private set; }
 
@@ -101,7 +126,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
 
         #endregion
 
-        #region DeleteQueryDefinition
+        #region DeleteQueryDefinition Command
 
         public RelayCommand<WorkItemQueryDefinitionModel> DeleteQueryDefinitionCommand { get; private set; }
 

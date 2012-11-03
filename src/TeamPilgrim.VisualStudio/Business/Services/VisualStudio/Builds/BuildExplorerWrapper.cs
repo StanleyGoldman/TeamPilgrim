@@ -1,10 +1,9 @@
 using System;
 using System.Reflection;
-using Microsoft.TeamFoundation.Common;
 using Microsoft.TeamFoundation.Server;
 using Microsoft.VisualStudio.TeamFoundation.Build;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.Build
 {
     public class BuildExplorerWrapper : IBuildExplorer
     {

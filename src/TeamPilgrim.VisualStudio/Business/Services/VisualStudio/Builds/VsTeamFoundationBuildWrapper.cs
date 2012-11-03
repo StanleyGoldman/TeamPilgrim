@@ -2,7 +2,7 @@ using System;
 using Microsoft.TeamFoundation.Build.Client;
 using Microsoft.VisualStudio.TeamFoundation.Build;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.Build
 {
     public class VsTeamFoundationBuildWrapper : IVsTeamFoundationBuild
     {

@@ -161,10 +161,11 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Business\Services\VisualStudio\BuildExplorerWrapper.cs" />
+    <Compile Include="Business\Services\VisualStudio\Build\BuildExplorerWrapper.cs" />
+    <Compile Include="Business\Services\VisualStudio\WorkItem\DocumentServiceWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\TeamFoundationHostWrapper.cs" />
-    <Compile Include="Business\Services\VisualStudio\VsTeamFoundationBuildWrapper.cs" />
-    <Compile Include="Business\Services\VisualStudio\WorkItemTrackingPackageWrapper.cs" />
+    <Compile Include="Business\Services\VisualStudio\Build\VsTeamFoundationBuildWrapper.cs" />
+    <Compile Include="Business\Services\VisualStudio\WorkItem\WorkItemTrackingPackageWrapper.cs" />
     <Compile Include="Common\VsWindowFrameEditorTypeIds.cs" />
     <Compile Include="Common\AttachedProperties\MouseDoubleClick.cs" />
     <Compile Include="Domain\BusinessInterfaces\ITeamPilgrimVsService.cs" />

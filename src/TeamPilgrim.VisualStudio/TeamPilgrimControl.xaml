@@ -94,17 +94,25 @@
                 </MenuItem>
                 
                 <MenuItem Header="Go to Work Item" 
-                        Command="{Binding Path=GoToWorkItemCommand}" />
+                    Command="{Binding Path=GoToWorkItemCommand}" />
                 
                 <Separator />
-                <MenuItem IsEnabled="False" Header="New Query"/>
+                
+                <MenuItem Header="New Query" 
+                    Command="{Binding Path=NewQueryDefinitionCommand}" 
+                    CommandParameter="{x:Null}" />
+                
                 <MenuItem IsEnabled="False" Header="New Work Items with Microsoft Excel" />
                 <Separator />
                 <MenuItem IsEnabled="False" Header="Refresh"/>
             </ContextMenu>
 
             <ContextMenu x:Key="WorkItemQueryFolderContextMenu" d:DataContext="{d:DesignInstance WorkItemQueryChildren:WorkItemQueryFolderModel}">
-                <MenuItem IsEnabled="False" Header="New Query"/>
+                
+                <MenuItem Header="New Query" 
+                    Command="{Binding Path=WorkItemQueryCommandModel.NewQueryDefinitionCommand}" 
+                    CommandParameter="{Binding}" />
+                
                 <MenuItem IsEnabled="False" Header="New Folder"/>
                 <MenuItem IsEnabled="False" Header="New Work Items with Microsoft Excel" />
                 <Separator />

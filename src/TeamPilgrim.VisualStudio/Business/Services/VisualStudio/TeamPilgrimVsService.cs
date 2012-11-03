@@ -1,6 +1,8 @@
 using System;
 using System.Reflection;
 using EnvDTE80;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.Build;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.WorkItem;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
 using Microsoft.TeamFoundation;
@@ -8,6 +10,7 @@ using Microsoft.TeamFoundation.Build.Common;
 using Microsoft.TeamFoundation.Build.Controls;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.Server;
+using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Controls;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -33,11 +36,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
 
         protected VersionControlExt VersionControlExt { get; set; }
 
-        protected DocumentService WorkItemTrackingDocumentService { get; set; }
+        protected DocumentServiceWrapper WorkItemTrackingDocumentService { get; set; }
 
         public ProjectContextExt ActiveProjectContext
         {
-            get {
+            get
+            {
                 return TeamFoundationServerExt == null ? null : TeamFoundationServerExt.ActiveProjectContext;
             }
         }
@@ -68,7 +72,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
             Dte2 = dte2;
             VersionControlExt = dte2.GetObject("Microsoft.VisualStudio.TeamFoundation.VersionControl.VersionControlExt") as VersionControlExt;
             TeamFoundationServerExt = dte2.GetObject("Microsoft.VisualStudio.TeamFoundation.TeamFoundationServerExt") as TeamFoundationServerExt;
-            WorkItemTrackingDocumentService = dte2.GetObject("Microsoft.VisualStudio.TeamFoundation.WorkItemTracking.DocumentService") as DocumentService;
+            WorkItemTrackingDocumentService = new DocumentServiceWrapper(dte2.GetObject("Microsoft.VisualStudio.TeamFoundation.WorkItemTracking.DocumentService") as DocumentService);
 
             if (TeamFoundationServerExt != null)
             {
@@ -103,6 +107,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
             versionControlExplorerExt.Navigate("$/" + projectName);
         }
 
+        public void NewQueryDefinition(Project project, QueryFolder parent)
+        {
+            parent = parent ?? WorkItemTrackingDocumentService.GetDefaultParent(project, false);
+            _workItemTrackingPackage.Value.NewQuery(project.Name, parent);
+        }
+
         public void OpenQueryDefinition(TfsTeamProjectCollection projectCollection, Guid queryDefinitionId)
         {
             var queryDocument = WorkItemTrackingDocumentService.GetQuery(projectCollection, queryDefinitionId.ToString(), this);
@@ -123,12 +133,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
         public void CloseQueryDefinitionFrames(TfsTeamProjectCollection projectCollection, Guid queryDefinitionId)
         {
             var workItemsQueryFrame = GetVsWindowFrameByTypeAndMoniker(VsWindowFrameEditorTypeIds.WorkItemsQueryView, "vstfs:///WorkItemTracking/Query/" + queryDefinitionId.ToString());
-            
-            if (workItemsQueryFrame != null) 
+
+            if (workItemsQueryFrame != null)
                 workItemsQueryFrame.CloseFrame((int)__FRAMECLOSE.FRAMECLOSE_NoSave);
 
             var workItemsResultsViewFrame = GetVsWindowFrameByTypeAndMoniker(VsWindowFrameEditorTypeIds.WorkItemsResultView, "vstfs:///WorkItemTracking/Results/" + queryDefinitionId.ToString());
-            
+
             if (workItemsResultsViewFrame != null)
                 workItemsResultsViewFrame.CloseFrame((int)__FRAMECLOSE.FRAMECLOSE_NoSave);
         }
@@ -147,10 +157,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
                 m_frame = frames[0] as IVsWindowFrame;
 
                 object monikerObject;
-                m_frame.GetProperty((int) __VSFPROPID.VSFPROPID_pszMkDocument, out monikerObject);
+                m_frame.GetProperty((int)__VSFPROPID.VSFPROPID_pszMkDocument, out monikerObject);
 
                 Guid editorTypeIdGuid;
-                m_frame.GetGuidProperty((int) __VSFPROPID.VSFPROPID_guidEditorType, out editorTypeIdGuid);
+                m_frame.GetGuidProperty((int)__VSFPROPID.VSFPROPID_guidEditorType, out editorTypeIdGuid);
 
                 if (monikerObject != null && monikerObject.Equals(moniker) && editorTypeIdGuid.Equals(editorTypeId))
                 {
@@ -219,7 +229,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
         {
             _workItemTrackingPackage.Value.GoToWorkItem();
         }
-        
+
         public void NewWorkItem(TfsTeamProjectCollection projectCollection, string projectName, string typeName)
         {
             _workItemTrackingPackage.Value.OpenNewWorkItem(projectCollection, projectName, typeName);

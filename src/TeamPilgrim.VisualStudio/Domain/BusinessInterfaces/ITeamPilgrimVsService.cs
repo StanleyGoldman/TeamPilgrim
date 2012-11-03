@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.TeamFoundation.Build.Controls;
 using Microsoft.TeamFoundation.Client;
+using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using Microsoft.VisualStudio.TeamFoundation;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces
@@ -13,7 +14,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces
         ProjectContextExt ActiveProjectContext { get; }
 
         void OpenSourceControl(string projectName);
-        
+
+        void NewQueryDefinition(Project project, QueryFolder parent);
         void OpenQueryDefinition(TfsTeamProjectCollection projectCollection, Guid queryDefinitionId);
         void EditQueryDefinition(TfsTeamProjectCollection projectCollection, Guid queryDefinitionId);
         void CloseQueryDefinitionFrames(TfsTeamProjectCollection projectCollection, Guid queryDefinitionId);
