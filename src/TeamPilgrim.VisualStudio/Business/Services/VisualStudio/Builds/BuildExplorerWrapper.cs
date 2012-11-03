@@ -3,7 +3,7 @@ using System.Reflection;
 using Microsoft.TeamFoundation.Server;
 using Microsoft.VisualStudio.TeamFoundation.Build;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.Build
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.Builds
 {
     public class BuildExplorerWrapper : IBuildExplorer
     {
