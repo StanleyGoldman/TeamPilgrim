@@ -1,5 +1,5 @@
 ﻿using System;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities;
+using Microsoft.TeamFoundation.Build.Client;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
@@ -14,7 +14,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
         bool TryGetProjects(out Project[] projects, Uri tpcAddress);
 
         bool TryDeleteQueryDefinition(out bool result, TfsTeamProjectCollection teamProjectCollection, Project teamProject, Guid queryId);
-        
-        bool TryGetBuildDefinitionsByProjectName(out BuildDefinitionWrapper[] buildDefinitions, TfsTeamProjectCollection collection, string projectName);
+
+        bool TryGetBuildDefinitionsByProjectName(out IBuildDefinition[] buildDefinitions, TfsTeamProjectCollection collection, string projectName);
     }
 }

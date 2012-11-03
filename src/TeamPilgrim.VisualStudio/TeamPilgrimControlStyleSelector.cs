@@ -1,7 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Builds;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.ProjectModels;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.QueryItemModels;
 
@@ -14,7 +14,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
         public Style SourceControlNodeStyle { get; set; }
 
         
-        public Style BuildDefinitionWrapperStyle { get; set; }
+        public Style BuildDefinitionModelStyle { get; set; }
         
         public Style ProjectCollectionModelStyle { get; set; }
 
@@ -64,10 +64,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
                 return QueryFolderNodeStyle;
             }
 
-            var buildDefinitionWrapper = item as BuildDefinitionWrapper;
-            if (buildDefinitionWrapper != null && BuildDefinitionWrapperStyle != null)
+            var buildDefinitionModel = item as BuildDefinitionModel;
+            if (buildDefinitionModel != null && BuildDefinitionModelStyle != null)
             {
-                return BuildDefinitionWrapperStyle;
+                return BuildDefinitionModelStyle;
             }
 
             if(DefaultStyle != null)

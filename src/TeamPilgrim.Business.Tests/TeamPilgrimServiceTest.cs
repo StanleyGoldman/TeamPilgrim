@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities;
 using Microsoft.TeamFoundation.Build.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using NUnit.Framework;

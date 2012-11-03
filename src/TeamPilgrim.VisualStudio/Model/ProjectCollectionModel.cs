@@ -30,7 +30,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
                 Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
                     {
                         var pilgrimProjectModels = projects
-                            .Select(project => new ProjectModel(_pilgrimServiceModelProvider, TfsTeamProjectCollection, project, new ProjectBuildModel(_pilgrimServiceModelProvider, TfsTeamProjectCollection, project)));
+                            .Select(project => new ProjectModel(_pilgrimServiceModelProvider, TfsTeamProjectCollection, project));
 
                         foreach (var pilgrimProjectModel in pilgrimProjectModels)
                         {

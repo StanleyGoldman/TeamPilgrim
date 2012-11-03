@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Builds;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.ProjectModels;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.QueryItemModels;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
@@ -19,16 +20,16 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         public TeamPilgrimModel TeamPilgrimModel { get; private set; }
 
-        public ProjectBuildModel ProjectBuildModel { get; private set; }
+        public BuildModel BuildModel { get; private set; }
 
         public ObservableCollection<BaseModel> ChildObjects { get; private set; }
 
-        public ProjectModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, TfsTeamProjectCollection projectCollection, Project project, ProjectBuildModel projectBuildModel)
+        public ProjectModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, TfsTeamProjectCollection projectCollection, Project project)
         {
             _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
             ProjectCollection = projectCollection;
             Project = project;
-            ProjectBuildModel = projectBuildModel;
+            BuildModel = new BuildModel(_pilgrimServiceModelProvider, projectCollection, project);
             
             OpenSourceControlCommand = new RelayCommand(OpenSourceControl, CanOpenSourceControl);
             OpenQueryDefinitionCommand = new RelayCommand<QueryDefinitionModel>(OpenQueryDefinition, CanOpenQueryDefinition);
@@ -40,7 +41,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
                 {
                     new WorkItemsModel(queryHierarchy.GetQueryItemViewModels(this)), 
                     new ReportsModel(),
-                    new BuildsModel(projectBuildModel),
+                    BuildModel,
                     new TeamMembersModel(),
                     new SourceControlModel()
                 };

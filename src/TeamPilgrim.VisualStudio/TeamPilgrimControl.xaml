@@ -4,11 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:Model="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model"
-             xmlns:Entities="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities"
              xmlns:VisualStudio="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio"
              xmlns:AttachedProperties="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties"
              xmlns:ProjectModels="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.ProjectModels"
              xmlns:QueryItemModels="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.QueryItemModels"
+             xmlns:Builds="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Builds"
              x:Class="JustAProgrammer.TeamPilgrim.VisualStudio.TeamPilgrimControl"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
@@ -119,15 +119,15 @@
             </ContextMenu>
 
             <ContextMenu x:Key="BuildDefinitionWrapperContextMenu">
-                <MenuItem Header="View Builds" />
-                <!--Command="{Binding DataContext.ProjectBuildModel.ViewBuildsCommand, RelativeSource={RelativeSource AncestorLevel=2, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}" -->
-                <!--CommandParameter="{Binding DataContext, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"-->
+                <MenuItem Header="View Builds" 
+                    Command="{Binding Path=BuildDefinitionCommandModel.ViewBuildsCommand}" 
+                    CommandParameter="{Binding}" />
 
                 <MenuItem IsEnabled="False" Header="Queue New Build"/>
 
-                <MenuItem Header="Edit Build Definition" />
-                <!--Command="{Binding DataContext.ProjectBuildModel.OpenBuildDefintionCommand, RelativeSource={RelativeSource AncestorLevel=2, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}" -->
-                <!--CommandParameter="{Binding DataContext, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"-->
+                <MenuItem Header="Edit Build Definition" 
+                    Command="{Binding Path=BuildDefinitionCommandModel.OpenBuildDefintionCommand}" 
+                    CommandParameter="{Binding}" />
 
                 <MenuItem IsEnabled="False" Header="Open Process File Location"/>
                 <MenuItem IsEnabled="False" Header="Clone Build Definition"/>
@@ -155,17 +155,17 @@
             </Style>
 
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="QueryDefinitionNodeStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
-                <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding QueryItemCommandModel.OpenQueryDefinitionCommand}"/>
-                <Setter Property="AttachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding DataContext, RelativeSource={RelativeSource Self}}"/>
+                <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding Path=QueryItemCommandModel.OpenQueryDefinitionCommand}"/>
+                <Setter Property="AttachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding}"/>
             </Style>
             
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="BuildDefinitionWrapperStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
-                <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding DataContext.ProjectBuildModel.ViewBuildsCommand, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"/>
-                <Setter Property="AttachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding DataContext, RelativeSource={RelativeSource Self}}"/>
+                <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding Path=BuildDefinitionCommandModel.ViewBuildsCommand}"/>
+                <Setter Property="AttachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding}"/>
             </Style>
 
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="SourceControlNodeStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
-                <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding DataContext.OpenSourceControlCommand, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"/>
+                <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding Path=DataContext.OpenSourceControlCommand, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"/>
             </Style>
 
             <VisualStudio:TeamPilgrimControlStyleSelector
@@ -177,7 +177,7 @@
 				QueryFolderNodeStyle="{StaticResource ResourceKey=QueryFolderNodeStyle}"
 				QueryDefinitionNodeStyle="{StaticResource ResourceKey=QueryDefinitionNodeStyle}"
 				SourceControlNodeStyle="{StaticResource ResourceKey=SourceControlNodeStyle}"
-				BuildDefinitionWrapperStyle="{StaticResource ResourceKey=BuildDefinitionWrapperStyle}" />
+				BuildDefinitionModelStyle="{StaticResource ResourceKey=BuildDefinitionWrapperStyle}" />
             
         </DockPanel.Resources>
         <ToolBar ToolBarTray.IsLocked="True" ToolBar.OverflowMode="Never" DockPanel.Dock="Top">
@@ -212,12 +212,12 @@
                         <TextBlock Text="{Binding Name}" ContextMenu="{StaticResource ResourceKey=QueryDefinitionModelContextMenu}"  />
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type ProjectModels:BuildsModel}" ItemsSource="{Binding ProjectBuildModel.BuildDefinitions}">
+                    <HierarchicalDataTemplate DataType="{x:Type Builds:BuildModel}" ItemsSource="{Binding Path=BuildDefinitions}">
                         <TextBlock Text="Builds" />
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type Entities:BuildDefinitionWrapper}">
-                        <TextBlock Text="{Binding Name}" ContextMenu="{StaticResource ResourceKey=BuildDefinitionWrapperContextMenu}"  />
+                    <HierarchicalDataTemplate DataType="{x:Type Builds:BuildDefinitionModel}">
+                        <TextBlock Text="{Binding Path=Definition.Name}" ContextMenu="{StaticResource ResourceKey=BuildDefinitionWrapperContextMenu}"  />
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type ProjectModels:ReportsModel}">

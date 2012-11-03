@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Linq;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.Entities;
 using Microsoft.TeamFoundation.Build.Client;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
@@ -70,19 +69,17 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
             return collection.GetService<WorkItemStore>();
         }
 
-        public BuildDefinitionWrapper[] QueryBuildDefinitions(TfsTeamProjectCollection collection, string teamProject)
+        public IBuildDefinition[] QueryBuildDefinitions(TfsTeamProjectCollection collection, string teamProject)
         {
             return collection.GetService<IBuildServer>()
                 .QueryBuildDefinitions(teamProject)
-                .Select(definition => new BuildDefinitionWrapper(definition))
                 .ToArray();
         }
 
-        public BuildDetailWrapper[] QueryBuildDetails(TfsTeamProjectCollection collection, string teamProject)
+        public IBuildDetail[] QueryBuildDetails(TfsTeamProjectCollection collection, string teamProject)
         {
             return collection.GetService<IBuildServer>()
                 .QueryBuilds(teamProject)
-                .Select(detail => new BuildDetailWrapper(detail))
                 .ToArray();
         }
     }
