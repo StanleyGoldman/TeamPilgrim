@@ -118,6 +118,29 @@
                 <MenuItem IsEnabled="False" Header="Security..." />
             </ContextMenu>
 
+            <ContextMenu x:Key="BuildDefinitionsContextMenu" d:DataContext="{d:DesignInstance BuildDefinitions:BuildDefinitionsModel}">
+                <MenuItem Header="View Builds" 
+                    Command="{Binding Path=ViewBuildsCommand}" 
+                    CommandParameter="{x:Null}" />
+
+                <MenuItem IsEnabled="False" Header="Queue New Build"/>
+                <MenuItem IsEnabled="False" Header="New Build Definition" />
+
+                <Separator />
+
+                <MenuItem IsEnabled="False" Header="Manage Build Controllers..." />
+                <MenuItem IsEnabled="False" Header="Manage Build Qualities..." />
+
+                <Separator />
+
+                <MenuItem IsEnabled="False" Header="Refresh"/>
+
+                <Separator />
+
+                <MenuItem IsEnabled="False" Header="Security..." />
+                <MenuItem IsEnabled="False" Header="Properties"/>
+            </ContextMenu>
+
             <ContextMenu x:Key="BuildDefinitionContextMenu" d:DataContext="{d:DesignInstance BuildDefinitions:BuildDefinitionModel}">
                 <MenuItem Header="View Builds" 
                     Command="{Binding Path=BuildDefinitionCommandModel.ViewBuildsCommand}" 
@@ -214,11 +237,11 @@
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type BuildDefinitions:BuildDefinitionsModel}" ItemsSource="{Binding Path=BuildDefinitions}">
-                        <TextBlock Text="Builds" />
+                        <TextBlock Text="Builds" ContextMenu="{StaticResource ResourceKey=BuildDefinitionsContextMenu}" />
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type BuildDefinitions:BuildDefinitionModel}">
-                        <TextBlock Text="{Binding Path=Definition.Name}" ContextMenu="{StaticResource ResourceKey=BuildDefinitionContextMenu}"  />
+                        <TextBlock Text="{Binding Path=Definition.Name}" ContextMenu="{StaticResource ResourceKey=BuildDefinitionContextMenu}" />
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type Model:ReportsModel}">
