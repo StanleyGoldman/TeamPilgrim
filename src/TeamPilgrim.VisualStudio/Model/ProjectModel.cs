@@ -1,16 +1,15 @@
 ﻿using System.Collections.ObjectModel;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Builds;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.ProjectModels;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.QueryItemModels;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
-    public class ProjectModel : BaseModel, IQueryItemCommandModel
+    public class ProjectModel : BaseModel
     {
         private readonly IPilgrimServiceModelProvider _pilgrimServiceModelProvider;
 
@@ -20,7 +19,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         public TeamPilgrimModel TeamPilgrimModel { get; private set; }
 
-        public BuildModel BuildModel { get; private set; }
+        public BuildDefinitionsModel BuildDefinitionsModel { get; private set; }
 
         public ObservableCollection<BaseModel> ChildObjects { get; private set; }
 
@@ -29,82 +28,20 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
             ProjectCollection = projectCollection;
             Project = project;
-            BuildModel = new BuildModel(_pilgrimServiceModelProvider, projectCollection, project);
-            
-            OpenSourceControlCommand = new RelayCommand(OpenSourceControl, CanOpenSourceControl);
-            OpenQueryDefinitionCommand = new RelayCommand<QueryDefinitionModel>(OpenQueryDefinition, CanOpenQueryDefinition);
-            EditQueryDefinitionCommand = new RelayCommand<QueryDefinitionModel>(EditQueryDefinition, CanEditQueryDefinition);
-            DeleteQueryDefinitionCommand = new RelayCommand<QueryDefinitionModel>(DeleteQueryDefinition, CanDeleteQueryDefinition);
 
-            QueryHierarchy queryHierarchy = Project.QueryHierarchy;
+            OpenSourceControlCommand = new RelayCommand(OpenSourceControl, CanOpenSourceControl);
+
+            BuildDefinitionsModel = new BuildDefinitionsModel(_pilgrimServiceModelProvider, projectCollection, project);
+
             ChildObjects = new ObservableCollection<BaseModel>
                 {
-                    new WorkItemsModel(queryHierarchy.GetQueryItemViewModels(this)), 
+                    new WorkItemQueryContainerModel(_pilgrimServiceModelProvider, projectCollection, project), 
                     new ReportsModel(),
-                    BuildModel,
+                    BuildDefinitionsModel,
                     new TeamMembersModel(),
                     new SourceControlModel()
                 };
         }
-
-        #region OpenQueryItem
-
-        public RelayCommand<QueryDefinitionModel> OpenQueryDefinitionCommand { get; private set; }
-
-        private void OpenQueryDefinition(QueryDefinitionModel queryDefinitionModel)
-        {
-            TeamPilgrimPackage.TeamPilgrimVsService.OpenQueryDefinition(ProjectCollection, queryDefinitionModel.QueryDefinition.Id);
-        }
-
-        private bool CanOpenQueryDefinition(QueryDefinitionModel queryDefinitionModel)
-        {
-            return true;
-        }
-
-        #endregion
-
-        #region EditQueryItem
-
-        public RelayCommand<QueryDefinitionModel> EditQueryDefinitionCommand { get; private set; }
-
-        private void EditQueryDefinition(QueryDefinitionModel queryDefinitionModel)
-        {
-            TeamPilgrimPackage.TeamPilgrimVsService.EditQueryDefinition(ProjectCollection, queryDefinitionModel.QueryDefinition.Id);
-        }
-
-        private bool CanEditQueryDefinition(QueryDefinitionModel queryDefinitionModel)
-        {
-            return true;
-        }
-
-        #endregion
-
-        #region DeleteQueryItem
-
-        public RelayCommand<QueryDefinitionModel> DeleteQueryDefinitionCommand { get; private set; }
-
-        private void DeleteQueryDefinition(QueryDefinitionModel queryDefinitionModel)
-        {
-            bool result;
-
-            var queryId = queryDefinitionModel.QueryDefinition.Id;
-
-            if(_pilgrimServiceModelProvider.TryDeleteQueryDefinition(out result, ProjectCollection, Project, queryId))
-            {
-                if(result)
-                {
-                    TeamPilgrimPackage.TeamPilgrimVsService.CloseQueryDefinitionFrames(ProjectCollection, queryId);
-                    
-                }
-            }
-        }
-
-        private bool CanDeleteQueryDefinition(QueryDefinitionModel queryDefinitionModel)
-        {
-            return true;
-        }
-
-        #endregion
 
         #region OpenSourceControl
 

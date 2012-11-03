@@ -7,15 +7,15 @@ using Microsoft.TeamFoundation.Build.Controls;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Builds
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
 {
-    public class BuildModel : BaseModel, IBuildDefinitionCommandModel
+    public class BuildDefinitionsModel : BaseModel, IBuildDefinitionCommandModel
     {
         private readonly IPilgrimServiceModelProvider _pilgrimServiceModelProvider;
         private readonly TfsTeamProjectCollection _collection;
         private readonly Project _project;
 
-        public BuildModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, TfsTeamProjectCollection collection, Project project)
+        public BuildDefinitionsModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, TfsTeamProjectCollection collection, Project project)
         {
             _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
             _collection = collection;

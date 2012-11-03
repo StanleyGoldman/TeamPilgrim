@@ -1,6 +1,6 @@
 using GalaSoft.MvvmLight.Command;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Builds
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
 {
     public interface IBuildDefinitionCommandModel
     {

@@ -1,9 +1,9 @@
 using System.Windows;
 using System.Windows.Controls;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Builds;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.ProjectModels;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.QueryItemModels;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio
 {
@@ -11,71 +11,65 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
     {
         public Style DefaultStyle { get; set; }
 
-        public Style SourceControlNodeStyle { get; set; }
-
+        public Style SourceControlStyle { get; set; }
         
-        public Style BuildDefinitionModelStyle { get; set; }
+        public Style BuildDefinitionStyle { get; set; }
         
-        public Style ProjectCollectionModelStyle { get; set; }
+        public Style ProjectCollectionStyle { get; set; }
 
-        public Style ProjectModelStyle { get; set; }
+        public Style ProjectStyle { get; set; }
 
-        public Style WorkItemsNodeStyle { get; set; }
+        public Style WorkItemQueryContainerStyle { get; set; }
         
-        public Style QueryFolderNodeStyle { get; set; }
+        public Style WorkItemQueryFolderStyle { get; set; }
 
-        public Style QueryDefinitionNodeStyle { get; set; }
+        public Style WorkItemQueryDefinitionStyle { get; set; }
 
         public override Style SelectStyle(object item, DependencyObject container)
         {
             var projectCollectionModel = item as ProjectCollectionModel;
-            if (projectCollectionModel != null && ProjectCollectionModelStyle != null)
+            if (projectCollectionModel != null && ProjectCollectionStyle != null)
             {
-                return ProjectCollectionModelStyle;
+                return ProjectCollectionStyle;
             }
 
             var projectModel = item as ProjectModel;
-            if (projectModel != null && ProjectModelStyle != null)
+            if (projectModel != null && ProjectStyle != null)
             {
-                return ProjectModelStyle;
+                return ProjectStyle;
             }
             
-            var workItemsNode = item as WorkItemsModel;
-            if (workItemsNode != null && WorkItemsNodeStyle != null)
+            var workItemQueryContainerModel = item as WorkItemQueryContainerModel;
+            if (workItemQueryContainerModel != null && WorkItemQueryContainerStyle != null)
             {
-                return WorkItemsNodeStyle;
+                return WorkItemQueryContainerStyle;
             }
             
             var sourceControlNode = item as SourceControlModel;
-            if (sourceControlNode != null && SourceControlNodeStyle != null)
+            if (sourceControlNode != null && SourceControlStyle != null)
             {
-                return SourceControlNodeStyle;
+                return SourceControlStyle;
             }
 
-            var queryDefinitionNode = item as QueryDefinitionModel;
-            if (queryDefinitionNode != null && QueryDefinitionNodeStyle != null)
+            var queryDefinitionNode = item as WorkItemQueryDefinitionModel;
+            if (queryDefinitionNode != null && WorkItemQueryDefinitionStyle != null)
             {
-                return QueryDefinitionNodeStyle;
+                return WorkItemQueryDefinitionStyle;
             }
 
-            var queryFolderNode = item as QueryFolderModel;
-            if (queryFolderNode != null && QueryFolderNodeStyle != null)
+            var queryFolderNode = item as WorkItemQueryFolderModel;
+            if (queryFolderNode != null && WorkItemQueryFolderStyle != null)
             {
-                return QueryFolderNodeStyle;
+                return WorkItemQueryFolderStyle;
             }
 
             var buildDefinitionModel = item as BuildDefinitionModel;
-            if (buildDefinitionModel != null && BuildDefinitionModelStyle != null)
+            if (buildDefinitionModel != null && BuildDefinitionStyle != null)
             {
-                return BuildDefinitionModelStyle;
+                return BuildDefinitionStyle;
             }
 
-            if(DefaultStyle != null)
-            {
-                return DefaultStyle;
-            }
-
-            return base.SelectStyle(item, container);
+            return DefaultStyle ?? base.SelectStyle(item, container);
         }
     }
 }

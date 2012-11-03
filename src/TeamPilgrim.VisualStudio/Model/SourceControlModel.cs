@@ -1,4 +1,4 @@
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ProjectModels
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
     public class SourceControlModel : BaseModel
     {

@@ -1,13 +1,13 @@
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.QueryItemModels
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children
 {
-    public class QueryDefinitionModel : QueryItemModel
+    public class WorkItemQueryDefinitionModel : WorkItemQueryChildModel
     {
         private readonly QueryDefinition _queryDefinition;
 
-        public QueryDefinitionModel(QueryDefinition queryDefinition, IQueryItemCommandModel queryItemCommandModel)
-            : base(queryItemCommandModel)
+        public WorkItemQueryDefinitionModel(QueryDefinition queryDefinition, IWorkItemQueryCommandModel workItemQueryCommandModel)
+            : base(workItemQueryCommandModel)
         {
             _queryDefinition = queryDefinition;
         }

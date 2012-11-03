@@ -1,6 +1,6 @@
 ﻿using Microsoft.TeamFoundation.Build.Client;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Builds
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
 {
     public class BuildDefinitionModel : BaseModel
     {

@@ -6,18 +6,18 @@
              xmlns:Model="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model"
              xmlns:VisualStudio="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio"
              xmlns:AttachedProperties="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties"
-             xmlns:ProjectModels="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.ProjectModels"
-             xmlns:QueryItemModels="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.QueryItemModels"
-             xmlns:Builds="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Builds"
+             xmlns:BuildDefinitions="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions"
+             xmlns:WorkItemQuery="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery"
+             xmlns:WorkItemQueryChildren="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children"
              x:Class="JustAProgrammer.TeamPilgrim.VisualStudio.TeamPilgrimControl"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
-             mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300"
-             Height="Auto">
+             mc:Ignorable="d" 
+             Height="Auto" d:DesignHeight="300" d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance Model:TeamPilgrimModel}">
     <DockPanel>
         <DockPanel.Resources>
-            <ContextMenu x:Key="ProjectCollectionModelContextMenu">
+            <ContextMenu x:Key="ProjectCollectionContextMenu" d:DataContext="{d:DesignInstance Model:ProjectCollectionModel}">
                 <MenuItem IsEnabled="False" Header="Connect to Team Project..."/>
                 <MenuItem IsEnabled="False" Header="New Team Project..."/>
                 <Separator />
@@ -36,7 +36,7 @@
                 <MenuItem IsEnabled="False" Header="Alerts Explorer"/>
             </ContextMenu>
 
-            <ContextMenu x:Key="ProjectModelContextMenu">
+            <ContextMenu x:Key="ProjectContextMenu" d:DataContext="{d:DesignInstance Model:ProjectModel}">
                 <MenuItem IsEnabled="False" Header="Project Alerts..."/>
                 <Separator />
                 <MenuItem IsEnabled="False" Header="Remove"/>
@@ -56,7 +56,7 @@
                 <MenuItem IsEnabled="False" Header="Alerts Explorer"/>
             </ContextMenu>
 
-            <ContextMenu x:Key="WorkItemsNodeContextMenu">
+            <ContextMenu x:Key="WorkItemQueryContainerContextMenu" d:DataContext="{d:DesignInstance WorkItemQuery:WorkItemQueryContainerModel}">
                 <MenuItem IsEnabled="False" Header="1 New Task"/>
                 <MenuItem IsEnabled="False" Header="2 New Bug"/>
                 <Separator />
@@ -76,7 +76,7 @@
                 <MenuItem IsEnabled="False" Header="Refresh"/>
             </ContextMenu>
 
-            <ContextMenu x:Key="QueryFolderNodeContextMenu">
+            <ContextMenu x:Key="WorkItemQueryFolderContextMenu" d:DataContext="{d:DesignInstance WorkItemQueryChildren:WorkItemQueryFolderModel}">
                 <MenuItem IsEnabled="False" Header="New Query"/>
                 <MenuItem IsEnabled="False" Header="New Folder"/>
                 <MenuItem IsEnabled="False" Header="New Work Items with Microsoft Excel" />
@@ -90,13 +90,13 @@
                 <MenuItem IsEnabled="False" Header="Security..." />
             </ContextMenu>
 
-            <ContextMenu x:Key="QueryDefinitionModelContextMenu" d:DataContext="{d:DesignInstance QueryItemModels:QueryDefinitionModel}">
+            <ContextMenu x:Key="WorkItemQueryDefinitionContextMenu" d:DataContext="{d:DesignInstance WorkItemQueryChildren:WorkItemQueryDefinitionModel}">
                 <MenuItem Header="View Results" 
-					Command="{Binding Path=QueryItemCommandModel.OpenQueryDefinitionCommand}" 
+					Command="{Binding Path=WorkItemQueryCommandModel.OpenQueryDefinitionCommand}" 
 					CommandParameter="{Binding}"/>
 
                 <MenuItem Header="Edit Query"
-					Command="{Binding Path=QueryItemCommandModel.EditQueryDefinitionCommand}" 
+					Command="{Binding Path=WorkItemQueryCommandModel.EditQueryDefinitionCommand}" 
 					CommandParameter="{Binding}"/>
 
                 <Separator />
@@ -110,7 +110,7 @@
                 <MenuItem IsEnabled="False" Header="Paste"/>
 
                 <MenuItem Header="Delete"
-					Command="{Binding Path=QueryItemCommandModel.DeleteQueryDefinitionCommand}" 
+					Command="{Binding Path=WorkItemQueryCommandModel.DeleteQueryDefinitionCommand}" 
 					CommandParameter="{Binding}"/>
 
                 <MenuItem IsEnabled="False" Header="Rename"/>
@@ -118,7 +118,7 @@
                 <MenuItem IsEnabled="False" Header="Security..." />
             </ContextMenu>
 
-            <ContextMenu x:Key="BuildDefinitionWrapperContextMenu">
+            <ContextMenu x:Key="BuildDefinitionContextMenu" d:DataContext="{d:DesignInstance BuildDefinitions:BuildDefinitionModel}">
                 <MenuItem Header="View Builds" 
                     Command="{Binding Path=BuildDefinitionCommandModel.ViewBuildsCommand}" 
                     CommandParameter="{Binding}" />
@@ -142,42 +142,43 @@
                 <EventSetter Event="UIElement.PreviewMouseRightButtonDown" Handler="OnPreviewMouseRightButtonDown"/>
             </Style>
 
-            <Style TargetType="{x:Type TreeViewItem}"  x:Key="ProjectCollectionModelStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
+            <Style TargetType="{x:Type TreeViewItem}"  x:Key="ProjectCollectionStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
             </Style>
 
-            <Style TargetType="{x:Type TreeViewItem}"  x:Key="ProjectModelStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
+            <Style TargetType="{x:Type TreeViewItem}"  x:Key="ProjectStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
             </Style>
 
-            <Style TargetType="{x:Type TreeViewItem}"  x:Key="WorkItemsNodeStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
+            <Style TargetType="{x:Type TreeViewItem}"  x:Key="WorkItemQueryContainerStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
             </Style>
 
-            <Style TargetType="{x:Type TreeViewItem}"  x:Key="QueryFolderNodeStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
+            <Style TargetType="{x:Type TreeViewItem}"  x:Key="WorkItemQueryFolderStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
             </Style>
 
-            <Style TargetType="{x:Type TreeViewItem}"  x:Key="QueryDefinitionNodeStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
-                <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding Path=QueryItemCommandModel.OpenQueryDefinitionCommand}"/>
+            <Style TargetType="{x:Type TreeViewItem}"  x:Key="WorkItemQueryDefinitionStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
+                <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding Path=WorkItemQueryCommandModel.OpenQueryDefinitionCommand}"/>
                 <Setter Property="AttachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding}"/>
             </Style>
             
-            <Style TargetType="{x:Type TreeViewItem}"  x:Key="BuildDefinitionWrapperStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
+            <Style TargetType="{x:Type TreeViewItem}"  x:Key="BuildDefinitionStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
                 <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding Path=BuildDefinitionCommandModel.ViewBuildsCommand}"/>
                 <Setter Property="AttachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding}"/>
             </Style>
 
-            <Style TargetType="{x:Type TreeViewItem}"  x:Key="SourceControlNodeStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
-                <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding Path=DataContext.OpenSourceControlCommand, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"/>
+            <Style TargetType="{x:Type TreeViewItem}"  x:Key="SourceControlStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
+                <Setter Property="AttachedProperties:MouseDoubleClick.Command" 
+                        Value="{Binding Path=DataContext.OpenSourceControlCommand, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"/>
             </Style>
 
             <VisualStudio:TeamPilgrimControlStyleSelector
 				x:Key="teamPilgrilViewStyleSelector"
 				DefaultStyle="{StaticResource ResourceKey=DefaultStyle}"
-				ProjectCollectionModelStyle="{StaticResource ResourceKey=ProjectCollectionModelStyle}"
-				ProjectModelStyle="{StaticResource ResourceKey=ProjectModelStyle}"
-				WorkItemsNodeStyle="{StaticResource ResourceKey=WorkItemsNodeStyle}"
-				QueryFolderNodeStyle="{StaticResource ResourceKey=QueryFolderNodeStyle}"
-				QueryDefinitionNodeStyle="{StaticResource ResourceKey=QueryDefinitionNodeStyle}"
-				SourceControlNodeStyle="{StaticResource ResourceKey=SourceControlNodeStyle}"
-				BuildDefinitionModelStyle="{StaticResource ResourceKey=BuildDefinitionWrapperStyle}" />
+				ProjectCollectionStyle="{StaticResource ResourceKey=ProjectCollectionStyle}"
+				ProjectStyle="{StaticResource ResourceKey=ProjectStyle}"
+				WorkItemQueryContainerStyle="{StaticResource ResourceKey=WorkItemQueryContainerStyle}"
+				WorkItemQueryFolderStyle="{StaticResource ResourceKey=WorkItemQueryFolderStyle}"
+				WorkItemQueryDefinitionStyle="{StaticResource ResourceKey=WorkItemQueryDefinitionStyle}"
+				SourceControlStyle="{StaticResource ResourceKey=SourceControlStyle}"
+				BuildDefinitionStyle="{StaticResource ResourceKey=BuildDefinitionStyle}" />
             
         </DockPanel.Resources>
         <ToolBar ToolBarTray.IsLocked="True" ToolBar.OverflowMode="Never" DockPanel.Dock="Top">
@@ -189,46 +190,46 @@
             </Button>
         </ToolBar>
         <ScrollViewer DockPanel.Dock="Bottom" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-            <TreeView ItemsSource="{Binding CollectionModels}" ItemContainerStyleSelector="{StaticResource teamPilgrilViewStyleSelector}">
+            <TreeView ItemsSource="{Binding Path=CollectionModels}" ItemContainerStyleSelector="{StaticResource teamPilgrilViewStyleSelector}">
 
                 <TreeView.Resources>
-                    <HierarchicalDataTemplate DataType="{x:Type Model:ProjectCollectionModel}" ItemsSource="{Binding ProjectModels}">
-                        <TextBlock Text="{Binding TfsTeamProjectCollection.Name}" ContextMenu="{StaticResource ResourceKey=ProjectCollectionModelContextMenu}" />
+                    <HierarchicalDataTemplate DataType="{x:Type Model:ProjectCollectionModel}" ItemsSource="{Binding Path=ProjectModels}">
+                        <TextBlock Text="{Binding Path=TfsTeamProjectCollection.Name}" ContextMenu="{StaticResource ResourceKey=ProjectCollectionContextMenu}" />
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type Model:ProjectModel}" ItemsSource="{Binding ChildObjects}">
-                        <TextBlock Text="{Binding Project.Name}" ContextMenu="{StaticResource ResourceKey=ProjectModelContextMenu}" />
+                    <HierarchicalDataTemplate DataType="{x:Type Model:ProjectModel}" ItemsSource="{Binding Path=ChildObjects}">
+                        <TextBlock Text="{Binding Path=Project.Name}" ContextMenu="{StaticResource ResourceKey=ProjectContextMenu}" />
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type ProjectModels:WorkItemsModel}" ItemsSource="{Binding QueryItems}">
-                        <TextBlock Text="Work Items" ContextMenu="{StaticResource ResourceKey=WorkItemsNodeContextMenu}"  />
+                    <HierarchicalDataTemplate DataType="{x:Type WorkItemQuery:WorkItemQueryContainerModel}" ItemsSource="{Binding Path=QueryItems}">
+                        <TextBlock Text="Work Items" ContextMenu="{StaticResource ResourceKey=WorkItemQueryContainerContextMenu}"  />
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type QueryItemModels:QueryFolderModel}" ItemsSource="{Binding QueryItems}">
-                        <TextBlock Text="{Binding Name}" ContextMenu="{StaticResource ResourceKey=QueryFolderNodeContextMenu}"  />
+                    <HierarchicalDataTemplate DataType="{x:Type WorkItemQueryChildren:WorkItemQueryFolderModel}" ItemsSource="{Binding Path=QueryItems}">
+                        <TextBlock Text="{Binding Path=Name}" ContextMenu="{StaticResource ResourceKey=WorkItemQueryFolderContextMenu}"  />
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type QueryItemModels:QueryDefinitionModel}">
-                        <TextBlock Text="{Binding Name}" ContextMenu="{StaticResource ResourceKey=QueryDefinitionModelContextMenu}"  />
+                    <HierarchicalDataTemplate DataType="{x:Type WorkItemQueryChildren:WorkItemQueryDefinitionModel}">
+                        <TextBlock Text="{Binding Path=Name}" ContextMenu="{StaticResource ResourceKey=WorkItemQueryDefinitionContextMenu}"  />
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type Builds:BuildModel}" ItemsSource="{Binding Path=BuildDefinitions}">
+                    <HierarchicalDataTemplate DataType="{x:Type BuildDefinitions:BuildDefinitionsModel}" ItemsSource="{Binding Path=BuildDefinitions}">
                         <TextBlock Text="Builds" />
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type Builds:BuildDefinitionModel}">
-                        <TextBlock Text="{Binding Path=Definition.Name}" ContextMenu="{StaticResource ResourceKey=BuildDefinitionWrapperContextMenu}"  />
+                    <HierarchicalDataTemplate DataType="{x:Type BuildDefinitions:BuildDefinitionModel}">
+                        <TextBlock Text="{Binding Path=Definition.Name}" ContextMenu="{StaticResource ResourceKey=BuildDefinitionContextMenu}"  />
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type ProjectModels:ReportsModel}">
+                    <HierarchicalDataTemplate DataType="{x:Type Model:ReportsModel}">
                         <TextBlock Text="Reports" />
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type ProjectModels:TeamMembersModel}">
+                    <HierarchicalDataTemplate DataType="{x:Type Model:TeamMembersModel}">
                         <TextBlock Text="Team Members" />
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type ProjectModels:SourceControlModel}">
+                    <HierarchicalDataTemplate DataType="{x:Type Model:SourceControlModel}">
                         <TextBlock Text="Source Control" />
                     </HierarchicalDataTemplate>
 
