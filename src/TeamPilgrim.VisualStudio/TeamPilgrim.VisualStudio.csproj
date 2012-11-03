@@ -161,14 +161,16 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Business\Services\TeamFoundationHostWrapper.cs" />
+    <Compile Include="Business\Services\VisualStudio\BuildExplorerWrapper.cs" />
+    <Compile Include="Business\Services\VisualStudio\TeamFoundationHostWrapper.cs" />
+    <Compile Include="Business\Services\VisualStudio\VsTeamFoundationBuildWrapper.cs" />
     <Compile Include="Common\VsWindowFrameEditorTypeIds.cs" />
     <Compile Include="Common\AttachedProperties\MouseDoubleClick.cs" />
     <Compile Include="Domain\BusinessInterfaces\ITeamPilgrimVsService.cs" />
     <Compile Include="Business\Services\TeamPilgrimTfsService.cs" />
     <Compile Include="Common\BindingErrorTraceListener.cs" />
     <Compile Include="Domain\BusinessInterfaces\ITeamPilgrimTfsService.cs" />
-    <Compile Include="Business\Services\TeamPilgrimVsService.cs" />
+    <Compile Include="Business\Services\VisualStudio\TeamPilgrimVsService.cs" />
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Model\BuildDefinitions\BuildDefinitionModel.cs" />
     <Compile Include="Model\BuildDefinitions\IBuildDefinitionCommandModel.cs" />

@@ -47,6 +47,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
 
         private void NewBuildDefinition()
         {
+            TeamPilgrimPackage.TeamPilgrimVsService.NewBuildDefinition(_project.Name);
         }
 
         #endregion

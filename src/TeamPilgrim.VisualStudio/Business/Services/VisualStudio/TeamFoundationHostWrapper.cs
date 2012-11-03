@@ -2,7 +2,7 @@ using System;
 using System.Reflection;
 using System.Windows.Forms;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio
 {
     public class TeamFoundationHostWrapper
     {

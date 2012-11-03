@@ -13,7 +13,7 @@ using Microsoft.VisualStudio.TeamFoundation.Build;
 using Microsoft.VisualStudio.TeamFoundation.VersionControl;
 using Microsoft.VisualStudio.TeamFoundation.WorkItemTracking;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio
 {
     public class TeamPilgrimVsService : ITeamPilgrimVsService
     {
@@ -40,19 +40,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 
         private TeamPilgrimPackage _packageInstance;
 
-        private IVsTeamFoundationBuild _teamFoundationBuild;
-        private IVsTeamFoundationBuild TeamFoundationBuild
-        {
-            get
-            {
-                return _teamFoundationBuild ?? (_teamFoundationBuild = _packageInstance.GetPackageService<IVsTeamFoundationBuild>());
-            }
-        }
+        private readonly Lazy<VsTeamFoundationBuildWrapper> _teamFoundationBuild;
 
         private IWorkItemControlHost _workItemControlHost;
 
         public TeamPilgrimVsService()
         {
+            _teamFoundationBuild = new Lazy<VsTeamFoundationBuildWrapper>(() => new VsTeamFoundationBuildWrapper(_packageInstance.GetPackageService<IVsTeamFoundationBuild>()));
         }
 
         private IWorkItemControlHost WorkItemControlHost
@@ -163,22 +157,24 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 
         public void OpenBuildDefinition(Uri buildDefinitionUri)
         {
-            TeamFoundationBuild.DetailsManager.OpenBuild(buildDefinitionUri);
+            _teamFoundationBuild.Value.DetailsManager.OpenBuild(buildDefinitionUri);
         }
 
         public void QueueBuild(string projectName, Uri buildDefinitionUri)
         {
-            TeamFoundationBuild.DetailsManager.QueueBuild(projectName, buildDefinitionUri);
+            _teamFoundationBuild.Value.DetailsManager.QueueBuild(projectName, buildDefinitionUri);
         }
 
         public void NewBuildDefinition(string projectName)
         {
-            var buildDefinition = TeamFoundationBuild.BuildServer.CreateBuildDefinition(projectName);
+            VsTeamFoundationBuildWrapper vsTeamFoundationBuild = _teamFoundationBuild.Value;
+            var buildExplorer = vsTeamFoundationBuild.BuildExplorerWrapper;
+            buildExplorer.AddBuildDefinition(projectName);
         }
 
         public void ViewBuilds(string projectName, string buildDefinition, string qualityFilter, DateFilter dateFilter)
         {
-            TeamFoundationBuild.BuildExplorer.CompletedView.Show(projectName, buildDefinition, qualityFilter, dateFilter);
+            _teamFoundationBuild.Value.BuildExplorer.CompletedView.Show(projectName, buildDefinition, qualityFilter, dateFilter);
         }
 
         public void TfsConnect()
