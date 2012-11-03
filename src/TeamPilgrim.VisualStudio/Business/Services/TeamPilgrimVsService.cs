@@ -153,9 +153,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
             return null;
         }
 
-        public void OpenBuildDefinition(Uri uri)
+        public void OpenBuildDefinition(Uri buildDefinitionUri)
         {
-            TeamFoundationBuild.DetailsManager.OpenBuild(uri);
+            TeamFoundationBuild.DetailsManager.OpenBuild(buildDefinitionUri);
+        }
+
+        public void QueueBuild(string projectName, Uri buildDefinitionUri)
+        {
+            TeamFoundationBuild.DetailsManager.QueueBuild(projectName, buildDefinitionUri);
         }
 
         public void ViewBuilds(string projectName, string buildDefinition, string qualityFilter, DateFilter dateFilter)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
@@ -23,6 +24,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
 
             OpenBuildDefintionCommand = new RelayCommand<BuildDefinitionModel>(OpenBuildDefinition, CanOpenBuildDefinition);
             ViewBuildsCommand = new RelayCommand<BuildDefinitionModel>(ViewBuilds, CanViewBuilds);
+            QueueBuildCommand = new RelayCommand<BuildDefinitionModel>(QueueBuild, CanQueueBuild);
 
             IBuildDefinition[] buildDefinitions;
             if (_pilgrimServiceModelProvider.TryGetBuildDefinitionsByProjectName(out buildDefinitions, _collection, _project.Name))
@@ -37,14 +39,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
 
         public RelayCommand<BuildDefinitionModel> OpenBuildDefintionCommand { get; set; }
 
-        private bool CanOpenBuildDefinition(BuildDefinitionModel buildDefinitionWrapper)
+        private bool CanOpenBuildDefinition(BuildDefinitionModel buildDefinitionModel)
         {
             return true;
         }
 
-        private void OpenBuildDefinition(BuildDefinitionModel buildDefinitionWrapper)
+        private void OpenBuildDefinition(BuildDefinitionModel buildDefinitionModel)
         {
-            TeamPilgrimPackage.TeamPilgrimVsService.OpenBuildDefinition(buildDefinitionWrapper.Definition.Uri);
+            TeamPilgrimPackage.TeamPilgrimVsService.OpenBuildDefinition(buildDefinitionModel.Definition.Uri);
         }
 
         #endregion
@@ -58,15 +60,36 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
             return true;
         }
 
-        private void ViewBuilds(BuildDefinitionModel buildDefinitionWrapper)
+        private void ViewBuilds(BuildDefinitionModel buildDefinitionModel)
         {
-            string buildDefinition = null;
-            if (buildDefinitionWrapper != null)
+            string buildDefinitionName = null;
+            if (buildDefinitionModel != null)
             {
-                buildDefinition = buildDefinitionWrapper.Definition.Name;
+                buildDefinitionName = buildDefinitionModel.Definition.Name;
             }
 
-            TeamPilgrimPackage.TeamPilgrimVsService.ViewBuilds(_project.Name, buildDefinition, String.Empty, DateFilter.Today);
+            TeamPilgrimPackage.TeamPilgrimVsService.ViewBuilds(_project.Name, buildDefinitionName, String.Empty, DateFilter.Today);
+        }
+
+        #endregion
+
+        #region QueueBuild Command
+
+        public RelayCommand<BuildDefinitionModel> QueueBuildCommand { get; set; }
+
+        private bool CanQueueBuild(BuildDefinitionModel buildDefinitionWrapper)
+        {
+            return true;
+        }
+
+        private void QueueBuild(BuildDefinitionModel buildDefinitionModel)
+        {
+            var definitionModel = buildDefinitionModel ?? BuildDefinitions.FirstOrDefault();
+
+            //TODO: SG 11/3/2012 Fix this, I know this cannot be true
+            Debug.Assert(definitionModel != null, "definitionModel != null");
+            
+            TeamPilgrimPackage.TeamPilgrimVsService.QueueBuild(_project.Name, definitionModel.Definition.Uri);
         }
 
         #endregion

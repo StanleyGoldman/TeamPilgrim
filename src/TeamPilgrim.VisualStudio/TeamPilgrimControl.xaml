@@ -123,7 +123,10 @@
                     Command="{Binding Path=ViewBuildsCommand}" 
                     CommandParameter="{x:Null}" />
 
-                <MenuItem IsEnabled="False" Header="Queue New Build"/>
+                <MenuItem Header="Queue New Build"
+                    Command="{Binding Path=QueueBuildCommand}" 
+                    CommandParameter="{x:Null}"/>
+
                 <MenuItem IsEnabled="False" Header="New Build Definition" />
 
                 <Separator />
@@ -146,7 +149,9 @@
                     Command="{Binding Path=BuildDefinitionCommandModel.ViewBuildsCommand}" 
                     CommandParameter="{Binding}" />
 
-                <MenuItem IsEnabled="False" Header="Queue New Build"/>
+                <MenuItem Header="Queue New Build"
+                    Command="{Binding Path=BuildDefinitionCommandModel.QueueBuildCommand}" 
+                    CommandParameter="{Binding}" />
 
                 <MenuItem Header="Edit Build Definition" 
                     Command="{Binding Path=BuildDefinitionCommandModel.OpenBuildDefintionCommand}" 
