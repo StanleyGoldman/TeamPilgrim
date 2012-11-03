@@ -6,7 +6,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
 {
     public class TeamFoundationHostWrapper
     {
-        private readonly dynamic _teamFoundationHostObject;
+        private readonly object _teamFoundationHostObject;
         private readonly Type _teamFoundationHostObjectType;
         private readonly Lazy<MethodInfo> _promptForServerAndProjectsMethod;
 
@@ -19,7 +19,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
 
         public DialogResult PromptForServerAndProjects(bool asynchronous = true)
         {
-            return _promptForServerAndProjectsMethod.Value.Invoke(_teamFoundationHostObject, new object[] { asynchronous });
+            return (DialogResult) _promptForServerAndProjectsMethod.Value.Invoke(_teamFoundationHostObject, new object[] { asynchronous });
         }
     }
 }

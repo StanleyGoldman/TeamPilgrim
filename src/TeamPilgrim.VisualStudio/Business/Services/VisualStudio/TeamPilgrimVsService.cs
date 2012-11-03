@@ -45,12 +45,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
         private TeamPilgrimPackage _packageInstance;
 
         private readonly Lazy<VsTeamFoundationBuildWrapper> _teamFoundationBuild;
+        private readonly Lazy<WorkItemTrackingPackageWrapper> _workItemTrackingPackage;
 
         private IWorkItemControlHost _workItemControlHost;
 
         public TeamPilgrimVsService()
         {
             _teamFoundationBuild = new Lazy<VsTeamFoundationBuildWrapper>(() => new VsTeamFoundationBuildWrapper(_packageInstance.GetPackageService<IVsTeamFoundationBuild>()));
+            _workItemTrackingPackage = new Lazy<WorkItemTrackingPackageWrapper>(() => new WorkItemTrackingPackageWrapper());
         }
 
         private IWorkItemControlHost WorkItemControlHost
@@ -211,6 +213,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
         public void ViewBuilds(string projectName, string buildDefinition, string qualityFilter, DateFilter dateFilter)
         {
             _teamFoundationBuild.Value.BuildExplorer.CompletedView.Show(projectName, buildDefinition, qualityFilter, dateFilter);
+        }
+
+        public void NewWorkItem(TfsTeamProjectCollection projectCollection, string projectName, string typeName)
+        {
+            _workItemTrackingPackage.Value.OpenNewWorkItem(projectCollection, projectName, typeName);
         }
 
         public void TfsConnect()
