@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children
@@ -14,7 +15,15 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children
             : base(workItemQueryCommandModel)
         {
             _folder = folder;
-            QueryItems = new ObservableCollection<WorkItemQueryChildModel>(childQueryItemViewModels);
+
+            var childQueryItemViewModelsArray = childQueryItemViewModels.ToArray();
+
+            foreach (var workItemQueryChildModel in childQueryItemViewModelsArray)
+            {
+                workItemQueryChildModel.ParentQueryFolderModel = this;
+            }
+
+            QueryItems = new ObservableCollection<WorkItemQueryChildModel>(childQueryItemViewModelsArray);
         }
 
         private QueryFolder Folder

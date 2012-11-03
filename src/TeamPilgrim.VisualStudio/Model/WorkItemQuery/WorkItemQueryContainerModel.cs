@@ -35,7 +35,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
             QueryItems = new ObservableCollection<WorkItemQueryChildModel>(queryItemModels);
         }
 
-        #region OpenQueryItem
+        #region OpenQueryDefinition
 
         public RelayCommand<WorkItemQueryDefinitionModel> OpenQueryDefinitionCommand { get; private set; }
 
@@ -51,7 +51,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
 
         #endregion
 
-        #region EditQueryItem
+        #region EditQueryDefinition
 
         public RelayCommand<WorkItemQueryDefinitionModel> EditQueryDefinitionCommand { get; private set; }
 
@@ -67,7 +67,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
 
         #endregion
 
-        #region DeleteQueryItem
+        #region DeleteQueryDefinition
 
         public RelayCommand<WorkItemQueryDefinitionModel> DeleteQueryDefinitionCommand { get; private set; }
 
@@ -82,7 +82,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
                 if (result)
                 {
                     TeamPilgrimPackage.TeamPilgrimVsService.CloseQueryDefinitionFrames(ProjectCollection, queryId);
-
+                    workItemQueryDefinitionModel.ParentQueryFolderModel.QueryItems.Remove(workItemQueryDefinitionModel);
                 }
             }
         }
