@@ -158,9 +158,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
             TeamFoundationBuild.DetailsManager.OpenBuild(uri);
         }
 
-        public void ViewBuilds(string name, string s, string empty, DateFilter today)
+        public void ViewBuilds(string projectName, string buildDefinition, string qualityFilter, DateFilter dateFilter)
         {
-            TeamFoundationBuild.BuildExplorer.CompletedView.Show(name, s, empty, today);
+            TeamFoundationBuild.BuildExplorer.CompletedView.Show(projectName, buildDefinition, qualityFilter, dateFilter);
         }
 
         public void TfsConnect()

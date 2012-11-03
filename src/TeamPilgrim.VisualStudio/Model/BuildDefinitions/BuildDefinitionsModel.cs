@@ -60,7 +60,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
 
         private void ViewBuilds(BuildDefinitionModel buildDefinitionWrapper)
         {
-            TeamPilgrimPackage.TeamPilgrimVsService.ViewBuilds(_project.Name, buildDefinitionWrapper.Definition.Name, String.Empty, DateFilter.Today);
+            string buildDefinition = null;
+            if (buildDefinitionWrapper != null)
+            {
+                buildDefinition = buildDefinitionWrapper.Definition.Name;
+            }
+
+            TeamPilgrimPackage.TeamPilgrimVsService.ViewBuilds(_project.Name, buildDefinition, String.Empty, DateFilter.Today);
         }
 
         #endregion

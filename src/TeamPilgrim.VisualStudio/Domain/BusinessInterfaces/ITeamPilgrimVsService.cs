@@ -19,7 +19,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces
         void CloseQueryDefinitionFrames(TfsTeamProjectCollection projectCollection, Guid queryDefinitionId);
         
         void OpenBuildDefinition(Uri uri);
-        void ViewBuilds(string name, string s, string empty, DateFilter today);
+        void ViewBuilds(string projectName, string buildDefinition, string qualityFilter, DateFilter dateFilter);
         
         void TfsConnect();
     }
