@@ -125,9 +125,11 @@
 
                 <MenuItem Header="Queue New Build"
                     Command="{Binding Path=QueueBuildCommand}" 
-                    CommandParameter="{x:Null}"/>
+                    CommandParameter="{x:Null}" />
 
-                <MenuItem IsEnabled="False" Header="New Build Definition" />
+                <MenuItem Header="New Build Definition" 
+                    Command="{Binding Path=NewBuildDefinitionCommand}" 
+                    CommandParameter="{x:Null}" />
 
                 <Separator />
 

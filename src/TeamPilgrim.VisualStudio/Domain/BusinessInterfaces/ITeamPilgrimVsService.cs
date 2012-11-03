@@ -23,5 +23,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces
         void QueueBuild(string projectName, Uri buildDefinitionUri);
         
         void TfsConnect();
+        void NewBuildDefinition(string projectName);
     }
 }

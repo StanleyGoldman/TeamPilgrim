@@ -25,6 +25,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
             OpenBuildDefintionCommand = new RelayCommand<BuildDefinitionModel>(OpenBuildDefinition, CanOpenBuildDefinition);
             ViewBuildsCommand = new RelayCommand<BuildDefinitionModel>(ViewBuilds, CanViewBuilds);
             QueueBuildCommand = new RelayCommand<BuildDefinitionModel>(QueueBuild, CanQueueBuild);
+            NewBuildDefinitionCommand = new RelayCommand(NewBuildDefinition, CanNewBuildDefinition);
 
             IBuildDefinition[] buildDefinitions;
             if (_pilgrimServiceModelProvider.TryGetBuildDefinitionsByProjectName(out buildDefinitions, _collection, _project.Name))
@@ -34,6 +35,21 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
                     .ToArray();
             }
         }
+
+        #region OpenBuildDefinition Command
+
+        public RelayCommand NewBuildDefinitionCommand { get; set; }
+
+        private bool CanNewBuildDefinition()
+        {
+            return true;
+        }
+
+        private void NewBuildDefinition()
+        {
+        }
+
+        #endregion
 
         #region OpenBuildDefinition Command
 
@@ -88,7 +104,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
 
             //TODO: SG 11/3/2012 Fix this, I know this cannot be true
             Debug.Assert(definitionModel != null, "definitionModel != null");
-            
+
             TeamPilgrimPackage.TeamPilgrimVsService.QueueBuild(_project.Name, definitionModel.Definition.Uri);
         }
 

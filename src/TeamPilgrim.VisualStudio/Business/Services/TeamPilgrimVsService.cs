@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using EnvDTE80;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
@@ -23,6 +24,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
         protected DTE2 Dte2 { get; set; }
 
         protected TeamFoundationServerExt TeamFoundationServerExt { get; set; }
+
+        protected TeamFoundationHostWrapper TeamFoundationHost { get; set; }
 
         protected VersionControlExt VersionControlExt { get; set; }
 
@@ -69,6 +72,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 
             if (TeamFoundationServerExt != null)
             {
+                var fi = typeof(TeamFoundationServerExt).GetField("m_teamFoundationHost", BindingFlags.NonPublic | BindingFlags.Instance);
+                var teamFoundationHostObject = fi.GetValue(TeamFoundationServerExt);
+
+                TeamFoundationHost = new TeamFoundationHostWrapper(teamFoundationHostObject);
+
                 TeamFoundationServerExt.ProjectContextChanged += TeamFoundationServerExtOnProjectContextChanged;
 
                 if (TeamFoundationServerExt.ActiveProjectContext != null)
@@ -163,6 +171,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
             TeamFoundationBuild.DetailsManager.QueueBuild(projectName, buildDefinitionUri);
         }
 
+        public void NewBuildDefinition(string projectName)
+        {
+            var buildDefinition = TeamFoundationBuild.BuildServer.CreateBuildDefinition(projectName);
+        }
+
         public void ViewBuilds(string projectName, string buildDefinition, string qualityFilter, DateFilter dateFilter)
         {
             TeamFoundationBuild.BuildExplorer.CompletedView.Show(projectName, buildDefinition, qualityFilter, dateFilter);
@@ -170,7 +183,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 
         public void TfsConnect()
         {
-            Dte2.ExecuteCommand("Team.ConnecttoTeamFoundationServer");
+            TeamFoundationHost.PromptForServerAndProjects(false);
         }
     }
 }
