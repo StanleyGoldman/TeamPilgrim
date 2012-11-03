@@ -57,17 +57,42 @@
             </ContextMenu>
 
             <ContextMenu x:Key="WorkItemQueryContainerContextMenu" d:DataContext="{d:DesignInstance WorkItemQuery:WorkItemQueryContainerModel}">
-                <MenuItem IsEnabled="False" Header="1 New Task"/>
-                <MenuItem IsEnabled="False" Header="2 New Bug"/>
+                <MenuItem Header="1 New Task"
+                    Command="{Binding Path=NewWorkItemCommand}" 
+                    CommandParameter="Task" />
+
+                <MenuItem Header="2 New Bug"
+                    Command="{Binding Path=NewWorkItemCommand}" 
+                    CommandParameter="Bug" />
+                
                 <Separator />
-                <MenuItem IsEnabled="False" Header="New Work Item">
-                    <MenuItem IsEnabled="False" Header="Bug"/>
-                    <MenuItem IsEnabled="False" Header="Issue"/>
-                    <MenuItem IsEnabled="False" Header="Shared Steps"/>
-                    <MenuItem IsEnabled="False" Header="Task"/>
-                    <MenuItem IsEnabled="False" Header="Test Case"/>
-                    <MenuItem IsEnabled="False" Header="User Story"/>
+                
+                <MenuItem Header="New Work Item">
+                    <MenuItem Header="Bug"
+                        Command="{Binding Path=NewWorkItemCommand}" 
+                        CommandParameter="Bug" />
+                    
+                    <MenuItem Header="Issue"
+                        Command="{Binding Path=NewWorkItemCommand}" 
+                        CommandParameter="Issue" />
+
+                    <MenuItem Header="Shared Steps"
+                        Command="{Binding Path=NewWorkItemCommand}" 
+                        CommandParameter="Shared Steps" />
+
+                    <MenuItem Header="Task"
+                        Command="{Binding Path=NewWorkItemCommand}" 
+                        CommandParameter="Task" />
+
+                    <MenuItem Header="Test Case"
+                        Command="{Binding Path=NewWorkItemCommand}" 
+                        CommandParameter="Test Case" />
+
+                    <MenuItem Header="User Story"
+                        Command="{Binding Path=NewWorkItemCommand}" 
+                        CommandParameter="User Story" />
                 </MenuItem>
+                
                 <MenuItem IsEnabled="False" Header="Go to Work Item" />
                 <Separator />
                 <MenuItem IsEnabled="False" Header="New Query"/>
