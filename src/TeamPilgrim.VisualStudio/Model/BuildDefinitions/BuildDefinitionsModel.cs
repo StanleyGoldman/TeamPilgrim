@@ -28,6 +28,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
             NewBuildDefinitionCommand = new RelayCommand(NewBuildDefinition, CanNewBuildDefinition);
             ManageBuildControllersCommand = new RelayCommand(ManageBuildControllers, CanManageBuildControllers);
             ManageBuildQualitiesCommand = new RelayCommand(ManageBuildQualities, CanManageBuildQualities);
+            ManageBuildSecurityCommand = new RelayCommand(ManageBuildSecurity, CanManageBuildSecurity);
 
             IBuildDefinition[] buildDefinitions;
             if (_pilgrimServiceModelProvider.TryGetBuildDefinitionsByProjectName(out buildDefinitions, _collection, _project.Name))
@@ -50,6 +51,22 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
         private void NewBuildDefinition()
         {
             TeamPilgrimPackage.TeamPilgrimVsService.NewBuildDefinition(_project.Name);
+        }
+
+        #endregion
+
+        #region ManageBuildSecurity Command
+
+        public RelayCommand ManageBuildSecurityCommand { get; set; }
+
+        private bool CanManageBuildSecurity()
+        {
+            return true;
+        }
+
+        private void ManageBuildSecurity()
+        {
+            TeamPilgrimPackage.TeamPilgrimVsService.OpenBuildSecurityDialog(_project.Name, _project.Uri.ToString());
         }
 
         #endregion

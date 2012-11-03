@@ -3,8 +3,10 @@ using System.Reflection;
 using EnvDTE80;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
+using Microsoft.TeamFoundation;
 using Microsoft.TeamFoundation.Build.Controls;
 using Microsoft.TeamFoundation.Client;
+using Microsoft.TeamFoundation.Server;
 using Microsoft.TeamFoundation.WorkItemTracking.Controls;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -12,6 +14,7 @@ using Microsoft.VisualStudio.TeamFoundation;
 using Microsoft.VisualStudio.TeamFoundation.Build;
 using Microsoft.VisualStudio.TeamFoundation.VersionControl;
 using Microsoft.VisualStudio.TeamFoundation.WorkItemTracking;
+using ProjectState = Microsoft.TeamFoundation.Common.ProjectState;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio
 {
@@ -178,6 +181,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
         public void OpenQualityManager(string projectName)
         {
             _teamFoundationBuild.Value.BuildExplorerWrapper.OpenQualityManager(projectName);
+        }
+
+        public void OpenBuildSecurityDialog(string projectName, string projectUri)
+        {
+            var projectInfo = new ProjectInfo(projectUri, projectName, ProjectState.WellFormed);
+            var artifactId = LinkingUtilities.DecodeUri(projectUri);
+            _teamFoundationBuild.Value.BuildExplorerWrapper.OpenBuildSecurityDialog(projectInfo, projectInfo.Name, artifactId.ToolSpecificId);
         }
 
         public void ViewBuilds(string projectName, string buildDefinition, string qualityFilter, DateFilter dateFilter)

@@ -28,7 +28,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
             ProjectCollection = projectCollection;
             Project = project;
-
+            
             OpenSourceControlCommand = new RelayCommand(OpenSourceControl, CanOpenSourceControl);
 
             BuildDefinitionsModel = new BuildDefinitionsModel(_pilgrimServiceModelProvider, projectCollection, project);

@@ -145,7 +145,8 @@
 
                 <Separator />
 
-                <MenuItem IsEnabled="False" Header="Security..." />
+                <MenuItem Header="Security..." 
+                    Command="{Binding Path=ManageBuildSecurityCommand}" />
             </ContextMenu>
 
             <ContextMenu x:Key="BuildDefinitionContextMenu" d:DataContext="{d:DesignInstance BuildDefinitions:BuildDefinitionModel}">

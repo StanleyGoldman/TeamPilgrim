@@ -1,5 +1,7 @@
 using System;
 using System.Reflection;
+using Microsoft.TeamFoundation.Common;
+using Microsoft.TeamFoundation.Server;
 using Microsoft.VisualStudio.TeamFoundation.Build;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio
@@ -11,6 +13,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
         private readonly Lazy<MethodInfo> _addBuildDefinitionMethod;
         private readonly Lazy<MethodInfo> _openControllerAgentManagerMethod;
         private readonly Lazy<MethodInfo> _openQualityManagerMethod;
+        private readonly Lazy<MethodInfo> _openBuildSecurityDialogMethod;
 
         public BuildExplorerWrapper(IBuildExplorer buildExplorer)
         {
@@ -19,6 +22,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
             _addBuildDefinitionMethod = new Lazy<MethodInfo>(() => _buildExplorerType.GetMethod("AddBuildDefinition", BindingFlags.Static | BindingFlags.Public));
             _openControllerAgentManagerMethod = new Lazy<MethodInfo>(() => _buildExplorerType.GetMethod("OpenControllerAgentManager", BindingFlags.Static | BindingFlags.Public));
             _openQualityManagerMethod = new Lazy<MethodInfo>(() => _buildExplorerType.GetMethod("OpenQualityManager", BindingFlags.Static | BindingFlags.Public));
+            _openBuildSecurityDialogMethod = new Lazy<MethodInfo>(() => _buildExplorerType.GetMethod("OpenBuildSecurityDialog", BindingFlags.Static | BindingFlags.Public));
         }
 
         public ICompletedView CompletedView
@@ -54,6 +58,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
         public void OpenQualityManager(string projectName)
         {
             _openQualityManagerMethod.Value.Invoke(null, new object[] { projectName });
+        }
+
+        public void OpenBuildSecurityDialog(ProjectInfo projectInfo, string name, string securityToken)
+        {
+            _openBuildSecurityDialogMethod.Value.Invoke(null, new object[] {projectInfo, name, securityToken});
         }
     }
 }
