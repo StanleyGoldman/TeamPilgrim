@@ -86,5 +86,21 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             buildDefinitions = null;
             return false;
         }
+
+        public bool TryCloneQueryDefinition(out IBuildDefinition buildDefinition, TfsTeamProjectCollection collection, Project project, IBuildDefinition definition)
+        {
+            try
+            {
+                buildDefinition = _teamPilgrimTfsService.CloneBuildDefinition(collection, project, definition);
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+            }
+            
+            buildDefinition = null;
+            return false;
+        }
     }
 }

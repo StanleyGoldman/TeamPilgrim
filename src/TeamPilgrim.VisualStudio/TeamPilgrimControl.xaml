@@ -165,8 +165,10 @@
                 <MenuItem Header="Open Process File Location"
                     Command="{Binding Path=BuildDefinitionCommandModel.OpenProcessFileLocationCommand}" 
                     CommandParameter="{Binding}" />
-                
-                <MenuItem IsEnabled="False" Header="Clone Build Definition"/>
+
+                <MenuItem Header="Clone Build Definition"
+                    Command="{Binding Path=BuildDefinitionCommandModel.CloneBuildDefinitionCommand}" 
+                    CommandParameter="{Binding}" />
                 <Separator />
                 <MenuItem IsEnabled="False" Header="Delete"/>
                 <Separator />

@@ -12,8 +12,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces
 
         Project[] GetProjects(Uri tpcAddress);
         RegisteredProjectCollection[] GetRegisteredProjectCollections();
-        
+
+        IBuildDefinition CloneBuildDefinition(TfsTeamProjectCollection collection, Project project, IBuildDefinition sourceDefinition);
         bool DeleteQueryDefintion(TfsTeamProjectCollection teamProjectCollection, Project teamProject, Guid queryId);
+
         IBuildDefinition[] QueryBuildDefinitions(TfsTeamProjectCollection collection, string teamProject);
         IBuildDetail[] QueryBuildDetails(TfsTeamProjectCollection collection, string teamProject);
     }

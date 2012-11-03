@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using GalaSoft.MvvmLight.Command;
@@ -12,18 +14,23 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
 {
     public class BuildDefinitionsModel : BaseModel, IBuildDefinitionCommandModel
     {
+        public ObservableCollection<BuildDefinitionModel> BuildDefinitions { get; private set; }
+
         private readonly IPilgrimServiceModelProvider _pilgrimServiceModelProvider;
         private readonly TfsTeamProjectCollection _collection;
         private readonly Project _project;
 
         public BuildDefinitionsModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, TfsTeamProjectCollection collection, Project project)
         {
+            BuildDefinitions = new ObservableCollection<BuildDefinitionModel>();
+
             _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
             _collection = collection;
             _project = project;
 
             OpenBuildDefintionCommand = new RelayCommand<BuildDefinitionModel>(OpenBuildDefinition, CanOpenBuildDefinition);
             ViewBuildsCommand = new RelayCommand<BuildDefinitionModel>(ViewBuilds, CanViewBuilds);
+            CloneBuildDefinitionCommand = new RelayCommand<BuildDefinitionModel>(CloneBuildDefinition, CanCloneBuildDefinition);
             QueueBuildCommand = new RelayCommand<BuildDefinitionModel>(QueueBuild, CanQueueBuild);
             OpenProcessFileLocationCommand = new RelayCommand<BuildDefinitionModel>(OpenProcessFileLocation, CanOpenProcessFileLocation);
 
@@ -35,9 +42,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
             IBuildDefinition[] buildDefinitions;
             if (_pilgrimServiceModelProvider.TryGetBuildDefinitionsByProjectName(out buildDefinitions, _collection, _project.Name))
             {
-                BuildDefinitions = buildDefinitions
-                    .Select(definition => new BuildDefinitionModel(this, definition))
-                    .ToArray();
+                foreach (var buildDefinitionModel in buildDefinitions.Select(definition => new BuildDefinitionModel(this, definition)))
+                {
+                    BuildDefinitions.Add(buildDefinitionModel);
+                }
             }
         }
 
@@ -101,6 +109,26 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
         private void ManageBuildQualities()
         {
             TeamPilgrimPackage.TeamPilgrimVsService.OpenQualityManager(_project.Name);
+        }
+
+        #endregion
+
+        #region CloneBuildDefinition Command
+
+        public RelayCommand<BuildDefinitionModel> CloneBuildDefinitionCommand { get; set; }
+
+        private bool CanCloneBuildDefinition(BuildDefinitionModel buildDefinitionModel)
+        {
+            return true;
+        }
+
+        private void CloneBuildDefinition(BuildDefinitionModel buildDefinitionModel)
+        {
+            IBuildDefinition buildDefinition;
+            if(_pilgrimServiceModelProvider.TryCloneQueryDefinition(out buildDefinition, _collection, _project, buildDefinitionModel.Definition))
+            {
+                BuildDefinitions.Add(new BuildDefinitionModel(this, buildDefinition));
+            }
         }
 
         #endregion
@@ -176,27 +204,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
             Debug.Assert(definitionModel != null, "definitionModel != null");
 
             TeamPilgrimPackage.TeamPilgrimVsService.QueueBuild(_project.Name, definitionModel.Definition.Uri);
-        }
-
-        #endregion
-
-        #region BuildModel
-
-        private BuildDefinitionModel[] _buildDefinitions;
-
-        public BuildDefinitionModel[] BuildDefinitions
-        {
-            get
-            {
-                return _buildDefinitions;
-            }
-            set
-            {
-                if (_buildDefinitions == value) return;
-
-                _buildDefinitions = value;
-                SendPropertyChanged("BuildDefinitions");
-            }
         }
 
         #endregion
