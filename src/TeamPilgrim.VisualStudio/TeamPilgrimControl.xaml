@@ -133,8 +133,11 @@
 
                 <Separator />
 
-                <MenuItem IsEnabled="False" Header="Manage Build Controllers..." />
-                <MenuItem IsEnabled="False" Header="Manage Build Qualities..." />
+                <MenuItem Header="Manage Build Controllers..." 
+                    Command="{Binding Path=ManageBuildControllersCommand}" />
+                
+                <MenuItem Header="Manage Build Qualities..."
+                    Command="{Binding Path=ManageBuildQualitiesCommand}" />
 
                 <Separator />
 

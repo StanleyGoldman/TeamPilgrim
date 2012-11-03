@@ -26,6 +26,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
             ViewBuildsCommand = new RelayCommand<BuildDefinitionModel>(ViewBuilds, CanViewBuilds);
             QueueBuildCommand = new RelayCommand<BuildDefinitionModel>(QueueBuild, CanQueueBuild);
             NewBuildDefinitionCommand = new RelayCommand(NewBuildDefinition, CanNewBuildDefinition);
+            ManageBuildControllersCommand = new RelayCommand(ManageBuildControllers, CanManageBuildControllers);
+            ManageBuildQualitiesCommand = new RelayCommand(ManageBuildQualities, CanManageBuildQualities);
 
             IBuildDefinition[] buildDefinitions;
             if (_pilgrimServiceModelProvider.TryGetBuildDefinitionsByProjectName(out buildDefinitions, _collection, _project.Name))
@@ -48,6 +50,38 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
         private void NewBuildDefinition()
         {
             TeamPilgrimPackage.TeamPilgrimVsService.NewBuildDefinition(_project.Name);
+        }
+
+        #endregion
+
+        #region ManageBuildControllers Command
+
+        public RelayCommand ManageBuildControllersCommand { get; set; }
+
+        private bool CanManageBuildControllers()
+        {
+            return true;
+        }
+
+        private void ManageBuildControllers()
+        {
+            TeamPilgrimPackage.TeamPilgrimVsService.OpenControllerAgentManager(_project.Name);
+        }
+
+        #endregion
+
+        #region ManageBuildQualities Command
+
+        public RelayCommand ManageBuildQualitiesCommand { get; set; }
+
+        private bool CanManageBuildQualities()
+        {
+            return true;
+        }
+
+        private void ManageBuildQualities()
+        {
+            TeamPilgrimPackage.TeamPilgrimVsService.OpenQualityManager(_project.Name);
         }
 
         #endregion

@@ -24,5 +24,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces
         
         void TfsConnect();
         void NewBuildDefinition(string projectName);
+        void OpenControllerAgentManager(string projectName);
+        void OpenQualityManager(string projectName);
     }
 }

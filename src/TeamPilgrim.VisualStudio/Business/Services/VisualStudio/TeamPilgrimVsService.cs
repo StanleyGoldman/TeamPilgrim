@@ -167,9 +167,17 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
 
         public void NewBuildDefinition(string projectName)
         {
-            VsTeamFoundationBuildWrapper vsTeamFoundationBuild = _teamFoundationBuild.Value;
-            var buildExplorer = vsTeamFoundationBuild.BuildExplorerWrapper;
-            buildExplorer.AddBuildDefinition(projectName);
+            _teamFoundationBuild.Value.BuildExplorerWrapper.AddBuildDefinition(projectName);
+        }
+
+        public void OpenControllerAgentManager(string projectName)
+        {
+            _teamFoundationBuild.Value.BuildExplorerWrapper.OpenControllerAgentManager(projectName);
+        }
+
+        public void OpenQualityManager(string projectName)
+        {
+            _teamFoundationBuild.Value.BuildExplorerWrapper.OpenQualityManager(projectName);
         }
 
         public void ViewBuilds(string projectName, string buildDefinition, string qualityFilter, DateFilter dateFilter)
