@@ -4,7 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:AttachedProperties="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties"
-             xmlns:System="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d" 
+             xmlns:System="clr-namespace:System;assembly=mscorlib"
+             xmlns:Converters="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Converters"
+             mc:Ignorable="d" 
              Height="Auto" d:DesignHeight="300" d:DesignWidth="800">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="boolToVisibilityConverter"/>
@@ -15,7 +17,7 @@
                 <RotateTransform Angle="90" />
             </ToolBar.LayoutTransform>
             <ToolBar.Resources>
-                
+
                 <TransformGroup x:Key="ButtonImageTransform">
                     <ScaleTransform/>
                     <SkewTransform/>
@@ -28,98 +30,184 @@
                     <Setter Property="RenderTransform" Value="{StaticResource ResourceKey=ButtonImageTransform}" />
                 </Style>
             </ToolBar.Resources>
-            
-            <RadioButton IsChecked="True" Name="RadioButtonSourceFiles"
-                         Style="{StaticResource {x:Type ToggleButton}}" GroupName="PendingChangesMainView">
+
+            <RadioButton IsChecked="True" x:Name="SourceFilesRadioButton" Style="{StaticResource {x:Type TypeName=ToggleButton}}" GroupName="PendingChangesMainView">
                 <Image Source="..\..\Resources\page_white_text.png" Width="32" Height="32" Style="{StaticResource ButtonImageStyle}" />
             </RadioButton>
 
-            <RadioButton Name="RadioButtonWorkItems" 
-                         Style="{StaticResource {x:Type ToggleButton}}" GroupName="PendingChangesMainView">
+            <RadioButton x:Name="WorkItemsRadioButton" Style="{StaticResource {x:Type TypeName=ToggleButton}}" GroupName="PendingChangesMainView">
                 <Image Source="..\..\Resources\clipboard_sign.png" Width="32" Height="32" Style="{StaticResource ButtonImageStyle}" />
             </RadioButton>
 
-            <RadioButton Name="RadioButtonCheckInNotes"
-                         Style="{StaticResource {x:Type ToggleButton}}" GroupName="PendingChangesMainView">
+            <RadioButton x:Name="CheckInNotesRadioButton" Style="{StaticResource {x:Type TypeName=ToggleButton}}" GroupName="PendingChangesMainView">
                 <Image Source="..\..\Resources\note.png" Width="32" Height="32" Style="{StaticResource ButtonImageStyle}" />
             </RadioButton>
 
-            <RadioButton Name="RadioButtonPolicyWarnings" 
-                         Style="{StaticResource {x:Type ToggleButton}}" GroupName="PendingChangesMainView">
+            <RadioButton x:Name="PolicyWarningsRadioButton" Style="{StaticResource {x:Type TypeName=ToggleButton}}" GroupName="PendingChangesMainView">
                 <Image Source="..\..\Resources\page_white_delete.png" Width="32" Height="32" Style="{StaticResource ButtonImageStyle}" />
             </RadioButton>
 
-            <RadioButton Name="RadioButtonConflicts"
-                         Style="{StaticResource {x:Type ToggleButton}}" GroupName="PendingChangesMainView">
+            <RadioButton x:Name="ConflictsRadioButton" Style="{StaticResource {x:Type TypeName=ToggleButton}}" GroupName="PendingChangesMainView">
                 <Image Source="..\..\Resources\edit_diff.png" Width="32" Height="32" Style="{StaticResource ButtonImageStyle}" />
             </RadioButton>
         </ToolBar>
         <DockPanel>
-            <DockPanel.Resources>
-                <DataTemplate x:Key="SourceFilesDataTemplate">
-                    <DockPanel>
-                    </DockPanel>
-                </DataTemplate>
-                <DataTemplate x:Key="WorkItemsDataTemplate">
-                    <DockPanel>
-                    </DockPanel>
-                </DataTemplate>
-                <DataTemplate x:Key="CheckInNotesDataTemplate">
-                    <DockPanel>
-                    </DockPanel>
-                </DataTemplate>
-                <DataTemplate x:Key="PolicyWarningsDataTemplate">
-                    <DockPanel>
-                    </DockPanel>
-                </DataTemplate>
-                <DataTemplate x:Key="ConflictsDataTemplate">
-                    <DockPanel>
-                    </DockPanel>
-                </DataTemplate>
-            </DockPanel.Resources>
-
             <ToolBar ToolBarTray.IsLocked="True" ToolBar.OverflowMode="AsNeeded" DockPanel.Dock="Top">
-                <Button>
+                <ToolBar.Resources>
+                    <Converters:OcClauseBooleanToVisibilityConverter x:Key="orClause"/>
+
+                    <Style TargetType="FrameworkElement" x:Key="VisibleWhenSourceFilesEnabled">
+                        <Setter Property="Visibility">
+                            <Setter.Value>
+                                <MultiBinding Converter="{StaticResource ResourceKey=orClause}" ConverterParameter="false" Mode="OneWay">
+                                    <Binding  ElementName="SourceFilesRadioButton" Path="IsChecked" />
+                                </MultiBinding>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                    
+                    <Style TargetType="FrameworkElement" x:Key="VisibleWhenSourceFilesOrWorkItemsOrConflictsEnabled">
+                        <Setter Property="Visibility">
+                            <Setter.Value>
+                                <MultiBinding Converter="{StaticResource ResourceKey=orClause}" ConverterParameter="false" Mode="OneWay">
+                                    <Binding  ElementName="SourceFilesRadioButton" Path="IsChecked" />
+                                    <Binding  ElementName="WorkItemsRadioButton" Path="IsChecked" />
+                                    <Binding  ElementName="ConflictsRadioButton" Path="IsChecked" />
+                                </MultiBinding>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                    
+                    <Style TargetType="FrameworkElement" x:Key="VisibleWhenAllButConflictsEnabled">
+                        <Setter Property="Visibility">
+                            <Setter.Value>
+                                <MultiBinding Converter="{StaticResource ResourceKey=orClause}" ConverterParameter="false" Mode="OneWay">
+                                    <Binding  ElementName="CheckInNotesRadioButton" Path="IsChecked" />
+                                    <Binding  ElementName="PolicyWarningsRadioButton" Path="IsChecked" />
+                                    <Binding  ElementName="SourceFilesRadioButton" Path="IsChecked" />
+                                    <Binding  ElementName="WorkItemsRadioButton" Path="IsChecked" />
+                                </MultiBinding>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                    
+                </ToolBar.Resources>
+
+                <Button Style="{StaticResource ResourceKey=VisibleWhenAllButConflictsEnabled}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="../../Resources/page_save.png" Width="16" Height="16" Margin="0,0,2,0"  />
                         <TextBlock>Check In</TextBlock>
                     </StackPanel>
                 </Button>
-                <Separator />
-                <Button>
+                
+                <Separator Style="{StaticResource ResourceKey=VisibleWhenSourceFilesEnabled}" />
+                <Button Style="{StaticResource ResourceKey=VisibleWhenSourceFilesEnabled}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="../../Resources/shelve.png" Width="16" Height="16" Margin="0,0,2,0"  />
                         <TextBlock>Shelve</TextBlock>
                     </StackPanel>
                 </Button>
-                <Button>
+                <Button Style="{StaticResource ResourceKey=VisibleWhenSourceFilesEnabled}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="../../Resources/unshelve.png" Width="16" Height="16" Margin="0,0,2,0"  />
                         <TextBlock>Unshelve</TextBlock>
                     </StackPanel>
                 </Button>
-                <Separator />
-                <Button Visibility="Collapsed">Hide/Show Comment</Button>
-                <Separator Visibility="Collapsed"/>
-                <Button Visibility="Collapsed">Folder View</Button>
-                <Button Visibility="Collapsed">Flat View</Button>
-                <Separator Visibility="Collapsed"/>
-                <Button Visibility="Collapsed">Cmp with Unmodified</Button>
-                <Button Visibility="Collapsed">Cmp with Workspace</Button>
-                <Button Visibility="Collapsed">Cmp with Latest</Button>
-                <Button Visibility="Collapsed">View File</Button>
-                <Button Visibility="Collapsed">Undo Pending Change</Button>
-                <Separator Visibility="Collapsed"/>
-                <Button Visibility="Collapsed">Refresh</Button>
-                <Separator Visibility="Collapsed"/>
-                <Button Visibility="Collapsed">Filter By Solution</Button>
-                <Separator Visibility="Collapsed"/>
-                <TextBlock VerticalAlignment="Center">Workspace:</TextBlock>
-                <ComboBox Margin="0" VerticalAlignment="Top" Width="120"/>
-            </ToolBar>
+                
+                <!--
+                Hide Show Comment Functionality Disabled
+                
+                <Separator Style="{StaticResource ResourceKey=VisibleWhenSourceFilesEnabled}" />
+                <Button Style="{StaticResource ResourceKey=VisibleWhenSourceFilesEnabled}">Hide/Show Comment</Button>
+                -->
 
-            <ContentPresenter Content="{Binding}" DockPanel.Dock="Bottom" ContentTemplate="{StaticResource ResourceKey=SourceFilesDataTemplate}">
-            </ContentPresenter>
+                <!--
+                Folder/Flat View Switch Disabled
+                
+                <Separator Style="{StaticResource ResourceKey=VisibleWhenSourceFilesEnabled}"/>
+                <Button Style="{StaticResource ResourceKey=VisibleWhenSourceFilesEnabled}">Folder View</Button>
+                <Button Style="{StaticResource ResourceKey=VisibleWhenSourceFilesEnabled}">Flat View</Button>
+                -->
+
+                <Separator Style="{StaticResource ResourceKey=VisibleWhenSourceFilesEnabled}"/>
+                <!--
+                Compare Button Dropdown Disabled/Needs Implementing
+                
+                <Button Style="{StaticResource ResourceKey=VisibleWhenSourceFilesEnabled}">Cmp with Unmodified</Button>
+                <Button Style="{StaticResource ResourceKey=VisibleWhenSourceFilesEnabled}">Cmp with Workspace</Button>
+                <Button Style="{StaticResource ResourceKey=VisibleWhenSourceFilesEnabled}">Cmp with Latest</Button>
+                -->
+                <Button Style="{StaticResource ResourceKey=VisibleWhenSourceFilesEnabled}">View File</Button>
+                <Button Style="{StaticResource ResourceKey=VisibleWhenSourceFilesEnabled}">Undo Pending Change</Button>
+
+                <Separator Style="{StaticResource ResourceKey=VisibleWhenSourceFilesOrWorkItemsOrConflictsEnabled}"/>
+                <Button Style="{StaticResource ResourceKey=VisibleWhenSourceFilesOrWorkItemsOrConflictsEnabled}">Refresh</Button>
+
+                <!--
+                Soution filter Disabled
+                
+                <Separator Style="{StaticResource ResourceKey=VisibleWhenSourceFilesEnabled}"/>
+                <Button Style="{StaticResource ResourceKey=VisibleWhenSourceFilesEnabled}">Filter By Solution</Button>
+                -->
+
+                <Separator Style="{StaticResource ResourceKey=VisibleWhenSourceFilesEnabled}"/>
+                <TextBlock VerticalAlignment="Center" Style="{StaticResource ResourceKey=VisibleWhenSourceFilesEnabled}">Workspace:</TextBlock>
+                <ComboBox Margin="0" VerticalAlignment="Top" Width="120" Style="{StaticResource ResourceKey=VisibleWhenSourceFilesEnabled}"/>
+                
+            </ToolBar>
+            <TabControl DockPanel.Dock="Bottom" BorderThickness="0" Padding="0">
+                <TabControl.Resources>
+                    <!--http://stackoverflow.com/questions/6278720/wpf-toggle-panel-visibility-->
+                    <Style TargetType="TabItem">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="TabItem">
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </TabControl.Resources>
+                
+                <TabItem IsSelected="{Binding ElementName=SourceFilesRadioButton, Path=IsChecked}">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Top">Comment:</TextBlock>
+                        <TextBox DockPanel.Dock="Top"></TextBox>
+                        <TabControl DockPanel.Dock="Bottom">
+                            <TabControl.Resources>
+                                <!--http://stackoverflow.com/questions/6278720/wpf-toggle-panel-visibility-->
+                                <Style TargetType="TabItem">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="TabItem">
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </TabControl.Resources>
+                            
+                            <TabItem>
+                                
+                            </TabItem>
+                        </TabControl>
+                    </DockPanel>
+                </TabItem>
+                <TabItem IsSelected="{Binding ElementName=WorkItemsRadioButton, Path=IsChecked}">
+                    <DockPanel>
+                    </DockPanel>
+                </TabItem>
+                <TabItem IsSelected="{Binding ElementName=CheckInNotesRadioButton, Path=IsChecked}">
+                    <DockPanel>
+                    </DockPanel>
+                </TabItem>
+                <TabItem IsSelected="{Binding ElementName=PolicyWarningsRadioButton, Path=IsChecked}">
+                    <DockPanel Name="PolicyWarningsDataDockPanel">
+                    </DockPanel>
+                </TabItem>
+                <TabItem IsSelected="{Binding ElementName=ConflictsRadioButton, Path=IsChecked}">
+                    <DockPanel Name="ConflictsDataDockPanel">
+                    </DockPanel>
+                </TabItem>
+            </TabControl>
         </DockPanel>
     </DockPanel>
 </UserControl>

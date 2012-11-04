@@ -167,6 +167,9 @@
     <Compile Include="Business\Services\VisualStudio\Builds\VsTeamFoundationBuildWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\WorkItem\QuerySecurityCommandHelpersWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\WorkItem\WorkItemTrackingPackageWrapper.cs" />
+    <Compile Include="Common\Converters\MultiStyleExtension.cs" />
+    <Compile Include="Common\Converters\OcClauseBooleanToVisibilityConverter.cs" />
+    <Compile Include="Common\Extensions\StyleExtensions.cs" />
     <Compile Include="Common\VsWindowFrameEditorTypeIds.cs" />
     <Compile Include="Common\AttachedProperties\MouseDoubleClick.cs" />
     <Compile Include="Domain\BusinessInterfaces\ITeamPilgrimVsService.cs" />
@@ -276,9 +279,7 @@
       <Name>TeamPilgrim.Core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Common\Converters\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <UseCodebase>true</UseCodebase>
   </PropertyGroup>
