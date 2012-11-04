@@ -1,9 +1,10 @@
 using System.Windows;
 using System.Windows.Controls;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.BuildDefinitions;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.WorkItemQuery;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.WorkItemQuery.Children;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Explorer
 {

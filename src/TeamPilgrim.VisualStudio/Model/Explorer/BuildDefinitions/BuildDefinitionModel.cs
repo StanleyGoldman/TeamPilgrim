@@ -2,7 +2,7 @@
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.Build.Client;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.BuildDefinitions
 {
     public class BuildDefinitionModel : BaseModel
     {

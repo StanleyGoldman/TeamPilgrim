@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
 using Microsoft.TeamFoundation.Build.Client;
 using Microsoft.TeamFoundation.Client;
+using Microsoft.TeamFoundation.VersionControl.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
@@ -85,6 +87,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
             return collection.GetService<WorkItemStore>();
         }
 
+        private VersionControlServer GetVersionControlServer(TfsTeamProjectCollection collection)
+        {
+            return collection.ConfigurationServer.GetService<VersionControlServer>();
+        }
+
         public IBuildDefinition[] QueryBuildDefinitions(TfsTeamProjectCollection collection, string teamProject)
         {
             return collection.GetService<IBuildServer>()
@@ -113,6 +120,18 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
             queryHierarchy.Save();
 
             return queryFolder;
+        }
+
+        public WorkspaceInfo[] GetLocalWorkspaceInfo(Guid? projectCollectionId = null)
+        {
+            IEnumerable<WorkspaceInfo> allLocalWorkspaceInfo = Workstation.Current.GetAllLocalWorkspaceInfo();
+
+            if(projectCollectionId.HasValue)
+            {
+                allLocalWorkspaceInfo = allLocalWorkspaceInfo.Where(info => info.ServerGuid.Equals(projectCollectionId));
+            }
+
+            return allLocalWorkspaceInfo as WorkspaceInfo[] ?? allLocalWorkspaceInfo.ToArray();
         }
     }
 }

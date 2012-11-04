@@ -5,10 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:Model="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model"
              xmlns:AttachedProperties="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties"
-             xmlns:BuildDefinitions="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions"
-             xmlns:WorkItemQuery="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery"
-             xmlns:WorkItemQueryChildren="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children"
              xmlns:Explorer="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Explorer"
+             xmlns:ExplorerModels="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer"
+             xmlns:WorkItemQuery="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.WorkItemQuery"
+             xmlns:WorkItemQueryChildren="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.WorkItemQuery.Children"
+             xmlns:BuildDefinitions="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.BuildDefinitions"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d" 
@@ -16,7 +17,7 @@
              d:DataContext="{d:DesignInstance Model:TeamPilgrimModel}">
     <DockPanel>
         <DockPanel.Resources>
-            <ContextMenu x:Key="ProjectCollectionContextMenu" d:DataContext="{d:DesignInstance Model:ProjectCollectionModel}">
+            <ContextMenu x:Key="ProjectCollectionContextMenu" d:DataContext="{d:DesignInstance ExplorerModels:ProjectCollectionModel}">
                 <MenuItem IsEnabled="False" Header="Connect to Team Project..."/>
                 <MenuItem IsEnabled="False" Header="New Team Project..."/>
                 <Separator />
@@ -35,7 +36,7 @@
                 <MenuItem IsEnabled="False" Header="Alerts Explorer"/>
             </ContextMenu>
 
-            <ContextMenu x:Key="ProjectContextMenu" d:DataContext="{d:DesignInstance Model:ProjectModel}">
+            <ContextMenu x:Key="ProjectContextMenu" d:DataContext="{d:DesignInstance ExplorerModels:ProjectModel}">
                 <MenuItem IsEnabled="False" Header="Project Alerts..."/>
                 <Separator />
                 <MenuItem IsEnabled="False" Header="Remove"/>
@@ -287,11 +288,11 @@
             <TreeView ItemsSource="{Binding Path=CollectionModels}" ItemContainerStyleSelector="{StaticResource teamPilgrilViewStyleSelector}">
 
                 <TreeView.Resources>
-                    <HierarchicalDataTemplate DataType="{x:Type Model:ProjectCollectionModel}" ItemsSource="{Binding Path=ProjectModels}">
+                    <HierarchicalDataTemplate DataType="{x:Type ExplorerModels:ProjectCollectionModel}" ItemsSource="{Binding Path=ProjectModels}">
                         <TextBlock Text="{Binding Path=TfsTeamProjectCollection.Name}" ContextMenu="{StaticResource ResourceKey=ProjectCollectionContextMenu}" />
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type Model:ProjectModel}" ItemsSource="{Binding Path=ChildObjects}">
+                    <HierarchicalDataTemplate DataType="{x:Type ExplorerModels:ProjectModel}" ItemsSource="{Binding Path=ChildObjects}">
                         <TextBlock Text="{Binding Path=Project.Name}" ContextMenu="{StaticResource ResourceKey=ProjectContextMenu}" />
                     </HierarchicalDataTemplate>
 
@@ -315,15 +316,15 @@
                         <TextBlock Text="{Binding Path=Definition.Name}" ContextMenu="{StaticResource ResourceKey=BuildDefinitionContextMenu}" />
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type Model:ReportsModel}">
+                    <HierarchicalDataTemplate DataType="{x:Type ExplorerModels:ReportsModel}">
                         <TextBlock Text="Reports" />
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type Model:TeamMembersModel}">
+                    <HierarchicalDataTemplate DataType="{x:Type ExplorerModels:TeamMembersModel}">
                         <TextBlock Text="Team Members" />
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type Model:SourceControlModel}">
+                    <HierarchicalDataTemplate DataType="{x:Type ExplorerModels:SourceControlModel}">
                         <TextBlock Text="Source Control" />
                     </HierarchicalDataTemplate>
 

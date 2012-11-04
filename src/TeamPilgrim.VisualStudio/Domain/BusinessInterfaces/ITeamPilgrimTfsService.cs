@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.TeamFoundation.Build.Client;
 using Microsoft.TeamFoundation.Client;
+using Microsoft.TeamFoundation.VersionControl.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces
@@ -21,5 +22,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces
 		
 		IBuildDefinition CloneBuildDefinition(TfsTeamProjectCollection collection, string projectName, IBuildDefinition sourceDefinition);
         void DeleteBuildDefinition(IBuildDefinition buildDefinition);
+        WorkspaceInfo[] GetLocalWorkspaceInfo(Guid? projectCollectionId = null);
     }
 }

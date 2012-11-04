@@ -7,8 +7,11 @@ using System.Windows.Threading;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.Client;
+using Microsoft.TeamFoundation.VersionControl.Client;
 using Microsoft.VisualStudio.TeamFoundation;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
@@ -19,11 +22,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
         private readonly ITeamPilgrimVsService _teamPilgrimVsService;
 
         public ObservableCollection<ProjectCollectionModel> CollectionModels { get; private set; }
+        public ObservableCollection<WorkspaceInfoModel> WorkspaceInfoModels { get; private set; }
 
         public TeamPilgrimModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService)
             : base(pilgrimServiceModelProvider, teamPilgrimVsService)
         {
             CollectionModels = new ObservableCollection<ProjectCollectionModel>();
+            WorkspaceInfoModels = new ObservableCollection<WorkspaceInfoModel>();
 
             _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
             _teamPilgrimVsService = teamPilgrimVsService;
@@ -56,10 +61,23 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
                         CollectionModels.Clear();
                         if (collection != null)
                         {
-                            CollectionModels.Add(new ProjectCollectionModel(_pilgrimServiceModelProvider, _teamPilgrimVsService, this, collection));
+                            CollectionModels.Add(new ProjectCollectionModel(_pilgrimServiceModelProvider,
+                                                                            _teamPilgrimVsService, this, collection));
                         }
                     }));
             }
+
+            Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
+            {
+                WorkspaceInfo[] workspaceInfos;
+                if (_pilgrimServiceModelProvider.TryGetLocalWorkspaceInfos(out workspaceInfos, collection.InstanceId))
+                {
+                    foreach (var workspaceInfo in workspaceInfos)
+                    {
+                        WorkspaceInfoModels.Add(new WorkspaceInfoModel(pilgrimServiceModelProvider, teamPilgrimVsService, workspaceInfo));
+                    }
+                }
+            }));
         }
 
         #region Refresh

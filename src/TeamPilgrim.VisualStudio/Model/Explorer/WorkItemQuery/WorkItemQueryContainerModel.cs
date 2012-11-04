@@ -1,15 +1,14 @@
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.WorkItemQuery.Children;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.WorkItemQuery
 {
     public class WorkItemQueryContainerModel : BaseModel, IWorkItemQueryCommandModel
     {

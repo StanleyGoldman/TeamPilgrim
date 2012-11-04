@@ -10,6 +10,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
         public PendingChangesControl()
         {
             InitializeComponent();
+            DataContext = TeamPilgrimPackage.TeamPilgrimModel;
         }
     }
 }

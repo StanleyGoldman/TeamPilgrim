@@ -7,7 +7,7 @@ using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
 {
     public class ProjectCollectionModel : BaseModel
     {

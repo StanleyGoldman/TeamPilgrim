@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.WorkItemQuery.Children;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 

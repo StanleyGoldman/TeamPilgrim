@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -11,7 +10,7 @@ using Microsoft.TeamFoundation.Build.Controls;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.BuildDefinitions
 {
     public class BuildDefinitionsModel : BaseModel, IBuildDefinitionCommandModel
     {

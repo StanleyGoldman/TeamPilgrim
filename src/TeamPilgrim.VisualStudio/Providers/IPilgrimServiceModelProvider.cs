@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.TeamFoundation.Build.Client;
 using Microsoft.TeamFoundation.Client;
+using Microsoft.TeamFoundation.VersionControl.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
@@ -22,5 +23,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
         bool TryDeleteBuildDefinition(IBuildDefinition definition);
 
         bool TryAddNewQueryFolder(out QueryFolder childFolder, TfsTeamProjectCollection tfsTeamProjectCollection, Project teamProject, Guid parentFolderId);
+      
+        bool TryGetLocalWorkspaceInfos(out WorkspaceInfo[] workspaceInfos, Guid? projectCollectionId = null);
     }
 }

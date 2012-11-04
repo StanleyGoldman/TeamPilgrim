@@ -2,7 +2,7 @@ using System;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.WorkItemQuery.Children
 {
     public abstract class WorkItemQueryChildModel : BaseModel
     {

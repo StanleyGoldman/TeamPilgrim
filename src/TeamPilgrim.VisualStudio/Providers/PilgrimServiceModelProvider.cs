@@ -3,6 +3,7 @@ using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
 using Microsoft.TeamFoundation.Build.Client;
 using Microsoft.TeamFoundation.Client;
+using Microsoft.TeamFoundation.VersionControl.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
@@ -131,6 +132,22 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             }
 
             childFolder = null;
+            return false;
+        }
+
+        public bool TryGetLocalWorkspaceInfos(out WorkspaceInfo[] workspaceInfos, Guid? projectCollectionId = null)
+        {
+            try
+            {
+                workspaceInfos = _teamPilgrimTfsService.GetLocalWorkspaceInfo(projectCollectionId);
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            workspaceInfos = null;
             return false;
         }
     }
