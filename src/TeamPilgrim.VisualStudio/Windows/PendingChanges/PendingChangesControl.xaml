@@ -3,10 +3,123 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" 
-             Height="Auto" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             xmlns:AttachedProperties="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties"
+             xmlns:System="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d" 
+             Height="Auto" d:DesignHeight="300" d:DesignWidth="800">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="boolToVisibilityConverter"/>
+    </UserControl.Resources>
     <DockPanel>
-        
+        <ToolBar ToolBarTray.IsLocked="True" ToolBar.OverflowMode="AsNeeded">
+            <ToolBar.LayoutTransform>
+                <RotateTransform Angle="90" />
+            </ToolBar.LayoutTransform>
+            <ToolBar.Resources>
+                
+                <TransformGroup x:Key="ButtonImageTransform">
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="-90"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+
+                <Style TargetType="{x:Type Image}" x:Key="ButtonImageStyle">
+                    <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+                    <Setter Property="RenderTransform" Value="{StaticResource ResourceKey=ButtonImageTransform}" />
+                </Style>
+            </ToolBar.Resources>
+            
+            <RadioButton IsChecked="True" Name="RadioButtonSourceFiles"
+                         Style="{StaticResource {x:Type ToggleButton}}" GroupName="PendingChangesMainView">
+                <Image Source="..\..\Resources\page_white_text.png" Width="32" Height="32" Style="{StaticResource ButtonImageStyle}" />
+            </RadioButton>
+
+            <RadioButton Name="RadioButtonWorkItems" 
+                         Style="{StaticResource {x:Type ToggleButton}}" GroupName="PendingChangesMainView">
+                <Image Source="..\..\Resources\clipboard_sign.png" Width="32" Height="32" Style="{StaticResource ButtonImageStyle}" />
+            </RadioButton>
+
+            <RadioButton Name="RadioButtonCheckInNotes"
+                         Style="{StaticResource {x:Type ToggleButton}}" GroupName="PendingChangesMainView">
+                <Image Source="..\..\Resources\note.png" Width="32" Height="32" Style="{StaticResource ButtonImageStyle}" />
+            </RadioButton>
+
+            <RadioButton Name="RadioButtonPolicyWarnings" 
+                         Style="{StaticResource {x:Type ToggleButton}}" GroupName="PendingChangesMainView">
+                <Image Source="..\..\Resources\page_white_delete.png" Width="32" Height="32" Style="{StaticResource ButtonImageStyle}" />
+            </RadioButton>
+
+            <RadioButton Name="RadioButtonConflicts"
+                         Style="{StaticResource {x:Type ToggleButton}}" GroupName="PendingChangesMainView">
+                <Image Source="..\..\Resources\edit_diff.png" Width="32" Height="32" Style="{StaticResource ButtonImageStyle}" />
+            </RadioButton>
+        </ToolBar>
+        <DockPanel>
+            <DockPanel.Resources>
+                <DataTemplate x:Key="SourceFilesDataTemplate">
+                    <DockPanel>
+                    </DockPanel>
+                </DataTemplate>
+                <DataTemplate x:Key="WorkItemsDataTemplate">
+                    <DockPanel>
+                    </DockPanel>
+                </DataTemplate>
+                <DataTemplate x:Key="CheckInNotesDataTemplate">
+                    <DockPanel>
+                    </DockPanel>
+                </DataTemplate>
+                <DataTemplate x:Key="PolicyWarningsDataTemplate">
+                    <DockPanel>
+                    </DockPanel>
+                </DataTemplate>
+                <DataTemplate x:Key="ConflictsDataTemplate">
+                    <DockPanel>
+                    </DockPanel>
+                </DataTemplate>
+            </DockPanel.Resources>
+
+            <ToolBar ToolBarTray.IsLocked="True" ToolBar.OverflowMode="AsNeeded" DockPanel.Dock="Top">
+                <Button>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="../../Resources/page_save.png" Width="16" Height="16" Margin="0,0,2,0"  />
+                        <TextBlock>Check In</TextBlock>
+                    </StackPanel>
+                </Button>
+                <Separator />
+                <Button>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="../../Resources/shelve.png" Width="16" Height="16" Margin="0,0,2,0"  />
+                        <TextBlock>Shelve</TextBlock>
+                    </StackPanel>
+                </Button>
+                <Button>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="../../Resources/unshelve.png" Width="16" Height="16" Margin="0,0,2,0"  />
+                        <TextBlock>Unshelve</TextBlock>
+                    </StackPanel>
+                </Button>
+                <Separator />
+                <Button Visibility="Collapsed">Hide/Show Comment</Button>
+                <Separator Visibility="Collapsed"/>
+                <Button Visibility="Collapsed">Folder View</Button>
+                <Button Visibility="Collapsed">Flat View</Button>
+                <Separator Visibility="Collapsed"/>
+                <Button Visibility="Collapsed">Cmp with Unmodified</Button>
+                <Button Visibility="Collapsed">Cmp with Workspace</Button>
+                <Button Visibility="Collapsed">Cmp with Latest</Button>
+                <Button Visibility="Collapsed">View File</Button>
+                <Button Visibility="Collapsed">Undo Pending Change</Button>
+                <Separator Visibility="Collapsed"/>
+                <Button Visibility="Collapsed">Refresh</Button>
+                <Separator Visibility="Collapsed"/>
+                <Button Visibility="Collapsed">Filter By Solution</Button>
+                <Separator Visibility="Collapsed"/>
+                <TextBlock VerticalAlignment="Center">Workspace:</TextBlock>
+                <ComboBox Margin="0" VerticalAlignment="Top" Width="120"/>
+            </ToolBar>
+
+            <ContentPresenter Content="{Binding}" DockPanel.Dock="Bottom" ContentTemplate="{StaticResource ResourceKey=SourceFilesDataTemplate}">
+            </ContentPresenter>
+        </DockPanel>
     </DockPanel>
 </UserControl>

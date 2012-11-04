@@ -248,8 +248,16 @@
     <None Include="Resources\Images.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Shelve.png" />
+    <Resource Include="Resources\Unshelve.png" />
+    <Resource Include="Resources\page_save.png" />
+    <Resource Include="Resources\page_white_delete.png" />
+    <Resource Include="Resources\page_white_text.png" />
     <Resource Include="Resources\tfs_connect.png" />
     <Resource Include="Resources\arrow_refresh.png" />
+    <Resource Include="Resources\clipboard_sign.png" />
+    <Resource Include="Resources\note.png" />
+    <Resource Include="Resources\edit_diff.png" />
     <Content Include="Resources\Package.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -267,6 +275,9 @@
       <Project>{6d661fc1-0805-4e2b-91d1-6c56b0044818}</Project>
       <Name>TeamPilgrim.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Common\Converters\" />
   </ItemGroup>
   <PropertyGroup>
     <UseCodebase>true</UseCodebase>
