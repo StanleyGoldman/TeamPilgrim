@@ -1,4 +1,6 @@
-﻿using Microsoft.TeamFoundation.Build.Client;
+﻿using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
+using Microsoft.TeamFoundation.Build.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
 {
@@ -7,10 +9,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
         public IBuildDefinitionCommandModel BuildDefinitionCommandModel { get; private set; }
         public IBuildDefinition Definition { get; private set; }
 
-        public BuildDefinitionModel(IBuildDefinitionCommandModel buildDefinitionCommandModel, IBuildDefinition definition)
+        public BuildDefinitionModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, IBuildDefinitionCommandModel buildDefinitionCommandModel, IBuildDefinition definition)
+            : base(pilgrimServiceModelProvider, teamPilgrimVsService)
         {
-            BuildDefinitionCommandModel = buildDefinitionCommandModel;
             Definition = definition;
+            BuildDefinitionCommandModel = buildDefinitionCommandModel;
         }
     }
 }

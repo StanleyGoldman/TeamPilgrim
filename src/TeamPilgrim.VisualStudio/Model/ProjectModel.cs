@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
@@ -11,8 +12,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
     public class ProjectModel : BaseModel
     {
-        private readonly IPilgrimServiceModelProvider _pilgrimServiceModelProvider;
-
         public TfsTeamProjectCollection ProjectCollection { get; private set; }
 
         public Project Project { get; private set; }
@@ -23,23 +22,23 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         public ObservableCollection<BaseModel> ChildObjects { get; private set; }
 
-        public ProjectModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, TfsTeamProjectCollection projectCollection, Project project)
+        public ProjectModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, TfsTeamProjectCollection projectCollection, Project project)
+            :base(pilgrimServiceModelProvider, teamPilgrimVsService)
         {
-            _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
             ProjectCollection = projectCollection;
             Project = project;
             
             OpenSourceControlCommand = new RelayCommand(OpenSourceControl, CanOpenSourceControl);
 
-            BuildDefinitionsModel = new BuildDefinitionsModel(_pilgrimServiceModelProvider, projectCollection, project);
+            BuildDefinitionsModel = new BuildDefinitionsModel(pilgrimServiceModelProvider, teamPilgrimVsService, projectCollection, project);
 
             ChildObjects = new ObservableCollection<BaseModel>
                 {
-                    new WorkItemQueryContainerModel(_pilgrimServiceModelProvider, projectCollection, project), 
-                    new ReportsModel(),
+                    new WorkItemQueryContainerModel(pilgrimServiceModelProvider, teamPilgrimVsService, projectCollection, project), 
+                    new ReportsModel(pilgrimServiceModelProvider, teamPilgrimVsService),
                     BuildDefinitionsModel,
-                    new TeamMembersModel(),
-                    new SourceControlModel()
+                    new TeamMembersModel(pilgrimServiceModelProvider, teamPilgrimVsService),
+                    new SourceControlModel(pilgrimServiceModelProvider, teamPilgrimVsService)
                 };
         }
 
@@ -49,7 +48,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         private void OpenSourceControl()
         {
-            TeamPilgrimPackage.TeamPilgrimVsService.OpenSourceControl(Project.Name);
+            teamPilgrimVsService.OpenSourceControl(Project.Name);
         }
 
         private bool CanOpenSourceControl()

@@ -12,8 +12,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Explorer
     /// </summary>
     public partial class ExplorerControl : UserControl
     {
-        private readonly TeamPilgrimModel _teamPilgrimModel;
-
         public ExplorerControl()
         {
             //NOTE: Only enable this when you are looking to debug a particular issue
@@ -21,7 +19,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Explorer
             //BindingErrorTraceListener.SetTrace();
 
             InitializeComponent();
-            DataContext = _teamPilgrimModel = new TeamPilgrimModel(new PilgrimServiceModelProvider());
+            DataContext = TeamPilgrimPackage.TeamPilgrimModel;
         }
 
         private void OnPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)

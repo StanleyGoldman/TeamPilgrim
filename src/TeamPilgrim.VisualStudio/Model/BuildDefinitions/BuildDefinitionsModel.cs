@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using GalaSoft.MvvmLight.Command;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.Build.Client;
 using Microsoft.TeamFoundation.Build.Controls;
@@ -20,7 +21,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
         private readonly TfsTeamProjectCollection _collection;
         private readonly Project _project;
 
-        public BuildDefinitionsModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, TfsTeamProjectCollection collection, Project project)
+        public BuildDefinitionsModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, TfsTeamProjectCollection collection, Project project)
+            : base(pilgrimServiceModelProvider, teamPilgrimVsService)
         {
             BuildDefinitions = new ObservableCollection<BuildDefinitionModel>();
 
@@ -44,7 +46,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
             IBuildDefinition[] buildDefinitions;
             if (_pilgrimServiceModelProvider.TryGetBuildDefinitionsByProjectName(out buildDefinitions, _collection, _project.Name))
             {
-                foreach (var buildDefinitionModel in buildDefinitions.Select(definition => new BuildDefinitionModel(this, definition)))
+                foreach (var buildDefinitionModel in buildDefinitions.Select(definition => new BuildDefinitionModel(pilgrimServiceModelProvider, teamPilgrimVsService, this, definition)))
                 {
                     BuildDefinitions.Add(buildDefinitionModel);
                 }
@@ -62,7 +64,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
 
         private void NewBuildDefinition()
         {
-            TeamPilgrimPackage.TeamPilgrimVsService.NewBuildDefinition(_project.Name);
+            teamPilgrimVsService.NewBuildDefinition(_project.Name);
         }
 
         #endregion
@@ -78,7 +80,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
 
         private void ManageBuildSecurity()
         {
-            TeamPilgrimPackage.TeamPilgrimVsService.OpenBuildSecurityDialog(_project.Name, _project.Uri.ToString());
+            teamPilgrimVsService.OpenBuildSecurityDialog(_project.Name, _project.Uri.ToString());
         }
 
         #endregion
@@ -94,7 +96,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
 
         private void ManageBuildControllers()
         {
-            TeamPilgrimPackage.TeamPilgrimVsService.OpenControllerAgentManager(_project.Name);
+            teamPilgrimVsService.OpenControllerAgentManager(_project.Name);
         }
 
         #endregion
@@ -110,7 +112,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
 
         private void ManageBuildQualities()
         {
-            TeamPilgrimPackage.TeamPilgrimVsService.OpenQualityManager(_project.Name);
+            teamPilgrimVsService.OpenQualityManager(_project.Name);
         }
 
         #endregion
@@ -126,7 +128,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
 
         private void DeleteBuildDefinition(BuildDefinitionModel buildDefinitionModel)
         {
-            if(_pilgrimServiceModelProvider.TryDeleteBuildDefinition(buildDefinitionModel.Definition))
+            if (_pilgrimServiceModelProvider.TryDeleteBuildDefinition(buildDefinitionModel.Definition))
             {
                 BuildDefinitions.Remove(buildDefinitionModel);
             }
@@ -146,9 +148,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
         private void CloneBuildDefinition(BuildDefinitionModel buildDefinitionModel)
         {
             IBuildDefinition buildDefinition;
-            if(_pilgrimServiceModelProvider.TryCloneQueryDefinition(out buildDefinition, _collection, _project, buildDefinitionModel.Definition))
+            if (_pilgrimServiceModelProvider.TryCloneQueryDefinition(out buildDefinition, _collection, _project, buildDefinitionModel.Definition))
             {
-                BuildDefinitions.Add(new BuildDefinitionModel(this, buildDefinition));
+                BuildDefinitions.Add(new BuildDefinitionModel(pilgrimServiceModelProvider, teamPilgrimVsService, this, buildDefinition));
             }
         }
 
@@ -165,7 +167,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
 
         private void ManageBuildDefinitionSecurity(BuildDefinitionModel buildDefinitionModel)
         {
-            TeamPilgrimPackage.TeamPilgrimVsService.OpenBuildDefinitionSecurityDialog(_project.Name, _project.Uri.ToString(), buildDefinitionModel.Definition.Name, buildDefinitionModel.Definition.Uri.ToString());
+            teamPilgrimVsService.OpenBuildDefinitionSecurityDialog(_project.Name, _project.Uri.ToString(), buildDefinitionModel.Definition.Name, buildDefinitionModel.Definition.Uri.ToString());
         }
 
         #endregion
@@ -181,7 +183,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
 
         private void OpenBuildDefinition(BuildDefinitionModel buildDefinitionModel)
         {
-            TeamPilgrimPackage.TeamPilgrimVsService.OpenBuildDefinition(buildDefinitionModel.Definition.Uri);
+            teamPilgrimVsService.OpenBuildDefinition(buildDefinitionModel.Definition.Uri);
         }
 
         #endregion
@@ -197,7 +199,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
 
         private void OpenProcessFileLocation(BuildDefinitionModel buildDefinitionModel)
         {
-            TeamPilgrimPackage.TeamPilgrimVsService.OpenProcessFileLocation(buildDefinitionModel.Definition.Uri);
+            teamPilgrimVsService.OpenProcessFileLocation(buildDefinitionModel.Definition.Uri);
         }
 
         #endregion
@@ -219,7 +221,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
                 buildDefinitionName = buildDefinitionModel.Definition.Name;
             }
 
-            TeamPilgrimPackage.TeamPilgrimVsService.ViewBuilds(_project.Name, buildDefinitionName, String.Empty, DateFilter.Today);
+            teamPilgrimVsService.ViewBuilds(_project.Name, buildDefinitionName, String.Empty, DateFilter.Today);
         }
 
         #endregion
@@ -240,7 +242,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
             //TODO: SG 11/3/2012 Fix this, I know this cannot be true
             Debug.Assert(definitionModel != null, "definitionModel != null");
 
-            TeamPilgrimPackage.TeamPilgrimVsService.QueueBuild(_project.Name, definitionModel.Definition.Uri);
+            teamPilgrimVsService.QueueBuild(_project.Name, definitionModel.Definition.Uri);
         }
 
         #endregion

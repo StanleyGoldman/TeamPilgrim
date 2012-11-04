@@ -96,10 +96,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
 
         private void TeamFoundationServerExtOnProjectContextChanged(object sender, EventArgs e)
         {
-            ActiveProjectContextChangedEvent(TeamFoundationServerExt.ActiveProjectContext);
+            if(ActiveProjectContextChangedEvent != null)
+                ActiveProjectContextChangedEvent(TeamFoundationServerExt.ActiveProjectContext);
         }
 
-        public void InitializePackage(TeamPilgrimPackage packageInstance, IVsUIShell vsUiShell)
+        public void Initialize(TeamPilgrimPackage packageInstance, IVsUIShell vsUiShell)
         {
             VsUiShell = vsUiShell;
             _packageInstance = packageInstance;

@@ -5,6 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight.Command;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.VisualStudio.TeamFoundation;
@@ -14,17 +16,24 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
     public class TeamPilgrimModel : BaseModel
     {
         private readonly IPilgrimServiceModelProvider _pilgrimServiceModelProvider;
+        private readonly ITeamPilgrimVsService _teamPilgrimVsService;
 
-        public TeamPilgrimModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider)
+        public ObservableCollection<ProjectCollectionModel> CollectionModels { get; private set; }
+
+        public TeamPilgrimModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService)
+            : base(pilgrimServiceModelProvider, teamPilgrimVsService)
         {
             CollectionModels = new ObservableCollection<ProjectCollectionModel>();
 
             _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
+            _teamPilgrimVsService = teamPilgrimVsService;
 
-            TeamPilgrimPackage.TeamPilgrimVsService.ActiveProjectContextChangedEvent += TeamPilgrimPackageOnActiveProjectContextChangedEvent;
+            _teamPilgrimVsService.ActiveProjectContextChangedEvent += TeamPilgrimPackageOnActiveProjectContextChangedEvent;
 
             RefreshCommand = new RelayCommand(Refresh, CanRefresh);
             TfsConnectCommand = new RelayCommand(TfsConnect, CanTfsConnect);
+
+            PopulatePilgrimModel();
         }
 
         private void TeamPilgrimPackageOnActiveProjectContextChangedEvent(ProjectContextExt projectContext)
@@ -34,15 +43,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         private void PopulatePilgrimModel()
         {
-            TfsTeamProjectCollection collection;
+            if (_teamPilgrimVsService.ActiveProjectContext == null ||
+                _teamPilgrimVsService.ActiveProjectContext.DomainUri == null) return;
 
-            Uri tpcAddress = null;
-            if (TeamPilgrimPackage.TeamPilgrimVsService != null &&
-                TeamPilgrimPackage.TeamPilgrimVsService.ActiveProjectContext != null &&
-                TeamPilgrimPackage.TeamPilgrimVsService.ActiveProjectContext.DomainUri != null)
-            {
-                tpcAddress = new Uri(TeamPilgrimPackage.TeamPilgrimVsService.ActiveProjectContext.DomainUri);
-            }
+            var tpcAddress = new Uri(_teamPilgrimVsService.ActiveProjectContext.DomainUri);
+            TfsTeamProjectCollection collection;
 
             if (_pilgrimServiceModelProvider.TryGetCollection(out collection, tpcAddress))
             {
@@ -51,7 +56,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
                         CollectionModels.Clear();
                         if (collection != null)
                         {
-                            CollectionModels.Add(new ProjectCollectionModel(collection, this, _pilgrimServiceModelProvider));
+                            CollectionModels.Add(new ProjectCollectionModel(_pilgrimServiceModelProvider, _teamPilgrimVsService, this, collection));
                         }
                     }));
             }
@@ -78,19 +83,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         private void TfsConnect()
         {
-            TeamPilgrimPackage.TeamPilgrimVsService.TfsConnect();
+            _teamPilgrimVsService.TfsConnect();
         }
 
         private bool CanTfsConnect()
         {
             return true;
         }
-
-        #endregion
-
-        #region CollectionModels
-
-        public ObservableCollection<ProjectCollectionModel> CollectionModels { get; private set; }
 
         #endregion
     }

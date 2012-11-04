@@ -1,4 +1,6 @@
 using System;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children
 {
@@ -10,7 +12,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children
 
         public abstract Guid Id { get; }
 
-        protected WorkItemQueryChildModel(IWorkItemQueryCommandModel workItemQueryCommandModel)
+        protected WorkItemQueryChildModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, IWorkItemQueryCommandModel workItemQueryCommandModel)
+            : base(pilgrimServiceModelProvider, teamPilgrimVsService)
         {
             this.workItemQueryCommandModel = workItemQueryCommandModel;
         }

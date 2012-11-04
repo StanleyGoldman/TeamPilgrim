@@ -9,6 +9,8 @@ using EnvDTE80;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Explorer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges;
 using Microsoft.TeamFoundation.Client;
@@ -63,10 +65,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
         private static IVsUIShell UIShell { get; set; }
 
         private static TeamPilgrimVsService _teamPilgrimVsService;
-        public static ITeamPilgrimVsService TeamPilgrimVsService
-        {
-            get { return _teamPilgrimVsService; }
-        }
+
+        public static TeamPilgrimModel TeamPilgrimModel { get; private set; }
 
         private uint _shellPropertyChangeCookie;
 
@@ -89,37 +89,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
                 ErrorHandler.ThrowOnFailure(shellService.AdviseShellPropertyChanges(this, out _shellPropertyChangeCookie));
         }
 
-        public int OnShellPropertyChange(int propid, object var)
-        {
-            // when zombie state changes to false, finish package initialization
-
-            if ((int)__VSSPROPID.VSSPROPID_Zombie == propid)
-            {
-                if ((bool)var == false)
-                {
-
-                    // zombie state dependent code
-
-                    Dte = GetService(typeof(SDTE)) as DTE;
-
-                    Extensibility = (IVsExtensibility)GetGlobalService(typeof(IVsExtensibility));
-                    Dte2 = (DTE2)Extensibility.GetGlobalsObject(null).DTE;
-
-                    _teamPilgrimVsService.InitializeGlobals(Dte2);
-
-                    // eventlistener no longer needed
-
-                    var shellService = GetGlobalService(typeof(SVsShell)) as IVsShell;
-                    if (shellService != null)
-                        ErrorHandler.ThrowOnFailure(shellService.UnadviseShellPropertyChanges(_shellPropertyChangeCookie));
-
-                    _shellPropertyChangeCookie = 0;
-                }
-            }
-
-            return VSConstants.S_OK;
-        }
-
         /// <summary>
         /// This function is called when the user clicks the menu item that shows the 
         /// tool window. See the Initialize method to see how the menu item is associated to 
@@ -139,7 +108,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
             ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }
-        
+
         private void ShowPendingChangesWindow(object sender, EventArgs e)
         {
             // Get the instance number 0 of this tool window. This window is single instance so this instance
@@ -190,8 +159,53 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
 
             TeamPilgrimPackage.UIShell = (IVsUIShell)base.GetService(typeof(SVsUIShell));
             TeamPilgrimPackage.MenuCommandService = base.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            TeamPilgrimPackage._teamPilgrimVsService.InitializePackage(_singleInstance, UIShell);
+            TeamPilgrimPackage._teamPilgrimVsService.Initialize(_singleInstance, UIShell);
+
+            CompletePackageInitialization();
         }
+
+        public int OnShellPropertyChange(int propid, object var)
+        {
+            // when zombie state changes to false, finish package initialization
+
+            if ((int)__VSSPROPID.VSSPROPID_Zombie == propid)
+            {
+                if ((bool)var == false)
+                {
+
+                    // zombie state dependent code
+                    CompletePackageInitialization();
+
+                    // eventlistener no longer needed
+
+                    var shellService = GetGlobalService(typeof(SVsShell)) as IVsShell;
+                    if (shellService != null)
+                        ErrorHandler.ThrowOnFailure(shellService.UnadviseShellPropertyChanges(_shellPropertyChangeCookie));
+
+                    _shellPropertyChangeCookie = 0;
+                }
+            }
+
+            return VSConstants.S_OK;
+        }
+
+        private void CompletePackageInitialization()
+        {
+            if (Dte != null)
+                return;
+
+            Dte = GetService(typeof (SDTE)) as DTE;
+
+            if(Dte == null)
+                return;
+
+            Extensibility = (IVsExtensibility) GetGlobalService(typeof (IVsExtensibility));
+            Dte2 = (DTE2) Extensibility.GetGlobalsObject(null).DTE;
+
+            _teamPilgrimVsService.InitializeGlobals(Dte2);
+            TeamPilgrimModel = new TeamPilgrimModel(new PilgrimServiceModelProvider(), _teamPilgrimVsService);
+        }
+
         #endregion
 
         /// <summary>
@@ -225,8 +239,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             {
                 return default(T);
             }
-            
-            return (T) _singleInstance.GetService(typeof(T));
+
+            return (T)_singleInstance.GetService(typeof(T));
         }
     }
 }

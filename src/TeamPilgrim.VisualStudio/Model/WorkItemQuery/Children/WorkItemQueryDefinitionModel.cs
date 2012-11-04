@@ -1,4 +1,6 @@
 using System;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children
@@ -7,8 +9,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children
     {
         public QueryDefinition QueryDefinition { get; private set; }
 
-        public WorkItemQueryDefinitionModel(QueryDefinition queryDefinition, IWorkItemQueryCommandModel workItemQueryCommandModel)
-            : base(workItemQueryCommandModel)
+        public WorkItemQueryDefinitionModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, IWorkItemQueryCommandModel workItemQueryCommandModel, QueryDefinition queryDefinition)
+            : base(pilgrimServiceModelProvider, teamPilgrimVsService, workItemQueryCommandModel)
         {
             QueryDefinition = queryDefinition;
         }

@@ -1,17 +1,22 @@
 ﻿using System.ComponentModel;
-using System.Diagnostics;
 using System.Windows.Threading;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
     public class BaseModel : INotifyPropertyChanged
     {
-        public BaseModel()
+        private readonly Dispatcher _dispatcher;
+        protected readonly IPilgrimServiceModelProvider pilgrimServiceModelProvider;
+        protected readonly ITeamPilgrimVsService teamPilgrimVsService;
+
+        public BaseModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService)
         {
             _dispatcher = Dispatcher.CurrentDispatcher;
+            this.pilgrimServiceModelProvider = pilgrimServiceModelProvider;
+            this.teamPilgrimVsService = teamPilgrimVsService;
         }
-
-        private readonly Dispatcher _dispatcher;
 
         public Dispatcher Dispatcher
         {
