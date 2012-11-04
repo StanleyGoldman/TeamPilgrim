@@ -41,7 +41,7 @@
          must be a menu. -->
     <Groups>
 
-      <Group guid="guidTeamPilgrimCmdSet" id="MyMenuGroup" priority="0x0600">
+      <Group guid="guidTeamPilgrimCmdSet" id="TeamPilgrimMenuGroup" priority="0x0600">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS"/>
       </Group>
       
@@ -61,20 +61,37 @@
               <CommandFlag>DynamicVisibility</CommandFlag>
           If you do not want an image next to your command, remove the Icon node /> -->
 
-      <Button guid="guidTeamPilgrimCmdSet" id="cmdTeamPilgrim" priority="0x0100" type="Button">
-        <Parent guid="guidTeamPilgrimCmdSet" id="MyMenuGroup" />
+      <Button guid="guidTeamPilgrimCmdSet" id="cmdTeamPilgrimExplorer" priority="0x0100" type="Button">
+        <Parent guid="guidTeamPilgrimCmdSet" id="TeamPilgrimMenuGroup" />
         <Icon guid="guidImages" id="bmpPic1" />
         <Strings>
-          <ButtonText>Team Pilgrim</ButtonText>
+          <ButtonText>Team Pilgrim Explorer</ButtonText>
         </Strings>
       </Button>
 
 
-      <Button guid="guidTeamPilgrimCmdSet" id="toolTeamPilgrim" priority="0x0100" type="Button">
+      <Button guid="guidTeamPilgrimCmdSet" id="toolTeamPilgrimExplorer" priority="0x0100" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>
         <Icon guid="guidImages" id="bmpPic2" />
         <Strings>
-          <ButtonText>Team Pilgrim</ButtonText>
+          <ButtonText>Team Pilgrim Explorer</ButtonText>
+        </Strings>
+      </Button>
+      
+      <Button guid="guidTeamPilgrimCmdSet" id="cmdTeamPilgrimPendingChanges" priority="0x0100" type="Button">
+        <Parent guid="guidTeamPilgrimCmdSet" id="TeamPilgrimMenuGroup" />
+        <Icon guid="guidImages" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Team Pilgrim Pending Changes</ButtonText>
+        </Strings>
+      </Button>
+
+
+      <Button guid="guidTeamPilgrimCmdSet" id="toolTeamPilgrimPendingChanges" priority="0x0100" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>
+        <Icon guid="guidImages" id="bmpPic2" />
+        <Strings>
+          <ButtonText>Team Pilgrim Pending Changes</ButtonText>
         </Strings>
       </Button>
 
@@ -105,9 +122,11 @@
     <!-- This is the guid used to group the menu commands together -->
     <GuidSymbol name="guidTeamPilgrimCmdSet" value="{064ac9aa-5aa9-498a-a5d9-2077be8d9ad6}">
 
-      <IDSymbol name="MyMenuGroup" value="0x1020" />
-      <IDSymbol name="cmdTeamPilgrim" value="0x0100" />
-      <IDSymbol name="toolTeamPilgrim" value="0x0101" />
+      <IDSymbol name="TeamPilgrimMenuGroup" value="0x1020" />
+      <IDSymbol name="cmdTeamPilgrimExplorer" value="0x0100" />
+      <IDSymbol name="toolTeamPilgrimExplorer" value="0x0101" />
+      <IDSymbol name="cmdTeamPilgrimPendingChanges" value="0x0102" />
+      <IDSymbol name="toolTeamPilgrimPendingChanges" value="0x0103" />
     </GuidSymbol>
     
     

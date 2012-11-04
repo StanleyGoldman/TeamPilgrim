@@ -120,7 +120,10 @@
   <data name="CanNotCreateWindow" xml:space="preserve">
     <value>Can not create tool window.</value>
   </data>
-  <data name="ToolWindowTitle" xml:space="preserve">
-    <value>Team Pilgrim</value>
+  <data name="ExplorerToolWindowTitle" xml:space="preserve">
+    <value>Team Pilgrim Explorer</value>
+  </data>
+  <data name="PendingChangesToolWindowTitle" xml:space="preserve">
+    <value>Team Pilgrim Pending Changes</value>
   </data>
 </root>

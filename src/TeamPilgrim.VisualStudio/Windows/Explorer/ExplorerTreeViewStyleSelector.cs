@@ -5,9 +5,9 @@ using JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Explorer
 {
-    public class TeamPilgrimControlStyleSelector : StyleSelector
+    public class ExplorerTreeViewStyleSelector : StyleSelector
     {
         public Style DefaultStyle { get; set; }
 

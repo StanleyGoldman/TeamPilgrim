@@ -9,6 +9,8 @@ using EnvDTE80;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Explorer;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Controls;
 using Microsoft.VisualStudio;
@@ -40,7 +42,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
     // This attribute is needed to let the shell know that this package exposes some menus.
     [ProvideMenuResource("Menus.ctmenu", 1)]
     // This attribute registers a tool window exposed by this package.
-    [ProvideToolWindow(typeof(TeamPilgrimToolWindow))]
+    [ProvideToolWindow(typeof(ExplorerWindow))]
+    [ProvideToolWindow(typeof(PendingChangesWindow))]
     [Guid(GuidList.guidTeamPilgrimPkgString)]
     public sealed class TeamPilgrimPackage : Package, IVsShellPropertyEvents
     {
@@ -122,12 +125,27 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
         /// tool window. See the Initialize method to see how the menu item is associated to 
         /// this function using the OleMenuCommandService service and the MenuCommand class.
         /// </summary>
-        private void ShowToolWindow(object sender, EventArgs e)
+        private void ShowExplorerWindow(object sender, EventArgs e)
         {
             // Get the instance number 0 of this tool window. This window is single instance so this instance
             // is actually the only one.
             // The last flag is set to true so that if the tool window does not exists it will be created.
-            ToolWindowPane window = this.FindToolWindow(typeof(TeamPilgrimToolWindow), 0, true);
+            ToolWindowPane window = this.FindToolWindow(typeof(ExplorerWindow), 0, true);
+            if ((null == window) || (null == window.Frame))
+            {
+                throw new NotSupportedException(Resources.CanNotCreateWindow);
+            }
+
+            IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
+            ErrorHandler.ThrowOnFailure(windowFrame.Show());
+        }
+        
+        private void ShowPendingChangesWindow(object sender, EventArgs e)
+        {
+            // Get the instance number 0 of this tool window. This window is single instance so this instance
+            // is actually the only one.
+            // The last flag is set to true so that if the tool window does not exists it will be created.
+            ToolWindowPane window = this.FindToolWindow(typeof(PendingChangesWindow), 0, true);
             if ((null == window) || (null == window.Frame))
             {
                 throw new NotSupportedException(Resources.CanNotCreateWindow);
@@ -156,14 +174,18 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             if (null != mcs)
             {
                 // Create the command for the menu item.
-                //                CommandID menuCommandID = new CommandID(GuidList.guidTeamPilgrimCmdSet, (int)PkgCmdIDList.cmdTeamPilgrim);
+                //                CommandID menuCommandID = new CommandID(GuidList.guidTeamPilgrimCmdSet, (int)PkgCmdIDList.cmdTeamPilgrimExplorer);
                 //                MenuCommand menuItem = new MenuCommand(MenuItemCallback, menuCommandID );
                 //                mcs.AddCommand( menuItem );
 
                 // Create the command for the tool window
-                CommandID toolwndCommandID = new CommandID(GuidList.guidTeamPilgrimCmdSet, (int)PkgCmdIDList.toolTeamPilgrim);
-                MenuCommand menuToolWin = new MenuCommand(ShowToolWindow, toolwndCommandID);
-                mcs.AddCommand(menuToolWin);
+                var toolwndPilgrimExplorerCommandID = new CommandID(GuidList.guidTeamPilgrimCmdSet, (int)PkgCmdIDList.toolTeamPilgrimExplorer);
+                var menuToolWinPilgrimExplorer = new MenuCommand(ShowExplorerWindow, toolwndPilgrimExplorerCommandID);
+                mcs.AddCommand(menuToolWinPilgrimExplorer);
+
+                var toolwndPilgrimPendingChangesCommandID = new CommandID(GuidList.guidTeamPilgrimCmdSet, (int)PkgCmdIDList.toolTeamPilgrimPendingChanges);
+                var menuToolWinPilgrimPendingChanges = new MenuCommand(ShowPendingChangesWindow, toolwndPilgrimPendingChangesCommandID);
+                mcs.AddCommand(menuToolWinPilgrimPendingChanges);
             }
 
             TeamPilgrimPackage.UIShell = (IVsUIShell)base.GetService(typeof(SVsUIShell));

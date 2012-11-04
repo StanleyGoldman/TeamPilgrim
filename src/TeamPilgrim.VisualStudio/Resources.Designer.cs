@@ -70,11 +70,20 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Team Pilgrim.
+        ///   Looks up a localized string similar to Team Pilgrim Explorer.
         /// </summary>
-        internal static string ToolWindowTitle {
+        internal static string ExplorerToolWindowTitle {
             get {
-                return ResourceManager.GetString("ToolWindowTitle", resourceCulture);
+                return ResourceManager.GetString("ExplorerToolWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Team Pilgrim Pending Changes.
+        /// </summary>
+        internal static string PendingChangesToolWindowTitle {
+            get {
+                return ResourceManager.GetString("PendingChangesToolWindowTitle", resourceCulture);
             }
         }
     }

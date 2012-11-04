@@ -186,11 +186,11 @@
     <Compile Include="Model\ProjectCollectionModel.cs" />
     <Compile Include="Model\ProjectModel.cs" />
     <Compile Include="Providers\PilgrimServiceModelProvider.cs" />
-    <Compile Include="TeamPilgrimControlStyleSelector.cs" />
-    <Compile Include="TeamPilgrimControl.xaml.cs">
-      <DependentUpon>TeamPilgrimControl.xaml</DependentUpon>
+    <Compile Include="Windows\Explorer\ExplorerTreeViewStyleSelector.cs" />
+    <Compile Include="Windows\Explorer\ExplorerControl.xaml.cs">
+      <DependentUpon>ExplorerControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TeamPilgrimToolWindow.cs" />
+    <Compile Include="Windows\Explorer\ExplorerWindow.cs" />
     <Compile Include="Guids.cs" />
     <Compile Include="Providers\IPilgrimServiceModelProvider.cs" />
     <Compile Include="Resources.Designer.cs">
@@ -204,6 +204,10 @@
     <Compile Include="..\TeamPilgrim.Core\Properties\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Windows\PendingChanges\PendingChangesControl.xaml.cs">
+      <DependentUpon>PendingChangesControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\PendingChanges\PendingChangesWindow.cs" />
     <None Include="..\TeamPilgrim.Core\Key.snk">
       <Link>Key.snk</Link>
     </None>
@@ -248,9 +252,13 @@
     <Content Include="Resources\Package.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="TeamPilgrimControl.xaml">
+    <Page Include="Windows\Explorer\ExplorerControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\PendingChanges\PendingChangesControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
