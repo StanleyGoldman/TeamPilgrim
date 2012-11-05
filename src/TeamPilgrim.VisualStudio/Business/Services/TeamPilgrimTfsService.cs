@@ -138,5 +138,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
         {
             return workspaceInfo.GetWorkspace(tfsTeamProjectCollection);
         }
+
+        public void WorkspaceCheckin(Workspace workspace, PendingChange[] changes, string comment, CheckinNote checkinNote, WorkItemCheckinInfo[] workItemChanges, PolicyOverrideInfo policyOverride)
+        {
+            workspace.CheckIn(changes, comment, checkinNote, workItemChanges, policyOverride);
+        }
     }
 }

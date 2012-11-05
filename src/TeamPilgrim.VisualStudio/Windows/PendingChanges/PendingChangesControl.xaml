@@ -67,7 +67,7 @@
                             </Setter.Value>
                         </Setter>
                     </Style>
-                    
+
                     <Style TargetType="FrameworkElement" x:Key="VisibleWhenSourceFilesOrWorkItemsOrConflictsEnabled">
                         <Setter Property="Visibility">
                             <Setter.Value>
@@ -79,7 +79,7 @@
                             </Setter.Value>
                         </Setter>
                     </Style>
-                    
+
                     <Style TargetType="FrameworkElement" x:Key="VisibleWhenAllButConflictsEnabled">
                         <Setter Property="Visibility">
                             <Setter.Value>
@@ -92,16 +92,18 @@
                             </Setter.Value>
                         </Setter>
                     </Style>
-                    
+
                 </ToolBar.Resources>
 
-                <Button Style="{StaticResource ResourceKey=VisibleWhenAllButConflictsEnabled}">
+                <Button
+                    Style="{StaticResource ResourceKey=VisibleWhenAllButConflictsEnabled}"
+                    DataContext="{Binding Path=SelectedWorkspaceModel}" Command="{Binding Path=CheckInCommand}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="../../Resources/page_save.png" Width="16" Height="16" Margin="0,0,2,0"  />
                         <TextBlock>Check In</TextBlock>
                     </StackPanel>
                 </Button>
-                
+
                 <Separator Style="{StaticResource ResourceKey=VisibleWhenSourceFilesEnabled}" />
                 <Button Style="{StaticResource ResourceKey=VisibleWhenSourceFilesEnabled}">
                     <StackPanel Orientation="Horizontal">
@@ -115,7 +117,7 @@
                         <TextBlock>Unshelve</TextBlock>
                     </StackPanel>
                 </Button>
-                
+
                 <!--
                 Hide Show Comment Functionality Disabled
                 
@@ -143,7 +145,9 @@
                 <Button Style="{StaticResource ResourceKey=VisibleWhenSourceFilesEnabled}">Undo Pending Change</Button>
 
                 <Separator Style="{StaticResource ResourceKey=VisibleWhenSourceFilesOrWorkItemsOrConflictsEnabled}"/>
-                <Button Style="{StaticResource ResourceKey=VisibleWhenSourceFilesOrWorkItemsOrConflictsEnabled}">Refresh</Button>
+                <Button 
+                    Style="{StaticResource ResourceKey=VisibleWhenSourceFilesOrWorkItemsOrConflictsEnabled}"
+                    DataContext="{Binding Path=SelectedWorkspaceModel}" Command="{Binding Path=RefreshCommand}">Refresh</Button>
 
                 <!--
                 Soution filter Disabled
@@ -158,7 +162,7 @@
                           Style="{StaticResource ResourceKey=VisibleWhenSourceFilesEnabled}" 
                           ItemsSource="{Binding Path=WorkspaceInfoModels}"
                           SelectedValue="{Binding Path=SelectedWorkspaceInfoModel}">
-                    
+
                     <ComboBox.ItemTemplate>
                         <DataTemplate DataType="PendingChangesModel:WorkspaceInfoModel">
                             <TextBlock Text="{Binding Path=WorkspaceInfo.Name}"></TextBlock>
@@ -179,7 +183,7 @@
                         </Setter>
                     </Style>
                 </TabControl.Resources>
-                
+
                 <TabItem IsSelected="{Binding ElementName=SourceFilesRadioButton, Path=IsChecked}">
                     <DockPanel>
                         <TextBlock DockPanel.Dock="Top">Comment:</TextBlock>
@@ -190,27 +194,27 @@
                                 <GridView>
                                     <GridViewColumn Header="File">
                                         <GridViewColumn.CellTemplate>
-                                            <DataTemplate DataType="VersionControlClient:PendingChange">
+                                            <DataTemplate DataType="PendingChangesModel:PendingChangeModel">
                                                 <DockPanel>
-                                                    <CheckBox DockPanel.Dock="Left" />
-                                                    <TextBlock Text="{Binding Path=FileName, Mode=OneWay}" DockPanel.Dock="Right"/>
+                                                    <CheckBox DockPanel.Dock="Left" IsChecked="{Binding Path=IncludeChange}" />
+                                                    <TextBlock Text="{Binding Path=Change.FileName, Mode=OneWay}" DockPanel.Dock="Right"/>
                                                 </DockPanel>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
-                                    
+
                                     <GridViewColumn Header="Change">
                                         <GridViewColumn.CellTemplate>
-                                            <DataTemplate DataType="VersionControlClient:PendingChange">
-                                                <TextBlock Text="{Binding Path=ChangeTypeName, Mode=OneWay}"/>
+                                            <DataTemplate DataType="PendingChangesModel:PendingChangeModel">
+                                                <TextBlock Text="{Binding Path=Change.ChangeTypeName, Mode=OneWay}"/>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
-                                    
+
                                     <GridViewColumn Header="Folder">
                                         <GridViewColumn.CellTemplate>
-                                            <DataTemplate DataType="VersionControlClient:PendingChange">
-                                                <TextBlock Text="{Binding Path=LocalOrServerFolder, Mode=OneWay}"/>
+                                            <DataTemplate DataType="PendingChangesModel:PendingChangeModel">
+                                                <TextBlock Text="{Binding Path=Change.LocalOrServerFolder, Mode=OneWay}"/>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>

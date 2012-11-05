@@ -27,5 +27,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
         bool TryGetLocalWorkspaceInfos(out WorkspaceInfo[] workspaceInfos, Guid? projectCollectionId = null);
        
 	    bool TryGetWorkspace(out Workspace workspace, WorkspaceInfo workspaceInfo, TfsTeamProjectCollection tfsTeamProjectCollection);
+        
+        bool TryWorkspaceCheckin(Workspace workspace, PendingChange[] changes, string comment, CheckinNote checkinNote = null, WorkItemCheckinInfo[] workItemChanges = null, PolicyOverrideInfo policyOverride = null);
+        
+        bool TryGetPendingChanges(out PendingChange[] pendingChanges, Workspace workspace);
     }
 }

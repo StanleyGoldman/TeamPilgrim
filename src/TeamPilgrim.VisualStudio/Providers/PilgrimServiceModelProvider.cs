@@ -65,7 +65,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             }
             catch (Exception ex)
             {
-                
+
             }
 
             result = false;
@@ -99,7 +99,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             {
 
             }
-            
+
             buildDefinition = null;
             return false;
         }
@@ -115,7 +115,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             {
 
             }
-            
+
             return false;
         }
 
@@ -164,6 +164,37 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             }
 
             workspace = null;
+            return false;
+        }
+
+        public bool TryWorkspaceCheckin(Workspace workspace, PendingChange[] changes, string comment, CheckinNote checkinNote = null, WorkItemCheckinInfo[] workItemChanges = null, PolicyOverrideInfo policyOverride = null)
+        {
+            try
+            {
+                _teamPilgrimTfsService.WorkspaceCheckin(workspace, changes, comment, checkinNote, workItemChanges, policyOverride);
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return false;
+        }
+
+        public bool TryGetPendingChanges(out PendingChange[] pendingChanges, Workspace workspace)
+        {
+            try
+            {
+                pendingChanges = workspace.GetPendingChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+            }
+            
+            pendingChanges = null;
             return false;
         }
     }

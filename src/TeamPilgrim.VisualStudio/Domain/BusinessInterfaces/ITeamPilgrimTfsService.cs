@@ -24,5 +24,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces
         void DeleteBuildDefinition(IBuildDefinition buildDefinition);
         WorkspaceInfo[] GetLocalWorkspaceInfo(Guid? projectCollectionId = null);
         Workspace GetWorkspace(WorkspaceInfo workspaceInfo, TfsTeamProjectCollection tfsTeamProjectCollection);
+        void WorkspaceCheckin(Workspace workspace, PendingChange[] changes, string comment, CheckinNote checkinNote, WorkItemCheckinInfo[] workItemChanges, PolicyOverrideInfo policyOverride);
     }
 }

@@ -183,6 +183,7 @@
     </Compile>
     <Compile Include="Model\Explorer\WorkItemQuery\Children\IWorkItemQueryCommandModel.cs" />
     <Compile Include="Model\Explorer\BuildDefinitions\BuildDefinitionsModel.cs" />
+    <Compile Include="Model\PendingChanges\PendingChangeModel.cs" />
     <Compile Include="Model\TeamPilgrimModel.cs" />
     <Compile Include="Model\Explorer\ProjectCollectionModel.cs" />
     <Compile Include="Model\Explorer\ProjectModel.cs" />
