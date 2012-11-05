@@ -187,6 +187,7 @@
     <Compile Include="Model\Explorer\ProjectCollectionModel.cs" />
     <Compile Include="Model\Explorer\ProjectModel.cs" />
     <Compile Include="Model\PendingChanges\WorkspaceInfoModel.cs" />
+    <Compile Include="Model\PendingChanges\WorkspaceModel.cs" />
     <Compile Include="Providers\PilgrimServiceModelProvider.cs" />
     <Compile Include="Windows\Explorer\ExplorerTreeViewStyleSelector.cs" />
     <Compile Include="Windows\Explorer\ExplorerControl.xaml.cs">

@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,11 +27,51 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
         public ObservableCollection<ProjectCollectionModel> CollectionModels { get; private set; }
         public ObservableCollection<WorkspaceInfoModel> WorkspaceInfoModels { get; private set; }
 
+        private WorkspaceInfoModel _selectedWorkspaceInfoModel = null;
+
+        public WorkspaceInfoModel SelectedWorkspaceInfoModel
+        {
+            get
+            {
+                return _selectedWorkspaceInfoModel;
+            }
+            private set
+            {
+                if (_selectedWorkspaceInfoModel == value) return;
+
+                _selectedWorkspaceInfoModel = value;
+
+                LoadWorkspaceModel(SelectedWorkspaceInfoModel);
+
+                SendPropertyChanged("SelectedWorkspaceInfoModel");
+            }
+        }
+
+        private WorkspaceModel _selectedWorkspaceModel;
+
+        public WorkspaceModel SelectedWorkspaceModel
+        {
+            get
+            {
+                return _selectedWorkspaceModel;
+            }
+            private set
+            {
+                if (_selectedWorkspaceModel == value) return;
+
+                _selectedWorkspaceModel = value;
+
+                SendPropertyChanged("SelectedWorkspaceModel");
+            }
+        }
+
         public TeamPilgrimModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService)
             : base(pilgrimServiceModelProvider, teamPilgrimVsService)
         {
             CollectionModels = new ObservableCollection<ProjectCollectionModel>();
             WorkspaceInfoModels = new ObservableCollection<WorkspaceInfoModel>();
+
+            WorkspaceInfoModels.CollectionChanged += WorkspaceInfoModelsOnCollectionChanged;
 
             _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
             _teamPilgrimVsService = teamPilgrimVsService;
@@ -39,6 +82,21 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             TfsConnectCommand = new RelayCommand(TfsConnect, CanTfsConnect);
 
             PopulatePilgrimModel();
+        }
+
+        private void WorkspaceInfoModelsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            if (WorkspaceInfoModels.Any())
+            {
+                if (SelectedWorkspaceInfoModel == null || !WorkspaceInfoModels.Contains(SelectedWorkspaceInfoModel))
+                {
+                    SelectedWorkspaceInfoModel = WorkspaceInfoModels.First();
+                }
+            }
+            else
+            {
+                SelectedWorkspaceInfoModel = null;
+            }
         }
 
         private void TeamPilgrimPackageOnActiveProjectContextChangedEvent(ProjectContextExt projectContext)
@@ -80,10 +138,25 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             }));
         }
 
-        #region Refresh
+        private void LoadWorkspaceModel(WorkspaceInfoModel selectedWorkspaceInfoModel)
+        {
+            Workspace workspace;
+            var projectCollectionModel = CollectionModels[0];
+
+            Debug.Assert(projectCollectionModel != null, "projectCollectionModel != null");
+
+            Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
+                {
+                    if (_pilgrimServiceModelProvider.TryGetWorkspace(out workspace, selectedWorkspaceInfoModel.WorkspaceInfo, projectCollectionModel.TfsTeamProjectCollection))
+                    {
+                        SelectedWorkspaceModel = new WorkspaceModel(_pilgrimServiceModelProvider, teamPilgrimVsService, workspace);
+                    }
+                }));
+        }
+
+        #region Refresh Command
 
         public RelayCommand RefreshCommand { get; private set; }
-        public RelayCommand TfsConnectCommand { get; private set; }
 
         private void Refresh()
         {
@@ -97,7 +170,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         #endregion
 
-        #region TFS Connect
+        #region TFSConnect Command
+
+        public RelayCommand TfsConnectCommand { get; private set; }
 
         private void TfsConnect()
         {

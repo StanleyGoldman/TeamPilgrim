@@ -150,5 +150,21 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             workspaceInfos = null;
             return false;
         }
+
+        public bool TryGetWorkspace(out Workspace workspace, WorkspaceInfo workspaceInfo, TfsTeamProjectCollection tfsTeamProjectCollection)
+        {
+            try
+            {
+                workspace = _teamPilgrimTfsService.GetWorkspace(workspaceInfo, tfsTeamProjectCollection);
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            workspace = null;
+            return false;
+        }
     }
 }

@@ -8,6 +8,7 @@ using EnvDTE;
 using EnvDTE80;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
@@ -87,6 +88,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             var shellService = GetGlobalService(typeof(SVsShell)) as IVsShell;
             if (shellService != null)
                 ErrorHandler.ThrowOnFailure(shellService.AdviseShellPropertyChanges(this, out _shellPropertyChangeCookie));
+
+            //NOTE: Only enable this when you are looking to debug a particular issue
+            //Certain Visual Studio dialogs like the "Work Item Query" can be expected to throw binding errors
+            //BindingErrorTraceListener.SetTrace();
         }
 
         /// <summary>

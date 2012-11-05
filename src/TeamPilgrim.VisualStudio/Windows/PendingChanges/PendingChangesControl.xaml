@@ -3,11 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:AttachedProperties="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties"
-             xmlns:System="clr-namespace:System;assembly=mscorlib"
              xmlns:Converters="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Converters"
+             xmlns:Model="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model"
+             xmlns:VersionControlClient="clr-namespace:Microsoft.TeamFoundation.VersionControl.Client;assembly=Microsoft.TeamFoundation.VersionControl.Client"
+             xmlns:PendingChangesModel="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges"
              mc:Ignorable="d" 
-             Height="Auto" d:DesignHeight="300" d:DesignWidth="800">
+             Height="Auto" d:DesignHeight="300" d:DesignWidth="800"
+             d:DataContext="{d:DesignInstance Model:TeamPilgrimModel}">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="boolToVisibilityConverter"/>
     </UserControl.Resources>
@@ -152,8 +154,18 @@
 
                 <Separator Style="{StaticResource ResourceKey=VisibleWhenSourceFilesEnabled}"/>
                 <TextBlock VerticalAlignment="Center" Style="{StaticResource ResourceKey=VisibleWhenSourceFilesEnabled}">Workspace:</TextBlock>
-                <ComboBox Margin="0" VerticalAlignment="Top" Width="120" Style="{StaticResource ResourceKey=VisibleWhenSourceFilesEnabled}"/>
-                
+                <ComboBox Margin="0" VerticalAlignment="Top" Width="120"
+                          Style="{StaticResource ResourceKey=VisibleWhenSourceFilesEnabled}" 
+                          ItemsSource="{Binding Path=WorkspaceInfoModels}"
+                          SelectedValue="{Binding Path=SelectedWorkspaceInfoModel}">
+                    
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate DataType="PendingChangesModel:WorkspaceInfoModel">
+                            <TextBlock Text="{Binding Path=WorkspaceInfo.Name}"></TextBlock>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
             </ToolBar>
             <TabControl DockPanel.Dock="Bottom" BorderThickness="0" Padding="0">
                 <TabControl.Resources>
@@ -172,23 +184,39 @@
                     <DockPanel>
                         <TextBlock DockPanel.Dock="Top">Comment:</TextBlock>
                         <TextBox DockPanel.Dock="Top"></TextBox>
-                        <TabControl DockPanel.Dock="Bottom">
-                            <TabControl.Resources>
-                                <!--http://stackoverflow.com/questions/6278720/wpf-toggle-panel-visibility-->
-                                <Style TargetType="TabItem">
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="TabItem">
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </TabControl.Resources>
-                            
-                            <TabItem>
-                                
-                            </TabItem>
-                        </TabControl>
+
+                        <ListView DataContext="{Binding Path=SelectedWorkspaceModel}" ItemsSource="{Binding Path=PendingChanges}">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="File">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate DataType="VersionControlClient:PendingChange">
+                                                <DockPanel>
+                                                    <CheckBox DockPanel.Dock="Left" />
+                                                    <TextBlock Text="{Binding Path=FileName, Mode=OneWay}" DockPanel.Dock="Right"/>
+                                                </DockPanel>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    
+                                    <GridViewColumn Header="Change">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate DataType="VersionControlClient:PendingChange">
+                                                <TextBlock Text="{Binding Path=ChangeTypeName, Mode=OneWay}"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    
+                                    <GridViewColumn Header="Folder">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate DataType="VersionControlClient:PendingChange">
+                                                <TextBlock Text="{Binding Path=LocalOrServerFolder, Mode=OneWay}"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
                     </DockPanel>
                 </TabItem>
                 <TabItem IsSelected="{Binding ElementName=WorkItemsRadioButton, Path=IsChecked}">

@@ -23,5 +23,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces
 		IBuildDefinition CloneBuildDefinition(TfsTeamProjectCollection collection, string projectName, IBuildDefinition sourceDefinition);
         void DeleteBuildDefinition(IBuildDefinition buildDefinition);
         WorkspaceInfo[] GetLocalWorkspaceInfo(Guid? projectCollectionId = null);
+        Workspace GetWorkspace(WorkspaceInfo workspaceInfo, TfsTeamProjectCollection tfsTeamProjectCollection);
     }
 }

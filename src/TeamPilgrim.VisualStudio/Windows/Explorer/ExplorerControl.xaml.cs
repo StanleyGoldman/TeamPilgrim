@@ -14,10 +14,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Explorer
     {
         public ExplorerControl()
         {
-            //NOTE: Only enable this when you are looking to debug a particular issue
-            //Certain Visual Studio dialogs like the "Work Item Query" can be expected to throw binding errors
-            //BindingErrorTraceListener.SetTrace();
-
             InitializeComponent();
             DataContext = TeamPilgrimPackage.TeamPilgrimModel;
         }

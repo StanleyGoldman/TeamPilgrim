@@ -133,5 +133,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 
             return allLocalWorkspaceInfo as WorkspaceInfo[] ?? allLocalWorkspaceInfo.ToArray();
         }
+
+        public Workspace GetWorkspace(WorkspaceInfo workspaceInfo, TfsTeamProjectCollection tfsTeamProjectCollection)
+        {
+            return workspaceInfo.GetWorkspace(tfsTeamProjectCollection);
+        }
     }
 }
