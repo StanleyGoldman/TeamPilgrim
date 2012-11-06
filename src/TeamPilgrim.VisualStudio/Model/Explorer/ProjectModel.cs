@@ -2,7 +2,7 @@
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.BuildDefinitions;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.WorkItemQuery;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
@@ -18,12 +18,15 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
         public TeamPilgrimModel TeamPilgrimModel { get; private set; }
 
         public BuildDefinitionsModel BuildDefinitionsModel { get; private set; }
+        
+        public WorkItemQueryContainerModel WorkItemQueryContainerModel { get; private set; }
 
         public ObservableCollection<BaseModel> ChildObjects { get; private set; }
 
-        public ProjectModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, TfsTeamProjectCollection projectCollection, Project project)
+        public ProjectModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, TeamPilgrimModel teamPilgrimModel, TfsTeamProjectCollection projectCollection, Project project)
             :base(pilgrimServiceModelProvider, teamPilgrimVsService)
         {
+            TeamPilgrimModel = teamPilgrimModel;
             ProjectCollection = projectCollection;
             Project = project;
             
@@ -31,9 +34,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
 
             BuildDefinitionsModel = new BuildDefinitionsModel(pilgrimServiceModelProvider, teamPilgrimVsService, projectCollection, project);
 
+            WorkItemQueryContainerModel = new WorkItemQueryContainerModel(pilgrimServiceModelProvider, teamPilgrimVsService, teamPilgrimModel, projectCollection, project);
+
             ChildObjects = new ObservableCollection<BaseModel>
                 {
-                    new WorkItemQueryContainerModel(pilgrimServiceModelProvider, teamPilgrimVsService, projectCollection, project), 
+                    WorkItemQueryContainerModel, 
                     new ReportsModel(pilgrimServiceModelProvider, teamPilgrimVsService),
                     BuildDefinitionsModel,
                     new TeamMembersModel(pilgrimServiceModelProvider, teamPilgrimVsService),

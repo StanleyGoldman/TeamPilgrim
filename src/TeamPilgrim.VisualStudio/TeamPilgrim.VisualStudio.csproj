@@ -170,6 +170,10 @@
     <Compile Include="Common\Converters\OcClauseBooleanToVisibilityConverter.cs" />
     <Compile Include="Common\VsWindowFrameEditorTypeIds.cs" />
     <Compile Include="Common\AttachedProperties\MouseDoubleClick.cs" />
+    <Compile Include="Model\SelectWorkItemQueryModel.cs" />
+    <Compile Include="Windows\PendingChanges\Dialogs\SelectWorkItemQueryDialog.xaml.cs">
+      <DependentUpon>SelectWorkItemQueryDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Domain\BusinessInterfaces\ITeamPilgrimVsService.cs" />
     <Compile Include="Business\Services\TeamPilgrimTfsService.cs" />
     <Compile Include="Common\BindingErrorTraceListener.cs" />
@@ -181,7 +185,7 @@
     <Compile Include="Model\Explorer\ReportsModel.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\Explorer\WorkItemQuery\Children\IWorkItemQueryCommandModel.cs" />
+    <Compile Include="Model\WorkItemQuery\Children\IWorkItemQueryCommandModel.cs" />
     <Compile Include="Model\Explorer\BuildDefinitions\BuildDefinitionsModel.cs" />
     <Compile Include="Model\PendingChanges\PendingChangeModel.cs" />
     <Compile Include="Model\TeamPilgrimModel.cs" />
@@ -219,10 +223,10 @@
     <Compile Include="Common\EnumerableQueryItemExtensions.cs" />
     <Compile Include="Model\Explorer\SourceControlModel.cs" />
     <Compile Include="Model\Explorer\TeamMembersModel.cs" />
-    <Compile Include="Model\Explorer\WorkItemQuery\Children\WorkItemQueryDefinitionModel.cs" />
-    <Compile Include="Model\Explorer\WorkItemQuery\Children\WorkItemQueryFolderModel.cs" />
-    <Compile Include="Model\Explorer\WorkItemQuery\WorkItemQueryContainerModel.cs" />
-    <Compile Include="Model\Explorer\WorkItemQuery\Children\WorkItemQueryChildModel.cs" />
+    <Compile Include="Model\WorkItemQuery\Children\WorkItemQueryDefinitionModel.cs" />
+    <Compile Include="Model\WorkItemQuery\Children\WorkItemQueryFolderModel.cs" />
+    <Compile Include="Model\WorkItemQuery\WorkItemQueryContainerModel.cs" />
+    <Compile Include="Model\WorkItemQuery\Children\WorkItemQueryChildModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">
@@ -264,6 +268,10 @@
     <Content Include="Resources\Package.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Windows\PendingChanges\Dialogs\SelectWorkItemQueryDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\Explorer\ExplorerControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -3,12 +3,15 @@ using System.Linq;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs;
 using Microsoft.TeamFoundation.VersionControl.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 {
     public class WorkspaceModel : BaseModel
     {
+        private readonly TeamPilgrimModel _teamPilgrimModel;
+
         public ObservableCollection<PendingChangeModel> PendingChanges { get; private set; }
 
         public Workspace Workspace { get; private set; }
@@ -30,13 +33,15 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             }
         }
 
-        public WorkspaceModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, Workspace workspace)
+        public WorkspaceModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, TeamPilgrimModel teamPilgrimModel, Workspace workspace)
             : base(pilgrimServiceModelProvider, teamPilgrimVsService)
         {
+            _teamPilgrimModel = teamPilgrimModel;
             Workspace = workspace;
-
+            
             CheckInCommand = new RelayCommand(CheckIn, CanCheckIn);
             RefreshCommand = new RelayCommand(Refresh, CanRefresh);
+            ShowSelectWorkItemQueryCommand = new RelayCommand(ShowSelectWorkItemQuery, CanShowSelectWorkItemQuery);
 
             PendingChanges = new ObservableCollection<PendingChangeModel>();
 
@@ -110,6 +115,27 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         }
 
         private bool CanRefresh()
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region ShowSelectWorkItemQuery Command
+
+        public RelayCommand ShowSelectWorkItemQueryCommand { get; private set; }
+
+        private void ShowSelectWorkItemQuery()
+        {
+            var selectWorkItemQueryDialog = new SelectWorkItemQueryDialog
+                {
+                    DataContext = new SelectWorkItemQueryModel(pilgrimServiceModelProvider, teamPilgrimVsService, _teamPilgrimModel.ActiveProjectCollectionModel)
+                };
+            
+            var result = selectWorkItemQueryDialog.ShowDialog();
+        }
+
+        private bool CanShowSelectWorkItemQuery()
         {
             return true;
         }

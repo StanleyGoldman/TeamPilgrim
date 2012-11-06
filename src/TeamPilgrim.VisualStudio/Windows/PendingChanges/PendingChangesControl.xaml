@@ -198,7 +198,7 @@
                         
                         <TextBlock>Query:</TextBlock>
                         <ComboBox Width="100"></ComboBox>
-                        <Button>...</Button>
+                        <Button DataContext="{Binding Path=SelectedWorkspaceModel}" Command="{Binding Path=ShowSelectWorkItemQueryCommand}">...</Button>
                    
                         <Separator />
                    

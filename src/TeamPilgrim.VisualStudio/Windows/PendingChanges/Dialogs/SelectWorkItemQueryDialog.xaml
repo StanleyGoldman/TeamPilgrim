@@ -1,0 +1,45 @@
+﻿<Window x:Class="JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs.SelectWorkItemQueryDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:Model="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model"
+        xmlns:Client="clr-namespace:Microsoft.TeamFoundation.WorkItemTracking.Client;assembly=Microsoft.TeamFoundation.WorkItemTracking.Client"
+        xmlns:Explorer="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer"
+        xmlns:Children="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children"
+        Height="300" Width="300"
+        mc:Ignorable="d" 
+        d:DataContext="{d:DesignInstance Model:SelectWorkItemQueryModel}">
+    
+    <DockPanel>
+        
+        <DockPanel DockPanel.Dock="Bottom" LastChildFill="False">
+            <Button DockPanel.Dock="Right">
+                <TextBlock>Cancel</TextBlock>
+            </Button>
+            <Button DockPanel.Dock="Right">
+                OK
+            </Button>
+        </DockPanel>
+        <ScrollViewer DockPanel.Dock="Top" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <TreeView DataContext="{Binding Path=ActiveProjectCollectionModel}" ItemsSource="{Binding Path=ProjectModels}">
+                <TreeView.Resources>
+                    
+                    <HierarchicalDataTemplate DataType="{x:Type Explorer:ProjectModel}" ItemsSource="{Binding Path=WorkItemQueryContainerModel.QueryItems}">
+                        <TextBlock Text="{Binding Path=Project.Name}" />
+                    </HierarchicalDataTemplate>
+
+                    <HierarchicalDataTemplate DataType="{x:Type Children:WorkItemQueryFolderModel}" ItemsSource="{Binding Path=QueryItems}">
+                        <TextBlock Text="{Binding Path=Name}" />
+                    </HierarchicalDataTemplate>
+
+                    <HierarchicalDataTemplate DataType="{x:Type Children:WorkItemQueryDefinitionModel}">
+                        <TextBlock Text="{Binding Path=Name}" />
+                    </HierarchicalDataTemplate>
+                    
+                </TreeView.Resources>
+            </TreeView>
+        </ScrollViewer>
+    </DockPanel>
+
+</Window>

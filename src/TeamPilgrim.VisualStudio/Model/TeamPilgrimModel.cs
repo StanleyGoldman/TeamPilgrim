@@ -24,8 +24,26 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
         private readonly IPilgrimServiceModelProvider _pilgrimServiceModelProvider;
         private readonly ITeamPilgrimVsService _teamPilgrimVsService;
 
-        public ObservableCollection<ProjectCollectionModel> CollectionModels { get; private set; }
+        public ObservableCollection<ProjectCollectionModel> ProjectCollectionModels { get; private set; }
         public ObservableCollection<WorkspaceInfoModel> WorkspaceInfoModels { get; private set; }
+
+        private ProjectCollectionModel _activeProjectCollectionModel = null;
+
+        public ProjectCollectionModel ActiveProjectCollectionModel
+        {
+            get
+            {
+                return _activeProjectCollectionModel;
+            }
+            private set
+            {
+                if (_activeProjectCollectionModel == value) return;
+
+                _activeProjectCollectionModel = value;
+
+                SendPropertyChanged("ActiveProjectCollectionModel");
+            }
+        }
 
         private WorkspaceInfoModel _selectedWorkspaceInfoModel = null;
 
@@ -68,9 +86,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
         public TeamPilgrimModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService)
             : base(pilgrimServiceModelProvider, teamPilgrimVsService)
         {
-            CollectionModels = new ObservableCollection<ProjectCollectionModel>();
+            ProjectCollectionModels = new ObservableCollection<ProjectCollectionModel>();
             WorkspaceInfoModels = new ObservableCollection<WorkspaceInfoModel>();
 
+            ProjectCollectionModels.CollectionChanged += ProjectCollectionModelsOnCollectionChanged;
             WorkspaceInfoModels.CollectionChanged += WorkspaceInfoModelsOnCollectionChanged;
 
             _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
@@ -82,6 +101,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             TfsConnectCommand = new RelayCommand(TfsConnect, CanTfsConnect);
 
             PopulatePilgrimModel();
+        }
+
+        private void ProjectCollectionModelsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            ActiveProjectCollectionModel = ProjectCollectionModels.FirstOrDefault();
         }
 
         private void WorkspaceInfoModelsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -116,10 +140,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
                     {
-                        CollectionModels.Clear();
+                        ProjectCollectionModels.Clear();
                         if (collection != null)
                         {
-                            CollectionModels.Add(new ProjectCollectionModel(_pilgrimServiceModelProvider,
+                            ProjectCollectionModels.Add(new ProjectCollectionModel(_pilgrimServiceModelProvider,
                                                                             _teamPilgrimVsService, this, collection));
                         }
                     }));
@@ -141,7 +165,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
         private void LoadWorkspaceModel(WorkspaceInfoModel selectedWorkspaceInfoModel)
         {
             Workspace workspace;
-            var projectCollectionModel = CollectionModels[0];
+            var projectCollectionModel = ProjectCollectionModels[0];
 
             Debug.Assert(projectCollectionModel != null, "projectCollectionModel != null");
 
@@ -149,7 +173,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
                 {
                     if (_pilgrimServiceModelProvider.TryGetWorkspace(out workspace, selectedWorkspaceInfoModel.WorkspaceInfo, projectCollectionModel.TfsTeamProjectCollection))
                     {
-                        SelectedWorkspaceModel = new WorkspaceModel(_pilgrimServiceModelProvider, teamPilgrimVsService, workspace);
+                        SelectedWorkspaceModel = new WorkspaceModel(_pilgrimServiceModelProvider, teamPilgrimVsService, this, workspace);
                     }
                 }));
         }

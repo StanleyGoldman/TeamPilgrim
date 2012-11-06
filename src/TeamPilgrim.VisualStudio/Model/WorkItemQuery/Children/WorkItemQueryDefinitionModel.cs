@@ -3,7 +3,7 @@ using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.WorkItemQuery.Children
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children
 {
     public class WorkItemQueryDefinitionModel : WorkItemQueryChildModel
     {

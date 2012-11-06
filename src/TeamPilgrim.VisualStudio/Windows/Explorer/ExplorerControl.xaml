@@ -7,9 +7,9 @@
              xmlns:AttachedProperties="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties"
              xmlns:Explorer="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Explorer"
              xmlns:ExplorerModels="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer"
-             xmlns:WorkItemQuery="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.WorkItemQuery"
-             xmlns:WorkItemQueryChildren="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.WorkItemQuery.Children"
              xmlns:BuildDefinitions="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.BuildDefinitions"
+             xmlns:WorkItemQuery="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery"
+             xmlns:WorkItemQueryChildren="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d" 
@@ -69,7 +69,7 @@
             </Button>
         </ToolBar>
         <ScrollViewer DockPanel.Dock="Bottom" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-            <TreeView ItemsSource="{Binding Path=CollectionModels}" ItemContainerStyleSelector="{StaticResource teamPilgrilViewStyleSelector}">
+            <TreeView ItemsSource="{Binding Path=ProjectCollectionModels}" ItemContainerStyleSelector="{StaticResource teamPilgrilViewStyleSelector}">
                 <TreeView.Resources>
                     <ContextMenu x:Key="ProjectCollectionContextMenu" d:DataContext="{d:DesignInstance ExplorerModels:ProjectCollectionModel}">
                         <MenuItem IsEnabled="False" Header="Connect to Team Project..."/>

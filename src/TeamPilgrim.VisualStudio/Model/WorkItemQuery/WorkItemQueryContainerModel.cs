@@ -3,16 +3,18 @@ using System.Diagnostics;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.WorkItemQuery.Children;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.WorkItemQuery
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
 {
     public class WorkItemQueryContainerModel : BaseModel, IWorkItemQueryCommandModel
     {
         private readonly IPilgrimServiceModelProvider _pilgrimServiceModelProvider;
+
+        private readonly TeamPilgrimModel _teamPilgrimModel;
 
         private readonly TfsTeamProjectCollection _projectCollection;
 
@@ -20,10 +22,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.WorkItemQuery
 
         public ObservableCollection<WorkItemQueryChildModel> QueryItems { get; private set; }
 
-        public WorkItemQueryContainerModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, TfsTeamProjectCollection projectCollection, Project project)
+        public WorkItemQueryContainerModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, TeamPilgrimModel teamPilgrimModel, TfsTeamProjectCollection projectCollection, Project project)
             : base(pilgrimServiceModelProvider, teamPilgrimVsService)
         {
             _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
+            _teamPilgrimModel = teamPilgrimModel;
             _projectCollection = projectCollection;
             _project = project;
 
