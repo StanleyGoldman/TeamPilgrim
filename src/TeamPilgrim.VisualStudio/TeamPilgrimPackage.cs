@@ -47,6 +47,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
     // This attribute registers a tool window exposed by this package.
     [ProvideToolWindow(typeof(ExplorerWindow))]
     [ProvideToolWindow(typeof(PendingChangesWindow))]
+
+	//http://stackoverflow.com/questions/4478853/vsx-2010-package-loading-markup-xaml-parsing-cannot-find-assemblies
+    [ProvideBindingPath]
+
     [Guid(GuidList.guidTeamPilgrimPkgString)]
     public sealed class TeamPilgrimPackage : Package, IVsShellPropertyEvents
     {

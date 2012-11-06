@@ -7,6 +7,8 @@
         xmlns:Client="clr-namespace:Microsoft.TeamFoundation.WorkItemTracking.Client;assembly=Microsoft.TeamFoundation.WorkItemTracking.Client"
         xmlns:Explorer="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer"
         xmlns:Children="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:behaviours="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Behaviors" 
         Height="300" Width="300"
         mc:Ignorable="d" 
         d:DataContext="{d:DesignInstance Model:SelectWorkItemQueryModel}">
@@ -23,8 +25,13 @@
         </DockPanel>
         
         <ScrollViewer DockPanel.Dock="Top" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-            
-            <TreeView DataContext="{Binding Path=ActiveProjectCollectionModel}" ItemsSource="{Binding Path=ProjectModels}">
+
+            <TreeView ItemsSource="{Binding Path=ActiveProjectCollectionModel.ProjectModels}">
+                
+                <i:Interaction.Behaviors>
+                    <behaviours:BindableSelectedItemBehavior SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay}" />
+                </i:Interaction.Behaviors>
+                
                 <TreeView.ItemContainerStyle>
                     <Style TargetType="TreeViewItem">
                         <Setter Property="IsExpanded" Value="True"/>
