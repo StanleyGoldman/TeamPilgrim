@@ -187,7 +187,7 @@
                 <TabItem IsSelected="{Binding ElementName=SourceFilesRadioButton, Path=IsChecked}">
                     <DockPanel>
                         <TextBlock DockPanel.Dock="Top">Comment:</TextBlock>
-                        <TextBox DockPanel.Dock="Top"></TextBox>
+                        <TextBox DockPanel.Dock="Top" DataContext="{Binding Path=SelectedWorkspaceModel}" Text="{Binding Path=Comment, UpdateSourceTrigger=PropertyChanged}"></TextBox>
 
                         <ListView DataContext="{Binding Path=SelectedWorkspaceModel}" ItemsSource="{Binding Path=PendingChanges}">
                             <ListView.View>
