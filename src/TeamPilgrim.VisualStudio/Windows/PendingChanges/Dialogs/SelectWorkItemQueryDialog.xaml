@@ -16,10 +16,10 @@
     <DockPanel>
         
         <DockPanel DockPanel.Dock="Bottom" LastChildFill="False">
-            <Button DockPanel.Dock="Right">
+            <Button DockPanel.Dock="Right" Click="CancelButtonClick">
                 <TextBlock>Cancel</TextBlock>
             </Button>
-            <Button DockPanel.Dock="Right">
+            <Button DockPanel.Dock="Right" Click="OkButtonClick">
                 OK
             </Button>
         </DockPanel>

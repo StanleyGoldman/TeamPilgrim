@@ -11,5 +11,17 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialog
         {
             InitializeComponent();
         }
+
+        private void CancelButtonClick(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
+            Close();
+        }
+
+        private void OkButtonClick(object sender, RoutedEventArgs e)
+        {
+            DialogResult = true;
+            Close();
+        }
     }
 }

@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs;
 using Microsoft.TeamFoundation.VersionControl.Client;
@@ -33,12 +34,29 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             }
         }
 
+        private WorkItemQueryDefinitionModel _selectedWorkWorkItemQueryDefinition;
+        public WorkItemQueryDefinitionModel SelectedWorkItemQueryDefinition
+        {
+            get
+            {
+                return _selectedWorkWorkItemQueryDefinition;
+            }
+            private set
+            {
+                if (_selectedWorkWorkItemQueryDefinition == value) return;
+
+                _selectedWorkWorkItemQueryDefinition = value;
+
+                SendPropertyChanged("SelectedWorkItemQueryDefinition");
+            }
+        }
+
         public WorkspaceModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, TeamPilgrimModel teamPilgrimModel, Workspace workspace)
             : base(pilgrimServiceModelProvider, teamPilgrimVsService)
         {
             _teamPilgrimModel = teamPilgrimModel;
             Workspace = workspace;
-            
+
             CheckInCommand = new RelayCommand(CheckIn, CanCheckIn);
             RefreshCommand = new RelayCommand(Refresh, CanRefresh);
             ShowSelectWorkItemQueryCommand = new RelayCommand(ShowSelectWorkItemQuery, CanShowSelectWorkItemQuery);
@@ -127,12 +145,17 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private void ShowSelectWorkItemQuery()
         {
+            var selectWorkItemQueryModel = new SelectWorkItemQueryModel(pilgrimServiceModelProvider, teamPilgrimVsService, _teamPilgrimModel.ActiveProjectCollectionModel);
             var selectWorkItemQueryDialog = new SelectWorkItemQueryDialog
                 {
-                    DataContext = new SelectWorkItemQueryModel(pilgrimServiceModelProvider, teamPilgrimVsService, _teamPilgrimModel.ActiveProjectCollectionModel)
+                    DataContext = selectWorkItemQueryModel
                 };
-            
-            var result = selectWorkItemQueryDialog.ShowDialog();
+
+            var dialogResult = selectWorkItemQueryDialog.ShowDialog();
+            if (dialogResult.HasValue && dialogResult.Value)
+            {
+                SelectedWorkItemQueryDefinition = selectWorkItemQueryModel.SelectedWorkItemQueryDefinition;
+            }
         }
 
         private bool CanShowSelectWorkItemQuery()

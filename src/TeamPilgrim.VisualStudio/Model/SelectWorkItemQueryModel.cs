@@ -24,24 +24,24 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
                 SendPropertyChanged("SelectedItem");
 
-                SelectedWorkItemQueryDefinitionModel = _selectedItem as WorkItemQueryDefinitionModel;
+                SelectedWorkItemQueryDefinition = _selectedItem as WorkItemQueryDefinitionModel;
             }
         }
 
-        private WorkItemQueryDefinitionModel _selectedWorkWorkItemQueryDefinitionModelQueryDefinitionModel;
-        public WorkItemQueryDefinitionModel SelectedWorkItemQueryDefinitionModel
+        private WorkItemQueryDefinitionModel _selectedWorkWorkItemQueryDefinitionQueryDefinition;
+        public WorkItemQueryDefinitionModel SelectedWorkItemQueryDefinition
         {
             get
             {
-                return _selectedWorkWorkItemQueryDefinitionModelQueryDefinitionModel;
+                return _selectedWorkWorkItemQueryDefinitionQueryDefinition;
             }
             private set
             {
-                if (_selectedWorkWorkItemQueryDefinitionModelQueryDefinitionModel == value) return;
+                if (_selectedWorkWorkItemQueryDefinitionQueryDefinition == value) return;
 
-                _selectedWorkWorkItemQueryDefinitionModelQueryDefinitionModel = value;
+                _selectedWorkWorkItemQueryDefinitionQueryDefinition = value;
 
-                SendPropertyChanged("SelectedWorkItemQueryDefinitionModel");
+                SendPropertyChanged("SelectedWorkItemQueryDefinition");
             }
         }
 
