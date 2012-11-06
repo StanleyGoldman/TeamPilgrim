@@ -21,11 +21,28 @@
                 OK
             </Button>
         </DockPanel>
+        
         <ScrollViewer DockPanel.Dock="Top" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            
             <TreeView DataContext="{Binding Path=ActiveProjectCollectionModel}" ItemsSource="{Binding Path=ProjectModels}">
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="TreeViewItem">
+                        <Setter Property="IsExpanded" Value="True"/>
+                    </Style>
+                </TreeView.ItemContainerStyle>
+                
                 <TreeView.Resources>
-                    
                     <HierarchicalDataTemplate DataType="{x:Type Explorer:ProjectModel}" ItemsSource="{Binding Path=WorkItemQueryContainerModel.QueryItems}">
+                        <HierarchicalDataTemplate.ItemContainerStyle>
+                            <Style TargetType="TreeViewItem">
+                                <Style.Triggers>
+                                    <DataTrigger d:DataContext="{d:DesignInstance Children:WorkItemQueryChildModel}" Binding="{Binding Path=Depth}" Value="1">
+                                        <Setter Property="IsExpanded" Value="True"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </HierarchicalDataTemplate.ItemContainerStyle>
+                        
                         <TextBlock Text="{Binding Path=Project.Name}" />
                     </HierarchicalDataTemplate>
 
