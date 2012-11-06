@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Extensions;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
@@ -43,7 +44,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
             OpenSeurityDialogCommand = new RelayCommand<WorkItemQueryChildModel>(OpenSeurityDialog, CanOpenSeurityDialog);
 
             var queryHierarchy = _project.QueryHierarchy;
-            var queryItemModels = queryHierarchy.GetQueryItemViewModels(this, pilgrimServiceModelProvider, teamPilgrimVsService);
+            var queryItemModels = queryHierarchy.GetQueryItemViewModels(this, pilgrimServiceModelProvider, teamPilgrimVsService, 1);
 
             QueryItems = new ObservableCollection<WorkItemQueryChildModel>(queryItemModels);
         }
@@ -84,13 +85,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
 
         public RelayCommand<WorkItemQueryFolderModel> NewQueryFolderCommand { get; private set; }
 
-        private void NewQueryFolder(WorkItemQueryFolderModel workItemQueryDefinitionModel)
+        private void NewQueryFolder(WorkItemQueryFolderModel workItemQueryFolderModel)
         {
             QueryFolder queryFolder;
-            QueryFolder parentFolder = workItemQueryDefinitionModel.QueryFolder;
+            QueryFolder parentFolder = workItemQueryFolderModel.QueryFolder;
             if (_pilgrimServiceModelProvider.TryAddNewQueryFolder(out queryFolder, _projectCollection, _project, parentFolder.Id))
             {
-                workItemQueryDefinitionModel.QueryItems.Insert(0, new WorkItemQueryFolderModel(pilgrimServiceModelProvider, teamPilgrimVsService, this, queryFolder, new WorkItemQueryChildModel[0]));
+                workItemQueryFolderModel.QueryItems.Insert(0, new WorkItemQueryFolderModel(pilgrimServiceModelProvider, teamPilgrimVsService, this, workItemQueryFolderModel.Depth + 1, queryFolder, new WorkItemQueryChildModel[0]));
             }
         }
 

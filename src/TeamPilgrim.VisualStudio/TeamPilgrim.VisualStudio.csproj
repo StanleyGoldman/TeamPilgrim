@@ -220,7 +220,7 @@
       <Link>Key.snk</Link>
     </None>
     <Compile Include="PkgCmdID.cs" />
-    <Compile Include="Common\EnumerableQueryItemExtensions.cs" />
+    <Compile Include="Common\Extensions\EnumerableQueryItemExtensions.cs" />
     <Compile Include="Model\Explorer\SourceControlModel.cs" />
     <Compile Include="Model\Explorer\TeamMembersModel.cs" />
     <Compile Include="Model\WorkItemQuery\Children\WorkItemQueryDefinitionModel.cs" />

@@ -14,8 +14,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children
 
         public QueryFolder QueryFolder { get; private set; }
 
-        public WorkItemQueryFolderModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, IWorkItemQueryCommandModel workItemQueryCommandModel, QueryFolder queryFolder, IEnumerable<WorkItemQueryChildModel> childQueryItemViewModels)
-            : base(pilgrimServiceModelProvider, teamPilgrimVsService, workItemQueryCommandModel)
+        public WorkItemQueryFolderModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, IWorkItemQueryCommandModel workItemQueryCommandModel, int depth, QueryFolder queryFolder, IEnumerable<WorkItemQueryChildModel> childQueryItemViewModels)
+            : base(pilgrimServiceModelProvider, teamPilgrimVsService, workItemQueryCommandModel, depth)
         {
             QueryFolder = queryFolder;
 

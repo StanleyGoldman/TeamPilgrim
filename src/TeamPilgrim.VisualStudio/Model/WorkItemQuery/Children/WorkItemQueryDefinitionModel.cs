@@ -9,8 +9,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children
     {
         public QueryDefinition QueryDefinition { get; private set; }
 
-        public WorkItemQueryDefinitionModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, IWorkItemQueryCommandModel workItemQueryCommandModel, QueryDefinition queryDefinition)
-            : base(pilgrimServiceModelProvider, teamPilgrimVsService, workItemQueryCommandModel)
+        public WorkItemQueryDefinitionModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, IWorkItemQueryCommandModel workItemQueryCommandModel, int depth, QueryDefinition queryDefinition)
+            : base(pilgrimServiceModelProvider, teamPilgrimVsService, workItemQueryCommandModel, depth)
         {
             QueryDefinition = queryDefinition;
         }
