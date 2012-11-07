@@ -195,14 +195,14 @@
     <Compile Include="Model\Explorer\ProjectModel.cs" />
     <Compile Include="Model\PendingChanges\WorkspaceInfoModel.cs" />
     <Compile Include="Model\PendingChanges\WorkspaceModel.cs" />
-    <Compile Include="Providers\PilgrimServiceModelProvider.cs" />
+    <Compile Include="Providers\TeamPilgrimServiceModelProvider.cs" />
     <Compile Include="Windows\Explorer\ExplorerTreeViewStyleSelector.cs" />
     <Compile Include="Windows\Explorer\ExplorerControl.xaml.cs">
       <DependentUpon>ExplorerControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Explorer\ExplorerWindow.cs" />
     <Compile Include="Guids.cs" />
-    <Compile Include="Providers\IPilgrimServiceModelProvider.cs" />
+    <Compile Include="Providers\ITeamPilgrimServiceModelProvider.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -9,8 +9,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.BuildDefinitio
         public IBuildDefinitionCommandModel BuildDefinitionCommandModel { get; private set; }
         public IBuildDefinition Definition { get; private set; }
 
-        public BuildDefinitionModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, IBuildDefinitionCommandModel buildDefinitionCommandModel, IBuildDefinition definition)
-            : base(pilgrimServiceModelProvider, teamPilgrimVsService)
+        public BuildDefinitionModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, IBuildDefinitionCommandModel buildDefinitionCommandModel, IBuildDefinition definition)
+            : base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
         {
             Definition = definition;
             BuildDefinitionCommandModel = buildDefinitionCommandModel;

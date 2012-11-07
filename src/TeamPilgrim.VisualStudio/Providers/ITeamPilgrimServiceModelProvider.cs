@@ -6,7 +6,7 @@ using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
 {
-    public interface IPilgrimServiceModelProvider
+    public interface ITeamPilgrimServiceModelProvider
     {
         bool TryGetCollections(out TfsTeamProjectCollection[] collections);
         

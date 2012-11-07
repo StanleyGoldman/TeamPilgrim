@@ -17,8 +17,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
 
         public TfsTeamProjectCollection TfsTeamProjectCollection { get; private set; }
 
-        public ProjectCollectionModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, TeamPilgrimModel teamPilgrimModel, TfsTeamProjectCollection pilgrimProjectCollection)
-            : base(pilgrimServiceModelProvider, teamPilgrimVsService)
+        public ProjectCollectionModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, TeamPilgrimModel teamPilgrimModel, TfsTeamProjectCollection pilgrimProjectCollection)
+            : base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
         {
             ProjectModels = new ObservableCollection<ProjectModel>();
 
@@ -26,12 +26,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
             _teamPilgrimModel = teamPilgrimModel;
 
             Project[] projects;
-            if (base.pilgrimServiceModelProvider.TryGetProjects(out projects, TfsTeamProjectCollection.Uri))
+            if (base.teamPilgrimServiceModelProvider.TryGetProjects(out projects, TfsTeamProjectCollection.Uri))
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
                     {
                         var pilgrimProjectModels = projects
-                            .Select(project => new ProjectModel(base.pilgrimServiceModelProvider, teamPilgrimVsService, teamPilgrimModel, TfsTeamProjectCollection, project));
+                            .Select(project => new ProjectModel(base.teamPilgrimServiceModelProvider, teamPilgrimVsService, teamPilgrimModel, TfsTeamProjectCollection, project));
 
                         foreach (var pilgrimProjectModel in pilgrimProjectModels)
                         {

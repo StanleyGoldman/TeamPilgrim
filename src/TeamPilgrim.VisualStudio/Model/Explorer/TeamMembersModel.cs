@@ -5,8 +5,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
 {
     public class TeamMembersModel : BaseModel
     {
-        public TeamMembersModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService)
-            : base(pilgrimServiceModelProvider, teamPilgrimVsService)
+        public TeamMembersModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService)
+            : base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
         {
         }
     }

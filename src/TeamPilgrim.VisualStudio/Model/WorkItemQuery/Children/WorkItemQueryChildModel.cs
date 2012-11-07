@@ -14,8 +14,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children
         
         public abstract Guid Id { get; }
 
-        protected WorkItemQueryChildModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, IWorkItemQueryCommandModel workItemQueryCommandModel, int depth)
-            : base(pilgrimServiceModelProvider, teamPilgrimVsService)
+        protected WorkItemQueryChildModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, IWorkItemQueryCommandModel workItemQueryCommandModel, int depth)
+            : base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
         {
             WorkItemQueryCommandModel = workItemQueryCommandModel;
             Depth = depth;

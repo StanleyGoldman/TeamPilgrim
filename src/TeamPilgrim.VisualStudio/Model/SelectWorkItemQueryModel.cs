@@ -45,8 +45,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             }
         }
 
-        public SelectWorkItemQueryModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, ProjectCollectionModel activeProjectCollectionModel)
-            : base(pilgrimServiceModelProvider, teamPilgrimVsService)
+        public SelectWorkItemQueryModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, ProjectCollectionModel activeProjectCollectionModel)
+            : base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
         {
             ActiveProjectCollectionModel = activeProjectCollectionModel;
         }

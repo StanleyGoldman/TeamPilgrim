@@ -212,7 +212,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             Dte2 = (DTE2) Extensibility.GetGlobalsObject(null).DTE;
 
             _teamPilgrimVsService.InitializeGlobals(Dte2);
-            TeamPilgrimModel = new TeamPilgrimModel(new PilgrimServiceModelProvider(), _teamPilgrimVsService);
+            TeamPilgrimModel = new TeamPilgrimModel(new TeamPilgrimServiceModelProvider(), _teamPilgrimVsService);
         }
 
         #endregion

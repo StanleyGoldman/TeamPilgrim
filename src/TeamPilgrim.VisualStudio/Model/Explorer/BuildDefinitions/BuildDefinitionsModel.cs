@@ -16,16 +16,16 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.BuildDefinitio
     {
         public ObservableCollection<BuildDefinitionModel> BuildDefinitions { get; private set; }
 
-        private readonly IPilgrimServiceModelProvider _pilgrimServiceModelProvider;
+        private readonly ITeamPilgrimServiceModelProvider _teamPilgrimServiceModelProvider;
         private readonly TfsTeamProjectCollection _collection;
         private readonly Project _project;
 
-        public BuildDefinitionsModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, TfsTeamProjectCollection collection, Project project)
-            : base(pilgrimServiceModelProvider, teamPilgrimVsService)
+        public BuildDefinitionsModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, TfsTeamProjectCollection collection, Project project)
+            : base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
         {
             BuildDefinitions = new ObservableCollection<BuildDefinitionModel>();
 
-            _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
+            _teamPilgrimServiceModelProvider = teamPilgrimServiceModelProvider;
             _collection = collection;
             _project = project;
 
@@ -43,9 +43,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.BuildDefinitio
             ManageBuildSecurityCommand = new RelayCommand(ManageBuildSecurity, CanManageBuildSecurity);
 
             IBuildDefinition[] buildDefinitions;
-            if (_pilgrimServiceModelProvider.TryGetBuildDefinitionsByProjectName(out buildDefinitions, _collection, _project.Name))
+            if (_teamPilgrimServiceModelProvider.TryGetBuildDefinitionsByProjectName(out buildDefinitions, _collection, _project.Name))
             {
-                foreach (var buildDefinitionModel in buildDefinitions.Select(definition => new BuildDefinitionModel(pilgrimServiceModelProvider, teamPilgrimVsService, this, definition)))
+                foreach (var buildDefinitionModel in buildDefinitions.Select(definition => new BuildDefinitionModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, this, definition)))
                 {
                     BuildDefinitions.Add(buildDefinitionModel);
                 }
@@ -127,7 +127,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.BuildDefinitio
 
         private void DeleteBuildDefinition(BuildDefinitionModel buildDefinitionModel)
         {
-            if (_pilgrimServiceModelProvider.TryDeleteBuildDefinition(buildDefinitionModel.Definition))
+            if (_teamPilgrimServiceModelProvider.TryDeleteBuildDefinition(buildDefinitionModel.Definition))
             {
                 BuildDefinitions.Remove(buildDefinitionModel);
             }
@@ -147,9 +147,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.BuildDefinitio
         private void CloneBuildDefinition(BuildDefinitionModel buildDefinitionModel)
         {
             IBuildDefinition buildDefinition;
-            if (_pilgrimServiceModelProvider.TryCloneQueryDefinition(out buildDefinition, _collection, _project, buildDefinitionModel.Definition))
+            if (_teamPilgrimServiceModelProvider.TryCloneQueryDefinition(out buildDefinition, _collection, _project, buildDefinitionModel.Definition))
             {
-                BuildDefinitions.Add(new BuildDefinitionModel(pilgrimServiceModelProvider, teamPilgrimVsService, this, buildDefinition));
+                BuildDefinitions.Add(new BuildDefinitionModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, this, buildDefinition));
             }
         }
 

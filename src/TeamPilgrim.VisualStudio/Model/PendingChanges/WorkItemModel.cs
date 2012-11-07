@@ -8,8 +8,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
     {
         public WorkItem WorkItem { get; private set; }
 
-        public WorkItemModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, WorkItem workItem)
-            : base(pilgrimServiceModelProvider, teamPilgrimVsService)
+        public WorkItemModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, WorkItem workItem)
+            : base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
         {
             WorkItem = workItem;
         }

@@ -13,7 +13,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
 {
     public class WorkItemQueryContainerModel : BaseModel, IWorkItemQueryCommandModel
     {
-        private readonly IPilgrimServiceModelProvider _pilgrimServiceModelProvider;
+        private readonly ITeamPilgrimServiceModelProvider _teamPilgrimServiceModelProvider;
 
         private readonly TeamPilgrimModel _teamPilgrimModel;
 
@@ -23,10 +23,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
 
         public ObservableCollection<WorkItemQueryChildModel> QueryItems { get; private set; }
 
-        public WorkItemQueryContainerModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, TeamPilgrimModel teamPilgrimModel, TfsTeamProjectCollection projectCollection, Project project)
-            : base(pilgrimServiceModelProvider, teamPilgrimVsService)
+        public WorkItemQueryContainerModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, TeamPilgrimModel teamPilgrimModel, TfsTeamProjectCollection projectCollection, Project project)
+            : base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
         {
-            _pilgrimServiceModelProvider = pilgrimServiceModelProvider;
+            _teamPilgrimServiceModelProvider = teamPilgrimServiceModelProvider;
             _teamPilgrimModel = teamPilgrimModel;
             _projectCollection = projectCollection;
             _project = project;
@@ -44,7 +44,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
             OpenSeurityDialogCommand = new RelayCommand<WorkItemQueryChildModel>(OpenSeurityDialog, CanOpenSeurityDialog);
 
             var queryHierarchy = _project.QueryHierarchy;
-            var queryItemModels = queryHierarchy.GetQueryItemViewModels(this, pilgrimServiceModelProvider, teamPilgrimVsService, project, 1);
+            var queryItemModels = queryHierarchy.GetQueryItemViewModels(this, teamPilgrimServiceModelProvider, teamPilgrimVsService, project, 1);
 
             QueryItems = new ObservableCollection<WorkItemQueryChildModel>(queryItemModels);
         }
@@ -89,9 +89,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
         {
             QueryFolder queryFolder;
             QueryFolder parentFolder = workItemQueryFolderModel.QueryFolder;
-            if (_pilgrimServiceModelProvider.TryAddNewQueryFolder(out queryFolder, _projectCollection, _project, parentFolder.Id))
+            if (_teamPilgrimServiceModelProvider.TryAddNewQueryFolder(out queryFolder, _projectCollection, _project, parentFolder.Id))
             {
-                workItemQueryFolderModel.QueryItems.Insert(0, new WorkItemQueryFolderModel(pilgrimServiceModelProvider, teamPilgrimVsService, this, _project, workItemQueryFolderModel.Depth + 1, queryFolder, new WorkItemQueryChildModel[0]));
+                workItemQueryFolderModel.QueryItems.Insert(0, new WorkItemQueryFolderModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, this, _project, workItemQueryFolderModel.Depth + 1, queryFolder, new WorkItemQueryChildModel[0]));
             }
         }
 
@@ -166,7 +166,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
 
             var queryId = workItemQueryDefinitionModel.Id;
 
-            if (_pilgrimServiceModelProvider.TryDeleteQueryItem(out result, _projectCollection, _project, queryId))
+            if (_teamPilgrimServiceModelProvider.TryDeleteQueryItem(out result, _projectCollection, _project, queryId))
             {
                 if (result)
                 {

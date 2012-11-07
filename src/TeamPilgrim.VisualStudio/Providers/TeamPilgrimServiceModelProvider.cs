@@ -8,11 +8,11 @@ using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
 {
-    public class PilgrimServiceModelProvider : IPilgrimServiceModelProvider
+    public class TeamPilgrimServiceModelProvider : ITeamPilgrimServiceModelProvider
     {
         private readonly ITeamPilgrimTfsService _teamPilgrimTfsService;
 
-        public PilgrimServiceModelProvider()
+        public TeamPilgrimServiceModelProvider()
         {
             _teamPilgrimTfsService = new TeamPilgrimTfsService();
         }

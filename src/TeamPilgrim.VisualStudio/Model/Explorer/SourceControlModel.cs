@@ -5,8 +5,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
 {
     public class SourceControlModel : BaseModel
     {
-        public SourceControlModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService)
-            : base(pilgrimServiceModelProvider, teamPilgrimVsService)
+        public SourceControlModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService)
+            : base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
         {
         }
     }

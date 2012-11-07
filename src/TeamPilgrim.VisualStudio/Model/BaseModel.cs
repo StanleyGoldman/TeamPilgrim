@@ -8,13 +8,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
     public class BaseModel : INotifyPropertyChanged
     {
         private readonly Dispatcher _dispatcher;
-        protected readonly IPilgrimServiceModelProvider pilgrimServiceModelProvider;
+        protected readonly ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider;
         protected readonly ITeamPilgrimVsService teamPilgrimVsService;
 
-        public BaseModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService)
+        public BaseModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService)
         {
             _dispatcher = Dispatcher.CurrentDispatcher;
-            this.pilgrimServiceModelProvider = pilgrimServiceModelProvider;
+            this.teamPilgrimServiceModelProvider = teamPilgrimServiceModelProvider;
             this.teamPilgrimVsService = teamPilgrimVsService;
         }
 

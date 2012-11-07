@@ -23,8 +23,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
 
         public ObservableCollection<BaseModel> ChildObjects { get; private set; }
 
-        public ProjectModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, TeamPilgrimModel teamPilgrimModel, TfsTeamProjectCollection projectCollection, Project project)
-            :base(pilgrimServiceModelProvider, teamPilgrimVsService)
+        public ProjectModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, TeamPilgrimModel teamPilgrimModel, TfsTeamProjectCollection projectCollection, Project project)
+            :base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
         {
             TeamPilgrimModel = teamPilgrimModel;
             ProjectCollection = projectCollection;
@@ -32,17 +32,17 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
             
             OpenSourceControlCommand = new RelayCommand(OpenSourceControl, CanOpenSourceControl);
 
-            BuildDefinitionsModel = new BuildDefinitionsModel(pilgrimServiceModelProvider, teamPilgrimVsService, projectCollection, project);
+            BuildDefinitionsModel = new BuildDefinitionsModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, projectCollection, project);
 
-            WorkItemQueryContainerModel = new WorkItemQueryContainerModel(pilgrimServiceModelProvider, teamPilgrimVsService, teamPilgrimModel, projectCollection, project);
+            WorkItemQueryContainerModel = new WorkItemQueryContainerModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, teamPilgrimModel, projectCollection, project);
 
             ChildObjects = new ObservableCollection<BaseModel>
                 {
                     WorkItemQueryContainerModel, 
-                    new ReportsModel(pilgrimServiceModelProvider, teamPilgrimVsService),
+                    new ReportsModel(teamPilgrimServiceModelProvider, teamPilgrimVsService),
                     BuildDefinitionsModel,
-                    new TeamMembersModel(pilgrimServiceModelProvider, teamPilgrimVsService),
-                    new SourceControlModel(pilgrimServiceModelProvider, teamPilgrimVsService)
+                    new TeamMembersModel(teamPilgrimServiceModelProvider, teamPilgrimVsService),
+                    new SourceControlModel(teamPilgrimServiceModelProvider, teamPilgrimVsService)
                 };
         }
 

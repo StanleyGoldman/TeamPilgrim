@@ -61,7 +61,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         {
             WorkItemCollection workItemCollection;
 
-            if (pilgrimServiceModelProvider.TryGetQueryDefinitionWorkItemCollection(out workItemCollection,
+            if (teamPilgrimServiceModelProvider.TryGetQueryDefinitionWorkItemCollection(out workItemCollection,
                                                                                         _projectCollectionModel.TfsTeamProjectCollection,
                                                                                         SelectedWorkItemQueryDefinition.QueryDefinition, SelectedWorkItemQueryDefinition.Project.Name))
             {
@@ -76,7 +76,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
                 var modelsToAdd = currentWorkItems
                         .Where(workItem => !modelIntersection.Select(workItemModel => workItemModel.WorkItem.Id).Contains(workItem.Id))
-                        .Select(workItem => new WorkItemModel(pilgrimServiceModelProvider, teamPilgrimVsService, workItem)).ToArray();
+                        .Select(workItem => new WorkItemModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, workItem)).ToArray();
 
                 foreach (var modelToAdd in modelsToAdd)
                 {
@@ -90,8 +90,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             }
         }
 
-        public WorkspaceModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, ProjectCollectionModel projectCollectionModel, Workspace workspace)
-            : base(pilgrimServiceModelProvider, teamPilgrimVsService)
+        public WorkspaceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, ProjectCollectionModel projectCollectionModel, Workspace workspace)
+            : base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
         {
             _projectCollectionModel = projectCollectionModel;
             Workspace = workspace;
@@ -104,11 +104,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             WorkItems = new ObservableCollection<WorkItemModel>();
 
             PendingChange[] pendingChanges;
-            if (pilgrimServiceModelProvider.TryGetPendingChanges(out pendingChanges, Workspace))
+            if (teamPilgrimServiceModelProvider.TryGetPendingChanges(out pendingChanges, Workspace))
             {
                 foreach (var pendingChange in pendingChanges)
                 {
-                    var pendingChangeModel = new PendingChangeModel(pilgrimServiceModelProvider, teamPilgrimVsService, pendingChange);
+                    var pendingChangeModel = new PendingChangeModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, pendingChange);
                     PendingChanges.Add(pendingChangeModel);
                 }
             }
@@ -126,7 +126,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                 .Select(model => model.Change)
                 .ToArray();
 
-            if (pilgrimServiceModelProvider.TryWorkspaceCheckin(Workspace, pendingChanges, Comment))
+            if (teamPilgrimServiceModelProvider.TryWorkspaceCheckin(Workspace, pendingChanges, Comment))
             {
                 Comment = string.Empty;
                 Refresh();
@@ -147,7 +147,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         private void Refresh()
         {
             PendingChange[] currentPendingChanges;
-            if (pilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, Workspace))
+            if (teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, Workspace))
             {
                 var modelIntersection =
                     PendingChanges
@@ -158,7 +158,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
                 var modelsToAdd = currentPendingChanges
                     .Where(pendingChange => !modelIntersection.Select(model => model.Change.PendingChangeId).Contains(pendingChange.PendingChangeId))
-                    .Select(change => new PendingChangeModel(pilgrimServiceModelProvider, teamPilgrimVsService, change)).ToArray();
+                    .Select(change => new PendingChangeModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, change)).ToArray();
 
                 foreach (var modelToAdd in modelsToAdd)
                 {
@@ -185,7 +185,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private void ShowSelectWorkItemQuery()
         {
-            var selectWorkItemQueryModel = new SelectWorkItemQueryModel(pilgrimServiceModelProvider, teamPilgrimVsService, _projectCollectionModel);
+            var selectWorkItemQueryModel = new SelectWorkItemQueryModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, _projectCollectionModel);
             var selectWorkItemQueryDialog = new SelectWorkItemQueryDialog
                 {
                     DataContext = selectWorkItemQueryModel

@@ -10,21 +10,21 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common.Extensions
 {
     public static class EnumerableQueryItemExtensions
     {
-        public static WorkItemQueryChildModel[] GetQueryItemViewModels(this IEnumerable<QueryItem> queryHierarchy, IWorkItemQueryCommandModel workItemQueryCommandModel, IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, Project project, int depth)
+        public static WorkItemQueryChildModel[] GetQueryItemViewModels(this IEnumerable<QueryItem> queryHierarchy, IWorkItemQueryCommandModel workItemQueryCommandModel, ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, Project project, int depth)
         {
             return queryHierarchy.Select<QueryItem, WorkItemQueryChildModel>(item =>
                 {
                     var queryFolder = item as QueryFolder;
                     if (queryFolder != null)
                     {
-                        var foldersChildren = queryFolder.GetQueryItemViewModels(workItemQueryCommandModel, pilgrimServiceModelProvider, teamPilgrimVsService, project, depth + 1);
-                        return new WorkItemQueryFolderModel(pilgrimServiceModelProvider, teamPilgrimVsService, workItemQueryCommandModel, project, depth, queryFolder, foldersChildren);
+                        var foldersChildren = queryFolder.GetQueryItemViewModels(workItemQueryCommandModel, teamPilgrimServiceModelProvider, teamPilgrimVsService, project, depth + 1);
+                        return new WorkItemQueryFolderModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, workItemQueryCommandModel, project, depth, queryFolder, foldersChildren);
                     }
 
                     var queryDefinition = item as QueryDefinition;
                     if (queryDefinition != null)
                     {
-                        return new WorkItemQueryDefinitionModel(pilgrimServiceModelProvider, teamPilgrimVsService, workItemQueryCommandModel, project, depth, queryDefinition);
+                        return new WorkItemQueryDefinitionModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, workItemQueryCommandModel, project, depth, queryDefinition);
                     }
 
                     throw new ArgumentException(item.GetType().ToString());
