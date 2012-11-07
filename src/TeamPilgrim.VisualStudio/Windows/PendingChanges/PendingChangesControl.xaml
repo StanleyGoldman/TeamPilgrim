@@ -200,17 +200,6 @@
                         <TextBlock Width="100" DataContext="{Binding Path=SelectedWorkspaceModel.SelectedWorkItemQueryDefinition}" Text="{Binding Path=QueryDefinition.Name}"></TextBlock>
                         <Button DataContext="{Binding Path=SelectedWorkspaceModel}" Command="{Binding Path=ShowSelectWorkItemQueryCommand}">...</Button>
                    
-                        <Separator />
-                   
-                        <ComboBox Width="100"></ComboBox>
-                        <Button>Prev</Button>
-                        <Button>Next</Button>
-                   
-                        <Separator />
-
-                        <Button DataContext="{Binding Path=SelectedWorkspaceModel}" Command="{Binding Path=RefreshCommand}">
-                            <Image Source="..\..\Resources\arrow_refresh.png" Width="16" Height="16" />
-                        </Button>
                     </ToolBar>
                     
                     <ListView DockPanel.Dock="Bottom">
