@@ -202,18 +202,46 @@
                    
                     </ToolBar>
                     
-                    <ListView DockPanel.Dock="Bottom">
+                    <ListView DockPanel.Dock="Bottom" DataContext="{Binding Path=SelectedWorkspaceModel}" ItemsSource="{Binding Path=WorkItems}">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn />
+                                <GridViewColumn>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate DataType="PendingChangesModel:WorkItemModel">
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
 
-                                <GridViewColumn Header="Check-in Action"/>
+                                <GridViewColumn Header="Check-in Action">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate DataType="PendingChangesModel:WorkItemModel">
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
 
-                                <GridViewColumn Header="ID" />
-                                
-                                <GridViewColumn Header="Type" />
-                                
-                                <GridViewColumn Header="Title" />
+                                <GridViewColumn Header="ID">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate DataType="PendingChangesModel:WorkItemModel">
+                                            <TextBlock Text="{Binding Path=WorkItem.Id, Mode=OneWay}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <GridViewColumn Header="Type">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate DataType="PendingChangesModel:WorkItemModel">
+                                            <TextBlock Text="{Binding Path=WorkItem.Type, Mode=OneWay}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <GridViewColumn Header="Title">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate DataType="PendingChangesModel:WorkItemModel">
+                                            <TextBlock Text="{Binding Path=WorkItem.Title, Mode=OneWay}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
                             </GridView>
                         </ListView.View>
                     </ListView>

@@ -9,10 +9,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children
     {
         public QueryDefinition QueryDefinition { get; private set; }
 
-        public WorkItemQueryDefinitionModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, IWorkItemQueryCommandModel workItemQueryCommandModel, int depth, QueryDefinition queryDefinition)
+        public Project Project { get; private set; }
+
+        public WorkItemQueryDefinitionModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, IWorkItemQueryCommandModel workItemQueryCommandModel, Project project, int depth, QueryDefinition queryDefinition)
             : base(pilgrimServiceModelProvider, teamPilgrimVsService, workItemQueryCommandModel, depth)
         {
             QueryDefinition = queryDefinition;
+            Project = project;
         }
 
         public override Guid Id

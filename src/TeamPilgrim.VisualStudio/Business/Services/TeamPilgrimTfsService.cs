@@ -113,7 +113,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
             var loadedParentFolder = queryHierarchy.Find(parentFolderId) as QueryFolder;
 
             var queryFolder = new QueryFolder("New Folder");
-            
+
             Debug.Assert(loadedParentFolder != null, "loadedParentFolder != null");
             loadedParentFolder.Add(queryFolder);
 
@@ -122,11 +122,19 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
             return queryFolder;
         }
 
+        public WorkItemCollection GetQueryDefinitionWorkItemCollection(TfsTeamProjectCollection collection, QueryDefinition queryDefinition, string projectName)
+        {
+            var context = new Dictionary<string, string> { { "project", projectName } };
+
+            var workItemStore = GetWorkItemStore(collection);
+            return workItemStore.Query(queryDefinition.QueryText, context);
+        }
+
         public WorkspaceInfo[] GetLocalWorkspaceInfo(Guid? projectCollectionId = null)
         {
             IEnumerable<WorkspaceInfo> allLocalWorkspaceInfo = Workstation.Current.GetAllLocalWorkspaceInfo();
 
-            if(projectCollectionId.HasValue)
+            if (projectCollectionId.HasValue)
             {
                 allLocalWorkspaceInfo = allLocalWorkspaceInfo.Where(info => info.ServerGuid.Equals(projectCollectionId));
             }

@@ -171,6 +171,7 @@
     <Compile Include="Common\Converters\OcClauseBooleanToVisibilityConverter.cs" />
     <Compile Include="Common\VsWindowFrameEditorTypeIds.cs" />
     <Compile Include="Common\AttachedProperties\MouseDoubleClick.cs" />
+    <Compile Include="Model\PendingChanges\WorkItemModel.cs" />
     <Compile Include="Model\SelectWorkItemQueryModel.cs" />
     <Compile Include="Windows\PendingChanges\Dialogs\SelectWorkItemQueryDialog.xaml.cs">
       <DependentUpon>SelectWorkItemQueryDialog.xaml</DependentUpon>

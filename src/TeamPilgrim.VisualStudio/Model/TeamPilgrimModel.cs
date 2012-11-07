@@ -173,7 +173,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
                 {
                     if (_pilgrimServiceModelProvider.TryGetWorkspace(out workspace, selectedWorkspaceInfoModel.WorkspaceInfo, projectCollectionModel.TfsTeamProjectCollection))
                     {
-                        SelectedWorkspaceModel = new WorkspaceModel(_pilgrimServiceModelProvider, teamPilgrimVsService, this, workspace);
+                        SelectedWorkspaceModel = new WorkspaceModel(_pilgrimServiceModelProvider, teamPilgrimVsService, this.ActiveProjectCollectionModel, workspace);
                     }
                 }));
         }

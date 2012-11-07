@@ -2,16 +2,18 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs;
 using Microsoft.TeamFoundation.VersionControl.Client;
+using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 {
     public class WorkspaceModel : BaseModel
     {
-        private readonly TeamPilgrimModel _teamPilgrimModel;
+        public ObservableCollection<WorkItemModel> WorkItems { get; private set; }
 
         public ObservableCollection<PendingChangeModel> PendingChanges { get; private set; }
 
@@ -35,6 +37,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         }
 
         private WorkItemQueryDefinitionModel _selectedWorkWorkItemQueryDefinition;
+        private ProjectCollectionModel _projectCollectionModel;
+
         public WorkItemQueryDefinitionModel SelectedWorkItemQueryDefinition
         {
             get
@@ -48,13 +52,48 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                 _selectedWorkWorkItemQueryDefinition = value;
 
                 SendPropertyChanged("SelectedWorkItemQueryDefinition");
+
+                PopulateWorkItems();
             }
         }
 
-        public WorkspaceModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, TeamPilgrimModel teamPilgrimModel, Workspace workspace)
+        private void PopulateWorkItems()
+        {
+            WorkItemCollection workItemCollection;
+
+            if (pilgrimServiceModelProvider.TryGetQueryDefinitionWorkItemCollection(out workItemCollection,
+                                                                                        _projectCollectionModel.TfsTeamProjectCollection,
+                                                                                        SelectedWorkItemQueryDefinition.QueryDefinition, SelectedWorkItemQueryDefinition.Project.Name))
+            {
+                var currentWorkItems = workItemCollection.Cast<WorkItem>().ToArray();
+
+                var modelIntersection = 
+                    WorkItems
+                    .Join(currentWorkItems, model => model.WorkItem.Id, workItem => workItem.Id, (model, change) => model)
+                    .ToArray();
+
+                var modelsToRemove = WorkItems.Where(model => !modelIntersection.Contains(model)).ToArray();
+
+                var modelsToAdd = currentWorkItems
+                        .Where(workItem => !modelIntersection.Select(workItemModel => workItemModel.WorkItem.Id).Contains(workItem.Id))
+                        .Select(workItem => new WorkItemModel(pilgrimServiceModelProvider, teamPilgrimVsService, workItem)).ToArray();
+
+                foreach (var modelToAdd in modelsToAdd)
+                {
+                    WorkItems.Add(modelToAdd);
+                }
+
+                foreach (var modelToRemove in modelsToRemove)
+                {
+                    WorkItems.Remove(modelToRemove);
+                }
+            }
+        }
+
+        public WorkspaceModel(IPilgrimServiceModelProvider pilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, ProjectCollectionModel projectCollectionModel, Workspace workspace)
             : base(pilgrimServiceModelProvider, teamPilgrimVsService)
         {
-            _teamPilgrimModel = teamPilgrimModel;
+            _projectCollectionModel = projectCollectionModel;
             Workspace = workspace;
 
             CheckInCommand = new RelayCommand(CheckIn, CanCheckIn);
@@ -62,6 +101,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             ShowSelectWorkItemQueryCommand = new RelayCommand(ShowSelectWorkItemQuery, CanShowSelectWorkItemQuery);
 
             PendingChanges = new ObservableCollection<PendingChangeModel>();
+            WorkItems = new ObservableCollection<WorkItemModel>();
 
             PendingChange[] pendingChanges;
             if (pilgrimServiceModelProvider.TryGetPendingChanges(out pendingChanges, Workspace))
@@ -145,7 +185,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private void ShowSelectWorkItemQuery()
         {
-            var selectWorkItemQueryModel = new SelectWorkItemQueryModel(pilgrimServiceModelProvider, teamPilgrimVsService, _teamPilgrimModel.ActiveProjectCollectionModel);
+            var selectWorkItemQueryModel = new SelectWorkItemQueryModel(pilgrimServiceModelProvider, teamPilgrimVsService, _projectCollectionModel);
             var selectWorkItemQueryDialog = new SelectWorkItemQueryDialog
                 {
                     DataContext = selectWorkItemQueryModel

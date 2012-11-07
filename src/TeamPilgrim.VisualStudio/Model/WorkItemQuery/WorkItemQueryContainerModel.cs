@@ -44,7 +44,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
             OpenSeurityDialogCommand = new RelayCommand<WorkItemQueryChildModel>(OpenSeurityDialog, CanOpenSeurityDialog);
 
             var queryHierarchy = _project.QueryHierarchy;
-            var queryItemModels = queryHierarchy.GetQueryItemViewModels(this, pilgrimServiceModelProvider, teamPilgrimVsService, 1);
+            var queryItemModels = queryHierarchy.GetQueryItemViewModels(this, pilgrimServiceModelProvider, teamPilgrimVsService, project, 1);
 
             QueryItems = new ObservableCollection<WorkItemQueryChildModel>(queryItemModels);
         }
@@ -91,7 +91,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
             QueryFolder parentFolder = workItemQueryFolderModel.QueryFolder;
             if (_pilgrimServiceModelProvider.TryAddNewQueryFolder(out queryFolder, _projectCollection, _project, parentFolder.Id))
             {
-                workItemQueryFolderModel.QueryItems.Insert(0, new WorkItemQueryFolderModel(pilgrimServiceModelProvider, teamPilgrimVsService, this, workItemQueryFolderModel.Depth + 1, queryFolder, new WorkItemQueryChildModel[0]));
+                workItemQueryFolderModel.QueryItems.Insert(0, new WorkItemQueryFolderModel(pilgrimServiceModelProvider, teamPilgrimVsService, this, _project, workItemQueryFolderModel.Depth + 1, queryFolder, new WorkItemQueryChildModel[0]));
             }
         }
 

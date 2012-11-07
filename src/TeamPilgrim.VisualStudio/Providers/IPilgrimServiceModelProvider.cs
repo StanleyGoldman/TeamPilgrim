@@ -31,5 +31,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
         bool TryWorkspaceCheckin(Workspace workspace, PendingChange[] changes, string comment, CheckinNote checkinNote = null, WorkItemCheckinInfo[] workItemChanges = null, PolicyOverrideInfo policyOverride = null);
         
         bool TryGetPendingChanges(out PendingChange[] pendingChanges, Workspace workspace);
+        
+		bool TryGetQueryDefinitionWorkItemCollection(out WorkItemCollection workItemCollection, TfsTeamProjectCollection tfsTeamProjectCollection, QueryDefinition queryDefinition, string projectName);
     }
 }
