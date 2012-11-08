@@ -125,9 +125,16 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
         public WorkItemCollection GetQueryDefinitionWorkItemCollection(TfsTeamProjectCollection collection, QueryDefinition queryDefinition, string projectName)
         {
             var context = new Dictionary<string, string> { { "project", projectName } };
-
+            
             var workItemStore = GetWorkItemStore(collection);
-            return workItemStore.Query(queryDefinition.QueryText, context);
+
+            var query = new Query(workItemStore, queryDefinition.QueryText, context);
+            if(query.IsLinkQuery)
+            {
+                throw new ArgumentException("Link Queries not supported");
+            }
+            
+            return query.RunQuery();
         }
 
         public WorkspaceInfo[] GetLocalWorkspaceInfo(Guid? projectCollectionId = null)
