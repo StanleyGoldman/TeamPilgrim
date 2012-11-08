@@ -7,11 +7,19 @@
              xmlns:Model="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model"
              xmlns:VersionControlClient="clr-namespace:Microsoft.TeamFoundation.VersionControl.Client;assembly=Microsoft.TeamFoundation.VersionControl.Client"
              xmlns:PendingChangesModel="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges"
-             mc:Ignorable="d" 
+             xmlns:System="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d" 
              Height="Auto" d:DesignHeight="300" d:DesignWidth="850"
              d:DataContext="{d:DesignInstance Model:TeamPilgrimModel}">
     <UserControl.Resources>
+
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
         
+        <ObjectDataProvider x:Key="workItemCheckinActions" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="PendingChangesModel:SelectedWorkItemCheckinActionEnum"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+
         <Style TargetType="ToolBar">
             <Setter Property="ToolBarTray.IsLocked" Value="True"/>
             <Setter Property="OverflowMode" Value="AsNeeded"/>
@@ -208,6 +216,7 @@
                                 <GridViewColumn>
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate DataType="PendingChangesModel:WorkItemModel">
+                                            <CheckBox IsChecked="{Binding Path=IsSelected}" />
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
@@ -215,6 +224,10 @@
                                 <GridViewColumn Header="Check-in Action">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate DataType="PendingChangesModel:WorkItemModel">
+                                            <ComboBox 
+                                                Visibility="{Binding Path=IsSelected, Converter={StaticResource ResourceKey=BoolToVis}}"
+                                                ItemsSource="{Binding Source={StaticResource ResourceKey=workItemCheckinActions}}" 
+                                                SelectedItem="{Binding Path=WorkItemCheckinAction}" />
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
@@ -230,7 +243,7 @@
                                 <GridViewColumn Header="Type">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate DataType="PendingChangesModel:WorkItemModel">
-                                            <TextBlock Text="{Binding Path=WorkItem.Type, Mode=OneWay}"/>
+                                            <TextBlock Text="{Binding Path=WorkItem.Type.Name, Mode=OneWay}"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
