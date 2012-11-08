@@ -49,10 +49,4 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             WorkItem = workItem;
         }
     }
-
-    public enum SelectedWorkItemCheckinActionEnum
-    {
-        Associate,
-        Resolve
-    }
 }

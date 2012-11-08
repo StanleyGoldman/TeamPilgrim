@@ -67,7 +67,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             {
                 var currentWorkItems = workItemCollection.Cast<WorkItem>().ToArray();
 
-                var modelIntersection = 
+                var modelIntersection =
                     WorkItems
                     .Join(currentWorkItems, model => model.WorkItem.Id, workItem => workItem.Id, (model, change) => model)
                     .ToArray();
@@ -126,7 +126,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                 .Select(model => model.Change)
                 .ToArray();
 
-            if (teamPilgrimServiceModelProvider.TryWorkspaceCheckin(Workspace, pendingChanges, Comment))
+            var workItemChanges =
+                WorkItems.Where(model => model.IsSelected)
+                .Select(model => new WorkItemCheckinInfo(model.WorkItem, model.WorkItemCheckinAction.ToWorkItemCheckinAction())).ToArray();
+
+            if (teamPilgrimServiceModelProvider.TryWorkspaceCheckin(Workspace, pendingChanges, Comment, workItemChanges: workItemChanges))
             {
                 Comment = string.Empty;
                 Refresh();
