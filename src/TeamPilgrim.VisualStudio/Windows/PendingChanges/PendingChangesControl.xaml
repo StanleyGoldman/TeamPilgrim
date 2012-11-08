@@ -129,7 +129,7 @@
 
                         <Separator/>
                         
-                        <Button DataContext="{Binding Path=SelectedWorkspaceModel}" Command="{Binding Path=RefreshCommand}">
+                        <Button DataContext="{Binding Path=SelectedWorkspaceModel}" Command="{Binding Path=RefreshPendingChangesCommand}">
                             <Image Source="..\..\Resources\arrow_refresh.png" Width="16" Height="16" />
                         </Button>
 
@@ -207,16 +207,23 @@
                         <TextBlock>Query:</TextBlock>
                         <TextBlock Width="100" DataContext="{Binding Path=SelectedWorkspaceModel.SelectedWorkItemQueryDefinition}" Text="{Binding Path=QueryDefinition.Name}"></TextBlock>
                         <Button DataContext="{Binding Path=SelectedWorkspaceModel}" Command="{Binding Path=ShowSelectWorkItemQueryCommand}">...</Button>
-                   
+
+                        <Separator/>
+
+                        <Button DataContext="{Binding Path=SelectedWorkspaceModel}" Command="{Binding Path=RefreshSelectedDefinitionWorkItemsCommand}">
+                            <Image Source="..\..\Resources\arrow_refresh.png" Width="16" Height="16" />
+                        </Button>
                     </ToolBar>
                     
-                    <ListView DockPanel.Dock="Bottom" DataContext="{Binding Path=SelectedWorkspaceModel}" ItemsSource="{Binding Path=WorkItems}">
+                    <ListView Name="PendingChangesWorkItemsListView" DockPanel.Dock="Bottom" DataContext="{Binding Path=SelectedWorkspaceModel}" ItemsSource="{Binding Path=WorkItems}">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn>
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate DataType="PendingChangesModel:WorkItemModel">
-                                            <CheckBox IsChecked="{Binding Path=IsSelected}" />
+                                            <CheckBox IsChecked="{Binding Path=IsSelected}"
+                                                      Checked="PendingChangeWorkItemCheckbox_CheckChanged" 
+                                                      Unchecked="PendingChangeWorkItemCheckbox_CheckChanged" />
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>

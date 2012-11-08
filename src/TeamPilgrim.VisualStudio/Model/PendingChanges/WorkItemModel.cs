@@ -16,7 +16,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             {
                 return _isSelected;
             }
-            private set
+            set
             {
                 if (_isSelected == value) return;
 

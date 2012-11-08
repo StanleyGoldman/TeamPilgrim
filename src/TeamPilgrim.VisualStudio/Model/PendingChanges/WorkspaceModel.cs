@@ -53,40 +53,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
                 SendPropertyChanged("SelectedWorkItemQueryDefinition");
 
-                PopulateWorkItems();
-            }
-        }
-
-        private void PopulateWorkItems()
-        {
-            WorkItemCollection workItemCollection;
-
-            if (teamPilgrimServiceModelProvider.TryGetQueryDefinitionWorkItemCollection(out workItemCollection,
-                                                                                        _projectCollectionModel.TfsTeamProjectCollection,
-                                                                                        SelectedWorkItemQueryDefinition.QueryDefinition, SelectedWorkItemQueryDefinition.Project.Name))
-            {
-                var currentWorkItems = workItemCollection.Cast<WorkItem>().ToArray();
-
-                var modelIntersection =
-                    WorkItems
-                    .Join(currentWorkItems, model => model.WorkItem.Id, workItem => workItem.Id, (model, change) => model)
-                    .ToArray();
-
-                var modelsToRemove = WorkItems.Where(model => !modelIntersection.Contains(model)).ToArray();
-
-                var modelsToAdd = currentWorkItems
-                        .Where(workItem => !modelIntersection.Select(workItemModel => workItemModel.WorkItem.Id).Contains(workItem.Id))
-                        .Select(workItem => new WorkItemModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, workItem)).ToArray();
-
-                foreach (var modelToAdd in modelsToAdd)
-                {
-                    WorkItems.Add(modelToAdd);
-                }
-
-                foreach (var modelToRemove in modelsToRemove)
-                {
-                    WorkItems.Remove(modelToRemove);
-                }
+                RefreshSelectedDefinitionWorkItems();
             }
         }
 
@@ -97,7 +64,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             Workspace = workspace;
 
             CheckInCommand = new RelayCommand(CheckIn, CanCheckIn);
-            RefreshCommand = new RelayCommand(Refresh, CanRefresh);
+            RefreshPendingChangesCommand = new RelayCommand(RefreshPendingChanges, CanRefreshPendingChanges);
+            RefreshSelectedDefinitionWorkItemsCommand = new RelayCommand(RefreshSelectedDefinitionWorkItems, CanRefreshSelectedDefinitionWorkItems);
             ShowSelectWorkItemQueryCommand = new RelayCommand(ShowSelectWorkItemQuery, CanShowSelectWorkItemQuery);
 
             PendingChanges = new ObservableCollection<PendingChangeModel>();
@@ -133,7 +101,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             if (teamPilgrimServiceModelProvider.TryWorkspaceCheckin(Workspace, pendingChanges, Comment, workItemChanges: workItemChanges))
             {
                 Comment = string.Empty;
-                Refresh();
+                RefreshPendingChanges();
             }
         }
 
@@ -144,11 +112,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         #endregion
 
-        #region Refresh Command
+        #region RefreshPendingChanges Command
 
-        public RelayCommand RefreshCommand { get; private set; }
+        public RelayCommand RefreshPendingChangesCommand { get; private set; }
 
-        private void Refresh()
+        private void RefreshPendingChanges()
         {
             PendingChange[] currentPendingChanges;
             if (teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, Workspace))
@@ -176,7 +144,50 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             }
         }
 
-        private bool CanRefresh()
+        private bool CanRefreshPendingChanges()
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region RefreshSelectedDefinitionWorkItemsCommand Command
+
+        public RelayCommand RefreshSelectedDefinitionWorkItemsCommand { get; private set; }
+
+        private void RefreshSelectedDefinitionWorkItems()
+        {
+            WorkItemCollection workItemCollection;
+            if (teamPilgrimServiceModelProvider.TryGetQueryDefinitionWorkItemCollection(out workItemCollection,
+                                                                                        _projectCollectionModel.TfsTeamProjectCollection,
+                                                                                        SelectedWorkItemQueryDefinition.QueryDefinition, SelectedWorkItemQueryDefinition.Project.Name))
+            {
+                var currentWorkItems = workItemCollection.Cast<WorkItem>().ToArray();
+
+                var modelIntersection =
+                    WorkItems
+                    .Join(currentWorkItems, model => model.WorkItem.Id, workItem => workItem.Id, (model, change) => model)
+                    .ToArray();
+
+                var modelsToRemove = WorkItems.Where(model => !modelIntersection.Contains(model)).ToArray();
+
+                var modelsToAdd = currentWorkItems
+                        .Where(workItem => !modelIntersection.Select(workItemModel => workItemModel.WorkItem.Id).Contains(workItem.Id))
+                        .Select(workItem => new WorkItemModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, workItem)).ToArray();
+
+                foreach (var modelToAdd in modelsToAdd)
+                {
+                    WorkItems.Add(modelToAdd);
+                }
+
+                foreach (var modelToRemove in modelsToRemove)
+                {
+                    WorkItems.Remove(modelToRemove);
+                }
+            }
+        }
+
+        private bool CanRefreshSelectedDefinitionWorkItems()
         {
             return true;
         }
