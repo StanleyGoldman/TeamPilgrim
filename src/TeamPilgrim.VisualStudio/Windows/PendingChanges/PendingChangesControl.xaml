@@ -158,14 +158,19 @@
                     <TextBlock DockPanel.Dock="Top">Comment:</TextBlock>
                     <TextBox DockPanel.Dock="Top" DataContext="{Binding Path=SelectedWorkspaceModel}" Text="{Binding Path=Comment, UpdateSourceTrigger=PropertyChanged}"></TextBox>
 
-                    <ListView DataContext="{Binding Path=SelectedWorkspaceModel}" ItemsSource="{Binding Path=PendingChanges}">
+                    <ListView Name="PendingChangesListView" 
+                              DataContext="{Binding Path=SelectedWorkspaceModel}" 
+                              ItemsSource="{Binding Path=PendingChanges}" >
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="File">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate DataType="PendingChangesModel:PendingChangeModel">
                                             <DockPanel>
-                                                <CheckBox DockPanel.Dock="Left" IsChecked="{Binding Path=IncludeChange}" />
+                                                <CheckBox DockPanel.Dock="Left"
+                                                          IsChecked="{Binding Path=IncludeChange}" 
+                                                          Checked="PendingChangesCheckbox_CheckChanged" 
+                                                          Unchecked="PendingChangesCheckbox_CheckChanged" />
                                                 <TextBlock Text="{Binding Path=Change.FileName, Mode=OneWay}" DockPanel.Dock="Right"/>
                                             </DockPanel>
                                         </DataTemplate>

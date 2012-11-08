@@ -22,7 +22,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             {
                 return _includeChange;
             }
-            private set
+            set
             {
                 if (_includeChange == value) return;
 
