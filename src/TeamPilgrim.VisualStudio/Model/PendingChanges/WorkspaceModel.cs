@@ -19,8 +19,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         public ObservableCollection<PendingChangeModel> PendingChanges { get; private set; }
         
-        public ObservableCollection<Conflict> Conflicts { get; private set; }
-
         public Workspace Workspace { get; private set; }
 
         private string _comment;
@@ -84,7 +82,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             _projectCollectionModel = projectCollectionModel;
             Workspace = workspace;
 
-            GetAllConflictsCommand = new RelayCommand(GetAllConflicts, CanGetAllConflicts);
             CheckInCommand = new RelayCommand(CheckIn, CanCheckIn);
             RefreshPendingChangesCommand = new RelayCommand(RefreshPendingChanges, CanRefreshPendingChanges);
             RefreshSelectedDefinitionWorkItemsCommand = new RelayCommand(RefreshSelectedDefinitionWorkItems, CanRefreshSelectedDefinitionWorkItems);
@@ -92,7 +89,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
             PendingChanges = new ObservableCollection<PendingChangeModel>();
             WorkItems = new ObservableCollection<WorkItemModel>();
-            Conflicts = new ObservableCollection<Conflict>();
 
             PendingChange[] pendingChanges;
             if (teamPilgrimServiceModelProvider.TryGetPendingChanges(out pendingChanges, Workspace))
@@ -141,35 +137,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         }
 
         private bool CanCheckIn()
-        {
-            return true;
-        }
-
-        #endregion
-
-        #region RefreshPendingChanges Command
-
-        public RelayCommand GetAllConflictsCommand { get; private set; }
-
-        private void GetAllConflicts()
-        {
-            Conflict[] allConflicts;
-            if(teamPilgrimServiceModelProvider.TryGetAllConflicts(out allConflicts, Workspace))
-            {
-                Conflicts.Clear();
-                foreach (var conflict in allConflicts)
-                {
-                    var briefMessage = conflict.GetBriefMessage();
-                    var detailedMessage = conflict.GetDetailedMessage(false);
-                    var detailedMessage2 = conflict.GetDetailedMessage(true);
-                    var fullMessage = conflict.GetFullMessage();
-
-                    Conflicts.Add(conflict);
-                }
-            }
-        }
-
-        private bool CanGetAllConflicts()
         {
             return true;
         }

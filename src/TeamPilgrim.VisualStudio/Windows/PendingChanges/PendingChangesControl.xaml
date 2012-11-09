@@ -62,9 +62,9 @@
                 <Image Source="..\..\Resources\page_white_delete.png" Width="32" Height="32" Style="{StaticResource ButtonImageStyle}" />
             </RadioButton>
 
-            <RadioButton x:Name="ConflictsRadioButton" Style="{StaticResource {x:Type TypeName=ToggleButton}}" GroupName="PendingChangesMainView">
+            <Button Command="{Binding Path=ShowResolveConflicttManagerCommand}">
                 <Image Source="..\..\Resources\edit_diff.png" Width="32" Height="32" Style="{StaticResource ButtonImageStyle}" />
-            </RadioButton>
+            </Button>
         </ToolBar>
         <TabControl DockPanel.Dock="Bottom" BorderThickness="0" Padding="0">
             <TabControl.Resources>

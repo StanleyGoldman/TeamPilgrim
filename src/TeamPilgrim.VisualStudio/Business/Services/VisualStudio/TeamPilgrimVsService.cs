@@ -10,6 +10,7 @@ using Microsoft.TeamFoundation.Build.Common;
 using Microsoft.TeamFoundation.Build.Controls;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.Server;
+using Microsoft.TeamFoundation.VersionControl.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Controls;
 using Microsoft.VisualStudio;
@@ -54,12 +55,16 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
 
         private readonly Lazy<QuerySecurityCommandHelpersWrapper> _querySecurityCommandHelpers;
 
+        private Lazy<VersionControlPackageWrapper> _versionControlPackage;
+
         private IWorkItemControlHost _workItemControlHost;
+        
 
         public TeamPilgrimVsService()
         {
             _teamFoundationBuild = new Lazy<VsTeamFoundationBuildWrapper>(() => new VsTeamFoundationBuildWrapper(_packageInstance.GetPackageService<IVsTeamFoundationBuild>()));
             _workItemTrackingPackage = new Lazy<WorkItemTrackingPackageWrapper>();
+            _versionControlPackage = new Lazy<VersionControlPackageWrapper>();
             _querySecurityCommandHelpers = new Lazy<QuerySecurityCommandHelpersWrapper>();
         }
 
@@ -151,6 +156,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
         public void OpenSecurityItemDialog(QueryItem queryItem)
         {
             _querySecurityCommandHelpers.Value.HandleSecurityCommand(queryItem);
+        }
+
+        public void ResolveConflicts(Workspace workspace, string[] paths, bool recursive, bool afterCheckin)
+        {
+            _versionControlPackage.Value.ResolveConflicts(workspace, paths, recursive, afterCheckin);
         }
 
         private IVsWindowFrame GetVsWindowFrameByTypeAndMoniker(Guid editorTypeId, string moniker)

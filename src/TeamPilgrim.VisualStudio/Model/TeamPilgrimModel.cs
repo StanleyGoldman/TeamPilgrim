@@ -99,6 +99,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
             RefreshCommand = new RelayCommand(Refresh, CanRefresh);
             TfsConnectCommand = new RelayCommand(TfsConnect, CanTfsConnect);
+            ShowResolveConflicttManagerCommand = new RelayCommand(ShowResolveConflicttManager, CanShowResolveConflicttManager);
 
             PopulatePilgrimModel();
         }
@@ -188,6 +189,29 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
         }
 
         private bool CanRefresh()
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region ShowResolveConflicttManager Command
+
+        public RelayCommand ShowResolveConflicttManagerCommand { get; private set; }
+
+        private void ShowResolveConflicttManager()
+        {
+            if (SelectedWorkspaceModel == null) 
+                return;
+
+            var paths = 
+                SelectedWorkspaceModel.Workspace.Folders
+                    .Select(folder => folder.ServerItem).ToArray();
+
+            _teamPilgrimVsService.ResolveConflicts(SelectedWorkspaceModel.Workspace, paths, true, false);
+        }
+
+        private bool CanShowResolveConflicttManager()
         {
             return true;
         }
