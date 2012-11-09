@@ -163,5 +163,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
         {
             return workspace.EvaluateCheckin(CheckinEvaluationOptions.All, changes, changes, comment, checkinNote, workItemChanges);
         }
+
+        public Conflict[] GetAllConflicts(Workspace workspace)
+        {
+            return workspace.QueryConflicts(workspace.Folders.Select(folder => folder.ServerItem).ToArray(), true);
+        }
     }
 }

@@ -307,17 +307,44 @@
             <TabItem IsSelected="{Binding ElementName=ConflictsRadioButton, Path=IsChecked}">
                 <DockPanel Name="ConflictsDataDockPanel">
                     <ToolBar DockPanel.Dock="Top">
+                        <Button DataContext="{Binding Path=SelectedWorkspaceModel}" Command="{Binding Path=GetAllConflictsCommand}">
+                            <TextBlock>Get All Conflicts</TextBlock>
+                        </Button>
                     </ToolBar>
-                    <ListView>
+                    <TextBlock />
+                    <ListView DataContext="{Binding Path=SelectedWorkspaceModel}" ItemsSource="{Binding Path=Conflicts}">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn/>
                                 <GridViewColumn/>
-                                <GridViewColumn Header="Name"/>
+                                <GridViewColumn Header="Name">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate DataType="VersionControlClient:Conflict">
+                                            <TextBlock Text="{Binding Path=FileName}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
                                 <GridViewColumn Header="Type"/>
-                                <GridViewColumn Header="Path"/>
-                                <GridViewColumn Header="Conflict Type"/>
-                                <GridViewColumn Header="Description"/>
+                                <GridViewColumn Header="Path">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate DataType="VersionControlClient:Conflict">
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Conflict Tyle">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate DataType="VersionControlClient:Conflict">
+                                            <TextBlock Text="{Binding Path=Type}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Message">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate DataType="VersionControlClient:Conflict">
+                                            <TextBlock Text="{Binding Path=Message}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
                             </GridView>
                         </ListView.View>
                     </ListView>

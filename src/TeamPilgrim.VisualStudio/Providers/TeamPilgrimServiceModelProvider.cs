@@ -214,6 +214,22 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             return false;
         }
 
+        public bool TryGetAllConflicts(out Conflict[] conflicts, Workspace workspace)
+        {
+            try
+            {
+                conflicts = _teamPilgrimTfsService.GetAllConflicts(workspace);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LastException = ex;
+            }
+
+            conflicts = null;
+            return false;
+        }
+
         public bool TryGetPendingChanges(out PendingChange[] pendingChanges, Workspace workspace)
         {
             try

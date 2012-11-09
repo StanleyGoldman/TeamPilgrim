@@ -39,5 +39,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
 		bool TryGetQueryDefinitionWorkItemCollection(out WorkItemCollection workItemCollection, TfsTeamProjectCollection tfsTeamProjectCollection, QueryDefinition queryDefinition, string projectName);
         
         bool TryEvaluateCheckin(out CheckinEvaluationResult checkinEvaluationResult, Workspace workspace, PendingChange[] changes, string comment, CheckinNote checkinNote = null, WorkItemCheckinInfo[] workItemChanges = null);
+        
+        bool TryGetAllConflicts(out Conflict[] conflicts, Workspace workspace);
     }
 }
