@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using GalaSoft.MvvmLight.Command;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Extensions;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children;
@@ -33,6 +35,23 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                 _comment = value;
 
                 SendPropertyChanged("Comment");
+            }
+        }
+
+        private CheckinEvaluationResult _checkinEvaluationResult;
+        public CheckinEvaluationResult CheckinEvaluationResult
+        {
+            get
+            {
+                return _checkinEvaluationResult;
+            }
+            private set
+            {
+                if (_checkinEvaluationResult == value) return;
+
+                _checkinEvaluationResult = value;
+
+                SendPropertyChanged("CheckinEvaluationResult");
             }
         }
 
@@ -98,10 +117,22 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                 WorkItems.Where(model => model.IsSelected)
                 .Select(model => new WorkItemCheckinInfo(model.WorkItem, model.WorkItemCheckinAction.ToWorkItemCheckinAction())).ToArray();
 
-            if (teamPilgrimServiceModelProvider.TryWorkspaceCheckin(Workspace, pendingChanges, Comment, workItemChanges: workItemChanges))
+            CheckinEvaluationResult checkinEvaluationResult;
+            if (teamPilgrimServiceModelProvider.TryEvaluateCheckin(out checkinEvaluationResult, Workspace, pendingChanges, Comment, workItemChanges: workItemChanges))
             {
-                Comment = string.Empty;
-                RefreshPendingChanges();
+                if (checkinEvaluationResult.IsValid())
+                {
+                    CheckinEvaluationResult = null;
+                    if (teamPilgrimServiceModelProvider.TryWorkspaceCheckin(Workspace, pendingChanges, Comment, workItemChanges: workItemChanges))
+                    {
+                        Comment = string.Empty;
+                        RefreshPendingChanges();
+                    }   
+                }
+                else
+                {
+                    CheckinEvaluationResult = checkinEvaluationResult;
+                }
             }
         }
 

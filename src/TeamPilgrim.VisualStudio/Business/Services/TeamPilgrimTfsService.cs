@@ -158,5 +158,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
         {
             workspace.CheckIn(changes, comment, checkinNote, workItemChanges, policyOverride);
         }
+
+        public CheckinEvaluationResult EvaluateCheckin(Workspace workspace, PendingChange[] changes, string comment, CheckinNote checkinNote, WorkItemCheckinInfo[] workItemChanges)
+        {
+            return workspace.EvaluateCheckin(CheckinEvaluationOptions.All, changes, changes, comment, checkinNote, workItemChanges);
+        }
     }
 }

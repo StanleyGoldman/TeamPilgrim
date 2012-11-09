@@ -171,6 +171,7 @@
     <Compile Include="Common\Converters\OcClauseBooleanToVisibilityConverter.cs" />
     <Compile Include="Common\VsWindowFrameEditorTypeIds.cs" />
     <Compile Include="Common\AttachedProperties\MouseDoubleClick.cs" />
+    <Compile Include="Common\Extensions\CheckinEvaluationResultExtensions.cs" />
     <Compile Include="Model\PendingChanges\SelectedWorkItemCheckinActionEnum.cs" />
     <Compile Include="Model\PendingChanges\SelectedWorkItemCheckinActionEnumExtensions.cs" />
     <Compile Include="Model\PendingChanges\WorkItemModel.cs" />

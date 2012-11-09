@@ -12,6 +12,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
     {
         private readonly ITeamPilgrimTfsService _teamPilgrimTfsService;
 
+        public Exception LastException { get; private set; }
+
+        public void ClearLastException()
+        {
+            LastException = null;
+        }
+
         public TeamPilgrimServiceModelProvider()
         {
             _teamPilgrimTfsService = new TeamPilgrimTfsService();
@@ -24,7 +31,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
                 collections = _teamPilgrimTfsService.GetProjectCollections();
                 return true;
             }
-            catch (Exception) { }
+            catch (Exception ex)
+            {
+                LastException = ex;
+            }
 
             collections = null;
             return false;
@@ -37,7 +47,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
                 collection = _teamPilgrimTfsService.GetProjectCollection(tpcAddress);
                 return true;
             }
-            catch (Exception) { }
+            catch (Exception ex)
+            {
+                LastException = ex;
+            }
 
             collection = null;
             return false;
@@ -50,7 +63,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
                 projects = _teamPilgrimTfsService.GetProjects(tpcAddress);
                 return true;
             }
-            catch (Exception) { }
+            catch (Exception ex)
+            {
+                LastException = ex;
+            }
 
             projects = null;
             return false;
@@ -65,7 +81,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             }
             catch (Exception ex)
             {
-
+                LastException = ex;
             }
 
             result = false;
@@ -81,7 +97,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             }
             catch (Exception ex)
             {
-
+                LastException = ex;
             }
 
             buildDefinitions = null;
@@ -97,7 +113,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             }
             catch (Exception ex)
             {
-
+                LastException = ex;
             }
 
             buildDefinition = null;
@@ -113,7 +129,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             }
             catch (Exception ex)
             {
-
+                LastException = ex;
             }
 
             return false;
@@ -128,7 +144,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             }
             catch (Exception ex)
             {
-
+                LastException = ex;
             }
 
             childFolder = null;
@@ -144,7 +160,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             }
             catch (Exception ex)
             {
-
+                LastException = ex;
             }
 
             workspaceInfos = null;
@@ -160,7 +176,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             }
             catch (Exception ex)
             {
-
+                LastException = ex;
             }
 
             workspace = null;
@@ -176,9 +192,25 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             }
             catch (Exception ex)
             {
-
+                LastException = ex;
             }
 
+            return false;
+        }
+
+        public bool TryEvaluateCheckin(out CheckinEvaluationResult checkinEvaluationResult, Workspace workspace, PendingChange[] changes, string comment, CheckinNote checkinNote = null, WorkItemCheckinInfo[] workItemChanges = null)
+        {
+            try
+            {
+                checkinEvaluationResult = _teamPilgrimTfsService.EvaluateCheckin(workspace, changes, comment, checkinNote, workItemChanges);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LastException = ex;
+            }
+            
+            checkinEvaluationResult = null;
             return false;
         }
 
@@ -191,7 +223,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             }
             catch (Exception ex)
             {
-
+                LastException = ex;
             }
             
             pendingChanges = null;
@@ -207,7 +239,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             }
             catch (Exception ex)
             {
-
+                LastException = ex;
             }
 
             workItemCollection = null;
