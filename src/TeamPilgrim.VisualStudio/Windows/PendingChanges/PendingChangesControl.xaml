@@ -7,7 +7,9 @@
              xmlns:Model="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model"
              xmlns:VersionControlClient="clr-namespace:Microsoft.TeamFoundation.VersionControl.Client;assembly=Microsoft.TeamFoundation.VersionControl.Client"
              xmlns:PendingChangesModel="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges"
-             xmlns:System="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d" 
+             xmlns:System="clr-namespace:System;assembly=mscorlib"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+	     mc:Ignorable="d" 
              Height="Auto" d:DesignHeight="300" d:DesignWidth="850"
              d:DataContext="{d:DesignInstance Model:TeamPilgrimServiceModel}">
     <UserControl.Resources>
@@ -282,11 +284,21 @@
                             </StackPanel>
                         </Button>
                     </ToolBar>
-                    <ListView DataContext="{Binding Path=SelectedWorkspaceModel}" ItemsSource="{Binding Path=CheckinNotes}">
+                    <ListView DataContext="{Binding Path=SelectedWorkspaceModel}" ItemsSource="{Binding Path=CheckinNotes}" DockPanel.Dock="Bottom" HorizontalContentAlignment="Stretch">
                         <ListView.ItemTemplate>
                             <DataTemplate DataType="PendingChangesModel:CheckinNoteModel">
                                 <Expander Header="{Binding Path=CheckinNoteFieldDefinition.Name}">
-                                    <TextBox Text="" />
+                                    <xctk:WatermarkTextBox Text="{Binding Path=Value, UpdateSourceTrigger=PropertyChanged}">
+                                        <xctk:WatermarkTextBox.Style>
+                                            <Style TargetType="xctk:WatermarkTextBox">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=CheckinNoteFieldDefinition.Required}" Value="True">
+                                                        <Setter Property="Watermark" Value="&lt;Required&gt;" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </xctk:WatermarkTextBox.Style>
+                                    </xctk:WatermarkTextBox>
                                 </Expander>
                             </DataTemplate>
                         </ListView.ItemTemplate>
@@ -309,52 +321,6 @@
                                 <GridViewColumn Header="Description">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate DataType="VersionControlClient:PolicyFailure">
-                                            <TextBlock Text="{Binding Path=Message}"/>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
-                </DockPanel>
-            </TabItem>
-            <TabItem IsSelected="{Binding ElementName=ConflictsRadioButton, Path=IsChecked}">
-                <DockPanel Name="ConflictsDataDockPanel">
-                    <ToolBar DockPanel.Dock="Top">
-                        <Button DataContext="{Binding Path=SelectedWorkspaceModel}" Command="{Binding Path=GetAllConflictsCommand}">
-                            <TextBlock>Get All Conflicts</TextBlock>
-                        </Button>
-                    </ToolBar>
-                    <TextBlock />
-                    <ListView DataContext="{Binding Path=SelectedWorkspaceModel}" ItemsSource="{Binding Path=Conflicts}">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn/>
-                                <GridViewColumn/>
-                                <GridViewColumn Header="Name">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate DataType="VersionControlClient:Conflict">
-                                            <TextBlock Text="{Binding Path=FileName}"/>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                                <GridViewColumn Header="Type"/>
-                                <GridViewColumn Header="Path">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate DataType="VersionControlClient:Conflict">
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                                <GridViewColumn Header="Conflict Tyle">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate DataType="VersionControlClient:Conflict">
-                                            <TextBlock Text="{Binding Path=Type}"/>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                                <GridViewColumn Header="Message">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate DataType="VersionControlClient:Conflict">
                                             <TextBlock Text="{Binding Path=Message}"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>

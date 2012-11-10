@@ -10,5 +10,22 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         {
             CheckinNoteFieldDefinition = checkinNoteFieldDefinition;
         }
+
+        private string _value;
+        public string Value
+        {
+            get
+            {
+                return _value;
+            }
+            private set
+            {
+                if (_value == value) return;
+
+                _value = value;
+
+                SendPropertyChanged("Value");
+            }
+        }
     }
 }

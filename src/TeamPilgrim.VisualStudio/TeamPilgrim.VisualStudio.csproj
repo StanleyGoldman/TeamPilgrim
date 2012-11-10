@@ -104,6 +104,12 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="WindowsBase" />
     <Reference Include="System.Xaml" />
+    <Reference Include="WPFToolkit.Extended">
+      <HintPath>..\..\lib\Extended.Wpf.Toolkit.1.8.0\lib\net40\WPFToolkit.Extended.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.DataGrid">
+      <HintPath>..\..\lib\Extended.Wpf.Toolkit.1.8.0\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="EnvDTE">
