@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
@@ -29,6 +30,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
             {
                 workItemModel.IsSelected = checkedWorkItemModel.IsSelected;
             }
+
+            var teamPilgrimModel = (TeamPilgrimModel)DataContext;
+            if (teamPilgrimModel.SelectedWorkspaceModel != null)
+                teamPilgrimModel.SelectedWorkspaceModel.EvaluateCheckInCommand.Execute(null);
         }
 
         private void PendingChangesCheckbox_CheckChanged(object sender, RoutedEventArgs e)
@@ -43,6 +48,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
             {
                 workItemModel.IncludeChange = pendingChangeModel.IncludeChange;
             }
+
+            var teamPilgrimModel = (TeamPilgrimModel)DataContext;
+            if (teamPilgrimModel.SelectedWorkspaceModel != null)
+                teamPilgrimModel.SelectedWorkspaceModel.EvaluateCheckInCommand.Execute(null);
         }
     }
 }

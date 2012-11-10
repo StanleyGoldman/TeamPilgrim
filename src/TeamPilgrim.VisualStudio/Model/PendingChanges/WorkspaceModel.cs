@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -32,9 +33,16 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             {
                 if (_comment == value) return;
 
+                var previousValue = _comment;
+
                 _comment = value;
 
                 SendPropertyChanged("Comment");
+
+                if(string.IsNullOrWhiteSpace(previousValue) ^ string.IsNullOrWhiteSpace(_comment))
+                {
+                    EvaluateCheckIn();
+                }
             }
         }
 
@@ -86,6 +94,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             RefreshPendingChangesCommand = new RelayCommand(RefreshPendingChanges, CanRefreshPendingChanges);
             RefreshSelectedDefinitionWorkItemsCommand = new RelayCommand(RefreshSelectedDefinitionWorkItems, CanRefreshSelectedDefinitionWorkItems);
             ShowSelectWorkItemQueryCommand = new RelayCommand(ShowSelectWorkItemQuery, CanShowSelectWorkItemQuery);
+            EvaluateCheckInCommand = new RelayCommand(EvaluateCheckIn, CanEvaluateCheckIn);
 
             PendingChanges = new ObservableCollection<PendingChangeModel>();
             WorkItems = new ObservableCollection<WorkItemModel>();
@@ -100,6 +109,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                 }
             }
 
+            var versionControlServer = _projectCollectionModel.TfsTeamProjectCollection.GetService<VersionControlServer>();
+            versionControlServer.PendingChangesChanged += VersionControlServerOnPendingChangesChanged;
+        }
+
+        private void VersionControlServerOnPendingChangesChanged(object sender, WorkspaceEventArgs workspaceEventArgs)
+        {
+            RefreshPendingChanges();
         }
 
         #region CheckIn Command
@@ -127,6 +143,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                     {
                         Comment = string.Empty;
                         RefreshPendingChanges();
+
+                        foreach (var workItem in WorkItems.Where(model => model.IsSelected))
+                        {
+                            workItem.IsSelected = false;
+                        }
+
+                        RefreshSelectedDefinitionWorkItemsCommand.Execute(null);
                     }   
                 }
                 else
@@ -137,6 +160,36 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         }
 
         private bool CanCheckIn()
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region EvaluateCheckIn Command
+
+        public RelayCommand EvaluateCheckInCommand { get; private set; }
+
+        private void EvaluateCheckIn()
+        {
+            CheckinEvaluationResult checkinEvaluationResult;
+
+            var pendingChanges = PendingChanges
+                .Where(model => model.IncludeChange)
+                .Select(model => model.Change)
+                .ToArray();
+
+            var workItemChanges =
+                WorkItems.Where(model => model.IsSelected)
+                .Select(model => new WorkItemCheckinInfo(model.WorkItem, model.WorkItemCheckinAction.ToWorkItemCheckinAction())).ToArray();
+            
+            if (teamPilgrimServiceModelProvider.TryEvaluateCheckin(out checkinEvaluationResult, Workspace, pendingChanges, Comment, workItemChanges: workItemChanges))
+            {
+                CheckinEvaluationResult = checkinEvaluationResult;
+            }
+        }
+
+        private bool CanEvaluateCheckIn()
         {
             return true;
         }
