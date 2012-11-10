@@ -295,10 +295,16 @@
                             </StackPanel>
                         </Button>
                     </ToolBar>
-                    <ListView>
+                    <ListView DataContext="{Binding Path=SelectedWorkspaceModel.CheckinEvaluationResult}" ItemsSource="{Binding Path=PolicyFailures}">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="Description" />
+                                <GridViewColumn Header="Description">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate DataType="VersionControlClient:PolicyFailure">
+                                            <TextBlock Text="{Binding Path=Message}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
                             </GridView>
                         </ListView.View>
                     </ListView>
