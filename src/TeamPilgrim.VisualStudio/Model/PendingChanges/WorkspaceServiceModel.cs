@@ -142,13 +142,23 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                 WorkItems.Where(model => model.IsSelected)
                 .Select(model => new WorkItemCheckinInfo(model.WorkItem, model.WorkItemCheckinAction.ToWorkItemCheckinAction())).ToArray();
 
+            var checkinNoteFieldValues =
+                CheckinNotes
+                .Where(model => !string.IsNullOrWhiteSpace(model.Value))
+                .Select(model => new CheckinNoteFieldValue(model.CheckinNoteFieldDefinition.Name, model.Value))
+                .ToArray();
+
+            var currentCheckinNoteDefinitions = _checkinNotesCacheWrapper.GetCheckinNotes(pendingChanges);
+            var checkinNote = new CheckinNote(checkinNoteFieldValues);
+            checkinNote.MergeWithFieldDefinitions(currentCheckinNoteDefinitions);
+
             CheckinEvaluationResult checkinEvaluationResult;
-            if (teamPilgrimServiceModelProvider.TryEvaluateCheckin(out checkinEvaluationResult, Workspace, pendingChanges, Comment, workItemChanges: workItemChanges))
+            if (teamPilgrimServiceModelProvider.TryEvaluateCheckin(out checkinEvaluationResult, Workspace, pendingChanges, Comment, checkinNote, workItemChanges))
             {
                 if (checkinEvaluationResult.IsValid())
                 {
                     CheckinEvaluationResult = null;
-                    if (teamPilgrimServiceModelProvider.TryWorkspaceCheckin(Workspace, pendingChanges, Comment, workItemChanges: workItemChanges))
+                    if (teamPilgrimServiceModelProvider.TryWorkspaceCheckin(Workspace, pendingChanges, Comment, checkinNote, workItemChanges))
                     {
                         Comment = string.Empty;
                         RefreshPendingChanges();
@@ -181,35 +191,24 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private void EvaluateCheckIn()
         {
-            CheckinEvaluationResult checkinEvaluationResult;
-
             var pendingChanges = PendingChanges
-                .Where(model => model.IncludeChange)
-                .Select(model => model.Change)
-                .ToArray();
-
-            var workItemChanges =
-                WorkItems.Where(model => model.IsSelected)
-                .Select(model => new WorkItemCheckinInfo(model.WorkItem, model.WorkItemCheckinAction.ToWorkItemCheckinAction())).ToArray();
-            
-            if (teamPilgrimServiceModelProvider.TryEvaluateCheckin(out checkinEvaluationResult, Workspace, pendingChanges, Comment, workItemChanges: workItemChanges))
-            {
-                CheckinEvaluationResult = checkinEvaluationResult;
-            }
+                                    .Where(model => model.IncludeChange)
+                                    .Select(model => model.Change)
+                                    .ToArray();
 
             var currentCheckinNoteDefinitions = _checkinNotesCacheWrapper.GetCheckinNotes(pendingChanges);
 
-            var equalityComparer = CheckinNoteFieldDefinition.NameComparer.ToGenericComparer<string>().ToEqualityComparer();
+            var equalityComparer = CheckinNoteFieldDefinition.NameComparer.ToGenericComparer<CheckinNoteFieldDefinition>().ToEqualityComparer();
 
             var modelIntersection =
                     CheckinNotes
-                    .Join(currentCheckinNoteDefinitions, model => model.CheckinNoteFieldDefinition.Name, change => change.Name, (model, change) => model, equalityComparer)
+                    .Join(currentCheckinNoteDefinitions, model => model.CheckinNoteFieldDefinition, checkinNoteFieldDefinition => checkinNoteFieldDefinition, (model, change) => model, equalityComparer)
                     .ToArray();
 
             var modelsToRemove = CheckinNotes.Where(model => !modelIntersection.Contains(model)).ToArray();
 
             var modelsToAdd = currentCheckinNoteDefinitions
-                .Where(checkinNoteFieldDefinition => !modelIntersection.Select(model => model.CheckinNoteFieldDefinition.Name).Contains(checkinNoteFieldDefinition.Name, equalityComparer))
+                .Where(checkinNoteFieldDefinition => !modelIntersection.Select(model => model.CheckinNoteFieldDefinition).Contains(checkinNoteFieldDefinition, equalityComparer))
                 .Select(checkinNoteFieldDefinition => new CheckinNoteModel(checkinNoteFieldDefinition)).ToArray();
 
             foreach (var modelToAdd in modelsToAdd)
@@ -220,6 +219,27 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             foreach (var modelToRemove in modelsToRemove)
             {
                 CheckinNotes.Remove(modelToRemove);
+            }
+
+            CheckinEvaluationResult checkinEvaluationResult;
+
+            var workItemChanges =
+                WorkItems
+                .Where(model => model.IsSelected)
+                .Select(model => new WorkItemCheckinInfo(model.WorkItem, model.WorkItemCheckinAction.ToWorkItemCheckinAction())).ToArray();
+
+            var checkinNoteFieldValues = 
+                CheckinNotes
+                .Where(model => !string.IsNullOrWhiteSpace(model.Value))
+                .Select(model => new CheckinNoteFieldValue(model.CheckinNoteFieldDefinition.Name, model.Value))
+                .ToArray();
+
+            var checkinNote = new CheckinNote(checkinNoteFieldValues);
+            checkinNote.MergeWithFieldDefinitions(currentCheckinNoteDefinitions);
+
+            if (teamPilgrimServiceModelProvider.TryEvaluateCheckin(out checkinEvaluationResult, Workspace, pendingChanges, Comment, checkinNote, workItemChanges))
+            {
+                CheckinEvaluationResult = checkinEvaluationResult;
             }
         }
 
