@@ -9,40 +9,40 @@ using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
 {
-    public class ProjectModel : BaseModel
+    public class ProjectServiceModel : BaseServiceModel
     {
         public TfsTeamProjectCollection ProjectCollection { get; private set; }
 
         public Project Project { get; private set; }
 
-        public TeamPilgrimModel TeamPilgrimModel { get; private set; }
+        public TeamPilgrimServiceModel TeamPilgrimServiceModel { get; private set; }
 
-        public BuildDefinitionsModel BuildDefinitionsModel { get; private set; }
+        public BuildDefinitionsServiceModel BuildDefinitionsServiceModel { get; private set; }
         
-        public WorkItemQueryContainerModel WorkItemQueryContainerModel { get; private set; }
+        public WorkItemQueryServiceModel WorkItemQueryServiceModel { get; private set; }
 
         public ObservableCollection<BaseModel> ChildObjects { get; private set; }
 
-        public ProjectModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, TeamPilgrimModel teamPilgrimModel, TfsTeamProjectCollection projectCollection, Project project)
+        public ProjectServiceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, TeamPilgrimServiceModel teamPilgrimServiceModel, TfsTeamProjectCollection projectCollection, Project project)
             :base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
         {
-            TeamPilgrimModel = teamPilgrimModel;
+            TeamPilgrimServiceModel = teamPilgrimServiceModel;
             ProjectCollection = projectCollection;
             Project = project;
             
             OpenSourceControlCommand = new RelayCommand(OpenSourceControl, CanOpenSourceControl);
 
-            BuildDefinitionsModel = new BuildDefinitionsModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, projectCollection, project);
+            BuildDefinitionsServiceModel = new BuildDefinitionsServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, projectCollection, project);
 
-            WorkItemQueryContainerModel = new WorkItemQueryContainerModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, teamPilgrimModel, projectCollection, project);
+            WorkItemQueryServiceModel = new WorkItemQueryServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, projectCollection, project);
 
             ChildObjects = new ObservableCollection<BaseModel>
                 {
-                    WorkItemQueryContainerModel, 
-                    new ReportsModel(teamPilgrimServiceModelProvider, teamPilgrimVsService),
-                    BuildDefinitionsModel,
-                    new TeamMembersModel(teamPilgrimServiceModelProvider, teamPilgrimVsService),
-                    new SourceControlModel(teamPilgrimServiceModelProvider, teamPilgrimVsService)
+                    WorkItemQueryServiceModel, 
+                    new ReportsModel(),
+                    BuildDefinitionsServiceModel,
+                    new TeamMembersModel(),
+                    new SourceControlModel()
                 };
         }
 

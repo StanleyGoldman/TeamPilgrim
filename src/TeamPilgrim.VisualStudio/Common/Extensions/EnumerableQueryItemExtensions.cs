@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
@@ -18,13 +18,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common.Extensions
                     if (queryFolder != null)
                     {
                         var foldersChildren = queryFolder.GetQueryItemViewModels(workItemQueryCommandModel, teamPilgrimServiceModelProvider, teamPilgrimVsService, project, depth + 1);
-                        return new WorkItemQueryFolderModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, workItemQueryCommandModel, project, depth, queryFolder, foldersChildren);
+                        return new WorkItemQueryFolderModel(workItemQueryCommandModel, project, depth, queryFolder, foldersChildren);
                     }
 
                     var queryDefinition = item as QueryDefinition;
                     if (queryDefinition != null)
                     {
-                        return new WorkItemQueryDefinitionModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, workItemQueryCommandModel, project, depth, queryDefinition);
+                        return new WorkItemQueryDefinitionModel(workItemQueryCommandModel, project, depth, queryDefinition);
                     }
 
                     throw new ArgumentException(item.GetType().ToString());

@@ -1,31 +1,17 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Windows.Threading;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
     public class BaseModel : INotifyPropertyChanged
     {
-        private readonly Dispatcher _dispatcher;
-        protected readonly ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider;
-        protected readonly ITeamPilgrimVsService teamPilgrimVsService;
-
-        public BaseModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService)
-        {
-            _dispatcher = Dispatcher.CurrentDispatcher;
-            this.teamPilgrimServiceModelProvider = teamPilgrimServiceModelProvider;
-            this.teamPilgrimVsService = teamPilgrimVsService;
-        }
+        private readonly Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
+        private PropertyChangedEventHandler _propertyChangedEvent;
 
         public Dispatcher Dispatcher
         {
             get { return _dispatcher; }
         }
-
-        #region Property Changed
-
-        private PropertyChangedEventHandler _propertyChangedEvent;
 
         public event PropertyChangedEventHandler PropertyChanged
         {
@@ -46,7 +32,5 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
                 _propertyChangedEvent(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-        #endregion
     }
 }

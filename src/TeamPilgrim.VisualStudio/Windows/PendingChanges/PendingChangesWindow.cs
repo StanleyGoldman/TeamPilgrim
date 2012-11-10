@@ -25,7 +25,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
             var pendingChangesControl = new PendingChangesControl();
             base.Content = pendingChangesControl;
             
-            pendingChangesControl.DataContext = TeamPilgrimPackage.TeamPilgrimModel;
+            pendingChangesControl.DataContext = TeamPilgrimPackage.TeamPilgrimServiceModel;
         }
     }
 }

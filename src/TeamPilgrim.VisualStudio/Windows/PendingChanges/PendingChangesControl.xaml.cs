@@ -31,7 +31,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
                 workItemModel.IsSelected = checkedWorkItemModel.IsSelected;
             }
 
-            var teamPilgrimModel = (TeamPilgrimModel)DataContext;
+            var teamPilgrimModel = (TeamPilgrimServiceModel)DataContext;
             if (teamPilgrimModel.SelectedWorkspaceModel != null)
                 teamPilgrimModel.SelectedWorkspaceModel.EvaluateCheckInCommand.Execute(null);
         }
@@ -49,7 +49,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
                 workItemModel.IncludeChange = pendingChangeModel.IncludeChange;
             }
 
-            var teamPilgrimModel = (TeamPilgrimModel)DataContext;
+            var teamPilgrimModel = (TeamPilgrimServiceModel)DataContext;
             if (teamPilgrimModel.SelectedWorkspaceModel != null)
                 teamPilgrimModel.SelectedWorkspaceModel.EvaluateCheckInCommand.Execute(null);
         }

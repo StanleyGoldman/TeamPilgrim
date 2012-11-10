@@ -1,6 +1,3 @@
-using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
-using Microsoft.TeamFoundation.VersionControl.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
@@ -43,8 +40,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             }
         }
 
-        public WorkItemModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, WorkItem workItem)
-            : base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
+        public WorkItemModel(WorkItem workItem)
         {
             WorkItem = workItem;
         }

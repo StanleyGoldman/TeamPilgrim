@@ -1,5 +1,3 @@
-using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.VersionControl.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
@@ -8,8 +6,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
     {
         public PendingChange Change { get; private set; }
 
-        public PendingChangeModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, PendingChange change)
-            : base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
+        public PendingChangeModel(PendingChange change)
         {
             Change = change;
         }

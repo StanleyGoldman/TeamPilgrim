@@ -15,7 +15,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Explorer
         public ExplorerControl()
         {
             InitializeComponent();
-            DataContext = TeamPilgrimPackage.TeamPilgrimModel;
+            DataContext = TeamPilgrimPackage.TeamPilgrimServiceModel;
         }
 
         private void OnPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)

@@ -2,11 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
 {
     public class WorkItemQueryFolderModel : WorkItemQueryChildModel
     {
@@ -16,8 +14,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children
 
         public Project Project { get; private set; }
 
-        public WorkItemQueryFolderModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, IWorkItemQueryCommandModel workItemQueryCommandModel, Project project, int depth, QueryFolder queryFolder, IEnumerable<WorkItemQueryChildModel> childQueryItemViewModels)
-            : base(teamPilgrimServiceModelProvider, teamPilgrimVsService, workItemQueryCommandModel, depth)
+        public WorkItemQueryFolderModel(IWorkItemQueryCommandModel workItemQueryCommandModel, Project project, int depth, QueryFolder queryFolder, IEnumerable<WorkItemQueryChildModel> childQueryItemViewModels)
+            : base(workItemQueryCommandModel, depth)
         {
             Project = project;
             QueryFolder = queryFolder;

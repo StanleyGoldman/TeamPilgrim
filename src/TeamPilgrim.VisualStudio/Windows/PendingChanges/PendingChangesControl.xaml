@@ -9,7 +9,7 @@
              xmlns:PendingChangesModel="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges"
              xmlns:System="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d" 
              Height="Auto" d:DesignHeight="300" d:DesignWidth="850"
-             d:DataContext="{d:DesignInstance Model:TeamPilgrimModel}">
+             d:DataContext="{d:DesignInstance Model:TeamPilgrimServiceModel}">
     <UserControl.Resources>
 
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
@@ -282,7 +282,15 @@
                             </StackPanel>
                         </Button>
                     </ToolBar>
-                    <TextBlock />
+                    <ListView DataContext="{Binding Path=SelectedWorkspaceModel}" ItemsSource="{Binding Path=CheckinNotes}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate DataType="PendingChangesModel:CheckinNoteModel">
+                                <Expander Header="{Binding Path=CheckinNoteFieldDefinition.Name}">
+                                    <TextBox Text="" />
+                                </Expander>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
                 </DockPanel>
             </TabItem>
             <TabItem IsSelected="{Binding ElementName=PolicyWarningsRadioButton, Path=IsChecked}">

@@ -4,30 +4,23 @@ using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Extensions;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
 {
-    public class WorkItemQueryContainerModel : BaseModel, IWorkItemQueryCommandModel
+    public class WorkItemQueryServiceModel : BaseServiceModel, IWorkItemQueryCommandModel
     {
-        private readonly ITeamPilgrimServiceModelProvider _teamPilgrimServiceModelProvider;
-
-        private readonly TeamPilgrimModel _teamPilgrimModel;
-
         private readonly TfsTeamProjectCollection _projectCollection;
 
         private readonly Project _project;
 
         public ObservableCollection<WorkItemQueryChildModel> QueryItems { get; private set; }
 
-        public WorkItemQueryContainerModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, TeamPilgrimModel teamPilgrimModel, TfsTeamProjectCollection projectCollection, Project project)
+        public WorkItemQueryServiceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, TfsTeamProjectCollection projectCollection, Project project)
             : base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
         {
-            _teamPilgrimServiceModelProvider = teamPilgrimServiceModelProvider;
-            _teamPilgrimModel = teamPilgrimModel;
             _projectCollection = projectCollection;
             _project = project;
 
@@ -89,9 +82,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
         {
             QueryFolder queryFolder;
             QueryFolder parentFolder = workItemQueryFolderModel.QueryFolder;
-            if (_teamPilgrimServiceModelProvider.TryAddNewQueryFolder(out queryFolder, _projectCollection, _project, parentFolder.Id))
+            if (teamPilgrimServiceModelProvider.TryAddNewQueryFolder(out queryFolder, _projectCollection, _project, parentFolder.Id))
             {
-                workItemQueryFolderModel.QueryItems.Insert(0, new WorkItemQueryFolderModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, this, _project, workItemQueryFolderModel.Depth + 1, queryFolder, new WorkItemQueryChildModel[0]));
+                workItemQueryFolderModel.QueryItems.Insert(0, new WorkItemQueryFolderModel(this, _project, workItemQueryFolderModel.Depth + 1, queryFolder, new WorkItemQueryChildModel[0]));
             }
         }
 
@@ -166,7 +159,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
 
             var queryId = workItemQueryDefinitionModel.Id;
 
-            if (_teamPilgrimServiceModelProvider.TryDeleteQueryItem(out result, _projectCollection, _project, queryId))
+            if (teamPilgrimServiceModelProvider.TryDeleteQueryItem(out result, _projectCollection, _project, queryId))
             {
                 if (result)
                 {

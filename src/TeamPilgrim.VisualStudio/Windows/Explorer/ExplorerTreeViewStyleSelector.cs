@@ -4,7 +4,6 @@ using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.BuildDefinitions;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Explorer
 {
@@ -28,19 +27,19 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Explorer
 
         public override Style SelectStyle(object item, DependencyObject container)
         {
-            var projectCollectionModel = item as ProjectCollectionModel;
+            var projectCollectionModel = item as ProjectCollectionServiceModel;
             if (projectCollectionModel != null && ProjectCollectionStyle != null)
             {
                 return ProjectCollectionStyle;
             }
 
-            var projectModel = item as ProjectModel;
+            var projectModel = item as ProjectServiceModel;
             if (projectModel != null && ProjectStyle != null)
             {
                 return ProjectStyle;
             }
             
-            var workItemQueryContainerModel = item as WorkItemQueryContainerModel;
+            var workItemQueryContainerModel = item as WorkItemQueryServiceModel;
             if (workItemQueryContainerModel != null && WorkItemQueryContainerStyle != null)
             {
                 return WorkItemQueryContainerStyle;

@@ -71,7 +71,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
 
         private static TeamPilgrimVsService _teamPilgrimVsService;
 
-        public static TeamPilgrimModel TeamPilgrimModel { get; private set; }
+        public static TeamPilgrimServiceModel TeamPilgrimServiceModel { get; private set; }
 
         private uint _shellPropertyChangeCookie;
 
@@ -212,7 +212,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             Dte2 = (DTE2) Extensibility.GetGlobalsObject(null).DTE;
 
             _teamPilgrimVsService.InitializeGlobals(Dte2);
-            TeamPilgrimModel = new TeamPilgrimModel(new TeamPilgrimServiceModelProvider(), _teamPilgrimVsService);
+            TeamPilgrimServiceModel = new TeamPilgrimServiceModel(new TeamPilgrimServiceModelProvider(), _teamPilgrimVsService);
         }
 
         #endregion

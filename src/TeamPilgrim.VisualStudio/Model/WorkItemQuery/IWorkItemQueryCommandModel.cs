@@ -1,6 +1,6 @@
 ﻿using GalaSoft.MvvmLight.Command;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
 {
     public interface IWorkItemQueryCommandModel
     {

@@ -171,10 +171,16 @@
     <Compile Include="Business\Services\VisualStudio\WorkItem\VersionControlPackageWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\WorkItem\WorkItemTrackingPackageWrapper.cs" />
     <Compile Include="Common\Behaviors\BindableSelectedItemBehavior.cs" />
+    <Compile Include="Common\Comparer\ComparerEqualityComparer.cs" />
+    <Compile Include="Common\Comparer\ComparerEqualityComparerGeneric.cs" />
+    <Compile Include="Common\Comparer\ComparerExtensions.cs" />
     <Compile Include="Common\Converters\OcClauseBooleanToVisibilityConverter.cs" />
+    <Compile Include="Common\Comparer\UntypedComparerWrapper.cs" />
     <Compile Include="Common\VsWindowFrameEditorTypeIds.cs" />
     <Compile Include="Common\AttachedProperties\MouseDoubleClick.cs" />
     <Compile Include="Common\Extensions\CheckinEvaluationResultExtensions.cs" />
+    <Compile Include="Model\BaseModel.cs" />
+    <Compile Include="Model\PendingChanges\CheckinNoteModel.cs" />
     <Compile Include="Model\PendingChanges\SelectedWorkItemCheckinActionEnum.cs" />
     <Compile Include="Model\PendingChanges\SelectedWorkItemCheckinActionEnumExtensions.cs" />
     <Compile Include="Model\PendingChanges\WorkItemModel.cs" />
@@ -187,20 +193,20 @@
     <Compile Include="Common\BindingErrorTraceListener.cs" />
     <Compile Include="Domain\BusinessInterfaces\ITeamPilgrimTfsService.cs" />
     <Compile Include="Business\Services\VisualStudio\TeamPilgrimVsService.cs" />
-    <Compile Include="Model\BaseModel.cs" />
+    <Compile Include="Model\BaseServiceModel.cs" />
     <Compile Include="Model\Explorer\BuildDefinitions\BuildDefinitionModel.cs" />
     <Compile Include="Model\Explorer\BuildDefinitions\IBuildDefinitionCommandModel.cs" />
     <Compile Include="Model\Explorer\ReportsModel.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\WorkItemQuery\Children\IWorkItemQueryCommandModel.cs" />
-    <Compile Include="Model\Explorer\BuildDefinitions\BuildDefinitionsModel.cs" />
+    <Compile Include="Model\WorkItemQuery\IWorkItemQueryCommandModel.cs" />
+    <Compile Include="Model\Explorer\BuildDefinitions\BuildDefinitionsServiceModel.cs" />
     <Compile Include="Model\PendingChanges\PendingChangeModel.cs" />
-    <Compile Include="Model\TeamPilgrimModel.cs" />
-    <Compile Include="Model\Explorer\ProjectCollectionModel.cs" />
-    <Compile Include="Model\Explorer\ProjectModel.cs" />
+    <Compile Include="Model\TeamPilgrimServiceModel.cs" />
+    <Compile Include="Model\Explorer\ProjectCollectionServiceModel.cs" />
+    <Compile Include="Model\Explorer\ProjectServiceModel.cs" />
     <Compile Include="Model\PendingChanges\WorkspaceInfoModel.cs" />
-    <Compile Include="Model\PendingChanges\WorkspaceModel.cs" />
+    <Compile Include="Model\PendingChanges\WorkspaceServiceModel.cs" />
     <Compile Include="Providers\TeamPilgrimServiceModelProvider.cs" />
     <Compile Include="Windows\Explorer\ExplorerTreeViewStyleSelector.cs" />
     <Compile Include="Windows\Explorer\ExplorerControl.xaml.cs">
@@ -231,10 +237,10 @@
     <Compile Include="Common\Extensions\EnumerableQueryItemExtensions.cs" />
     <Compile Include="Model\Explorer\SourceControlModel.cs" />
     <Compile Include="Model\Explorer\TeamMembersModel.cs" />
-    <Compile Include="Model\WorkItemQuery\Children\WorkItemQueryDefinitionModel.cs" />
-    <Compile Include="Model\WorkItemQuery\Children\WorkItemQueryFolderModel.cs" />
-    <Compile Include="Model\WorkItemQuery\WorkItemQueryContainerModel.cs" />
-    <Compile Include="Model\WorkItemQuery\Children\WorkItemQueryChildModel.cs" />
+    <Compile Include="Model\WorkItemQuery\WorkItemQueryDefinitionModel.cs" />
+    <Compile Include="Model\WorkItemQuery\WorkItemQueryFolderModel.cs" />
+    <Compile Include="Model\WorkItemQuery\WorkItemQueryServiceModel.cs" />
+    <Compile Include="Model\WorkItemQuery\WorkItemQueryChildModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">

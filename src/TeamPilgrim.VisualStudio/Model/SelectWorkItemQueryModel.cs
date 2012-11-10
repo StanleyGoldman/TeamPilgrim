@@ -1,13 +1,11 @@
-﻿using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
+﻿using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
     public class SelectWorkItemQueryModel : BaseModel
     {
-        public ProjectCollectionModel ActiveProjectCollectionModel { get; private set; }
+        public ProjectCollectionServiceModel ActiveProjectCollectionModel { get; private set; }
 
         private BaseModel _selectedItem;
         public BaseModel SelectedItem
@@ -45,10 +43,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             }
         }
 
-        public SelectWorkItemQueryModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, ProjectCollectionModel activeProjectCollectionModel)
-            : base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
+        public SelectWorkItemQueryModel(ProjectCollectionServiceModel activeProjectCollectionServiceModel)
         {
-            ActiveProjectCollectionModel = activeProjectCollectionModel;
+            ActiveProjectCollectionModel = activeProjectCollectionServiceModel;
         }
     }
 }

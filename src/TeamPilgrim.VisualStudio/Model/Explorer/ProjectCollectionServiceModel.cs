@@ -9,29 +9,29 @@ using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
 {
-    public class ProjectCollectionModel : BaseModel
+    public class ProjectCollectionServiceModel : BaseServiceModel
     {
-        private readonly TeamPilgrimModel _teamPilgrimModel;
+        private readonly TeamPilgrimServiceModel _teamPilgrimServiceModel;
 
-        public ObservableCollection<ProjectModel> ProjectModels { get; private set; }
+        public ObservableCollection<ProjectServiceModel> ProjectModels { get; private set; }
 
         public TfsTeamProjectCollection TfsTeamProjectCollection { get; private set; }
 
-        public ProjectCollectionModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, TeamPilgrimModel teamPilgrimModel, TfsTeamProjectCollection pilgrimProjectCollection)
+        public ProjectCollectionServiceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, TeamPilgrimServiceModel teamPilgrimServiceModel, TfsTeamProjectCollection pilgrimProjectCollection)
             : base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
         {
-            ProjectModels = new ObservableCollection<ProjectModel>();
+            ProjectModels = new ObservableCollection<ProjectServiceModel>();
 
             TfsTeamProjectCollection = pilgrimProjectCollection;
-            _teamPilgrimModel = teamPilgrimModel;
+            _teamPilgrimServiceModel = teamPilgrimServiceModel;
 
             Project[] projects;
-            if (base.teamPilgrimServiceModelProvider.TryGetProjects(out projects, TfsTeamProjectCollection.Uri))
+            if (teamPilgrimServiceModelProvider.TryGetProjects(out projects, TfsTeamProjectCollection.Uri))
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
                     {
                         var pilgrimProjectModels = projects
-                            .Select(project => new ProjectModel(base.teamPilgrimServiceModelProvider, teamPilgrimVsService, teamPilgrimModel, TfsTeamProjectCollection, project));
+                            .Select(project => new ProjectServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, _teamPilgrimServiceModel, TfsTeamProjectCollection, project));
 
                         foreach (var pilgrimProjectModel in pilgrimProjectModels)
                         {

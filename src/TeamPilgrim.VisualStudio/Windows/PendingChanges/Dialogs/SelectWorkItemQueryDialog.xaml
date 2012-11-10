@@ -6,10 +6,9 @@
         xmlns:Model="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model"
         xmlns:Client="clr-namespace:Microsoft.TeamFoundation.WorkItemTracking.Client;assembly=Microsoft.TeamFoundation.WorkItemTracking.Client"
         xmlns:Explorer="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer"
-        xmlns:Children="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-        xmlns:behaviours="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Behaviors" 
-        Height="300" Width="300"
+        xmlns:behaviours="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Behaviors"
+        xmlns:Children="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery" Height="300" Width="300"
         mc:Ignorable="d" 
         d:DataContext="{d:DesignInstance Model:SelectWorkItemQueryModel}">
     
@@ -39,7 +38,7 @@
                 </TreeView.ItemContainerStyle>
                 
                 <TreeView.Resources>
-                    <HierarchicalDataTemplate DataType="{x:Type Explorer:ProjectModel}" ItemsSource="{Binding Path=WorkItemQueryContainerModel.QueryItems}">
+                    <HierarchicalDataTemplate DataType="{x:Type Explorer:ProjectServiceModel}" ItemsSource="{Binding Path=WorkItemQueryServiceModel.QueryItems}">
                         <HierarchicalDataTemplate.ItemContainerStyle>
                             <Style TargetType="TreeViewItem">
                                 <Style.Triggers>

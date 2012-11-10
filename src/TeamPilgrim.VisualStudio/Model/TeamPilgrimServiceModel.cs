@@ -19,17 +19,17 @@ using Microsoft.VisualStudio.TeamFoundation;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
-    public class TeamPilgrimModel : BaseModel
+    public class TeamPilgrimServiceModel : BaseServiceModel
     {
         private readonly ITeamPilgrimServiceModelProvider _teamPilgrimServiceModelProvider;
         private readonly ITeamPilgrimVsService _teamPilgrimVsService;
 
-        public ObservableCollection<ProjectCollectionModel> ProjectCollectionModels { get; private set; }
+        public ObservableCollection<ProjectCollectionServiceModel> ProjectCollectionModels { get; private set; }
         public ObservableCollection<WorkspaceInfoModel> WorkspaceInfoModels { get; private set; }
 
-        private ProjectCollectionModel _activeProjectCollectionModel = null;
+        private ProjectCollectionServiceModel _activeProjectCollectionModel = null;
 
-        public ProjectCollectionModel ActiveProjectCollectionModel
+        public ProjectCollectionServiceModel ActiveProjectCollectionModel
         {
             get
             {
@@ -65,9 +65,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             }
         }
 
-        private WorkspaceModel _selectedWorkspaceModel;
+        private WorkspaceServiceModel _selectedWorkspaceModel;
 
-        public WorkspaceModel SelectedWorkspaceModel
+        public WorkspaceServiceModel SelectedWorkspaceModel
         {
             get
             {
@@ -83,10 +83,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             }
         }
 
-        public TeamPilgrimModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService)
+        public TeamPilgrimServiceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService)
             : base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
         {
-            ProjectCollectionModels = new ObservableCollection<ProjectCollectionModel>();
+            ProjectCollectionModels = new ObservableCollection<ProjectCollectionServiceModel>();
             WorkspaceInfoModels = new ObservableCollection<WorkspaceInfoModel>();
 
             ProjectCollectionModels.CollectionChanged += ProjectCollectionModelsOnCollectionChanged;
@@ -144,7 +144,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
                         ProjectCollectionModels.Clear();
                         if (collection != null)
                         {
-                            ProjectCollectionModels.Add(new ProjectCollectionModel(_teamPilgrimServiceModelProvider,
+                            ProjectCollectionModels.Add(new ProjectCollectionServiceModel(_teamPilgrimServiceModelProvider,
                                                                             _teamPilgrimVsService, this, collection));
                         }
                     }));
@@ -157,7 +157,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
                 {
                     foreach (var workspaceInfo in workspaceInfos)
                     {
-                        WorkspaceInfoModels.Add(new WorkspaceInfoModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, workspaceInfo));
+                        WorkspaceInfoModels.Add(new WorkspaceInfoModel(workspaceInfo));
                     }
                 }
             }));
@@ -174,7 +174,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
                 {
                     if (_teamPilgrimServiceModelProvider.TryGetWorkspace(out workspace, selectedWorkspaceInfoModel.WorkspaceInfo, projectCollectionModel.TfsTeamProjectCollection))
                     {
-                        SelectedWorkspaceModel = new WorkspaceModel(_teamPilgrimServiceModelProvider, teamPilgrimVsService, this.ActiveProjectCollectionModel, workspace);
+                        SelectedWorkspaceModel = new WorkspaceServiceModel(_teamPilgrimServiceModelProvider, teamPilgrimVsService, this.ActiveProjectCollectionModel, workspace);
                     }
                 }));
         }

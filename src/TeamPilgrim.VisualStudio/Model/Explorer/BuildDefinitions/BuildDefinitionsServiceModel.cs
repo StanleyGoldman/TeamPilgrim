@@ -12,7 +12,7 @@ using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.BuildDefinitions
 {
-    public class BuildDefinitionsModel : BaseModel, IBuildDefinitionCommandModel
+    public class BuildDefinitionsServiceModel : BaseServiceModel, IBuildDefinitionCommandModel
     {
         public ObservableCollection<BuildDefinitionModel> BuildDefinitions { get; private set; }
 
@@ -20,7 +20,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.BuildDefinitio
         private readonly TfsTeamProjectCollection _collection;
         private readonly Project _project;
 
-        public BuildDefinitionsModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, TfsTeamProjectCollection collection, Project project)
+        public BuildDefinitionsServiceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, TfsTeamProjectCollection collection, Project project)
             : base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
         {
             BuildDefinitions = new ObservableCollection<BuildDefinitionModel>();
@@ -45,7 +45,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.BuildDefinitio
             IBuildDefinition[] buildDefinitions;
             if (_teamPilgrimServiceModelProvider.TryGetBuildDefinitionsByProjectName(out buildDefinitions, _collection, _project.Name))
             {
-                foreach (var buildDefinitionModel in buildDefinitions.Select(definition => new BuildDefinitionModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, this, definition)))
+                foreach (var buildDefinitionModel in buildDefinitions.Select(definition => new BuildDefinitionModel(this, definition)))
                 {
                     BuildDefinitions.Add(buildDefinitionModel);
                 }
@@ -149,7 +149,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.BuildDefinitio
             IBuildDefinition buildDefinition;
             if (_teamPilgrimServiceModelProvider.TryCloneQueryDefinition(out buildDefinition, _collection, _project, buildDefinitionModel.Definition))
             {
-                BuildDefinitions.Add(new BuildDefinitionModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, this, buildDefinition));
+                BuildDefinitions.Add(new BuildDefinitionModel(this, buildDefinition));
             }
         }
 

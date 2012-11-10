@@ -4,10 +4,12 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Comparer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Extensions;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery.Children;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs;
 using Microsoft.TeamFoundation.VersionControl.Client;
@@ -15,11 +17,13 @@ using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 {
-    public class WorkspaceModel : BaseModel
+    public class WorkspaceServiceModel : BaseServiceModel
     {
         public ObservableCollection<WorkItemModel> WorkItems { get; private set; }
 
         public ObservableCollection<PendingChangeModel> PendingChanges { get; private set; }
+        
+        public ObservableCollection<CheckinNoteModel> CheckinNotes { get; private set; }
         
         public Workspace Workspace { get; private set; }
 
@@ -64,7 +68,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             }
         }
 
-        private readonly ProjectCollectionModel _projectCollectionModel;
+        private readonly ProjectCollectionServiceModel _projectCollectionServiceModel;
         private readonly CheckinNotesCacheWrapper _checkinNotesCacheWrapper;
 
         private WorkItemQueryDefinitionModel _selectedWorkWorkItemQueryDefinition;
@@ -86,10 +90,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             }
         }
 
-        public WorkspaceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, ProjectCollectionModel projectCollectionModel, Workspace workspace)
+        public WorkspaceServiceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, ProjectCollectionServiceModel projectCollectionServiceModel, Workspace workspace)
             : base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
         {
-            _projectCollectionModel = projectCollectionModel;
+            _projectCollectionServiceModel = projectCollectionServiceModel;
             Workspace = workspace;
 
             CheckInCommand = new RelayCommand(CheckIn, CanCheckIn);
@@ -100,18 +104,19 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
             PendingChanges = new ObservableCollection<PendingChangeModel>();
             WorkItems = new ObservableCollection<WorkItemModel>();
+            CheckinNotes = new ObservableCollection<CheckinNoteModel>();
 
             PendingChange[] pendingChanges;
             if (teamPilgrimServiceModelProvider.TryGetPendingChanges(out pendingChanges, Workspace))
             {
                 foreach (var pendingChange in pendingChanges)
                 {
-                    var pendingChangeModel = new PendingChangeModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, pendingChange);
+                    var pendingChangeModel = new PendingChangeModel(pendingChange);
                     PendingChanges.Add(pendingChangeModel);
                 }
             }
 
-            var versionControlServer = _projectCollectionModel.TfsTeamProjectCollection.GetService<VersionControlServer>();
+            var versionControlServer = _projectCollectionServiceModel.TfsTeamProjectCollection.GetService<VersionControlServer>();
             versionControlServer.PendingChangesChanged += VersionControlServerOnPendingChangesChanged;
 
             _checkinNotesCacheWrapper = new CheckinNotesCacheWrapper(versionControlServer);
@@ -192,7 +197,30 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                 CheckinEvaluationResult = checkinEvaluationResult;
             }
 
-            var checkinNoteFieldDefinitions = _checkinNotesCacheWrapper.GetCheckinNotes(pendingChanges);
+            var currentCheckinNoteDefinitions = _checkinNotesCacheWrapper.GetCheckinNotes(pendingChanges);
+
+            var equalityComparer = CheckinNoteFieldDefinition.NameComparer.ToGenericComparer<string>().ToEqualityComparer();
+
+            var modelIntersection =
+                    CheckinNotes
+                    .Join(currentCheckinNoteDefinitions, model => model.CheckinNoteFieldDefinition.Name, change => change.Name, (model, change) => model, equalityComparer)
+                    .ToArray();
+
+            var modelsToRemove = CheckinNotes.Where(model => !modelIntersection.Contains(model)).ToArray();
+
+            var modelsToAdd = currentCheckinNoteDefinitions
+                .Where(checkinNoteFieldDefinition => !modelIntersection.Select(model => model.CheckinNoteFieldDefinition.Name).Contains(checkinNoteFieldDefinition.Name, equalityComparer))
+                .Select(checkinNoteFieldDefinition => new CheckinNoteModel(checkinNoteFieldDefinition)).ToArray();
+
+            foreach (var modelToAdd in modelsToAdd)
+            {
+                CheckinNotes.Add(modelToAdd);
+            }
+
+            foreach (var modelToRemove in modelsToRemove)
+            {
+                CheckinNotes.Remove(modelToRemove);
+            }
         }
 
         private bool CanEvaluateCheckIn()
@@ -220,7 +248,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
                 var modelsToAdd = currentPendingChanges
                     .Where(pendingChange => !modelIntersection.Select(model => model.Change.PendingChangeId).Contains(pendingChange.PendingChangeId))
-                    .Select(change => new PendingChangeModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, change)).ToArray();
+                    .Select(change => new PendingChangeModel(change)).ToArray();
 
                 foreach (var modelToAdd in modelsToAdd)
                 {
@@ -249,7 +277,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         {
             WorkItemCollection workItemCollection;
             if (teamPilgrimServiceModelProvider.TryGetQueryDefinitionWorkItemCollection(out workItemCollection,
-                                                                                        _projectCollectionModel.TfsTeamProjectCollection,
+                                                                                        _projectCollectionServiceModel.TfsTeamProjectCollection,
                                                                                         SelectedWorkItemQueryDefinition.QueryDefinition, SelectedWorkItemQueryDefinition.Project.Name))
             {
                 var currentWorkItems = workItemCollection.Cast<WorkItem>().ToArray();
@@ -263,7 +291,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
                 var modelsToAdd = currentWorkItems
                         .Where(workItem => !modelIntersection.Select(workItemModel => workItemModel.WorkItem.Id).Contains(workItem.Id))
-                        .Select(workItem => new WorkItemModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, workItem)).ToArray();
+                        .Select(workItem => new WorkItemModel(workItem)).ToArray();
 
                 foreach (var modelToAdd in modelsToAdd)
                 {
@@ -290,7 +318,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private void ShowSelectWorkItemQuery()
         {
-            var selectWorkItemQueryModel = new SelectWorkItemQueryModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, _projectCollectionModel);
+            var selectWorkItemQueryModel = new SelectWorkItemQueryModel(_projectCollectionServiceModel);
             var selectWorkItemQueryDialog = new SelectWorkItemQueryDialog
                 {
                     DataContext = selectWorkItemQueryModel
