@@ -4,6 +4,7 @@ using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.WorkItem
 {
+    //TODO: Make this and possible others that wrap static services static
     public class QuerySecurityCommandHelpersWrapper
     {
         private readonly Type _querySecurityCommandHelpersType;
