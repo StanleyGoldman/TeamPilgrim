@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using GalaSoft.MvvmLight.Command;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Extensions;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer;
@@ -63,9 +64,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             }
         }
 
-        private WorkItemQueryDefinitionModel _selectedWorkWorkItemQueryDefinition;
-        private ProjectCollectionModel _projectCollectionModel;
+        private readonly ProjectCollectionModel _projectCollectionModel;
+        private readonly CheckinNotesCacheWrapper _checkinNotesCacheWrapper;
 
+        private WorkItemQueryDefinitionModel _selectedWorkWorkItemQueryDefinition;
         public WorkItemQueryDefinitionModel SelectedWorkItemQueryDefinition
         {
             get
@@ -111,6 +113,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
             var versionControlServer = _projectCollectionModel.TfsTeamProjectCollection.GetService<VersionControlServer>();
             versionControlServer.PendingChangesChanged += VersionControlServerOnPendingChangesChanged;
+
+            _checkinNotesCacheWrapper = new CheckinNotesCacheWrapper(versionControlServer);
         }
 
         private void VersionControlServerOnPendingChangesChanged(object sender, WorkspaceEventArgs workspaceEventArgs)
@@ -187,6 +191,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             {
                 CheckinEvaluationResult = checkinEvaluationResult;
             }
+
+            var checkinNoteFieldDefinitions = _checkinNotesCacheWrapper.GetCheckinNotes(pendingChanges);
         }
 
         private bool CanEvaluateCheckIn()
