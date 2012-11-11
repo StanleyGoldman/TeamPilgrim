@@ -196,6 +196,7 @@
     <Compile Include="Model\PendingChanges\SelectedWorkItemCheckinActionEnum.cs" />
     <Compile Include="Model\PendingChanges\SelectedWorkItemCheckinActionEnumExtensions.cs" />
     <Compile Include="Model\PendingChanges\WorkItemModel.cs" />
+    <Compile Include="Model\PolicyFailureModel.cs" />
     <Compile Include="Model\SelectWorkItemQueryModel.cs" />
     <Compile Include="Windows\PendingChanges\Dialogs\PolicyFailureDialog.xaml.cs">
       <DependentUpon>PolicyFailureDialog.xaml</DependentUpon>

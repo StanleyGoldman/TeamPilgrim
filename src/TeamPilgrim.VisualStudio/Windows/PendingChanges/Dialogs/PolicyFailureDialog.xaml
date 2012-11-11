@@ -11,7 +11,7 @@
         xmlns:Children="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery"
         xmlns:Converters="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Converters" Height="300" Width="300"
         mc:Ignorable="d" 
-        d:DataContext="{d:DesignInstance Model:SelectWorkItemQueryModel}">
+        d:DataContext="{d:DesignInstance Model:PolicyFailureModel}">
     
     <DockPanel>
         <DockPanel.Resources>
@@ -35,12 +35,12 @@
         <DockPanel DockPanel.Dock="Top">
             <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap">Checkin cannot proceed because the policy requirements have not been satisfied.</TextBlock>
             <DockPanel DockPanel.Dock="Top">
-                <CheckBox x:Name="OverridePolicyCheckBox" />
+                <CheckBox x:Name="OverridePolicyCheckBox" IsChecked="{Binding Path=Override}" />
                 <TextBlock>Override policy failure and continue checkin</TextBlock>
             </DockPanel>
             <TextBlock DockPanel.Dock="Top">Reason:</TextBlock>
             <ScrollViewer>
-                <TextBox x:Name="OverrideReasonTextBox" DockPanel.Dock="Top" TextWrapping="Wrap"/>
+                <TextBox x:Name="OverrideReasonTextBox" DockPanel.Dock="Top" TextWrapping="Wrap" Text="{Binding Path=Reason, UpdateSourceTrigger=PropertyChanged}"/>
             </ScrollViewer>
         </DockPanel>
     </DockPanel>

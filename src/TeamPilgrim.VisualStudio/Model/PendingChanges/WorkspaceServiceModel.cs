@@ -163,7 +163,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                 .Select(model => new CheckinNoteFieldValue(model.CheckinNoteFieldDefinition.Name, model.Value))
                 .ToArray();
 
-            var currentCheckinNoteDefinitions = _checkinNotesCacheWrapper.GetCheckinNotes(pendingChanges);
             var checkinNote = new CheckinNote(checkinNoteFieldValues);
 
             CheckinEvaluationResult checkinEvaluationResult;
@@ -171,25 +170,49 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             {
                 if (checkinEvaluationResult.IsValid())
                 {
-                    CheckinEvaluationResult = null;
-                    if (teamPilgrimServiceModelProvider.TryWorkspaceCheckin(Workspace, pendingChanges, Comment, checkinNote, workItemChanges))
+                    ProcessCheckIn(pendingChanges, checkinNote, workItemChanges);
+                }
+                else if(checkinEvaluationResult.Conflicts.Any())
+                {
+                    
+                }
+                else if(checkinEvaluationResult.PolicyFailures.Any())
+                {
+                    var policyFailureModel = new PolicyFailureModel();
+                    var policyFailureDialog = new PolicyFailureDialog()
                     {
-                        Comment = string.Empty;
-                        RefreshPendingChanges();
+                        DataContext = policyFailureModel
+                    };
 
-                        foreach (var workItem in WorkItems.Where(model => model.IsSelected))
-                        {
-                            workItem.IsSelected = false;
-                        }
-
-                        RefreshSelectedDefinitionWorkItemsCommand.Execute(null);
+                    var dialogResult = policyFailureDialog.ShowDialog();
+                    if (dialogResult.HasValue && dialogResult.Value && policyFailureModel.Override)
+                    {
+                        string reason = policyFailureModel.Reason;
+                        ProcessCheckIn(pendingChanges, checkinNote, workItemChanges, new PolicyOverrideInfo(reason, checkinEvaluationResult.PolicyFailures));
+                    }
+                    else
+                    {
+                        CheckinEvaluationResult = checkinEvaluationResult;
                     }
                 }
-                else
-                {
-                    CheckinEvaluationResult = checkinEvaluationResult;
-                }
             }
+        }
+
+        private void ProcessCheckIn(PendingChange[] pendingChanges, CheckinNote checkinNote, WorkItemCheckinInfo[] workItemChanges, PolicyOverrideInfo policyOverrideInfo = null)
+        {
+            CheckinEvaluationResult = null;
+            if (teamPilgrimServiceModelProvider.TryWorkspaceCheckin(Workspace, pendingChanges, Comment, checkinNote, workItemChanges, policyOverrideInfo))
+                {
+                    Comment = string.Empty;
+                    RefreshPendingChanges();
+
+                    foreach (var workItem in WorkItems.Where(model => model.IsSelected))
+                    {
+                        workItem.IsSelected = false;
+                    }
+
+                    RefreshSelectedDefinitionWorkItemsCommand.Execute(null);
+                }
         }
 
         private bool CanCheckIn()
@@ -308,23 +331,34 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private void RefreshSelectedDefinitionWorkItems()
         {
+            if (SelectedWorkItemQueryDefinition == null)
+                return;
+
             WorkItemCollection workItemCollection;
             if (teamPilgrimServiceModelProvider.TryGetQueryDefinitionWorkItemCollection(out workItemCollection,
-                                                                                        _projectCollectionServiceModel.TfsTeamProjectCollection,
-                                                                                        SelectedWorkItemQueryDefinition.QueryDefinition, SelectedWorkItemQueryDefinition.Project.Name))
+                                                                                        _projectCollectionServiceModel
+                                                                                            .
+                                                                                            TfsTeamProjectCollection,
+                                                                                        SelectedWorkItemQueryDefinition
+                                                                                            .QueryDefinition,
+                                                                                        SelectedWorkItemQueryDefinition
+                                                                                            .Project.Name))
             {
                 var currentWorkItems = workItemCollection.Cast<WorkItem>().ToArray();
 
                 var modelIntersection =
                     WorkItems
-                    .Join(currentWorkItems, model => model.WorkItem.Id, workItem => workItem.Id, (model, change) => model)
-                    .ToArray();
+                        .Join(currentWorkItems, model => model.WorkItem.Id, workItem => workItem.Id,
+                              (model, change) => model)
+                        .ToArray();
 
                 var modelsToRemove = WorkItems.Where(model => !modelIntersection.Contains(model)).ToArray();
 
                 var modelsToAdd = currentWorkItems
-                        .Where(workItem => !modelIntersection.Select(workItemModel => workItemModel.WorkItem.Id).Contains(workItem.Id))
-                        .Select(workItem => new WorkItemModel(workItem)).ToArray();
+                    .Where(
+                        workItem =>
+                        !modelIntersection.Select(workItemModel => workItemModel.WorkItem.Id).Contains(workItem.Id))
+                    .Select(workItem => new WorkItemModel(workItem)).ToArray();
 
                 foreach (var modelToAdd in modelsToAdd)
                 {

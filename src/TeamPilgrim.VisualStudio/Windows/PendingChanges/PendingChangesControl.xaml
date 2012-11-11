@@ -81,7 +81,7 @@
                 </Style>
             </TabControl.Resources>
 
-            <TabItem IsSelected="{Binding ElementName=SourceFilesRadioButton, Path=IsChecked}">
+            <TabItem x:Name="SourceFilesTabItem" IsSelected="{Binding ElementName=SourceFilesRadioButton, Path=IsChecked}">
                 <DockPanel>
                     <ToolBar DockPanel.Dock="Top">
                         <Button DataContext="{Binding Path=SelectedWorkspaceModel}" Command="{Binding Path=CheckInCommand}">
@@ -199,7 +199,7 @@
                     </ListView>
                 </DockPanel>
             </TabItem>
-            <TabItem IsSelected="{Binding ElementName=WorkItemsRadioButton, Path=IsChecked}">
+            <TabItem x:Name="WorkItemsTabItem" IsSelected="{Binding ElementName=WorkItemsRadioButton, Path=IsChecked}">
                 <DockPanel>
                     <ToolBar DockPanel.Dock="Top">
                         <Button DataContext="{Binding Path=SelectedWorkspaceModel}" Command="{Binding Path=CheckInCommand}">
@@ -274,7 +274,7 @@
                     </ListView>
                 </DockPanel>
             </TabItem>
-            <TabItem IsSelected="{Binding ElementName=CheckInNotesRadioButton, Path=IsChecked}">
+            <TabItem x:Name="CheckInNotesTabItem"  IsSelected="{Binding ElementName=CheckInNotesRadioButton, Path=IsChecked}">
                 <DockPanel>
                     <ToolBar DockPanel.Dock="Top">
                         <Button DataContext="{Binding Path=SelectedWorkspaceModel}" Command="{Binding Path=CheckInCommand}">
@@ -287,7 +287,7 @@
                     <ListView DataContext="{Binding Path=SelectedWorkspaceModel}" ItemsSource="{Binding Path=CheckinNotes}" DockPanel.Dock="Bottom" HorizontalContentAlignment="Stretch">
                         <ListView.ItemTemplate>
                             <DataTemplate DataType="PendingChangesModel:CheckinNoteModel">
-                                <Expander Header="{Binding Path=CheckinNoteFieldDefinition.Name}">
+                                <Expander Header="{Binding Path=CheckinNoteFieldDefinition.Name}" IsExpanded="True">
                                     <xctk:WatermarkTextBox Text="{Binding Path=Value, UpdateSourceTrigger=PropertyChanged}">
                                         <xctk:WatermarkTextBox.Style>
                                             <Style TargetType="xctk:WatermarkTextBox">
@@ -305,7 +305,7 @@
                     </ListView>
                 </DockPanel>
             </TabItem>
-            <TabItem IsSelected="{Binding ElementName=PolicyWarningsRadioButton, Path=IsChecked}">
+            <TabItem x:Name="PolicyWarningsTabItem" IsSelected="{Binding ElementName=PolicyWarningsRadioButton, Path=IsChecked}">
                 <DockPanel Name="PolicyWarningsDataDockPanel">
                     <ToolBar DockPanel.Dock="Top">
                         <Button DataContext="{Binding Path=SelectedWorkspaceModel}" Command="{Binding Path=CheckInCommand}">
