@@ -2,12 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Comparer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Extensions;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Messages;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
@@ -22,9 +25,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         public ObservableCollection<WorkItemModel> WorkItems { get; private set; }
 
         public ObservableCollection<PendingChangeModel> PendingChanges { get; private set; }
-        
+
         public ObservableCollection<CheckinNoteModel> CheckinNotes { get; private set; }
-        
+
         public Workspace Workspace { get; private set; }
 
         private string _comment;
@@ -44,7 +47,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
                 SendPropertyChanged("Comment");
 
-                if(string.IsNullOrWhiteSpace(previousValue) ^ string.IsNullOrWhiteSpace(_comment))
+                if (string.IsNullOrWhiteSpace(previousValue) ^ string.IsNullOrWhiteSpace(_comment))
                 {
                     EvaluateCheckIn();
                 }
@@ -83,7 +86,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                 if (_selectedWorkWorkItemQueryDefinition == value) return;
 
                 _selectedWorkWorkItemQueryDefinition = value;
-                
+
                 SendPropertyChanged("SelectedWorkItemQueryDefinition");
 
                 RefreshSelectedDefinitionWorkItems();
@@ -142,6 +145,18 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                 WorkItems.Where(model => model.IsSelected)
                 .Select(model => new WorkItemCheckinInfo(model.WorkItem, model.WorkItemCheckinAction.ToWorkItemCheckinAction())).ToArray();
 
+            var missingCheckinNotes = CheckinNotes
+                .Where(model => model.CheckinNoteFieldDefinition.Required && string.IsNullOrWhiteSpace(model.Value))
+                .Select(model => model.CheckinNoteFieldDefinition.Name).ToArray();
+
+            if (missingCheckinNotes.Any())
+            {
+                Messenger.Default.Send(new ShowPendingChangesTabItemMessage { ShowPendingChangesTabItem = ShowPendingChangesTabItemEnum.CheckinNotes });
+
+                MessageBox.Show("Check-in Validation\r\n\r\nEnter a value for " + string.Join(", ", missingCheckinNotes), "Team Pilgrim", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             var checkinNoteFieldValues =
                 CheckinNotes
                 .Where(model => !string.IsNullOrWhiteSpace(model.Value))
@@ -150,7 +165,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
             var currentCheckinNoteDefinitions = _checkinNotesCacheWrapper.GetCheckinNotes(pendingChanges);
             var checkinNote = new CheckinNote(checkinNoteFieldValues);
-            checkinNote.MergeWithFieldDefinitions(currentCheckinNoteDefinitions);
 
             CheckinEvaluationResult checkinEvaluationResult;
             if (teamPilgrimServiceModelProvider.TryEvaluateCheckin(out checkinEvaluationResult, Workspace, pendingChanges, Comment, checkinNote, workItemChanges))
@@ -169,7 +183,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                         }
 
                         RefreshSelectedDefinitionWorkItemsCommand.Execute(null);
-                    }   
+                    }
                 }
                 else
                 {
@@ -228,14 +242,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                 .Where(model => model.IsSelected)
                 .Select(model => new WorkItemCheckinInfo(model.WorkItem, model.WorkItemCheckinAction.ToWorkItemCheckinAction())).ToArray();
 
-            var checkinNoteFieldValues = 
+            var checkinNoteFieldValues =
                 CheckinNotes
                 .Where(model => !string.IsNullOrWhiteSpace(model.Value))
                 .Select(model => new CheckinNoteFieldValue(model.CheckinNoteFieldDefinition.Name, model.Value))
                 .ToArray();
 
             var checkinNote = new CheckinNote(checkinNoteFieldValues);
-            checkinNote.MergeWithFieldDefinitions(currentCheckinNoteDefinitions);
 
             if (teamPilgrimServiceModelProvider.TryEvaluateCheckin(out checkinEvaluationResult, Workspace, pendingChanges, Comment, checkinNote, workItemChanges))
             {

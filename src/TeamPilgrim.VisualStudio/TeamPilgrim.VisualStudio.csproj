@@ -40,6 +40,9 @@
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Expression.Samples.Interactivity">
+      <HintPath>..\..\packages\expressionblend-81799\Expression.Samples.Interactivity.dll</HintPath>
+    </Reference>
     <Reference Include="Extensibility, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
@@ -185,6 +188,7 @@
     <Compile Include="Common\VsWindowFrameEditorTypeIds.cs" />
     <Compile Include="Common\AttachedProperties\MouseDoubleClick.cs" />
     <Compile Include="Common\Extensions\CheckinEvaluationResultExtensions.cs" />
+    <Compile Include="Messages\ShowPendingChangesTabItem.cs" />
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Model\PendingChanges\CheckinNoteModel.cs" />
     <Compile Include="Model\PendingChanges\SelectedWorkItemCheckinActionEnum.cs" />

@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using GalaSoft.MvvmLight.Messaging;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Messages;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges;
 
@@ -15,6 +17,28 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
         public PendingChangesControl()
         {
             InitializeComponent();
+
+            Messenger.Default.Register<ShowPendingChangesTabItemMessage>(this, message =>
+            {
+                switch (message.ShowPendingChangesTabItem)
+                {
+                    case ShowPendingChangesTabItemEnum.PolicyWarnings:
+                        PolicyWarningsRadioButton.IsChecked = true;
+                        break;
+
+                    case ShowPendingChangesTabItemEnum.CheckinNotes:
+                        CheckInNotesRadioButton.IsChecked = true;
+                        break;
+
+                    case ShowPendingChangesTabItemEnum.WorkItems:
+                        WorkItemsRadioButton.IsChecked = true;
+                        break;
+
+                    case ShowPendingChangesTabItemEnum.SourceFiles:
+                        SourceFilesRadioButton.IsChecked = true;
+                        break;
+                }
+            });
         }
 
         private void PendingChangeWorkItemCheckbox_CheckChanged(object sender, System.Windows.RoutedEventArgs e)
@@ -39,7 +63,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
         private void PendingChangesCheckbox_CheckChanged(object sender, RoutedEventArgs e)
         {
             var checkBox = sender as CheckBox;
-            
+
             Debug.Assert(checkBox != null, "checkBox != null");
             var pendingChangeModel = checkBox.DataContext as PendingChangeModel;
 
