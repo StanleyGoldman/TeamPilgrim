@@ -52,6 +52,10 @@
     <Reference Include="GalaSoft.MvvmLight.WPF4">
       <HintPath>..\..\lib\MvvmLight.4.1.23.0\lib\net40\GalaSoft.MvvmLight.WPF4.dll</HintPath>
     </Reference>
+    <Reference Include="LogicNP.CryptoLicensing, Version=9.0.0.0, Culture=neutral, PublicKeyToken=4a3c0a4c668b48b4">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\CryptoLicensing For .Net 2012 R2\LogicNP.CryptoLicensing.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.ServiceLocation">
       <HintPath>..\..\lib\MvvmLight.4.1.23.0\lib\net40\Microsoft.Practices.ServiceLocation.dll</HintPath>
@@ -192,12 +196,16 @@
     <Compile Include="Common\Extensions\CheckinEvaluationResultExtensions.cs" />
     <Compile Include="Messages\ShowPendingChangesTabItem.cs" />
     <Compile Include="Model\BaseModel.cs" />
+    <Compile Include="Model\LicenseModel.cs" />
     <Compile Include="Model\PendingChanges\CheckinNoteModel.cs" />
     <Compile Include="Model\PendingChanges\SelectedWorkItemCheckinActionEnum.cs" />
     <Compile Include="Model\PendingChanges\SelectedWorkItemCheckinActionEnumExtensions.cs" />
     <Compile Include="Model\PendingChanges\WorkItemModel.cs" />
     <Compile Include="Model\PolicyFailureModel.cs" />
     <Compile Include="Model\SelectWorkItemQueryModel.cs" />
+    <Compile Include="Windows\Dialogs\LicenseDialog.xaml.cs">
+      <DependentUpon>LicenseDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\PendingChanges\Dialogs\PolicyFailureDialog.xaml.cs">
       <DependentUpon>PolicyFailureDialog.xaml</DependentUpon>
     </Compile>
@@ -298,17 +306,21 @@
     <Content Include="Resources\Package.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Windows\Dialogs\LicenseDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Windows\PendingChanges\Dialogs\PolicyFailureDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\PendingChanges\Dialogs\SelectWorkItemQueryDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Windows\Explorer\ExplorerControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\PendingChanges\Dialogs\SelectWorkItemQueryDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\PendingChanges\PendingChangesControl.xaml">
       <Generator>MSBuild:Compile</Generator>

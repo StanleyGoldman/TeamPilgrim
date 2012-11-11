@@ -1,0 +1,27 @@
+﻿<Window x:Class="JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Dialogs.LicenseDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:Model="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model"
+        xmlns:Client="clr-namespace:Microsoft.TeamFoundation.WorkItemTracking.Client;assembly=Microsoft.TeamFoundation.WorkItemTracking.Client"
+        xmlns:Explorer="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:behaviours="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Behaviors"
+        xmlns:Children="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery" Height="110" Width="415"
+        mc:Ignorable="d" 
+        d:DataContext="{d:DesignInstance Model:LicenseModel}">
+    
+    <DockPanel>
+        <DockPanel DockPanel.Dock="Bottom" LastChildFill="False">
+            <Button DockPanel.Dock="Right" Click="CancelButtonClick">Cancel</Button>
+            <Button DockPanel.Dock="Right" Click="OkButtonClick">OK</Button>
+        </DockPanel>
+        <DockPanel DockPanel.Dock="Top" LastChildFill="False">
+            <TextBlock DockPanel.Dock="Top" Text="{Binding Path=ExpirationDate, StringFormat='Current license expires on {0:d}'}" />
+            <TextBlock DockPanel.Dock="Top">Key:</TextBlock>
+            <TextBox Text="{Binding Path=LicesnseKey, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Top" />
+        </DockPanel>
+    </DockPanel>
+
+</Window>

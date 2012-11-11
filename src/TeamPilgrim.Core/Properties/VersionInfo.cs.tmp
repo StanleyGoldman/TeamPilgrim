@@ -10,6 +10,13 @@ namespace JustAProgrammer.TeamPilgrim.Core
 {
     public static class VersionInfo
     {
+	
+#if DEBUG
+		public const bool IsDebug = true;
+#else // RELEASE
+		public const bool IsDebug = false;
+#endif
+
         /// <summary>
         /// The major version number for this assembly.
         /// </summary>

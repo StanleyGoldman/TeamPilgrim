@@ -2,18 +2,23 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.ComponentModel.Design;
+using System.Windows.Forms;
 using EnvDTE;
 using EnvDTE80;
+using JustAProgrammer.TeamPilgrim.Core;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Dialogs;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Explorer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges;
+using LogicNP.CryptoLicensing;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Controls;
 using Microsoft.VisualStudio;
@@ -48,12 +53,15 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
     [ProvideToolWindow(typeof(ExplorerWindow))]
     [ProvideToolWindow(typeof(PendingChangesWindow))]
 
-	//http://stackoverflow.com/questions/4478853/vsx-2010-package-loading-markup-xaml-parsing-cannot-find-assemblies
+    //http://stackoverflow.com/questions/4478853/vsx-2010-package-loading-markup-xaml-parsing-cannot-find-assemblies
     [ProvideBindingPath]
 
     [Guid(GuidList.guidTeamPilgrimPkgString)]
     public sealed class TeamPilgrimPackage : Package, IVsShellPropertyEvents
     {
+        internal const string LicenseValidationKey = "AMAAMADJHFA64RFew2wwMz1VwGqryhDyB9MoC8nB3ld26/BURon9c1Bh3Yn4Iva73o+EHmcDAAEAAQ==";
+        internal const string DecemberThirtyFirstExpirationLicenseKey = "NgA8ATXFYbtHwM0BNUXGs9rXzQFBGFRlYW1QaWxncmltLlZpc3VhbFN0dWRpbxzfSnNOl4cJlO8pGVvmWuicBm8J4xmdvdjGAXUJO+fZNo4VZcVZrxod/cGeGfsUTrvtgSf8M/BP";
+
         private static TeamPilgrimPackage _singleInstance;
 
         private static DTE Dte { get; set; }
@@ -147,6 +155,74 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             TeamPilgrimPackage._singleInstance = this;
             base.Initialize();
 
+            if (!VersionInfo.IsDebug)
+            {
+                var license = new CryptoLicense(LicenseStorageMode.ToRegistry, LicenseValidationKey)
+                    {
+                        HostAssembly = Assembly.GetExecutingAssembly()
+                    };
+
+                var showLicenseDialog = false;
+
+                if (!license.Load())
+                {
+                    showLicenseDialog = true;
+                    license.LicenseCode = DecemberThirtyFirstExpirationLicenseKey;
+                    license.Save();
+                }
+
+                var remainingTime = (license.DateExpires - DateTime.Now);
+                if (license.IsEvaluationExpired() || remainingTime.Days >= 5)
+                {
+                    showLicenseDialog = true;
+                }
+
+                var currentLicense = license.LicenseCode;
+
+                while (showLicenseDialog)
+                {
+                    var licenseModel = new LicenseModel
+                        {
+                            ExpirationDate = license.DateExpires,
+                            LicesnseKey = license.LicenseCode
+                        };
+
+                    var licenseDialog = new LicenseDialog
+                        {
+                            DataContext = licenseModel
+                        };
+
+                    licenseDialog.ShowDialog();
+                    if (licenseDialog.DialogResult.HasValue && licenseDialog.DialogResult.Value)
+                    {
+                        if(licenseModel.LicesnseKey == currentLicense)
+                        {
+                            showLicenseDialog = false;
+                        }
+                        else
+                        {
+                            license.LicenseCode = licenseModel.LicesnseKey;
+                            if (!license.IsEvaluationExpired())
+                            {
+                                license.Save();
+                                showLicenseDialog = false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        license.LicenseCode = currentLicense;
+                        showLicenseDialog = false;
+                    }
+                }
+
+                if (license.IsEvaluationExpired())
+                {
+                    MessageBox.Show("Team Pilgrim License validation failed");
+                    return;
+                }
+            }
+
             // Add our command handlers for menu (commands must exist in the .vsct file)
             OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             if (null != mcs)
@@ -203,13 +279,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             if (Dte != null)
                 return;
 
-            Dte = GetService(typeof (SDTE)) as DTE;
+            Dte = GetService(typeof(SDTE)) as DTE;
 
-            if(Dte == null)
+            if (Dte == null)
                 return;
 
-            Extensibility = (IVsExtensibility) GetGlobalService(typeof (IVsExtensibility));
-            Dte2 = (DTE2) Extensibility.GetGlobalsObject(null).DTE;
+            Extensibility = (IVsExtensibility)GetGlobalService(typeof(IVsExtensibility));
+            Dte2 = (DTE2)Extensibility.GetGlobalsObject(null).DTE;
 
             _teamPilgrimVsService.InitializeGlobals(Dte2);
             TeamPilgrimServiceModel = new TeamPilgrimServiceModel(new TeamPilgrimServiceModelProvider(), _teamPilgrimVsService);
