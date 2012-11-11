@@ -172,12 +172,18 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                 {
                     ProcessCheckIn(pendingChanges, checkinNote, workItemChanges);
                 }
-                else if(checkinEvaluationResult.Conflicts.Any())
+                else if (checkinEvaluationResult.Conflicts.Any())
                 {
-                    
+                    MessageBox.Show(
+                        "Check In\r\n\r\nNo files checked in due to conflicting changes. Please use Conflicts Manager to resolve conflicts and try again.", "Team Pilgrim", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+
+                    var conflictedServerItems = checkinEvaluationResult.Conflicts.Select(conflict => conflict.ServerItem).ToArray();
+                    teamPilgrimVsService.ResolveConflicts(Workspace, conflictedServerItems, false, false);
                 }
-                else if(checkinEvaluationResult.PolicyFailures.Any())
+                else if (checkinEvaluationResult.PolicyFailures.Any())
                 {
+                    Messenger.Default.Send(new ShowPendingChangesTabItemMessage { ShowPendingChangesTabItem = ShowPendingChangesTabItemEnum.PolicyWarnings });
+
                     var policyFailureModel = new PolicyFailureModel();
                     var policyFailureDialog = new PolicyFailureDialog()
                     {
@@ -202,17 +208,17 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         {
             CheckinEvaluationResult = null;
             if (teamPilgrimServiceModelProvider.TryWorkspaceCheckin(Workspace, pendingChanges, Comment, checkinNote, workItemChanges, policyOverrideInfo))
+            {
+                Comment = string.Empty;
+                RefreshPendingChanges();
+
+                foreach (var workItem in WorkItems.Where(model => model.IsSelected))
                 {
-                    Comment = string.Empty;
-                    RefreshPendingChanges();
-
-                    foreach (var workItem in WorkItems.Where(model => model.IsSelected))
-                    {
-                        workItem.IsSelected = false;
-                    }
-
-                    RefreshSelectedDefinitionWorkItemsCommand.Execute(null);
+                    workItem.IsSelected = false;
                 }
+
+                RefreshSelectedDefinitionWorkItemsCommand.Execute(null);
+            }
         }
 
         private bool CanCheckIn()
