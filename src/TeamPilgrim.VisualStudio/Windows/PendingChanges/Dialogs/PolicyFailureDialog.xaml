@@ -1,0 +1,48 @@
+﻿<Window x:Class="JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs.PolicyFailureDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:Model="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model"
+        xmlns:Client="clr-namespace:Microsoft.TeamFoundation.WorkItemTracking.Client;assembly=Microsoft.TeamFoundation.WorkItemTracking.Client"
+        xmlns:Explorer="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:behaviours="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Behaviors"
+        xmlns:Children="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery"
+        xmlns:Converters="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Converters" Height="300" Width="300"
+        mc:Ignorable="d" 
+        d:DataContext="{d:DesignInstance Model:SelectWorkItemQueryModel}">
+    
+    <DockPanel>
+        <DockPanel.Resources>
+            <Converters:AndClauseBooleanConverter x:Key="AndClauseBooleanConverter"></Converters:AndClauseBooleanConverter>
+            <Converters:StringNotNullOrWhitespaceBooleanConverter x:Key="StringNotNullOrWhitespaceBooleanConverter"></Converters:StringNotNullOrWhitespaceBooleanConverter>
+        </DockPanel.Resources>
+        <DockPanel DockPanel.Dock="Bottom" LastChildFill="False">
+            <Button DockPanel.Dock="Right" Click="CancelButtonClick">
+                <TextBlock>Cancel</TextBlock>
+            </Button>
+            <Button DockPanel.Dock="Right" Click="OkButtonClick">
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource ResourceKey=AndClauseBooleanConverter}">
+                        <Binding ElementName="OverridePolicyCheckBox" Path="IsChecked"></Binding>
+                        <Binding ElementName="OverrideReasonTextBox" Path="Text" Converter="{StaticResource ResourceKey=StringNotNullOrWhitespaceBooleanConverter}"></Binding>
+                    </MultiBinding>
+                </Button.IsEnabled>
+                OK
+            </Button>
+        </DockPanel>
+        <DockPanel DockPanel.Dock="Top">
+            <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap">Checkin cannot proceed because the policy requirements have not been satisfied.</TextBlock>
+            <DockPanel DockPanel.Dock="Top">
+                <CheckBox x:Name="OverridePolicyCheckBox" />
+                <TextBlock>Override policy failure and continue checkin</TextBlock>
+            </DockPanel>
+            <TextBlock DockPanel.Dock="Top">Reason:</TextBlock>
+            <ScrollViewer>
+                <TextBox x:Name="OverrideReasonTextBox" DockPanel.Dock="Top" TextWrapping="Wrap"/>
+            </ScrollViewer>
+        </DockPanel>
+    </DockPanel>
+
+</Window>

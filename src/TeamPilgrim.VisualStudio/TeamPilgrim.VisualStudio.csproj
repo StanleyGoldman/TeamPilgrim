@@ -183,8 +183,10 @@
     <Compile Include="Common\Comparer\ComparerEqualityComparer.cs" />
     <Compile Include="Common\Comparer\ComparerEqualityComparerGeneric.cs" />
     <Compile Include="Common\Comparer\ComparerExtensions.cs" />
+    <Compile Include="Common\Converters\AndClauseBooleanConverter.cs" />
     <Compile Include="Common\Converters\OcClauseBooleanToVisibilityConverter.cs" />
     <Compile Include="Common\Comparer\UntypedComparerWrapper.cs" />
+    <Compile Include="Common\Converters\StringNotNullOrWhitespaceBooleanConverter.cs" />
     <Compile Include="Common\VsWindowFrameEditorTypeIds.cs" />
     <Compile Include="Common\AttachedProperties\MouseDoubleClick.cs" />
     <Compile Include="Common\Extensions\CheckinEvaluationResultExtensions.cs" />
@@ -195,6 +197,9 @@
     <Compile Include="Model\PendingChanges\SelectedWorkItemCheckinActionEnumExtensions.cs" />
     <Compile Include="Model\PendingChanges\WorkItemModel.cs" />
     <Compile Include="Model\SelectWorkItemQueryModel.cs" />
+    <Compile Include="Windows\PendingChanges\Dialogs\PolicyFailureDialog.xaml.cs">
+      <DependentUpon>PolicyFailureDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\PendingChanges\Dialogs\SelectWorkItemQueryDialog.xaml.cs">
       <DependentUpon>SelectWorkItemQueryDialog.xaml</DependentUpon>
     </Compile>
@@ -292,6 +297,10 @@
     <Content Include="Resources\Package.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Windows\PendingChanges\Dialogs\PolicyFailureDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Windows\PendingChanges\Dialogs\SelectWorkItemQueryDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
