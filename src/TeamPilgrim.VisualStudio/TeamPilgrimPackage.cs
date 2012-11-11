@@ -172,7 +172,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
                 }
 
                 var remainingTime = (license.DateExpires - DateTime.Now);
-                if (license.IsEvaluationExpired() || remainingTime.Days >= 5)
+                if (license.IsEvaluationExpired() || remainingTime.Days <= 5)
                 {
                     showLicenseDialog = true;
                 }
