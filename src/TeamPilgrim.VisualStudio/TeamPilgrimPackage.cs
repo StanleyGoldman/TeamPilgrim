@@ -162,59 +162,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
                         HostAssembly = Assembly.GetExecutingAssembly()
                     };
 
-                var showLicenseDialog = false;
 
                 if (!license.Load())
                 {
-                    showLicenseDialog = true;
                     license.LicenseCode = DecemberThirtyFirstExpirationLicenseKey;
                     license.Save();
                 }
 
-                var remainingTime = (license.DateExpires - DateTime.Now);
-                if (license.IsEvaluationExpired() || remainingTime.Days <= 5)
-                {
-                    showLicenseDialog = true;
-                }
-
                 var currentLicense = license.LicenseCode;
-
-                while (showLicenseDialog)
-                {
-                    var licenseModel = new LicenseModel
-                        {
-                            ExpirationDate = license.DateExpires,
-                            LicesnseKey = license.LicenseCode
-                        };
-
-                    var licenseDialog = new LicenseDialog
-                        {
-                            DataContext = licenseModel
-                        };
-
-                    licenseDialog.ShowDialog();
-                    if (licenseDialog.DialogResult.HasValue && licenseDialog.DialogResult.Value)
-                    {
-                        if(licenseModel.LicesnseKey == currentLicense)
-                        {
-                            showLicenseDialog = false;
-                        }
-                        else
-                        {
-                            license.LicenseCode = licenseModel.LicesnseKey;
-                            if (!license.IsEvaluationExpired())
-                            {
-                                license.Save();
-                                showLicenseDialog = false;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        license.LicenseCode = currentLicense;
-                        showLicenseDialog = false;
-                    }
-                }
 
                 if (license.IsEvaluationExpired())
                 {
