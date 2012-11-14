@@ -20,7 +20,7 @@ using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 {
-    public class WorkspaceServiceModel : BaseServiceModel
+    public class WorkspaceServiceModel : BaseServiceModel, IPendingChangeCommandModel
     {
         public ObservableCollection<WorkItemModel> WorkItems { get; private set; }
 
@@ -104,6 +104,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             RefreshSelectedDefinitionWorkItemsCommand = new RelayCommand(RefreshSelectedDefinitionWorkItems, CanRefreshSelectedDefinitionWorkItems);
             ShowSelectWorkItemQueryCommand = new RelayCommand(ShowSelectWorkItemQuery, CanShowSelectWorkItemQuery);
             EvaluateCheckInCommand = new RelayCommand(EvaluateCheckIn, CanEvaluateCheckIn);
+            ViewPendingChangeCommand = new RelayCommand<PendingChangeModel>(ViewPendingChange, CanViewPendingChange);
 
             PendingChanges = new ObservableCollection<PendingChangeModel>();
             WorkItems = new ObservableCollection<WorkItemModel>();
@@ -114,7 +115,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             {
                 foreach (var pendingChange in pendingChanges)
                 {
-                    var pendingChangeModel = new PendingChangeModel(pendingChange);
+                    var pendingChangeModel = new PendingChangeModel(this, pendingChange);
                     PendingChanges.Add(pendingChangeModel);
                 }
             }
@@ -129,6 +130,111 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         {
             RefreshPendingChanges();
         }
+
+        #region ViewPendingChange Command
+
+        public RelayCommand<PendingChangeModel> ViewPendingChangeCommand { get; private set; }
+
+        private void ViewPendingChange(PendingChangeModel pendingChangeModel)
+        {
+        }
+
+        private bool CanViewPendingChange(PendingChangeModel pendingChangeModel)
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region CompareWithUnmodified Command
+
+        public RelayCommand<PendingChangeModel> CompareWithUnmodifiedCommand { get; private set; }
+
+        private void CompareWithUnmodified(PendingChangeModel pendingChangeModel)
+        {
+        }
+
+        private bool CanCompareWithUnmodified(PendingChangeModel pendingChangeModel)
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region CompareWithWorkspace Command
+
+        public RelayCommand<PendingChangeModel> CompareWithWorkspaceCommand { get; private set; }
+
+        private void CompareWithWorkspace(PendingChangeModel pendingChangeModel)
+        {
+        }
+
+        private bool CanCompareWithWorkspaceChange(PendingChangeModel pendingChangeModel)
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region CompareWithLatest Command
+
+        public RelayCommand<PendingChangeModel> CompareWithLatestCommand { get; private set; }
+
+        private void CompareWithLatest(PendingChangeModel pendingChangeModel)
+        {
+        }
+
+        private bool CanCompareWithLatest(PendingChangeModel pendingChangeModel)
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region UndoPendingChange Command
+
+        public RelayCommand<PendingChangeModel> UndoPendingChangeCommand { get; private set; }
+
+        private void UndoPendingChange(PendingChangeModel pendingChangeModel)
+        {
+        }
+
+        private bool CanUndoPendingChange(PendingChangeModel pendingChangeModel)
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region RefreshPendingChange Command
+
+        public RelayCommand<PendingChangeModel> RefreshPendingChangeCommand { get; private set; }
+
+        private void RefreshPendingChange(PendingChangeModel pendingChangeModel)
+        {
+        }
+
+        private bool CanRefreshPendingChange(PendingChangeModel pendingChangeModel)
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region PendingChangeProperties Command
+
+        public RelayCommand<PendingChangeModel> PendingChangePropertiesCommand { get; private set; }
+
+        private void PendingChangeProperties(PendingChangeModel pendingChangeModel)
+        {
+        }
+
+        private bool CanPendingChangeProperties(PendingChangeModel pendingChangeModel)
+        {
+            return true;
+        }
+
+        #endregion
 
         #region CheckIn Command
 
@@ -310,7 +416,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
                 var modelsToAdd = currentPendingChanges
                     .Where(pendingChange => !modelIntersection.Select(model => model.Change.PendingChangeId).Contains(pendingChange.PendingChangeId))
-                    .Select(change => new PendingChangeModel(change)).ToArray();
+                    .Select(change => new PendingChangeModel(this, change)).ToArray();
 
                 foreach (var modelToAdd in modelsToAdd)
                 {

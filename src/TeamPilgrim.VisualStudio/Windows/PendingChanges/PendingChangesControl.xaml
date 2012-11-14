@@ -163,6 +163,38 @@
                     <ListView Name="PendingChangesListView" 
                               DataContext="{Binding Path=SelectedWorkspaceModel}" 
                               ItemsSource="{Binding Path=PendingChanges}" >
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="ContextMenu">
+                                    <Setter.Value>
+                                        <ContextMenu d:DataContext="{d:DesignInstance PendingChangesModel:PendingChangeModel}">
+                                            
+                                            <MenuItem Header="View" 
+                                                      Command="{Binding Path=PendingChangeCommand.ViewPendingChangeCommand}" 
+                                                      CommandParameter="{Binding}" />
+                                            
+                                            <Separator />
+                                            <MenuItem Header="Compare">
+                                                <MenuItem Header="With unmodified version..." />
+                                                <MenuItem Header="With workspace version..." />
+                                                <MenuItem Header="With latest version..." />
+                                            </MenuItem>
+
+                                            <MenuItem Header="Undo" />
+                                            
+                                            <Separator />
+                                            
+                                            <MenuItem Header="Refresh" />
+                                            
+                                            <Separator />
+                                           
+                                            <MenuItem Header="Properties" />
+                                            
+                                        </ContextMenu>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListView.ItemContainerStyle>
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="File">
