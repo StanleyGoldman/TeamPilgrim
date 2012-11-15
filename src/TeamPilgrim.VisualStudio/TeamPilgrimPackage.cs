@@ -188,13 +188,17 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
                 //                mcs.AddCommand( menuItem );
 
                 // Create the command for the tool window
-                var toolwndPilgrimExplorerCommandID = new CommandID(GuidList.guidTeamPilgrimCmdSet, (int)PkgCmdIDList.toolTeamPilgrimExplorer);
-                var menuToolWinPilgrimExplorer = new MenuCommand(ShowExplorerWindow, toolwndPilgrimExplorerCommandID);
-                mcs.AddCommand(menuToolWinPilgrimExplorer);
+                var toolTeamPilgrimExplorer = new MenuCommand(ShowExplorerWindow, new CommandID(GuidList.guidTeamPilgrimCmdSet, (int)PkgCmdIDList.toolTeamPilgrimExplorer));
+                mcs.AddCommand(toolTeamPilgrimExplorer);
 
-                var toolwndPilgrimPendingChangesCommandID = new CommandID(GuidList.guidTeamPilgrimCmdSet, (int)PkgCmdIDList.toolTeamPilgrimPendingChanges);
-                var menuToolWinPilgrimPendingChanges = new MenuCommand(ShowPendingChangesWindow, toolwndPilgrimPendingChangesCommandID);
-                mcs.AddCommand(menuToolWinPilgrimPendingChanges);
+                var cmdTeamPilgrimExplorer = new MenuCommand(ShowExplorerWindow, new CommandID(GuidList.guidTeamPilgrimCmdSet, (int)PkgCmdIDList.cmdTeamPilgrimExplorer));
+                mcs.AddCommand(cmdTeamPilgrimExplorer);
+
+                var toolTeamPilgrimPendingChanges = new MenuCommand(ShowPendingChangesWindow, new CommandID(GuidList.guidTeamPilgrimCmdSet, (int)PkgCmdIDList.toolTeamPilgrimPendingChanges));
+                mcs.AddCommand(toolTeamPilgrimPendingChanges);
+
+                var cmdTeamPilgrimPendingChanges = new MenuCommand(ShowPendingChangesWindow, new CommandID(GuidList.guidTeamPilgrimCmdSet, (int)PkgCmdIDList.cmdTeamPilgrimPendingChanges));
+                mcs.AddCommand(cmdTeamPilgrimPendingChanges);
             }
 
             TeamPilgrimPackage.UIShell = (IVsUIShell)base.GetService(typeof(SVsUIShell));

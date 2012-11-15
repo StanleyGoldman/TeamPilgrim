@@ -61,18 +61,25 @@
               <CommandFlag>DynamicVisibility</CommandFlag>
           If you do not want an image next to your command, remove the Icon node /> -->
 
-      <Button guid="guidTeamPilgrimCmdSet" id="cmdTeamPilgrimExplorer" priority="0x0100" type="Button">
-        <Parent guid="guidTeamPilgrimCmdSet" id="TeamPilgrimMenuGroup" />
-        <Icon guid="guidImages" id="bmpPic1" />
+      <Button guid="guidTeamPilgrimCmdSet" id="toolTeamPilgrimExplorer" priority="0x0100" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>
+        <Icon guid="guidImages" id="bmpPic2" />
         <Strings>
           <ButtonText>Team Pilgrim Explorer</ButtonText>
         </Strings>
       </Button>
 
-
-      <Button guid="guidTeamPilgrimCmdSet" id="toolTeamPilgrimExplorer" priority="0x0100" type="Button">
+      <Button guid="guidTeamPilgrimCmdSet" id="toolTeamPilgrimPendingChanges" priority="0x0100" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>
         <Icon guid="guidImages" id="bmpPic2" />
+        <Strings>
+          <ButtonText>Team Pilgrim Pending Changes</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidTeamPilgrimCmdSet" id="cmdTeamPilgrimExplorer" priority="0x0100" type="Button">
+        <Parent guid="guidTeamPilgrimCmdSet" id="TeamPilgrimMenuGroup" />
+        <Icon guid="guidImages" id="bmpPic1" />
         <Strings>
           <ButtonText>Team Pilgrim Explorer</ButtonText>
         </Strings>
@@ -87,13 +94,7 @@
       </Button>
 
 
-      <Button guid="guidTeamPilgrimCmdSet" id="toolTeamPilgrimPendingChanges" priority="0x0100" type="Button">
-        <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>
-        <Icon guid="guidImages" id="bmpPic2" />
-        <Strings>
-          <ButtonText>Team Pilgrim Pending Changes</ButtonText>
-        </Strings>
-      </Button>
+      
 
 
     </Buttons>
