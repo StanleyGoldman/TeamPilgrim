@@ -9,13 +9,15 @@
              xmlns:PendingChangesModel="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges"
              xmlns:System="clr-namespace:System;assembly=mscorlib"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-             xmlns:controls="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Controls"
+             xmlns:AttachedProperties="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties"
+             xmlns:PendingChanges="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges"
              mc:Ignorable="d" 
              Height="Auto" d:DesignHeight="300" d:DesignWidth="850"
              d:DataContext="{d:DesignInstance Model:TeamPilgrimServiceModel}">
     <UserControl.Resources>
 
-        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <Converters:SingleObjectToObservableCollectionConverter x:Key="SingleObjectToListConverter" />
         
         <ObjectDataProvider x:Key="workItemCheckinActions" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
             <ObjectDataProvider.MethodParameters>
@@ -126,22 +128,20 @@
                         <Button>Cmp with Workspace</Button>
                         <Button>Cmp with Latest</Button>
                         -->
-                        
-                        <Button IsEnabled="False">View File</Button>
-                        <Button IsEnabled="False">Undo Pending Change</Button>
+
+                        <Button DataContext="{Binding Path=SelectedWorkspaceModel}"
+                                Command="{Binding Path=ViewPendingChangeCommand}" 
+                                CommandParameter="{Binding ElementName=PendingChangesListView, Path=SelectedItems}">View File</Button>
+
+                        <Button DataContext="{Binding Path=SelectedWorkspaceModel}"
+                                Command="{Binding Path=UndoPendingChangeCommand}" 
+                                CommandParameter="{Binding ElementName=PendingChangesListView, Path=SelectedItems}">Undo Pending Change</Button>
 
                         <Separator/>
                         
                         <Button DataContext="{Binding Path=SelectedWorkspaceModel}" Command="{Binding Path=RefreshPendingChangesCommand}">
                             <Image Source="..\..\Resources\arrow_refresh.png" Width="16" Height="16" />
                         </Button>
-
-                        <!--
-                        Soution filter Disabled
-                
-                        <Separator/>
-                        <Button>Filter By Solution</Button>
-                        -->
 
                         <Separator/>
                         <TextBlock VerticalAlignment="Center">Workspace:</TextBlock>
@@ -165,6 +165,12 @@
                               
                               DataContext="{Binding Path=SelectedWorkspaceModel}" 
                               ItemsSource="{Binding Path=PendingChanges}">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding ElementName=PendingChangesListView, Path=DataContext.ViewPendingChangeCommand}"/>
+                                <Setter Property="AttachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding Converter={StaticResource SingleObjectToListConverter}}"/>
+                            </Style>
+                        </ListView.ItemContainerStyle>
                         <ListView.ContextMenu>
                             <ContextMenu d:DataContext="{d:DesignInstance PendingChangesModel:WorkspaceServiceModel}" x:Name="PendingChangesContextMenu">
 
@@ -191,18 +197,6 @@
 
                                 <MenuItem Header="Undo"
                                     Command="{Binding Path=UndoPendingChangeCommand}" 
-                                    CommandParameter="{Binding ElementName=PendingChangesListView, Path=SelectedItems}" />
-
-                                <Separator />
-
-                                <MenuItem Header="Refresh"
-                                    Command="{Binding Path=RefreshPendingChangeCommand}" 
-                                    CommandParameter="{Binding ElementName=PendingChangesListView, Path=SelectedItems}" />
-
-                                <Separator />
-
-                                <MenuItem Header="Properties"
-                                    Command="{Binding Path=PendingChangePropertiesCommand}" 
                                     CommandParameter="{Binding ElementName=PendingChangesListView, Path=SelectedItems}" />
 
                             </ContextMenu>
@@ -283,7 +277,7 @@
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate DataType="PendingChangesModel:WorkItemModel">
                                             <ComboBox 
-                                                Visibility="{Binding Path=IsSelected, Converter={StaticResource ResourceKey=BoolToVis}}"
+                                                Visibility="{Binding Path=IsSelected, Converter={StaticResource ResourceKey=BooleanToVisibilityConverter}}"
                                                 ItemsSource="{Binding Source={StaticResource ResourceKey=workItemCheckinActions}}" 
                                                 SelectedItem="{Binding Path=WorkItemCheckinAction}" />
                                         </DataTemplate>

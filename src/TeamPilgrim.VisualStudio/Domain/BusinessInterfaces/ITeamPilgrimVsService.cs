@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.TeamFoundation.Build.Controls;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.VersionControl.Client;
@@ -37,5 +38,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces
         void GoToWorkItem();
         void OpenSecurityItemDialog(QueryItem queryItem);
         void ResolveConflicts(Workspace workspace, string[] paths, bool recursive, bool afterCheckin);
+        void CompareChangesetChangesWithLatestVersions(IList<PendingChange> pendingChanges);
+        void CompareChangesetChangesWithPreviousVersions(IList<PendingChange> pendingChanges);
+        void CompareChangesetChangesWithWorkspaceVersions(IList<PendingChange> pendingChanges, Workspace workspace);
+        void UndoChanges(Workspace workspace, IList<PendingChange> pendingChanges);
+        void View(Workspace workspace, IList<PendingChange> pendingChanges);
     }
 }

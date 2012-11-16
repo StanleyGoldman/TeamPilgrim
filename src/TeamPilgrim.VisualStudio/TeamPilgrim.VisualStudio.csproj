@@ -177,17 +177,18 @@
   <ItemGroup>
     <Compile Include="Business\Services\CheckinNotesCacheWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\Builds\BuildExplorerWrapper.cs" />
+    <Compile Include="Business\Services\VisualStudio\VersionControl\ClientHelperVsWrapper.cs" />
+    <Compile Include="Business\Services\VisualStudio\VersionControl\PendingChangesPageViewModelUtilsWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\WorkItem\DocumentServiceWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\TeamFoundationHostWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\Builds\VsTeamFoundationBuildWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\WorkItem\QuerySecurityCommandHelpersWrapper.cs" />
-    <Compile Include="Business\Services\VisualStudio\WorkItem\VersionControlPackageWrapper.cs" />
+    <Compile Include="Business\Services\VisualStudio\VersionControl\VersionControlPackageWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\WorkItem\WorkItemTrackingPackageWrapper.cs" />
     <Compile Include="Common\Behaviors\BindableSelectedItemBehavior.cs" />
     <Compile Include="Common\Comparer\ComparerEqualityComparer.cs" />
     <Compile Include="Common\Comparer\ComparerEqualityComparerGeneric.cs" />
     <Compile Include="Common\Comparer\ComparerExtensions.cs" />
-    <Compile Include="Common\Controls\ListBoxFix.cs" />
     <Compile Include="Common\Converters\AndClauseBooleanConverter.cs" />
     <Compile Include="Common\Converters\OcClauseBooleanToVisibilityConverter.cs" />
     <Compile Include="Common\Comparer\UntypedComparerWrapper.cs" />
@@ -255,6 +256,7 @@
       <DependentUpon>PendingChangesControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\PendingChanges\PendingChangesWindow.cs" />
+    <Compile Include="Common\Converters\SingleObjectToObservableCollectionConverter.cs" />
     <None Include="..\TeamPilgrim.Core\Key.snk">
       <Link>Key.snk</Link>
     </None>
