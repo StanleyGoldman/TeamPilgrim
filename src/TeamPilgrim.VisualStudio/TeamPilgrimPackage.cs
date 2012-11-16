@@ -60,7 +60,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
     public sealed class TeamPilgrimPackage : Package, IVsShellPropertyEvents
     {
         internal const string LicenseValidationKey = "AMAAMADJHFA64RFew2wwMz1VwGqryhDyB9MoC8nB3ld26/BURon9c1Bh3Yn4Iva73o+EHmcDAAEAAQ==";
-        internal const string DecemberThirtyFirstExpirationLicenseKey = "NgA8ATXFYbtHwM0BNUXGs9rXzQFBGFRlYW1QaWxncmltLlZpc3VhbFN0dWRpbxzfSnNOl4cJlO8pGVvmWuicBm8J4xmdvdjGAXUJO+fZNo4VZcVZrxod/cGeGfsUTrvtgSf8M/BP";
+        internal const string DecemberSixteenthExpirationLicenseKey = "NgA8Af4YVXG3w80B3wW+aUrbzQFBGFRlYW1QaWxncmltLlZpc3VhbFN0dWRpbxzfSnNOl4cJdMAj2Fsa+zBY5EWSEM/Jwlqyemw3+q1u9Hih3vgIgcyPnE8HWI8DQr6yuJCnFdOF";
 
         private static TeamPilgrimPackage _singleInstance;
 
@@ -162,14 +162,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
                         HostAssembly = Assembly.GetExecutingAssembly()
                     };
 
-
-                if (!license.Load())
+                if (!license.Load() || license.LicenseCode != DecemberSixteenthExpirationLicenseKey)
                 {
-                    license.LicenseCode = DecemberThirtyFirstExpirationLicenseKey;
+                    license.LicenseCode = DecemberSixteenthExpirationLicenseKey;
                     license.Save();
                 }
-
-                var currentLicense = license.LicenseCode;
 
                 if (license.IsEvaluationExpired())
                 {
