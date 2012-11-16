@@ -20,11 +20,13 @@ using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 {
-    public class WorkspaceServiceModel : BaseServiceModel, IPendingChangeCommandModel
+    public class WorkspaceServiceModel : BaseServiceModel
     {
         public ObservableCollection<WorkItemModel> WorkItems { get; private set; }
 
         public ObservableCollection<PendingChangeModel> PendingChanges { get; private set; }
+
+        public ObservableCollection<PendingChangeModel> SelectedPendingChanges { get; private set; }
 
         public ObservableCollection<CheckinNoteModel> CheckinNotes { get; private set; }
 
@@ -104,7 +106,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             RefreshSelectedDefinitionWorkItemsCommand = new RelayCommand(RefreshSelectedDefinitionWorkItems, CanRefreshSelectedDefinitionWorkItems);
             ShowSelectWorkItemQueryCommand = new RelayCommand(ShowSelectWorkItemQuery, CanShowSelectWorkItemQuery);
             EvaluateCheckInCommand = new RelayCommand(EvaluateCheckIn, CanEvaluateCheckIn);
-            ViewPendingChangeCommand = new RelayCommand<PendingChangeModel>(ViewPendingChange, CanViewPendingChange);
+            
+            ViewPendingChangeCommand = new RelayCommand<ObservableCollection<object>>(ViewPendingChange, CanViewPendingChange);
+            CompareWithLatestCommand = new RelayCommand<ObservableCollection<object>>(CompareWithLatest, CanCompareWithLatest);
+            CompareWithUnmodifiedCommand = new RelayCommand<ObservableCollection<object>>(CompareWithUnmodified, CanCompareWithUnmodified);
+            CompareWithWorkspaceCommand = new RelayCommand<ObservableCollection<object>>(CompareWithWorkspace, CanCompareWithWorkspace);
+            UndoPendingChangeCommand = new RelayCommand<ObservableCollection<object>>(UndoPendingChange, CanUndoPendingChange);
+            RefreshPendingChangeCommand = new RelayCommand<ObservableCollection<object>>(RefreshPendingChange, CanRefreshPendingChange);
+            PendingChangePropertiesCommand = new RelayCommand<ObservableCollection<object>>(PendingChangeProperties, CanPendingChangeProperties);
 
             PendingChanges = new ObservableCollection<PendingChangeModel>();
             WorkItems = new ObservableCollection<WorkItemModel>();
@@ -115,7 +124,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             {
                 foreach (var pendingChange in pendingChanges)
                 {
-                    var pendingChangeModel = new PendingChangeModel(this, pendingChange);
+                    var pendingChangeModel = new PendingChangeModel(pendingChange);
                     PendingChanges.Add(pendingChangeModel);
                 }
             }
@@ -133,13 +142,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         #region ViewPendingChange Command
 
-        public RelayCommand<PendingChangeModel> ViewPendingChangeCommand { get; private set; }
+        public RelayCommand<ObservableCollection<object>> ViewPendingChangeCommand { get; private set; }
 
-        private void ViewPendingChange(PendingChangeModel pendingChangeModel)
+        private void ViewPendingChange(ObservableCollection<object> collection)
         {
         }
 
-        private bool CanViewPendingChange(PendingChangeModel pendingChangeModel)
+        private bool CanViewPendingChange(ObservableCollection<object> collection)
         {
             return true;
         }
@@ -148,13 +157,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         #region CompareWithUnmodified Command
 
-        public RelayCommand<PendingChangeModel> CompareWithUnmodifiedCommand { get; private set; }
+        public RelayCommand<ObservableCollection<object>> CompareWithUnmodifiedCommand { get; private set; }
 
-        private void CompareWithUnmodified(PendingChangeModel pendingChangeModel)
+        private void CompareWithUnmodified(ObservableCollection<object> collection)
         {
         }
 
-        private bool CanCompareWithUnmodified(PendingChangeModel pendingChangeModel)
+        private bool CanCompareWithUnmodified(ObservableCollection<object> collection)
         {
             return true;
         }
@@ -163,13 +172,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         #region CompareWithWorkspace Command
 
-        public RelayCommand<PendingChangeModel> CompareWithWorkspaceCommand { get; private set; }
+        public RelayCommand<ObservableCollection<object>> CompareWithWorkspaceCommand { get; private set; }
 
-        private void CompareWithWorkspace(PendingChangeModel pendingChangeModel)
+        private void CompareWithWorkspace(ObservableCollection<object> collection)
         {
         }
 
-        private bool CanCompareWithWorkspaceChange(PendingChangeModel pendingChangeModel)
+        private bool CanCompareWithWorkspace(ObservableCollection<object> collection)
         {
             return true;
         }
@@ -178,13 +187,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         #region CompareWithLatest Command
 
-        public RelayCommand<PendingChangeModel> CompareWithLatestCommand { get; private set; }
+        public RelayCommand<ObservableCollection<object>> CompareWithLatestCommand { get; private set; }
 
-        private void CompareWithLatest(PendingChangeModel pendingChangeModel)
+        private void CompareWithLatest(ObservableCollection<object> collection)
         {
         }
 
-        private bool CanCompareWithLatest(PendingChangeModel pendingChangeModel)
+        private bool CanCompareWithLatest(ObservableCollection<object> collection)
         {
             return true;
         }
@@ -193,13 +202,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         #region UndoPendingChange Command
 
-        public RelayCommand<PendingChangeModel> UndoPendingChangeCommand { get; private set; }
+        public RelayCommand<ObservableCollection<object>> UndoPendingChangeCommand { get; private set; }
 
-        private void UndoPendingChange(PendingChangeModel pendingChangeModel)
+        private void UndoPendingChange(ObservableCollection<object> collection)
         {
         }
 
-        private bool CanUndoPendingChange(PendingChangeModel pendingChangeModel)
+        private bool CanUndoPendingChange(ObservableCollection<object> collection)
         {
             return true;
         }
@@ -208,13 +217,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         #region RefreshPendingChange Command
 
-        public RelayCommand<PendingChangeModel> RefreshPendingChangeCommand { get; private set; }
+        public RelayCommand<ObservableCollection<object>> RefreshPendingChangeCommand { get; private set; }
 
-        private void RefreshPendingChange(PendingChangeModel pendingChangeModel)
+        private void RefreshPendingChange(ObservableCollection<object> collection)
         {
         }
 
-        private bool CanRefreshPendingChange(PendingChangeModel pendingChangeModel)
+        private bool CanRefreshPendingChange(ObservableCollection<object> collection)
         {
             return true;
         }
@@ -223,13 +232,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         #region PendingChangeProperties Command
 
-        public RelayCommand<PendingChangeModel> PendingChangePropertiesCommand { get; private set; }
+        public RelayCommand<ObservableCollection<object>> PendingChangePropertiesCommand { get; private set; }
 
-        private void PendingChangeProperties(PendingChangeModel pendingChangeModel)
+        private void PendingChangeProperties(ObservableCollection<object> collection)
         {
         }
 
-        private bool CanPendingChangeProperties(PendingChangeModel pendingChangeModel)
+        private bool CanPendingChangeProperties(ObservableCollection<object> collection)
         {
             return true;
         }
@@ -416,7 +425,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
                 var modelsToAdd = currentPendingChanges
                     .Where(pendingChange => !modelIntersection.Select(model => model.Change.PendingChangeId).Contains(pendingChange.PendingChangeId))
-                    .Select(change => new PendingChangeModel(this, change)).ToArray();
+                    .Select(change => new PendingChangeModel(change)).ToArray();
 
                 foreach (var modelToAdd in modelsToAdd)
                 {

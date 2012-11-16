@@ -9,7 +9,8 @@
              xmlns:PendingChangesModel="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges"
              xmlns:System="clr-namespace:System;assembly=mscorlib"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-	     mc:Ignorable="d" 
+             xmlns:controls="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Controls"
+             mc:Ignorable="d" 
              Height="Auto" d:DesignHeight="300" d:DesignWidth="850"
              d:DataContext="{d:DesignInstance Model:TeamPilgrimServiceModel}">
     <UserControl.Resources>
@@ -161,40 +162,51 @@
                     <TextBox DockPanel.Dock="Top" DataContext="{Binding Path=SelectedWorkspaceModel}" Text="{Binding Path=Comment, UpdateSourceTrigger=PropertyChanged}"></TextBox>
 
                     <ListView Name="PendingChangesListView" 
+                              
                               DataContext="{Binding Path=SelectedWorkspaceModel}" 
-                              ItemsSource="{Binding Path=PendingChanges}" >
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="ListViewItem">
-                                <Setter Property="ContextMenu">
-                                    <Setter.Value>
-                                        <ContextMenu d:DataContext="{d:DesignInstance PendingChangesModel:PendingChangeModel}">
-                                            
-                                            <MenuItem Header="View" 
-                                                      Command="{Binding Path=PendingChangeCommand.ViewPendingChangeCommand}" 
-                                                      CommandParameter="{Binding}" />
-                                            
-                                            <Separator />
-                                            <MenuItem Header="Compare">
-                                                <MenuItem Header="With unmodified version..." />
-                                                <MenuItem Header="With workspace version..." />
-                                                <MenuItem Header="With latest version..." />
-                                            </MenuItem>
+                              ItemsSource="{Binding Path=PendingChanges}">
+                        <ListView.ContextMenu>
+                            <ContextMenu d:DataContext="{d:DesignInstance PendingChangesModel:WorkspaceServiceModel}" x:Name="PendingChangesContextMenu">
 
-                                            <MenuItem Header="Undo" />
-                                            
-                                            <Separator />
-                                            
-                                            <MenuItem Header="Refresh" />
-                                            
-                                            <Separator />
-                                           
-                                            <MenuItem Header="Properties" />
-                                            
-                                        </ContextMenu>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </ListView.ItemContainerStyle>
+                                <MenuItem Header="View" 
+                                    Command="{Binding Path=ViewPendingChangeCommand}" 
+                                    CommandParameter="{Binding ElementName=PendingChangesListView, Path=SelectedItems}" />
+
+                                <Separator />
+                                <MenuItem Header="Compare">
+                                    
+                                    <MenuItem Header="With unmodified version..."
+                                        Command="{Binding Path=CompareWithUnmodifiedCommand}" 
+                                        CommandParameter="{Binding ElementName=PendingChangesListView, Path=SelectedItems}" />
+                                    
+                                    <MenuItem Header="With workspace version..."
+                                        Command="{Binding Path=CompareWithWorkspaceCommand}" 
+                                        CommandParameter="{Binding ElementName=PendingChangesListView, Path=SelectedItems}" />
+
+                                    <MenuItem Header="With latest version..."
+                                        Command="{Binding Path=CompareWithWorkspaceCommand}" 
+                                        CommandParameter="{Binding ElementName=PendingChangesListView, Path=SelectedItems}" />
+                                    
+                                </MenuItem>
+
+                                <MenuItem Header="Undo"
+                                    Command="{Binding Path=UndoPendingChangeCommand}" 
+                                    CommandParameter="{Binding ElementName=PendingChangesListView, Path=SelectedItems}" />
+
+                                <Separator />
+
+                                <MenuItem Header="Refresh"
+                                    Command="{Binding Path=RefreshPendingChangeCommand}" 
+                                    CommandParameter="{Binding ElementName=PendingChangesListView, Path=SelectedItems}" />
+
+                                <Separator />
+
+                                <MenuItem Header="Properties"
+                                    Command="{Binding Path=PendingChangePropertiesCommand}" 
+                                    CommandParameter="{Binding ElementName=PendingChangesListView, Path=SelectedItems}" />
+
+                            </ContextMenu>
+                        </ListView.ContextMenu>
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="File">

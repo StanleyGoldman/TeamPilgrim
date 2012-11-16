@@ -187,6 +187,7 @@
     <Compile Include="Common\Comparer\ComparerEqualityComparer.cs" />
     <Compile Include="Common\Comparer\ComparerEqualityComparerGeneric.cs" />
     <Compile Include="Common\Comparer\ComparerExtensions.cs" />
+    <Compile Include="Common\Controls\ListBoxFix.cs" />
     <Compile Include="Common\Converters\AndClauseBooleanConverter.cs" />
     <Compile Include="Common\Converters\OcClauseBooleanToVisibilityConverter.cs" />
     <Compile Include="Common\Comparer\UntypedComparerWrapper.cs" />
@@ -198,7 +199,6 @@
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Model\LicenseModel.cs" />
     <Compile Include="Model\PendingChanges\CheckinNoteModel.cs" />
-    <Compile Include="Model\PendingChanges\IPendingChangeCommandModel.cs" />
     <Compile Include="Model\PendingChanges\SelectedWorkItemCheckinActionEnum.cs" />
     <Compile Include="Model\PendingChanges\SelectedWorkItemCheckinActionEnumExtensions.cs" />
     <Compile Include="Model\PendingChanges\WorkItemModel.cs" />

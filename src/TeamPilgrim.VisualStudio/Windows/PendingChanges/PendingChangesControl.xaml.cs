@@ -18,6 +18,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
         {
             InitializeComponent();
 
+            NameScope.SetNameScope(PendingChangesContextMenu, NameScope.GetNameScope(this));
+
             Messenger.Default.Register<ShowPendingChangesTabItemMessage>(this, message =>
             {
                 switch (message.ShowPendingChangesTabItem)

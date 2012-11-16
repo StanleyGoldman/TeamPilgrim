@@ -4,13 +4,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 {
     public class PendingChangeModel : BaseModel
     {
-        public IPendingChangeCommandModel PendingChangeCommand { get; private set; }
-
         public PendingChange Change { get; private set; }
 
-        public PendingChangeModel(IPendingChangeCommandModel pendingChangeCommandModel, PendingChange change)
+        public PendingChangeModel(PendingChange change)
         {
-            PendingChangeCommand = pendingChangeCommandModel;
             Change = change;
         }
 
