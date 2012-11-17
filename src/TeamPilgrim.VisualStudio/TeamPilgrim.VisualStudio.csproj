@@ -177,7 +177,6 @@
   <ItemGroup>
     <Compile Include="Business\Services\CheckinNotesCacheWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\Builds\BuildExplorerWrapper.cs" />
-    <Compile Include="Business\Services\VisualStudio\VersionControl\ClientHelperVsWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\VersionControl\PendingChangesPageViewModelUtilsWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\WorkItem\DocumentServiceWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\TeamFoundationHostWrapper.cs" />

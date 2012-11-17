@@ -58,7 +58,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
         private readonly Lazy<QuerySecurityCommandHelpersWrapper> _querySecurityCommandHelpers;
 
         private readonly Lazy<VersionControlPackageWrapper> _versionControlPackage;
-        private readonly Lazy<ClientHelperVsWrapper> _clientHelperVsWrapper;
+
         private readonly Lazy<PendingChangesPageViewModelUtilsWrapper> _pendingChangesPageViewModelUtilsWrapper;
 
         private IWorkItemControlHost _workItemControlHost;
@@ -70,7 +70,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
             _workItemTrackingPackage = new Lazy<WorkItemTrackingPackageWrapper>();
             _versionControlPackage = new Lazy<VersionControlPackageWrapper>();
             _querySecurityCommandHelpers = new Lazy<QuerySecurityCommandHelpersWrapper>();
-            _clientHelperVsWrapper = new Lazy<ClientHelperVsWrapper>();
             _pendingChangesPageViewModelUtilsWrapper = new Lazy<PendingChangesPageViewModelUtilsWrapper>();
         }
 
@@ -117,19 +116,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
             _packageInstance = packageInstance;
         }
 
-        public void CompareChangesetChangesWithLatestVersions(IList<PendingChange> pendingChanges)
+        public void CompareChangesetChangesWithLatestVersions(Workspace workspace, IList<PendingChange> pendingChanges)
         {
-            _clientHelperVsWrapper.Value.CompareChangesetChangesWithLatestVersions(pendingChanges);
+            _pendingChangesPageViewModelUtilsWrapper.Value.CompareWithLatestVersion(workspace, pendingChanges);
         }
 
-        public void CompareChangesetChangesWithPreviousVersions(IList<PendingChange> pendingChanges)
+        public void CompareChangesetChangesWithWorkspaceVersions(Workspace workspace, IList<PendingChange> pendingChanges)
         {
-            _clientHelperVsWrapper.Value.CompareChangesetChangesWithPreviousVersions(pendingChanges);
-        }
-
-        public void CompareChangesetChangesWithWorkspaceVersions(IList<PendingChange> pendingChanges, Workspace workspace)
-        {
-            _clientHelperVsWrapper.Value.CompareChangesetChangesWithWorkspaceVersions(pendingChanges, workspace);
+            _pendingChangesPageViewModelUtilsWrapper.Value.CompareWithWorkspaceVersion(workspace, pendingChanges);
         }
 
         public void UndoChanges(Workspace workspace, IList<PendingChange> pendingChanges)

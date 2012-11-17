@@ -38,9 +38,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces
         void GoToWorkItem();
         void OpenSecurityItemDialog(QueryItem queryItem);
         void ResolveConflicts(Workspace workspace, string[] paths, bool recursive, bool afterCheckin);
-        void CompareChangesetChangesWithLatestVersions(IList<PendingChange> pendingChanges);
-        void CompareChangesetChangesWithPreviousVersions(IList<PendingChange> pendingChanges);
-        void CompareChangesetChangesWithWorkspaceVersions(IList<PendingChange> pendingChanges, Workspace workspace);
+        void CompareChangesetChangesWithLatestVersions(Workspace workspace, IList<PendingChange> pendingChanges);
+        void CompareChangesetChangesWithWorkspaceVersions(Workspace workspace, IList<PendingChange> pendingChanges);
         void UndoChanges(Workspace workspace, IList<PendingChange> pendingChanges);
         void View(Workspace workspace, IList<PendingChange> pendingChanges);
     }

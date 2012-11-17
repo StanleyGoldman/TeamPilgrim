@@ -11,6 +11,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
         private static readonly Lazy<PropertyInfo> InstanceProperty;
         private static readonly Lazy<MethodInfo> UndoChangesMethod;
         private static readonly Lazy<MethodInfo> ViewMethod;
+        private static readonly Lazy<MethodInfo> CompareWithWorkspaceVersionMethod;
+        private static readonly Lazy<MethodInfo> CompareWithLatestVersionMethod;
 
         private readonly object _pendingChangesPageViewModelUtilsWrapperInstance;
 
@@ -20,6 +22,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
             InstanceProperty = new Lazy<PropertyInfo>(() => PendingChangesPageViewModelUtilsType.Value.GetProperty("Instance", BindingFlags.Static | BindingFlags.NonPublic));
             ViewMethod = new Lazy<MethodInfo>(() => PendingChangesPageViewModelUtilsType.Value.GetMethod("View", BindingFlags.Instance | BindingFlags.NonPublic));
             UndoChangesMethod = new Lazy<MethodInfo>(() => PendingChangesPageViewModelUtilsType.Value.GetMethod("UndoChanges", BindingFlags.Instance | BindingFlags.NonPublic));
+            CompareWithWorkspaceVersionMethod = new Lazy<MethodInfo>(() => PendingChangesPageViewModelUtilsType.Value.GetMethod("CompareWithWorkspaceVersion", BindingFlags.Instance | BindingFlags.NonPublic));
+            CompareWithLatestVersionMethod = new Lazy<MethodInfo>(() => PendingChangesPageViewModelUtilsType.Value.GetMethod("CompareWithLatestVersion", BindingFlags.Instance | BindingFlags.NonPublic));
         }
 
         public PendingChangesPageViewModelUtilsWrapper()
@@ -35,6 +39,16 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
         public void View(Workspace workspace, IList<PendingChange> pendingChanges)
         {
             ViewMethod.Value.Invoke(_pendingChangesPageViewModelUtilsWrapperInstance, new object[] { workspace, pendingChanges });
+        }
+
+        public void CompareWithWorkspaceVersion(Workspace workspace, IList<PendingChange> pendingChanges)
+        {
+            CompareWithWorkspaceVersionMethod.Value.Invoke(_pendingChangesPageViewModelUtilsWrapperInstance, new object[] { workspace, pendingChanges });
+        }
+
+        public void CompareWithLatestVersion(Workspace workspace, IList<PendingChange> pendingChanges)
+        {
+            CompareWithLatestVersionMethod.Value.Invoke(_pendingChangesPageViewModelUtilsWrapperInstance, new object[] { workspace, pendingChanges });
         }
     }
 }

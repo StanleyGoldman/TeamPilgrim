@@ -109,7 +109,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             
             ViewPendingChangeCommand = new RelayCommand<ObservableCollection<object>>(ViewPendingChange, CanViewPendingChange);
             CompareWithLatestCommand = new RelayCommand<ObservableCollection<object>>(CompareWithLatest, CanCompareWithLatest);
-            CompareWithUnmodifiedCommand = new RelayCommand<ObservableCollection<object>>(CompareWithUnmodified, CanCompareWithUnmodified);
             CompareWithWorkspaceCommand = new RelayCommand<ObservableCollection<object>>(CompareWithWorkspace, CanCompareWithWorkspace);
             UndoPendingChangeCommand = new RelayCommand<ObservableCollection<object>>(UndoPendingChange, CanUndoPendingChange);
             PendingChangePropertiesCommand = new RelayCommand<ObservableCollection<object>>(PendingChangeProperties, CanPendingChangeProperties);
@@ -155,29 +154,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         #endregion
 
-        #region CompareWithUnmodified Command
-
-        public RelayCommand<ObservableCollection<object>> CompareWithUnmodifiedCommand { get; private set; }
-
-        private void CompareWithUnmodified(ObservableCollection<object> collection)
-        {
-            teamPilgrimVsService.CompareChangesetChangesWithPreviousVersions(collection.Cast<PendingChangeModel>().Select(model => model.Change).ToArray());
-        }
-
-        private bool CanCompareWithUnmodified(ObservableCollection<object> collection)
-        {
-            return collection.Count == 1;
-        }
-
-        #endregion
-
         #region CompareWithWorkspace Command
 
         public RelayCommand<ObservableCollection<object>> CompareWithWorkspaceCommand { get; private set; }
 
         private void CompareWithWorkspace(ObservableCollection<object> collection)
         {
-            teamPilgrimVsService.CompareChangesetChangesWithWorkspaceVersions(collection.Cast<PendingChangeModel>().Select(model => model.Change).ToArray(), Workspace);
+            teamPilgrimVsService.CompareChangesetChangesWithWorkspaceVersions(Workspace, collection.Cast<PendingChangeModel>().Select(model => model.Change).ToArray());
         }
 
         private bool CanCompareWithWorkspace(ObservableCollection<object> collection)
@@ -193,7 +176,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private void CompareWithLatest(ObservableCollection<object> collection)
         {
-            teamPilgrimVsService.CompareChangesetChangesWithLatestVersions(collection.Cast<PendingChangeModel>().Select(model => model.Change).ToArray());
+            teamPilgrimVsService.CompareChangesetChangesWithLatestVersions(Workspace, collection.Cast<PendingChangeModel>().Select(model => model.Change).ToArray());
         }
 
         private bool CanCompareWithLatest(ObservableCollection<object> collection)

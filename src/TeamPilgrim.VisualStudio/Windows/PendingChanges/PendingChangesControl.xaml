@@ -181,10 +181,6 @@
                                 <Separator />
                                 <MenuItem Header="Compare">
                                     
-                                    <MenuItem Header="With unmodified version..."
-                                        Command="{Binding Path=CompareWithUnmodifiedCommand}" 
-                                        CommandParameter="{Binding ElementName=PendingChangesListView, Path=SelectedItems}" />
-                                    
                                     <MenuItem Header="With workspace version..."
                                         Command="{Binding Path=CompareWithWorkspaceCommand}" 
                                         CommandParameter="{Binding ElementName=PendingChangesListView, Path=SelectedItems}" />
