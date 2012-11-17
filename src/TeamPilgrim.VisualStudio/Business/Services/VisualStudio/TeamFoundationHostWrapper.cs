@@ -1,4 +1,5 @@
 using System;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Windows.Forms;
 using Microsoft.TeamFoundation.Client;
@@ -7,9 +8,18 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
 {
     public class TeamFoundationHostWrapper : ITeamFoundationContextManager
     {
-        private readonly ITeamFoundationContextManager _teamFoundationHostObject;
-        private readonly Type _teamFoundationHostObjectType;
-        private readonly Lazy<MethodInfo> _promptForServerAndProjectsMethod;
+        private ITeamFoundationContextManager _teamFoundationHostObject;
+        private Type _teamFoundationHostObjectType;
+        private Lazy<MethodInfo> _promptForServerAndProjectsMethod;
+        
+        private static readonly Lazy<Type> ServerConnectingEventArgsType;
+        private static readonly Lazy<Type> ServerConnectedEventArgsType;
+
+        static TeamFoundationHostWrapper()
+        {
+            ServerConnectingEventArgsType = new Lazy<Type>(() => Type.GetType("Microsoft.VisualStudio.TeamFoundation.ServerConnectingEventArgs, Microsoft.VisualStudio.TeamFoundation"));
+            ServerConnectedEventArgsType = new Lazy<Type>(() => Type.GetType("Microsoft.VisualStudio.TeamFoundation.ServerConnectedEventArgs, Microsoft.VisualStudio.TeamFoundation"));
+        }
 
         public TeamFoundationHostWrapper(ITeamFoundationContextManager teamFoundationHostObject)
         {
@@ -28,11 +38,31 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
 
             _teamFoundationHostObjectType = _teamFoundationHostObject.GetType();
             _promptForServerAndProjectsMethod = new Lazy<MethodInfo>(() => _teamFoundationHostObjectType.GetMethod("PromptForServerAndProjects", BindingFlags.Public | BindingFlags.Instance));
+
+            var connectingEvent = _teamFoundationHostObjectType.GetEvent("Connecting", BindingFlags.Public | BindingFlags.Instance);
+            
+            //var connectingEventDelegate = CreateConnectingEventDelegate();
+            //connectingEvent.AddEventHandler(_teamFoundationHostObject, connectingEventDelegate);
+
+            var connectionCompletedEvent = _teamFoundationHostObjectType.GetEvent("ConnectionCompleted", BindingFlags.Public | BindingFlags.Instance);
+        }
+
+        private Delegate CreateConnectingEventDelegate()
+        {
+            var serverConnectingParam = Expression.Parameter(ServerConnectingEventArgsType.Value,"serverConnectingEventArgsType");
+            Expression<Action<object>> blah = (input) => TestMethod(serverConnectingParam);
+
+            return Expression.Lambda(blah, serverConnectingParam).Compile();
+        }
+
+        public void TestMethod(object input)
+        {
+            
         }
 
         public DialogResult PromptForServerAndProjects(bool asynchronous = true)
         {
-            return (DialogResult) _promptForServerAndProjectsMethod.Value.Invoke(_teamFoundationHostObject, new object[] { asynchronous });
+            return (DialogResult)_promptForServerAndProjectsMethod.Value.Invoke(_teamFoundationHostObject, new object[] { asynchronous });
         }
 
         public event EventHandler<ContextChangedEventArgs> ContextChanged;
