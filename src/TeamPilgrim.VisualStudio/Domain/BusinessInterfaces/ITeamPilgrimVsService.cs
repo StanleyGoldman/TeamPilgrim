@@ -8,11 +8,13 @@ using Microsoft.VisualStudio.TeamFoundation;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces
 {
-    public delegate void ActiveProjectContextChanged(ProjectContextExt projectContext);
+    public delegate void ContextChanged(ProjectContextExt projectContext);
+    public delegate void ContextChanging(ITeamFoundationContext teamFoundationContext);
     
     public interface ITeamPilgrimVsService
     {
-        event ActiveProjectContextChanged ActiveProjectContextChangedEvent;
+        event ContextChanged ContextChangedEvent;
+        event ContextChanging ContextChangingEvent;
         ProjectContextExt ActiveProjectContext { get; }
 
         void OpenSourceControl(string projectName);

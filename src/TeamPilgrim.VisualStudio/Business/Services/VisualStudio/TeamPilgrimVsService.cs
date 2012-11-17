@@ -29,11 +29,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
     {
         protected IVsUIShell VsUiShell { get; private set; }
 
-        public event ActiveProjectContextChanged ActiveProjectContextChangedEvent;
+        public event ContextChanged ContextChangedEvent;
+        public event ContextChanging ContextChangingEvent;
 
         protected DTE2 Dte2 { get; set; }
 
         protected TeamFoundationServerExt TeamFoundationServerExt { get; set; }
+        private static readonly Lazy<FieldInfo> TeamFoundationServerExt_TeamFoundationHostField;
 
         protected TeamFoundationHostWrapper TeamFoundationHost { get; set; }
 
@@ -63,6 +65,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
 
         private IWorkItemControlHost _workItemControlHost;
 
+        static TeamPilgrimVsService()
+        {
+            TeamFoundationServerExt_TeamFoundationHostField = new Lazy<FieldInfo>(() => typeof(TeamFoundationServerExt).GetField("m_teamFoundationHost", BindingFlags.NonPublic | BindingFlags.Instance));
+        }
 
         public TeamPilgrimVsService()
         {
@@ -90,24 +96,28 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
 
             if (TeamFoundationServerExt != null)
             {
-                var fi = typeof(TeamFoundationServerExt).GetField("m_teamFoundationHost", BindingFlags.NonPublic | BindingFlags.Instance);
-                var teamFoundationHostObject = fi.GetValue(TeamFoundationServerExt);
+                var teamFoundationHostObject = (ITeamFoundationContextManager)TeamFoundationServerExt_TeamFoundationHostField.Value.GetValue(TeamFoundationServerExt);
 
                 TeamFoundationHost = new TeamFoundationHostWrapper(teamFoundationHostObject);
 
-                TeamFoundationServerExt.ProjectContextChanged += TeamFoundationServerExtOnProjectContextChanged;
+                TeamFoundationHost.ContextChanged += TeamFoundationHostOnContextChanged;
+                TeamFoundationHost.ContextChanging += delegate(object sender, ContextChangingEventArgs args)
+                    {
+                        if (ContextChangingEvent != null)
+                            ContextChangingEvent(args.NewContext);
+                    };
 
                 if (TeamFoundationServerExt.ActiveProjectContext != null)
                 {
-                    TeamFoundationServerExtOnProjectContextChanged(null, EventArgs.Empty);
+                    TeamFoundationHostOnContextChanged(null, EventArgs.Empty);
                 }
             }
         }
 
-        private void TeamFoundationServerExtOnProjectContextChanged(object sender, EventArgs e)
+        private void TeamFoundationHostOnContextChanged(object sender, EventArgs e)
         {
-            if(ActiveProjectContextChangedEvent != null)
-                ActiveProjectContextChangedEvent(TeamFoundationServerExt.ActiveProjectContext);
+            if(ContextChangedEvent != null)
+                ContextChangedEvent(TeamFoundationServerExt.ActiveProjectContext);
         }
 
         public void Initialize(TeamPilgrimPackage packageInstance, IVsUIShell vsUiShell)

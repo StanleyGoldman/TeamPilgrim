@@ -94,8 +94,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
             _teamPilgrimServiceModelProvider = teamPilgrimServiceModelProvider;
             _teamPilgrimVsService = teamPilgrimVsService;
-
-            _teamPilgrimVsService.ActiveProjectContextChangedEvent += TeamPilgrimPackageOnActiveProjectContextChangedEvent;
+            
+            _teamPilgrimVsService.ContextChangedEvent += TeamPilgrimPackageOnContextChangedEvent;
 
             RefreshCommand = new RelayCommand(Refresh, CanRefresh);
             TfsConnectCommand = new RelayCommand(TfsConnect, CanTfsConnect);
@@ -124,7 +124,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             }
         }
 
-        private void TeamPilgrimPackageOnActiveProjectContextChangedEvent(ProjectContextExt projectContext)
+        private void TeamPilgrimPackageOnContextChangedEvent(ProjectContextExt projectContext)
         {
             Task.Run(() => PopulatePilgrimModel());
         }
