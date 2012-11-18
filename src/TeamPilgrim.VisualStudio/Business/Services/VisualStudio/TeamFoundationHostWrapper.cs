@@ -39,23 +39,35 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
             _teamFoundationHostObjectType = _teamFoundationHostObject.GetType();
             _promptForServerAndProjectsMethod = new Lazy<MethodInfo>(() => _teamFoundationHostObjectType.GetMethod("PromptForServerAndProjects", BindingFlags.Public | BindingFlags.Instance));
 
-            var connectingEvent = _teamFoundationHostObjectType.GetEvent("Connecting", BindingFlags.Public | BindingFlags.Instance);
-            
-            //var connectingEventDelegate = CreateConnectingEventDelegate();
-            //connectingEvent.AddEventHandler(_teamFoundationHostObject, connectingEventDelegate);
+            var connectingEventInfo = _teamFoundationHostObjectType.GetEvent("Connecting", BindingFlags.Public | BindingFlags.Instance);
+            var connectingEventHandlerConstructor = connectingEventInfo.EventHandlerType.GetConstructor(new[] {typeof (object), typeof (IntPtr)});
+            var connectingEventHandler = (Delegate) connectingEventHandlerConstructor.Invoke(new object[]
+                {
+                    this, typeof (TeamFoundationHostWrapper).GetMethod("TeamFoundationHostConnecting", BindingFlags.NonPublic | BindingFlags.Instance).MethodHandle.GetFunctionPointer()
+                });
 
-            var connectionCompletedEvent = _teamFoundationHostObjectType.GetEvent("ConnectionCompleted", BindingFlags.Public | BindingFlags.Instance);
+            connectingEventInfo.AddEventHandler(_teamFoundationHostObject, connectingEventHandler);
+
+            var connectionCompletedEventInfo = _teamFoundationHostObjectType.GetEvent("ConnectionCompleted", BindingFlags.Public | BindingFlags.Instance);
+            var connectionCompletedEventHandlerConstructor = connectionCompletedEventInfo.EventHandlerType.GetConstructor(new[] { typeof(object), typeof(IntPtr) });
+            var connectionCompletedEventHandler = (Delegate)connectionCompletedEventHandlerConstructor.Invoke(new object[]
+                {
+                    this, typeof (TeamFoundationHostWrapper).GetMethod("TeamFoundationHostConnectionCompleted", BindingFlags.NonPublic | BindingFlags.Instance).MethodHandle.GetFunctionPointer()
+                });
+
+            connectionCompletedEventInfo.AddEventHandler(_teamFoundationHostObject, connectionCompletedEventHandler);
         }
 
-        private Delegate CreateConnectingEventDelegate()
+// ReSharper disable UnusedMember.Local
+        private void TeamFoundationHostConnecting(object serverConnectingEventArgs)
+// ReSharper restore UnusedMember.Local
         {
-            var serverConnectingParam = Expression.Parameter(ServerConnectingEventArgsType.Value,"serverConnectingEventArgsType");
-            Expression<Action<object>> blah = (input) => TestMethod(serverConnectingParam);
-
-            return Expression.Lambda(blah, serverConnectingParam).Compile();
+            
         }
 
-        public void TestMethod(object input)
+// ReSharper disable UnusedMember.Local
+        private void TeamFoundationHostConnectionCompleted(object serverConnectedEventArgs)
+// ReSharper restore UnusedMember.Local
         {
             
         }
