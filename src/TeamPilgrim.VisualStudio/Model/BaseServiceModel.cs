@@ -1,4 +1,4 @@
-﻿using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
+﻿using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model

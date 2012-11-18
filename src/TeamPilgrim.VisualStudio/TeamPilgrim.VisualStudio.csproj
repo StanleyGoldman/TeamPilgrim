@@ -177,9 +177,12 @@
   <ItemGroup>
     <Compile Include="Business\Services\CheckinNotesCacheWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\Builds\BuildExplorerWrapper.cs" />
+    <Compile Include="Domain\BusinessInterfaces\VisualStudio\ITeamFoundationHostWrapper.cs" />
+    <Compile Include="Business\Services\VisualStudio\TeamFoundation\ServerConnectedEventArgs.cs" />
+    <Compile Include="Business\Services\VisualStudio\TeamFoundation\ServerConnectingEventArgs.cs" />
     <Compile Include="Business\Services\VisualStudio\VersionControl\PendingChangesPageViewModelUtilsWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\WorkItem\DocumentServiceWrapper.cs" />
-    <Compile Include="Business\Services\VisualStudio\TeamFoundationHostWrapper.cs" />
+    <Compile Include="Business\Services\VisualStudio\TeamFoundation\TeamFoundationHostWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\Builds\VsTeamFoundationBuildWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\WorkItem\QuerySecurityCommandHelpersWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\VersionControl\VersionControlPackageWrapper.cs" />
@@ -213,7 +216,7 @@
     <Compile Include="Windows\PendingChanges\Dialogs\SelectWorkItemQueryDialog.xaml.cs">
       <DependentUpon>SelectWorkItemQueryDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Domain\BusinessInterfaces\ITeamPilgrimVsService.cs" />
+    <Compile Include="Domain\BusinessInterfaces\VisualStudio\ITeamPilgrimVsService.cs" />
     <Compile Include="Business\Services\TeamPilgrimTfsService.cs" />
     <Compile Include="Common\BindingErrorTraceListener.cs" />
     <Compile Include="Domain\BusinessInterfaces\ITeamPilgrimTfsService.cs" />

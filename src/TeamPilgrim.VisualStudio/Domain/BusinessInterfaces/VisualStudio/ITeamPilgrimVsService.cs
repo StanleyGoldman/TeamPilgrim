@@ -6,16 +6,15 @@ using Microsoft.TeamFoundation.VersionControl.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using Microsoft.VisualStudio.TeamFoundation;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio
 {
     public delegate void ContextChanged(ProjectContextExt projectContext);
     public delegate void ContextChanging(ITeamFoundationContext teamFoundationContext);
     
     public interface ITeamPilgrimVsService
     {
-        event ContextChanged ContextChangedEvent;
-        event ContextChanging ContextChangingEvent;
         ProjectContextExt ActiveProjectContext { get; }
+        ITeamFoundationHostWrapper TeamFoundationHost { get; }
 
         void OpenSourceControl(string projectName);
 

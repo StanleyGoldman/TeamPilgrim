@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Reflection;
 using EnvDTE80;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.Builds;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.TeamFoundation;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.VersionControl;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.WorkItem;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
 using Microsoft.TeamFoundation;
 using Microsoft.TeamFoundation.Build.Common;
 using Microsoft.TeamFoundation.Build.Controls;
@@ -29,15 +30,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
     {
         protected IVsUIShell VsUiShell { get; private set; }
 
-        public event ContextChanged ContextChangedEvent;
-        public event ContextChanging ContextChangingEvent;
-
         protected DTE2 Dte2 { get; set; }
 
         protected TeamFoundationServerExt TeamFoundationServerExt { get; set; }
         private static readonly Lazy<FieldInfo> TeamFoundationServerExt_TeamFoundationHostField;
 
-        protected TeamFoundationHostWrapper TeamFoundationHost { get; set; }
+        public ITeamFoundationHostWrapper TeamFoundationHost { get; private set; }
 
         protected VersionControlExt VersionControlExt { get; set; }
 
@@ -94,30 +92,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
             TeamFoundationServerExt = dte2.GetObject("Microsoft.VisualStudio.TeamFoundation.TeamFoundationServerExt") as TeamFoundationServerExt;
             WorkItemTrackingDocumentService = new DocumentServiceWrapper(dte2.GetObject("Microsoft.VisualStudio.TeamFoundation.WorkItemTracking.DocumentService") as DocumentService);
 
-            if (TeamFoundationServerExt != null)
-            {
-                var teamFoundationHostObject = (ITeamFoundationContextManager)TeamFoundationServerExt_TeamFoundationHostField.Value.GetValue(TeamFoundationServerExt);
-
-                TeamFoundationHost = new TeamFoundationHostWrapper(teamFoundationHostObject);
-
-                TeamFoundationHost.ContextChanged += TeamFoundationHostOnContextChanged;
-                TeamFoundationHost.ContextChanging += delegate(object sender, ContextChangingEventArgs args)
-                    {
-                        if (ContextChangingEvent != null)
-                            ContextChangingEvent(args.NewContext);
-                    };
-
-                if (TeamFoundationServerExt.ActiveProjectContext != null)
-                {
-                    TeamFoundationHostOnContextChanged(null, EventArgs.Empty);
-                }
-            }
-        }
-
-        private void TeamFoundationHostOnContextChanged(object sender, EventArgs e)
-        {
-            if(ContextChangedEvent != null)
-                ContextChangedEvent(TeamFoundationServerExt.ActiveProjectContext);
+            var teamFoundationHostObject = (ITeamFoundationContextManager)TeamFoundationServerExt_TeamFoundationHostField.Value.GetValue(TeamFoundationServerExt);
+            TeamFoundationHost = new TeamFoundationHostWrapper(teamFoundationHostObject);
         }
 
         public void Initialize(TeamPilgrimPackage packageInstance, IVsUIShell vsUiShell)

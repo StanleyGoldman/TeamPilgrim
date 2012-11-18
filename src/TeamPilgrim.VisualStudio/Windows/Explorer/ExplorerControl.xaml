@@ -16,6 +16,8 @@
              d:DataContext="{d:DesignInstance Model:TeamPilgrimServiceModel}">
     <DockPanel>
         <DockPanel.Resources>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="DefaultStyle">
                 <EventSetter Event="UIElement.PreviewMouseRightButtonDown" Handler="OnPreviewMouseRightButtonDown"/>
             </Style>
@@ -67,6 +69,12 @@
                 <Image Source="..\..\Resources\tfs_connect.png" Width="16" Height="16" />
             </Button>
         </ToolBar>
+        
+        <TextBlock
+            DockPanel.Dock="Top" 
+            Visibility="{Binding Connecting, Converter={StaticResource BooleanToVisibilityConverter}}"
+            Text="{Binding ConnectingServer, StringFormat=Connecting to \{0\}...}" />
+
         <ScrollViewer DockPanel.Dock="Bottom" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
             <TreeView ItemsSource="{Binding Path=ProjectCollectionModels}" ItemContainerStyleSelector="{StaticResource teamPilgrilViewStyleSelector}">
                 <TreeView.Resources>

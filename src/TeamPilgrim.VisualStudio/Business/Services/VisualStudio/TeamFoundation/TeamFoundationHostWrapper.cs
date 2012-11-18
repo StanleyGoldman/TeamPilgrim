@@ -1,25 +1,22 @@
 using System;
-using System.Linq.Expressions;
 using System.Reflection;
 using System.Windows.Forms;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
 using Microsoft.TeamFoundation.Client;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.TeamFoundation
 {
-    public class TeamFoundationHostWrapper : ITeamFoundationContextManager
+    public class TeamFoundationHostWrapper : ITeamFoundationHostWrapper
     {
-        private ITeamFoundationContextManager _teamFoundationHostObject;
-        private Type _teamFoundationHostObjectType;
-        private Lazy<MethodInfo> _promptForServerAndProjectsMethod;
-        
-        private static readonly Lazy<Type> ServerConnectingEventArgsType;
-        private static readonly Lazy<Type> ServerConnectedEventArgsType;
+        private readonly ITeamFoundationContextManager _teamFoundationHostObject;
+        private readonly Type _teamFoundationHostObjectType;
+        private readonly Lazy<MethodInfo> _promptForServerAndProjectsMethod;
 
-        static TeamFoundationHostWrapper()
-        {
-            ServerConnectingEventArgsType = new Lazy<Type>(() => Type.GetType("Microsoft.VisualStudio.TeamFoundation.ServerConnectingEventArgs, Microsoft.VisualStudio.TeamFoundation"));
-            ServerConnectedEventArgsType = new Lazy<Type>(() => Type.GetType("Microsoft.VisualStudio.TeamFoundation.ServerConnectedEventArgs, Microsoft.VisualStudio.TeamFoundation"));
-        }
+        public event EventHandler<ServerConnectedEventArgs> ServerConnected;
+        public event EventHandler<ServerConnectingEventArgs> ServerConnecting;
+
+        public event EventHandler<ContextChangedEventArgs> ContextChanged;
+        public event EventHandler<ContextChangingEventArgs> ContextChanging;
 
         public TeamFoundationHostWrapper(ITeamFoundationContextManager teamFoundationHostObject)
         {
@@ -40,8 +37,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
             _promptForServerAndProjectsMethod = new Lazy<MethodInfo>(() => _teamFoundationHostObjectType.GetMethod("PromptForServerAndProjects", BindingFlags.Public | BindingFlags.Instance));
 
             var connectingEventInfo = _teamFoundationHostObjectType.GetEvent("Connecting", BindingFlags.Public | BindingFlags.Instance);
-            var connectingEventHandlerConstructor = connectingEventInfo.EventHandlerType.GetConstructor(new[] {typeof (object), typeof (IntPtr)});
-            var connectingEventHandler = (Delegate) connectingEventHandlerConstructor.Invoke(new object[]
+            var connectingEventHandlerConstructor = connectingEventInfo.EventHandlerType.GetConstructor(new[] { typeof(object), typeof(IntPtr) });
+            var connectingEventHandler = (Delegate)connectingEventHandlerConstructor.Invoke(new object[]
                 {
                     this, typeof (TeamFoundationHostWrapper).GetMethod("TeamFoundationHostConnecting", BindingFlags.NonPublic | BindingFlags.Instance).MethodHandle.GetFunctionPointer()
                 });
@@ -58,32 +55,36 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
             connectionCompletedEventInfo.AddEventHandler(_teamFoundationHostObject, connectionCompletedEventHandler);
         }
 
-// ReSharper disable UnusedMember.Local
-        private void TeamFoundationHostConnecting(object serverConnectingEventArgs)
-// ReSharper restore UnusedMember.Local
+        public ITeamFoundationContext CurrentContext
         {
-            
+            get { return _teamFoundationHostObject.CurrentContext; }
         }
 
-// ReSharper disable UnusedMember.Local
-        private void TeamFoundationHostConnectionCompleted(object serverConnectedEventArgs)
-// ReSharper restore UnusedMember.Local
+        // ReSharper disable UnusedMember.Local
+        private void TeamFoundationHostConnecting(object serverConnectingEventArgs)
+        // ReSharper restore UnusedMember.Local
         {
-            
+            if (ServerConnecting == null)
+                return;
+
+            var serverConnectingEventArgsWrapper = new ServerConnectingEventArgs(serverConnectingEventArgs);
+            ServerConnecting(this, serverConnectingEventArgsWrapper);
+        }
+
+        // ReSharper disable UnusedMember.Local
+        private void TeamFoundationHostConnectionCompleted(object serverConnectedEventArgs)
+        // ReSharper restore UnusedMember.Local
+        {
+            if (ServerConnected == null)
+                return;
+
+            var serverConnectedEventArgsWrapper = new ServerConnectedEventArgs(serverConnectedEventArgs);
+            ServerConnected(this, serverConnectedEventArgsWrapper);
         }
 
         public DialogResult PromptForServerAndProjects(bool asynchronous = true)
         {
             return (DialogResult)_promptForServerAndProjectsMethod.Value.Invoke(_teamFoundationHostObject, new object[] { asynchronous });
-        }
-
-        public event EventHandler<ContextChangedEventArgs> ContextChanged;
-
-        public event EventHandler<ContextChangingEventArgs> ContextChanging;
-
-        public ITeamFoundationContext CurrentContext
-        {
-            get { return _teamFoundationHostObject.CurrentContext; }
         }
 
         public void SetContext(TfsTeamProjectCollection teamProjectCollection, string projectUri)

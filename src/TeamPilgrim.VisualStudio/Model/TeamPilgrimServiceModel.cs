@@ -3,19 +3,17 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight.Command;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.TeamFoundation;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.VersionControl.Client;
-using Microsoft.VisualStudio.TeamFoundation;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
@@ -26,6 +24,78 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         public ObservableCollection<ProjectCollectionServiceModel> ProjectCollectionModels { get; private set; }
         public ObservableCollection<WorkspaceInfoModel> WorkspaceInfoModels { get; private set; }
+
+        private bool _connecting;
+
+        public bool Connecting
+        {
+            get
+            {
+                return _connecting;
+            }
+            private set
+            {
+                if (_connecting == value) return;
+
+                _connecting = value;
+
+                SendPropertyChanged("Connecting");
+            }
+        }
+
+        private string _connectingServer;
+
+        public string ConnectingServer
+        {
+            get
+            {
+                return _connectingServer;
+            }
+            private set
+            {
+                if (_connectingServer == value) return;
+
+                _connectingServer = value;
+
+                SendPropertyChanged("ConnectingServer");
+            }
+        }
+
+        private ServerConnectedEventArgs.CompletionStatusEnum _connectedStatus;
+
+        public ServerConnectedEventArgs.CompletionStatusEnum ConnectedStatus
+        {
+            get
+            {
+                return _connectedStatus;
+            }
+            private set
+            {
+                if (_connectedStatus == value) return;
+
+                _connectedStatus = value;
+
+                SendPropertyChanged("ConnectedStatus");
+            }
+        }
+
+        private Exception _connectedError;
+
+        public Exception ConnectedError
+        {
+            get
+            {
+                return _connectedError;
+            }
+            private set
+            {
+                if (_connectedError == value) return;
+
+                _connectedError = value;
+
+                SendPropertyChanged("ConnectedError");
+            }
+        }
 
         private ProjectCollectionServiceModel _activeProjectCollectionModel = null;
 
@@ -94,8 +164,21 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
             _teamPilgrimServiceModelProvider = teamPilgrimServiceModelProvider;
             _teamPilgrimVsService = teamPilgrimVsService;
-            
-            _teamPilgrimVsService.ContextChangedEvent += TeamPilgrimPackageOnContextChangedEvent;
+
+            _teamPilgrimVsService.TeamFoundationHost.ContextChanged += TeamFoundationHostOnContextChanged;
+            _teamPilgrimVsService.TeamFoundationHost.ServerConnecting += delegate(object sender, ServerConnectingEventArgs args)
+                {
+                    Connecting = true;
+                    ConnectingServer = args.TeamProjectCollection.Name;
+                };
+
+            _teamPilgrimVsService.TeamFoundationHost.ServerConnected += delegate(object sender, ServerConnectedEventArgs args)
+                {
+                    Connecting = false;
+                    ConnectingServer = args.TeamProjectCollection.Name;
+                    ConnectedError = args.Error;
+                    ConnectedStatus = args.Status;
+                };
 
             RefreshCommand = new RelayCommand(Refresh, CanRefresh);
             TfsConnectCommand = new RelayCommand(TfsConnect, CanTfsConnect);
@@ -124,7 +207,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             }
         }
 
-        private void TeamPilgrimPackageOnContextChangedEvent(ProjectContextExt projectContext)
+        private void TeamFoundationHostOnContextChanged(object sender, ContextChangedEventArgs contextChangedEventArgs)
         {
             Task.Run(() => PopulatePilgrimModel());
         }
@@ -201,10 +284,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         private void ShowResolveConflicttManager()
         {
-            if (SelectedWorkspaceModel == null) 
+            if (SelectedWorkspaceModel == null)
                 return;
 
-            var paths = 
+            var paths =
                 SelectedWorkspaceModel.Workspace.Folders
                     .Select(folder => folder.ServerItem).ToArray();
 
