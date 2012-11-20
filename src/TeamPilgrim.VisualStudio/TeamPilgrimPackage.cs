@@ -28,6 +28,7 @@ using Microsoft.VisualStudio.TeamFoundation;
 using Microsoft.VisualStudio.TeamFoundation.Build;
 using Microsoft.VisualStudio.TeamFoundation.VersionControl;
 using Microsoft.VisualStudio.TeamFoundation.WorkItemTracking;
+using NLog;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio
 {
@@ -59,6 +60,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
     [Guid(GuidList.guidTeamPilgrimPkgString)]
     public sealed class TeamPilgrimPackage : Package, IVsShellPropertyEvents
     {
+        private static readonly Logger Logger = TeamPilgrimLogManager.Instance.GetCurrentClassLogger();
+
         internal const string LicenseValidationKey = "AMAAMADJHFA64RFew2wwMz1VwGqryhDyB9MoC8nB3ld26/BURon9c1Bh3Yn4Iva73o+EHmcDAAEAAQ==";
         internal const string DecemberSixteenthExpirationLicenseKey = "NgA8Af4YVXG3w80B3wW+aUrbzQFBGFRlYW1QaWxncmltLlZpc3VhbFN0dWRpbxzfSnNOl4cJdMAj2Fsa+zBY5EWSEM/Jwlqyemw3+q1u9Hih3vgIgcyPnE8HWI8DQr6yuJCnFdOF";
 
@@ -92,6 +95,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
         /// </summary>
         public TeamPilgrimPackage()
         {
+            Logger.Trace("Start Constructor");
+
             Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", this.ToString()));
 
             _teamPilgrimVsService = new TeamPilgrimVsService();
@@ -104,6 +109,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             //NOTE: Only enable this when you are looking to debug a particular issue
             //Certain Visual Studio dialogs like the "Work Item Query" can be expected to throw binding errors
             //BindingErrorTraceListener.SetTrace();
+
+            Logger.Trace("End Constructor");
         }
 
         /// <summary>
@@ -151,6 +158,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
         /// </summary>
         protected override void Initialize()
         {
+            Logger.Trace("Start Initialize");
+
             Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
             TeamPilgrimPackage._singleInstance = this;
             base.Initialize();
@@ -203,6 +212,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             TeamPilgrimPackage._teamPilgrimVsService.Initialize(_singleInstance, UIShell);
 
             CompletePackageInitialization();
+          
+            Logger.Trace("End Initialize");
         }
 
         public int OnShellPropertyChange(int propid, object var)
@@ -232,19 +243,29 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
 
         private void CompletePackageInitialization()
         {
+            Logger.Trace("Start Complete Initialization");
+
             if (Dte != null)
+            {
+                Logger.Debug("Package previously initialized"); 
                 return;
+            }
 
             Dte = GetService(typeof(SDTE)) as DTE;
 
             if (Dte == null)
+            {
+                Logger.Warn("DTE not found");
                 return;
+            }
 
             Extensibility = (IVsExtensibility)GetGlobalService(typeof(IVsExtensibility));
             Dte2 = (DTE2)Extensibility.GetGlobalsObject(null).DTE;
 
             _teamPilgrimVsService.InitializeGlobals(Dte2);
             TeamPilgrimServiceModel = new TeamPilgrimServiceModel(new TeamPilgrimServiceModelProvider(), _teamPilgrimVsService);
+
+            Logger.Trace("End Complete Initialization");
         }
 
         #endregion

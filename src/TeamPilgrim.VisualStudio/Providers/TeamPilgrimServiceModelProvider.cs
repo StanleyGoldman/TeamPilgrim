@@ -1,15 +1,19 @@
 ﻿using System;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
 using Microsoft.TeamFoundation.Build.Client;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.VersionControl.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
+using NLog;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
 {
     public class TeamPilgrimServiceModelProvider : ITeamPilgrimServiceModelProvider
     {
+        private static readonly Logger Logger = TeamPilgrimLogManager.Instance.GetCurrentClassLogger();
+
         private readonly ITeamPilgrimTfsService _teamPilgrimTfsService;
 
         public Exception LastException { get; private set; }
@@ -33,6 +37,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             }
             catch (Exception ex)
             {
+                Logger.DebugException(ex);
                 LastException = ex;
             }
 
@@ -45,10 +50,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             try
             {
                 collection = _teamPilgrimTfsService.GetProjectCollection(tpcAddress);
+                throw new Exception("Test");
                 return true;
             }
             catch (Exception ex)
             {
+                Logger.DebugException(ex);
                 LastException = ex;
             }
 
@@ -65,6 +72,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             }
             catch (Exception ex)
             {
+                Logger.DebugException(ex);
                 LastException = ex;
             }
 
@@ -81,6 +89,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             }
             catch (Exception ex)
             {
+                Logger.DebugException(ex);
                 LastException = ex;
             }
 
@@ -97,6 +106,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             }
             catch (Exception ex)
             {
+                Logger.DebugException(ex);
                 LastException = ex;
             }
 
@@ -113,6 +123,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             }
             catch (Exception ex)
             {
+                Logger.DebugException(ex);
                 LastException = ex;
             }
 
@@ -129,6 +140,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             }
             catch (Exception ex)
             {
+                Logger.DebugException(ex);
                 LastException = ex;
             }
 
@@ -160,6 +172,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             }
             catch (Exception ex)
             {
+                Logger.DebugException(ex);
                 LastException = ex;
             }
 
@@ -176,6 +189,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             }
             catch (Exception ex)
             {
+                Logger.DebugException(ex);
                 LastException = ex;
             }
 
@@ -192,6 +206,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             }
             catch (Exception ex)
             {
+                Logger.DebugException(ex);
                 LastException = ex;
             }
 
@@ -207,6 +222,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             }
             catch (Exception ex)
             {
+                Logger.DebugException(ex);
                 LastException = ex;
             }
             
@@ -223,6 +239,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             }
             catch (Exception ex)
             {
+                Logger.DebugException(ex);
                 LastException = ex;
             }
 
@@ -239,6 +256,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             }
             catch (Exception ex)
             {
+                Logger.DebugException(ex);
                 LastException = ex;
             }
             
@@ -255,6 +273,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             }
             catch (Exception ex)
             {
+                Logger.DebugException(ex);
                 LastException = ex;
             }
 
