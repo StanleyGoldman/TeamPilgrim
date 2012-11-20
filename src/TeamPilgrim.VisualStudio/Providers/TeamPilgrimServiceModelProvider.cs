@@ -50,7 +50,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             try
             {
                 collection = _teamPilgrimTfsService.GetProjectCollection(tpcAddress);
-                throw new Exception("Test");
                 return true;
             }
             catch (Exception ex)
