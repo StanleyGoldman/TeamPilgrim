@@ -24,12 +24,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 {
     public class WorkspaceServiceModel : BaseServiceModel
     {
-        public ObservableCollection<WorkItemModel> WorkItems { get; private set; }
-
-        public TrulyObservableCollection<PendingChangeModel> PendingChanges { get; private set; }
-
-        public ObservableCollection<PendingChangeModel> SelectedPendingChanges { get; private set; }
-
         public ObservableCollection<CheckinNoteModel> CheckinNotes { get; private set; }
 
         public Workspace Workspace { get; private set; }
@@ -79,7 +73,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         private readonly CheckinNotesCacheWrapper _checkinNotesCacheWrapper;
 
         private WorkItemQueryDefinitionModel _selectedWorkWorkItemQueryDefinition;
-        private bool _preventPendingChangesCollectionChangeFromCausingEval;
 
         public WorkItemQueryDefinitionModel SelectedWorkItemQueryDefinition
         {
@@ -124,14 +117,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             UndoPendingChangeCommand = new RelayCommand<ObservableCollection<object>>(UndoPendingChange, CanUndoPendingChange);
             PendingChangePropertiesCommand = new RelayCommand<ObservableCollection<object>>(PendingChangeProperties, CanPendingChangeProperties);
 
-            PendingChanges = new TrulyObservableCollection<PendingChangeModel>();
-            WorkItems = new ObservableCollection<WorkItemModel>();
             CheckinNotes = new ObservableCollection<CheckinNoteModel>();
 
-            PendingChanges.CollectionChanged += PendingChangesOnCollectionChanged;
+            PendingChanges = new TrulyObservableCollection<PendingChangeModel>();
 
             PendingChange[] pendingChanges;
-            _preventPendingChangesCollectionChangeFromCausingEval = true;
             if (teamPilgrimServiceModelProvider.TryGetPendingChanges(out pendingChanges, Workspace))
             {
                 foreach (var pendingChange in pendingChanges)
@@ -140,11 +130,26 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                     PendingChanges.Add(pendingChangeModel);
                 }
             }
-            _preventPendingChangesCollectionChangeFromCausingEval = false;
+            PendingChanges.CollectionChanged += PendingChangesOnCollectionChanged;
+
+            WorkItems = new TrulyObservableCollection<WorkItemModel>();
+            WorkItems.CollectionChanged += WorkItemsOnCollectionChanged;
+         
             EvaluateCheckInCommand.Execute(null);
         }
 
-        private void PendingChangesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private void VersionControlServerOnPendingChangesChanged(object sender, WorkspaceEventArgs workspaceEventArgs)
+        {
+            RefreshPendingChanges();
+        }
+
+        #region PendingChanges Collection
+
+        public TrulyObservableCollection<PendingChangeModel> PendingChanges { get; private set; }
+        private bool _preventPendingChangesCollectionChangeFromCausingEval;
+
+        private void PendingChangesOnCollectionChanged(object sender,
+                                                       NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             if (!_preventPendingChangesCollectionChangeFromCausingEval)
             {
@@ -152,10 +157,22 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             }
         }
 
-        private void VersionControlServerOnPendingChangesChanged(object sender, WorkspaceEventArgs workspaceEventArgs)
+        #endregion
+
+        #region WorkItems Collection
+
+        public TrulyObservableCollection<WorkItemModel> WorkItems { get; private set; }
+        private bool _preventWorkItemCollectionChangeFromCausingEval;
+
+        private void WorkItemsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshPendingChanges();
+            if (!_preventWorkItemCollectionChangeFromCausingEval)
+            {
+                EvaluateCheckInCommand.Execute(null);
+            }
         }
+
+        #endregion
 
         #region ViewPendingChange Command
 
@@ -177,14 +194,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         public RelayCommand<SelectPendingChangesCommandArgument> SelectPendingChangesCommand { get; private set; }
 
-        private void SelectPendingChanges(SelectPendingChangesCommandArgument booleanAndCollectionCommandArgument)
+        private void SelectPendingChanges(SelectPendingChangesCommandArgument selectPendingChangesCommandArgument)
         {
-            var pendingChangeModels = booleanAndCollectionCommandArgument.Collection.ToArray();
-
             _preventPendingChangesCollectionChangeFromCausingEval = true;
-            foreach (var pendingChangeModel in pendingChangeModels)
+            foreach (var pendingChangeModel in selectPendingChangesCommandArgument.Collection)
             {
-                pendingChangeModel.IncludeChange = booleanAndCollectionCommandArgument.Value;
+                pendingChangeModel.IncludeChange = selectPendingChangesCommandArgument.Value;
             }
             _preventPendingChangesCollectionChangeFromCausingEval = false;
             EvaluateCheckInCommand.Execute(null);
@@ -212,14 +227,15 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         public RelayCommand<SelectWorkItemsCommandArgument> SelectWorkItemsCommand { get; private set; }
 
-        private void SelectWorkItems(SelectWorkItemsCommandArgument collection)
+        private void SelectWorkItems(SelectWorkItemsCommandArgument selectWorkItemsCommandArgument)
         {
-//            var workItemModels = collection.Cast<WorkItemModel>().ToArray();
-//
-//            foreach (var workItemModel in workItemModels)
-//            {
-//                workItemModel.IsSelected = !workItemModels.Last().IsSelected;
-//            }
+            _preventWorkItemCollectionChangeFromCausingEval = true;
+            foreach (var workItemModel in selectWorkItemsCommandArgument.Collection)
+            {
+                workItemModel.IsSelected = selectWorkItemsCommandArgument.Value;
+            }
+            _preventWorkItemCollectionChangeFromCausingEval = false;
+            EvaluateCheckInCommand.Execute(null);
         }
 
         private bool CanSelectWorkItems(SelectWorkItemsCommandArgument collection)

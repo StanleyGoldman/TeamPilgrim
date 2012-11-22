@@ -266,13 +266,22 @@
                         </Button>
                     </ToolBar>
 
-                    <ListView x:Name="PendingChangesWorkItemsListView" DockPanel.Dock="Bottom" DataContext="{Binding Path=SelectedWorkspaceModel}" ItemsSource="{Binding Path=WorkItems}">
+                    <ListView x:Name="PendingChangesWorkItemsListView" DockPanel.Dock="Bottom" 
+                              
+                              AttachedProperties:TrulyObservableListView.HasBindableSelectedItems="True"
+                           
+                              AttachedProperties:PreviewSpaceKeyDown.Command="{Binding Path=SelectWorkItemsCommand}"
+                              AttachedProperties:PreviewSpaceKeyDown.CommandParameter="{Binding ElementName=PendingChangesWorkItemsListView, Path=BindableTrulyObservableSelectedItems, Converter={StaticResource SelectWorkItemsCommandConverter}}"
+                              
+                              DataContext="{Binding Path=SelectedWorkspaceModel}" 
+                              ItemsSource="{Binding Path=WorkItems}">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn>
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate DataType="PendingChangesModel:WorkItemModel">
                                             <CheckBox IsChecked="{Binding Path=IsSelected}"
+                                                      DataContext="{Binding}"
                                                       Click="PendingChangeWorkItemCheckboxClicked" />
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>

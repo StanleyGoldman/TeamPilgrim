@@ -50,6 +50,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties
             if (e.Key != Key.Return)
                 return;
 
+            e.Handled = true;
+
             var control = (Control)sender;
             var command = (ICommand)control.GetValue(CommandProperty);
             var commandParameter = control.GetValue(CommandParameterProperty);

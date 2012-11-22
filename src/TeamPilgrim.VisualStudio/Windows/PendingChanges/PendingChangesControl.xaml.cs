@@ -48,25 +48,31 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
 
         private void PendingChangeWorkItemCheckboxClicked(object sender, System.Windows.RoutedEventArgs e)
         {
+            var teamPilgrimModel = (TeamPilgrimServiceModel)DataContext;
+
             var checkBox = sender as CheckBox;
             Debug.Assert(checkBox != null, "checkBox != null");
 
             var checkedWorkItemModel = checkBox.DataContext as WorkItemModel;
             Debug.Assert(checkedWorkItemModel != null, "checkedWorkItemModel != null");
 
+            var selectedPendingChangeModels = PendingChangesWorkItemsListView.SelectedItems.Cast<WorkItemModel>().ToArray();
+
+            if (selectedPendingChangeModels.Length <= 1)
+                return;
+
+            if (!selectedPendingChangeModels.Contains(checkedWorkItemModel))
+                return;
+
             e.Handled = true;
 
-            var teamPilgrimModel = (TeamPilgrimServiceModel)DataContext;
+            var collection = selectedPendingChangeModels;
 
-            var workItemModels = PendingChangesWorkItemsListView.SelectedItems.Cast<WorkItemModel>().ToArray();
-
-            var observableCollection =
-                workItemModels.Contains(checkedWorkItemModel)
-                ? new ObservableCollection<object>(workItemModels)
-                : new ObservableCollection<object>(new[] { checkedWorkItemModel });
-
-            teamPilgrimModel.SelectedWorkspaceModel.SelectWorkItemsCommand.Execute(
-                observableCollection);
+            teamPilgrimModel.SelectedWorkspaceModel.SelectWorkItemsCommand.Execute(new WorkspaceServiceModel.SelectWorkItemsCommandArgument()
+            {
+                Collection = collection,
+                Value = checkedWorkItemModel.IsSelected
+            });
         }
 
         private void PendingChangesCheckboxClicked(object sender, RoutedEventArgs e)
@@ -76,15 +82,15 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
             var checkBox = sender as CheckBox;
             Debug.Assert(checkBox != null, "checkBox != null");
 
-            var pendingChangeModel = checkBox.DataContext as PendingChangeModel;
-            Debug.Assert(pendingChangeModel != null, "pendingChangeModel != null");
+            var checkedPendingChangeModel = checkBox.DataContext as PendingChangeModel;
+            Debug.Assert(checkedPendingChangeModel != null, "pendingChangeModel != null");
 
             var selectedPendingChangeModels = PendingChangesListView.SelectedItems.Cast<PendingChangeModel>().ToArray();
 
             if (selectedPendingChangeModels.Length <= 1)
                 return;
             
-            if (!selectedPendingChangeModels.Contains(pendingChangeModel))
+            if (!selectedPendingChangeModels.Contains(checkedPendingChangeModel))
                 return;
 
             e.Handled = true;
@@ -94,7 +100,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
             teamPilgrimModel.SelectedWorkspaceModel.SelectPendingChangesCommand.Execute(new WorkspaceServiceModel.SelectPendingChangesCommandArgument()
                 {
                     Collection = collection,
-                    Value = pendingChangeModel.IncludeChange
+                    Value = checkedPendingChangeModel.IncludeChange
                 });
         }
     }

@@ -47,13 +47,15 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties
 
         private static void OnPreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if(e.Key != Key.Space)
+            if (e.Key != Key.Space)
                 return;
 
+            e.Handled = true;
             var control = (Control)sender;
             var command = (ICommand)control.GetValue(CommandProperty);
             var commandParameter = control.GetValue(CommandParameterProperty);
-            command.Execute(commandParameter); 
+
+            command.Execute(commandParameter);
         }
     }
 }
