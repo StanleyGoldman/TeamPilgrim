@@ -1,9 +1,14 @@
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Comparer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Extensions;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
@@ -21,7 +26,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
     {
         public ObservableCollection<WorkItemModel> WorkItems { get; private set; }
 
-        public ObservableCollection<PendingChangeModel> PendingChanges { get; private set; }
+        public TrulyObservableCollection<PendingChangeModel> PendingChanges { get; private set; }
 
         public ObservableCollection<PendingChangeModel> SelectedPendingChanges { get; private set; }
 
@@ -74,6 +79,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         private readonly CheckinNotesCacheWrapper _checkinNotesCacheWrapper;
 
         private WorkItemQueryDefinitionModel _selectedWorkWorkItemQueryDefinition;
+        private bool _preventPendingChangesCollectionChangeFromCausingEval;
+
         public WorkItemQueryDefinitionModel SelectedWorkItemQueryDefinition
         {
             get
@@ -98,23 +105,33 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             _projectCollectionServiceModel = projectCollectionServiceModel;
             Workspace = workspace;
 
+            var versionControlServer = _projectCollectionServiceModel.TfsTeamProjectCollection.GetService<VersionControlServer>();
+            versionControlServer.PendingChangesChanged += VersionControlServerOnPendingChangesChanged;
+
+            _checkinNotesCacheWrapper = new CheckinNotesCacheWrapper(versionControlServer);
+
             CheckInCommand = new RelayCommand(CheckIn, CanCheckIn);
             RefreshPendingChangesCommand = new RelayCommand(RefreshPendingChanges, CanRefreshPendingChanges);
             RefreshSelectedDefinitionWorkItemsCommand = new RelayCommand(RefreshSelectedDefinitionWorkItems, CanRefreshSelectedDefinitionWorkItems);
             ShowSelectWorkItemQueryCommand = new RelayCommand(ShowSelectWorkItemQuery, CanShowSelectWorkItemQuery);
             EvaluateCheckInCommand = new RelayCommand(EvaluateCheckIn, CanEvaluateCheckIn);
-            
+
+            SelectPendingChangesCommand = new RelayCommand<SelectPendingChangesCommandArgument>(SelectPendingChanges, CanSelectPendingChanges);
+            SelectWorkItemsCommand = new RelayCommand<SelectWorkItemsCommandArgument>(SelectWorkItems, CanSelectWorkItems);
             ViewPendingChangeCommand = new RelayCommand<ObservableCollection<object>>(ViewPendingChange, CanViewPendingChange);
             CompareWithLatestCommand = new RelayCommand<ObservableCollection<object>>(CompareWithLatest, CanCompareWithLatest);
             CompareWithWorkspaceCommand = new RelayCommand<ObservableCollection<object>>(CompareWithWorkspace, CanCompareWithWorkspace);
             UndoPendingChangeCommand = new RelayCommand<ObservableCollection<object>>(UndoPendingChange, CanUndoPendingChange);
             PendingChangePropertiesCommand = new RelayCommand<ObservableCollection<object>>(PendingChangeProperties, CanPendingChangeProperties);
 
-            PendingChanges = new ObservableCollection<PendingChangeModel>();
+            PendingChanges = new TrulyObservableCollection<PendingChangeModel>();
             WorkItems = new ObservableCollection<WorkItemModel>();
             CheckinNotes = new ObservableCollection<CheckinNoteModel>();
 
+            PendingChanges.CollectionChanged += PendingChangesOnCollectionChanged;
+
             PendingChange[] pendingChanges;
+            _preventPendingChangesCollectionChangeFromCausingEval = true;
             if (teamPilgrimServiceModelProvider.TryGetPendingChanges(out pendingChanges, Workspace))
             {
                 foreach (var pendingChange in pendingChanges)
@@ -123,11 +140,16 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                     PendingChanges.Add(pendingChangeModel);
                 }
             }
+            _preventPendingChangesCollectionChangeFromCausingEval = false;
+            EvaluateCheckInCommand.Execute(null);
+        }
 
-            var versionControlServer = _projectCollectionServiceModel.TfsTeamProjectCollection.GetService<VersionControlServer>();
-            versionControlServer.PendingChangesChanged += VersionControlServerOnPendingChangesChanged;
-
-            _checkinNotesCacheWrapper = new CheckinNotesCacheWrapper(versionControlServer);
+        private void PendingChangesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            if (!_preventPendingChangesCollectionChangeFromCausingEval)
+            {
+                EvaluateCheckInCommand.Execute(null);
+            }
         }
 
         private void VersionControlServerOnPendingChangesChanged(object sender, WorkspaceEventArgs workspaceEventArgs)
@@ -145,6 +167,62 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         }
 
         private bool CanViewPendingChange(ObservableCollection<object> collection)
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region SelectPendingChanges Command
+
+        public RelayCommand<SelectPendingChangesCommandArgument> SelectPendingChangesCommand { get; private set; }
+
+        private void SelectPendingChanges(SelectPendingChangesCommandArgument booleanAndCollectionCommandArgument)
+        {
+            var pendingChangeModels = booleanAndCollectionCommandArgument.Collection.ToArray();
+
+            _preventPendingChangesCollectionChangeFromCausingEval = true;
+            foreach (var pendingChangeModel in pendingChangeModels)
+            {
+                pendingChangeModel.IncludeChange = booleanAndCollectionCommandArgument.Value;
+            }
+            _preventPendingChangesCollectionChangeFromCausingEval = false;
+            EvaluateCheckInCommand.Execute(null);
+        }
+
+        private bool CanSelectPendingChanges(SelectPendingChangesCommandArgument collection)
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region SelectWorkItems Command
+
+        public class SelectWorkItemsCommandArgument
+        {
+            public WorkItemModel[] Collection { get; set; }
+            public bool Value { get; set; } 
+        }
+        public class SelectPendingChangesCommandArgument
+        {
+            public PendingChangeModel[] Collection { get; set; }
+            public bool Value { get; set; } 
+        }
+
+        public RelayCommand<SelectWorkItemsCommandArgument> SelectWorkItemsCommand { get; private set; }
+
+        private void SelectWorkItems(SelectWorkItemsCommandArgument collection)
+        {
+//            var workItemModels = collection.Cast<WorkItemModel>().ToArray();
+//
+//            foreach (var workItemModel in workItemModels)
+//            {
+//                workItemModel.IsSelected = !workItemModels.Last().IsSelected;
+//            }
+        }
+
+        private bool CanSelectWorkItems(SelectWorkItemsCommandArgument collection)
         {
             return true;
         }

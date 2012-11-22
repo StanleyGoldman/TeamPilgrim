@@ -180,6 +180,13 @@
   <ItemGroup>
     <Compile Include="Business\Services\CheckinNotesCacheWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\Builds\BuildExplorerWrapper.cs" />
+    <Compile Include="Common\AttachedProperties\TrulyObservableListView.cs" />
+    <Compile Include="Common\AttachedProperties\PreviewReturnKeyDown.cs" />
+    <Compile Include="Common\AttachedProperties\PreviewSpaceKeyDown.cs" />
+    <Compile Include="Common\Converters\ObservableCollectionToTrulyObservableCollectionCoverter.cs" />
+    <Compile Include="Common\Converters\SelectPendingChangesCommandConverter.cs" />
+    <Compile Include="Common\Converters\SelectWorkItemsCommandConverter.cs" />
+    <Compile Include="Common\TrulyObservableCollection.cs" />
     <Compile Include="Common\LoggerExtensions.cs" />
     <Compile Include="Domain\BusinessInterfaces\VisualStudio\ITeamFoundationHostWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\TeamFoundation\ServerConnectedEventArgs.cs" />
@@ -202,7 +209,7 @@
     <Compile Include="Common\VsWindowFrameEditorTypeIds.cs" />
     <Compile Include="Common\AttachedProperties\MouseDoubleClick.cs" />
     <Compile Include="Common\Extensions\CheckinEvaluationResultExtensions.cs" />
-    <Compile Include="LogManager.cs" />
+    <Compile Include="TeamPilgrimLogManager.cs" />
     <Compile Include="Messages\ShowPendingChangesTabItem.cs" />
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Model\LicenseModel.cs" />

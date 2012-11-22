@@ -10,7 +10,6 @@
              xmlns:System="clr-namespace:System;assembly=mscorlib"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:AttachedProperties="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties"
-             xmlns:PendingChanges="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges"
              mc:Ignorable="d" 
              Height="Auto" d:DesignHeight="300" d:DesignWidth="850"
              d:DataContext="{d:DesignInstance Model:TeamPilgrimServiceModel}">
@@ -18,7 +17,9 @@
 
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <Converters:SingleObjectToObservableCollectionConverter x:Key="SingleObjectToListConverter" />
-        
+        <Converters:SelectWorkItemsCommandConverter x:Key="SelectWorkItemsCommandConverter" />
+        <Converters:SelectPendingChangesCommandConverter x:Key="SelectPendingChangesCommandConverter" />
+
         <ObjectDataProvider x:Key="workItemCheckinActions" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
             <ObjectDataProvider.MethodParameters>
                 <x:Type TypeName="PendingChangesModel:SelectedWorkItemCheckinActionEnum"/>
@@ -161,10 +162,19 @@
                     <TextBlock DockPanel.Dock="Top">Comment:</TextBlock>
                     <TextBox DockPanel.Dock="Top" DataContext="{Binding Path=SelectedWorkspaceModel}" Text="{Binding Path=Comment, UpdateSourceTrigger=PropertyChanged}"></TextBox>
 
-                    <ListView Name="PendingChangesListView" 
+                    <ListView x:Name="PendingChangesListView" 
+                              
+                              AttachedProperties:TrulyObservableListView.HasBindableSelectedItems="True"
+                              
+                              AttachedProperties:PreviewSpaceKeyDown.Command="{Binding Path=SelectPendingChangesCommand}"
+                              AttachedProperties:PreviewSpaceKeyDown.CommandParameter="{Binding ElementName=PendingChangesListView, Path=BindableTrulyObservableSelectedItems, Converter={StaticResource SelectPendingChangesCommandConverter}}"
+                              
+                              AttachedProperties:PreviewReturnKeyDown.Command="{Binding Path=ViewPendingChangeCommand}"
+                              AttachedProperties:PreviewReturnKeyDown.CommandParameter="{Binding ElementName=PendingChangesListView, Path=SelectedItems}"
                               
                               DataContext="{Binding Path=SelectedWorkspaceModel}" 
                               ItemsSource="{Binding Path=PendingChanges}">
+
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">
                                 <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding ElementName=PendingChangesListView, Path=DataContext.ViewPendingChangeCommand}"/>
@@ -204,9 +214,9 @@
                                         <DataTemplate DataType="PendingChangesModel:PendingChangeModel">
                                             <DockPanel>
                                                 <CheckBox DockPanel.Dock="Left"
+                                                          DataContext="{Binding}"
                                                           IsChecked="{Binding Path=IncludeChange}" 
-                                                          Checked="PendingChangesCheckbox_CheckChanged" 
-                                                          Unchecked="PendingChangesCheckbox_CheckChanged" />
+                                                          Click="PendingChangesCheckboxClicked"/>
                                                 <TextBlock Text="{Binding Path=Change.FileName, Mode=OneWay}" DockPanel.Dock="Right"/>
                                             </DockPanel>
                                         </DataTemplate>
@@ -255,16 +265,15 @@
                             <Image Source="..\..\Resources\arrow_refresh.png" Width="16" Height="16" />
                         </Button>
                     </ToolBar>
-                    
-                    <ListView Name="PendingChangesWorkItemsListView" DockPanel.Dock="Bottom" DataContext="{Binding Path=SelectedWorkspaceModel}" ItemsSource="{Binding Path=WorkItems}">
+
+                    <ListView x:Name="PendingChangesWorkItemsListView" DockPanel.Dock="Bottom" DataContext="{Binding Path=SelectedWorkspaceModel}" ItemsSource="{Binding Path=WorkItems}">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn>
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate DataType="PendingChangesModel:WorkItemModel">
                                             <CheckBox IsChecked="{Binding Path=IsSelected}"
-                                                      Checked="PendingChangeWorkItemCheckbox_CheckChanged" 
-                                                      Unchecked="PendingChangeWorkItemCheckbox_CheckChanged" />
+                                                      Click="PendingChangeWorkItemCheckboxClicked" />
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>

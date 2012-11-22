@@ -1,7 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System.Collections;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using GalaSoft.MvvmLight.Messaging;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Messages;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
@@ -43,7 +46,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
             });
         }
 
-        private void PendingChangeWorkItemCheckbox_CheckChanged(object sender, System.Windows.RoutedEventArgs e)
+        private void PendingChangeWorkItemCheckboxClicked(object sender, System.Windows.RoutedEventArgs e)
         {
             var checkBox = sender as CheckBox;
             Debug.Assert(checkBox != null, "checkBox != null");
@@ -51,33 +54,48 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
             var checkedWorkItemModel = checkBox.DataContext as WorkItemModel;
             Debug.Assert(checkedWorkItemModel != null, "checkedWorkItemModel != null");
 
-            var selectedItems = PendingChangesWorkItemsListView.SelectedItems;
-            foreach (var workItemModel in selectedItems.Cast<WorkItemModel>().Where(model => model != checkedWorkItemModel))
-            {
-                workItemModel.IsSelected = checkedWorkItemModel.IsSelected;
-            }
+            e.Handled = true;
 
             var teamPilgrimModel = (TeamPilgrimServiceModel)DataContext;
-            if (teamPilgrimModel.SelectedWorkspaceModel != null)
-                teamPilgrimModel.SelectedWorkspaceModel.EvaluateCheckInCommand.Execute(null);
+
+            var workItemModels = PendingChangesWorkItemsListView.SelectedItems.Cast<WorkItemModel>().ToArray();
+
+            var observableCollection =
+                workItemModels.Contains(checkedWorkItemModel)
+                ? new ObservableCollection<object>(workItemModels)
+                : new ObservableCollection<object>(new[] { checkedWorkItemModel });
+
+            teamPilgrimModel.SelectedWorkspaceModel.SelectWorkItemsCommand.Execute(
+                observableCollection);
         }
 
-        private void PendingChangesCheckbox_CheckChanged(object sender, RoutedEventArgs e)
+        private void PendingChangesCheckboxClicked(object sender, RoutedEventArgs e)
         {
-            var checkBox = sender as CheckBox;
-
-            Debug.Assert(checkBox != null, "checkBox != null");
-            var pendingChangeModel = checkBox.DataContext as PendingChangeModel;
-
-            var selectedItems = PendingChangesListView.SelectedItems;
-            foreach (var workItemModel in selectedItems.Cast<PendingChangeModel>().Where(model => model != pendingChangeModel))
-            {
-                workItemModel.IncludeChange = pendingChangeModel.IncludeChange;
-            }
-
             var teamPilgrimModel = (TeamPilgrimServiceModel)DataContext;
-            if (teamPilgrimModel.SelectedWorkspaceModel != null)
-                teamPilgrimModel.SelectedWorkspaceModel.EvaluateCheckInCommand.Execute(null);
+
+            var checkBox = sender as CheckBox;
+            Debug.Assert(checkBox != null, "checkBox != null");
+
+            var pendingChangeModel = checkBox.DataContext as PendingChangeModel;
+            Debug.Assert(pendingChangeModel != null, "pendingChangeModel != null");
+
+            var selectedPendingChangeModels = PendingChangesListView.SelectedItems.Cast<PendingChangeModel>().ToArray();
+
+            if (selectedPendingChangeModels.Length <= 1)
+                return;
+            
+            if (!selectedPendingChangeModels.Contains(pendingChangeModel))
+                return;
+
+            e.Handled = true;
+
+            var collection = selectedPendingChangeModels;
+
+            teamPilgrimModel.SelectedWorkspaceModel.SelectPendingChangesCommand.Execute(new WorkspaceServiceModel.SelectPendingChangesCommandArgument()
+                {
+                    Collection = collection,
+                    Value = pendingChangeModel.IncludeChange
+                });
         }
     }
 }
