@@ -23,9 +23,11 @@
             </Style>
 
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="ProjectCollectionStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
+                <Setter Property="IsExpanded" Value="True" />
             </Style>
 
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="ProjectStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
+                <Setter Property="IsExpanded" Value="True" />
             </Style>
 
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="WorkItemQueryContainerStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
