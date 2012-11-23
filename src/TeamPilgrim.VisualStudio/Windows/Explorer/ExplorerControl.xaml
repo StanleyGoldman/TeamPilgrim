@@ -121,7 +121,6 @@
                             <MenuItem Header="Areas and Iterations..." Command="{Binding OpenAreasAndIterationsCommand}"/>
                             <MenuItem Header="Portal Settings..." Command="{Binding OpenPortalSettingsCommand}"/>
                             <MenuItem Header="Source Control..." Command="{Binding OpenSourceControlSettingsCommand}"/>
-                            <MenuItem Header="Team Members..."/>
                         </MenuItem>
                         <MenuItem IsEnabled="False" Header="Properties"/>
                         <Separator />
