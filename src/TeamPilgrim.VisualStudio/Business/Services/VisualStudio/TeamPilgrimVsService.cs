@@ -12,6 +12,7 @@ using Microsoft.TeamFoundation;
 using Microsoft.TeamFoundation.Build.Common;
 using Microsoft.TeamFoundation.Build.Controls;
 using Microsoft.TeamFoundation.Client;
+using Microsoft.TeamFoundation.Controls.WinForms;
 using Microsoft.TeamFoundation.Server;
 using Microsoft.TeamFoundation.VersionControl.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
@@ -61,8 +62,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
 
         private readonly Lazy<PendingChangesPageViewModelUtilsWrapper> _pendingChangesPageViewModelUtilsWrapper;
 
-        private readonly Lazy<IProjectAlertsLauncher> _projectAlertsLauncher;
-
         private IWorkItemControlHost _workItemControlHost;
 
         static TeamPilgrimVsService()
@@ -73,7 +72,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
         public TeamPilgrimVsService()
         {
             _teamFoundationBuild = new Lazy<VsTeamFoundationBuildWrapper>(() => new VsTeamFoundationBuildWrapper(_packageInstance.GetPackageService<IVsTeamFoundationBuild>()));
-            _projectAlertsLauncher = new Lazy<IProjectAlertsLauncher>(() => _packageInstance.GetPackageService<IProjectAlertsLauncher>());
             _workItemTrackingPackage = new Lazy<WorkItemTrackingPackageWrapper>();
             _versionControlPackage = new Lazy<VersionControlPackageWrapper>();
             _querySecurityCommandHelpers = new Lazy<QuerySecurityCommandHelpersWrapper>();
@@ -274,9 +272,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
             TeamFoundationHost.PromptForServerAndProjects(false);
         }
 
-        public void ShowProjectAlerts(TfsTeamProjectCollection teamProjectCollection, string projectName)
+        public void ShowWorkItemsAreasAndIterationsDialog(TfsTeamProjectCollection tfsTeamProjectCollection, string projectName, string projectUri)
         {
-            _projectAlertsLauncher.Value.Show(teamProjectCollection, projectName);
+            var classificationAdminUi = new ClassificationAdminUi(tfsTeamProjectCollection, projectName, projectUri);
+            classificationAdminUi.ShowDialog();
         }
     }
 }

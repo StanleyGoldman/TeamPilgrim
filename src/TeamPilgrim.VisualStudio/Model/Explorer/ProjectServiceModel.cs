@@ -33,7 +33,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
 
             ShowProjectAlertsCommand = new RelayCommand(ShowProjectAlerts, CanShowProjectAlerts);
             OpenSourceControlCommand = new RelayCommand(OpenSourceControl, CanOpenSourceControl);
+            OpenAreasAndIterationsCommand = new RelayCommand(OpenAreasAndIterations, CanOpenAreasAndIterations);
             ShowSecuritySettingsCommand = new RelayCommand(ShowSecuritySettings, CanShowSecuritySettings);
+            OpenGroupMembershipCommand = new RelayCommand(OpenGroupMembership, CanOpenGroupMembership);
 
             BuildDefinitionsServiceModel = new BuildDefinitionsServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, projectCollection, project);
 
@@ -55,10 +57,42 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
 
         private void ShowProjectAlerts()
         {
-            teamPilgrimVsService.ShowProjectAlerts(ProjectCollection, Project.Name);
+            CommandHandlerPackageWrapper.OpenProjectAlerts(ProjectCollection, Project.Name);
         }
 
         private bool CanShowProjectAlerts()
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region OpenGroupMembership Command
+
+        public RelayCommand OpenGroupMembershipCommand { get; private set; }
+
+        private void OpenGroupMembership()
+        {
+            CommandHandlerPackageWrapper.OpenGroupMembership(ProjectCollection, Project.Name, Project.Uri.ToString());
+        }
+
+        private bool CanOpenGroupMembership()
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region OpenAreasAndIterations Command
+
+        public RelayCommand OpenAreasAndIterationsCommand { get; private set; }
+
+        private void OpenAreasAndIterations()
+        {
+            teamPilgrimVsService.ShowWorkItemsAreasAndIterationsDialog(ProjectCollection, Project.Name, Project.Uri.ToString());
+        }
+
+        private bool CanOpenAreasAndIterations()
         {
             return true;
         }

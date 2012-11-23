@@ -117,8 +117,8 @@
                         <Separator />
                         <MenuItem Header="Team Project Settings">
                             <MenuItem Header="Security..." Command="{Binding ShowSecuritySettingsCommand}"/>
-                            <MenuItem IsEnabled="False" Header="Group Membership..."/>
-                            <MenuItem IsEnabled="False" Header="Areas and Iterations..."/>
+                            <MenuItem Header="Group Membership..." Command="{Binding OpenGroupMembershipCommand}"/>
+                            <MenuItem Header="Areas and Iterations..." Command="{Binding OpenAreasAndIterationsCommand}"/>
                             <MenuItem IsEnabled="False" Header="Portal Settings..."/>
                             <MenuItem IsEnabled="False" Header="Source Control..."/>
                             <MenuItem IsEnabled="False" Header="Team Members..."/>
