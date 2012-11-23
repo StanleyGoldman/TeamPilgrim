@@ -62,6 +62,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
 
         private readonly Lazy<PendingChangesPageViewModelUtilsWrapper> _pendingChangesPageViewModelUtilsWrapper;
 
+        private readonly Lazy<IPortalSettingsLauncher> _portalSettingsLauncher;
+        
+        private readonly Lazy<ISourceControlSettingsLauncher> _sourceControlSettingsLauncher;
+
         private IWorkItemControlHost _workItemControlHost;
 
         static TeamPilgrimVsService()
@@ -72,6 +76,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
         public TeamPilgrimVsService()
         {
             _teamFoundationBuild = new Lazy<VsTeamFoundationBuildWrapper>(() => new VsTeamFoundationBuildWrapper(_packageInstance.GetPackageService<IVsTeamFoundationBuild>()));
+            _portalSettingsLauncher = new Lazy<IPortalSettingsLauncher>(() => _packageInstance.GetPackageService<IPortalSettingsLauncher>());
+            _sourceControlSettingsLauncher = new Lazy<ISourceControlSettingsLauncher>(() => _packageInstance.GetPackageService<ISourceControlSettingsLauncher>());
             _workItemTrackingPackage = new Lazy<WorkItemTrackingPackageWrapper>();
             _versionControlPackage = new Lazy<VersionControlPackageWrapper>();
             _querySecurityCommandHelpers = new Lazy<QuerySecurityCommandHelpersWrapper>();
@@ -276,6 +282,22 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
         {
             var classificationAdminUi = new ClassificationAdminUi(tfsTeamProjectCollection, projectName, projectUri);
             classificationAdminUi.ShowDialog();
+        }
+
+        public void ShowPortalSettings(TfsTeamProjectCollection tfsTeamProjectCollection, string projectName, string projectUri)
+        {
+            _portalSettingsLauncher.Value.Show(tfsTeamProjectCollection, projectUri, projectName);
+        }
+
+        public void ShowSourceControlSettings()
+        {
+            //Note: I can already see how not having chosen a project here will be a problem
+            _sourceControlSettingsLauncher.Value.LaunchSourceControlSettings();
+        }
+
+        public void ShowSourceControlCollectionSettings()
+        {
+            _sourceControlSettingsLauncher.Value.LaunchSourceControlCollectionSettings();
         }
     }
 }

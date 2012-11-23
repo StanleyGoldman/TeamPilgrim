@@ -33,6 +33,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
 
             ShowProjectAlertsCommand = new RelayCommand(ShowProjectAlerts, CanShowProjectAlerts);
             OpenSourceControlCommand = new RelayCommand(OpenSourceControl, CanOpenSourceControl);
+            OpenPortalSettingsCommand = new RelayCommand(OpenPortalSettings, CanOpenPortalSettings);
+            OpenSourceControlSettingsCommand = new RelayCommand(OpenSourceControlSettings, CanOpenSourceControlSettings);
             OpenAreasAndIterationsCommand = new RelayCommand(OpenAreasAndIterations, CanOpenAreasAndIterations);
             ShowSecuritySettingsCommand = new RelayCommand(ShowSecuritySettings, CanShowSecuritySettings);
             OpenGroupMembershipCommand = new RelayCommand(OpenGroupMembership, CanOpenGroupMembership);
@@ -93,6 +95,38 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
         }
 
         private bool CanOpenAreasAndIterations()
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region OpenPortalSettings Command
+
+        public RelayCommand OpenPortalSettingsCommand { get; private set; }
+
+        private void OpenPortalSettings()
+        {
+            teamPilgrimVsService.ShowPortalSettings(ProjectCollection, Project.Name, Project.Uri.ToString());
+        }
+
+        private bool CanOpenPortalSettings()
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region OpenSourceControlSettings Command
+
+        public RelayCommand OpenSourceControlSettingsCommand { get; private set; }
+
+        private void OpenSourceControlSettings()
+        {
+            teamPilgrimVsService.ShowSourceControlSettings();
+        }
+
+        private bool CanOpenSourceControlSettings()
         {
             return true;
         }

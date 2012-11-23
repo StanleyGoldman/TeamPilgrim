@@ -45,5 +45,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.Vis
         void View(Workspace workspace, IList<PendingChange> pendingChanges);
         
         void ShowWorkItemsAreasAndIterationsDialog(TfsTeamProjectCollection tfsTeamProjectCollection, string projectName, string projectUri);
+        void ShowPortalSettings(TfsTeamProjectCollection tfsTeamProjectCollection, string projectName, string projectUri);
+        void ShowSourceControlSettings();
+        void ShowSourceControlCollectionSettings();
     }
 }

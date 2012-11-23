@@ -119,9 +119,9 @@
                             <MenuItem Header="Security..." Command="{Binding ShowSecuritySettingsCommand}"/>
                             <MenuItem Header="Group Membership..." Command="{Binding OpenGroupMembershipCommand}"/>
                             <MenuItem Header="Areas and Iterations..." Command="{Binding OpenAreasAndIterationsCommand}"/>
-                            <MenuItem IsEnabled="False" Header="Portal Settings..."/>
-                            <MenuItem IsEnabled="False" Header="Source Control..."/>
-                            <MenuItem IsEnabled="False" Header="Team Members..."/>
+                            <MenuItem Header="Portal Settings..." Command="{Binding OpenPortalSettingsCommand}"/>
+                            <MenuItem Header="Source Control..." Command="{Binding OpenSourceControlSettingsCommand}"/>
+                            <MenuItem Header="Team Members..."/>
                         </MenuItem>
                         <MenuItem IsEnabled="False" Header="Properties"/>
                         <Separator />
