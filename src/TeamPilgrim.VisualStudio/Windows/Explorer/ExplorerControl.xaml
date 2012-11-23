@@ -120,9 +120,6 @@
                             <MenuItem Header="Portal Settings..." Command="{Binding OpenPortalSettingsCommand}"/>
                             <MenuItem Header="Source Control..." Command="{Binding OpenSourceControlSettingsCommand}"/>
                         </MenuItem>
-                        <MenuItem IsEnabled="False" Header="Properties"/>
-                        <Separator />
-                        <MenuItem IsEnabled="False" Header="Alerts Explorer"/>
                     </ContextMenu>
 
                     <ContextMenu x:Key="WorkItemQueryContainerContextMenu" d:DataContext="{d:DesignInstance WorkItemQuery:WorkItemQueryServiceModel}">
