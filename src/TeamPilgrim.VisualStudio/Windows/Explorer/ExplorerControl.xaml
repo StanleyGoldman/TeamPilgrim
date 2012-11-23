@@ -109,7 +109,7 @@
                     </ContextMenu>
 
                     <ContextMenu x:Key="ProjectContextMenu" d:DataContext="{d:DesignInstance ExplorerModels:ProjectServiceModel}">
-                        <MenuItem IsEnabled="False" Header="Project Alerts..."/>
+                        <MenuItem Header="Project Alerts..." Command="{Binding ShowProjectAlertsCommand}"/>
                         <Separator />
                         <MenuItem IsEnabled="False" Header="Remove"/>
                         <Separator />

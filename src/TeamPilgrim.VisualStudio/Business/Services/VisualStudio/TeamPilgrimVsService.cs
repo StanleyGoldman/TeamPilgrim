@@ -61,6 +61,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
 
         private readonly Lazy<PendingChangesPageViewModelUtilsWrapper> _pendingChangesPageViewModelUtilsWrapper;
 
+        private readonly Lazy<IProjectAlertsLauncher> _projectAlertsLauncher;
+
         private IWorkItemControlHost _workItemControlHost;
 
         static TeamPilgrimVsService()
@@ -71,6 +73,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
         public TeamPilgrimVsService()
         {
             _teamFoundationBuild = new Lazy<VsTeamFoundationBuildWrapper>(() => new VsTeamFoundationBuildWrapper(_packageInstance.GetPackageService<IVsTeamFoundationBuild>()));
+            _projectAlertsLauncher = new Lazy<IProjectAlertsLauncher>(() => _packageInstance.GetPackageService<IProjectAlertsLauncher>());
             _workItemTrackingPackage = new Lazy<WorkItemTrackingPackageWrapper>();
             _versionControlPackage = new Lazy<VersionControlPackageWrapper>();
             _querySecurityCommandHelpers = new Lazy<QuerySecurityCommandHelpersWrapper>();
@@ -269,6 +272,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
         public void TfsConnect()
         {
             TeamFoundationHost.PromptForServerAndProjects(false);
+        }
+
+        public void ShowProjectAlerts(TfsTeamProjectCollection teamProjectCollection, string projectName)
+        {
+            _projectAlertsLauncher.Value.Show(teamProjectCollection, projectName);
         }
     }
 }

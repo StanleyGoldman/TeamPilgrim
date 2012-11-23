@@ -43,5 +43,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.Vis
         void CompareChangesetChangesWithWorkspaceVersions(Workspace workspace, IList<PendingChange> pendingChanges);
         void UndoChanges(Workspace workspace, IList<PendingChange> pendingChanges);
         void View(Workspace workspace, IList<PendingChange> pendingChanges);
+        void ShowProjectAlerts(TfsTeamProjectCollection teamProjectCollection, string projectName);
     }
 }

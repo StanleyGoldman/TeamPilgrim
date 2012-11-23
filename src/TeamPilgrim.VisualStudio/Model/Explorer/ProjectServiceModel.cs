@@ -29,7 +29,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
             TeamPilgrimServiceModel = teamPilgrimServiceModel;
             ProjectCollection = projectCollection;
             Project = project;
-            
+
+            ShowProjectAlertsCommand = new RelayCommand(ShowProjectAlerts, CanShowProjectAlerts);
             OpenSourceControlCommand = new RelayCommand(OpenSourceControl, CanOpenSourceControl);
 
             BuildDefinitionsServiceModel = new BuildDefinitionsServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, projectCollection, project);
@@ -46,7 +47,23 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
                 };
         }
 
-        #region OpenSourceControl
+        #region ShowProjectAlerts Command
+
+        public RelayCommand ShowProjectAlertsCommand { get; private set; }
+
+        private void ShowProjectAlerts()
+        {
+            teamPilgrimVsService.ShowProjectAlerts(ProjectCollection, Project.Name);
+        }
+
+        private bool CanShowProjectAlerts()
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region OpenSourceControl Command
 
         public RelayCommand OpenSourceControlCommand { get; private set; }
 
