@@ -95,7 +95,7 @@
                         <Separator />
                         <MenuItem IsEnabled="False" Header="Disconnect"/>
                         <Separator />
-                        <MenuItem IsEnabled="False" Header="Refresh"/>
+                        <MenuItem Header="Refresh" Command="{Binding RefreshCommand}"/>
                         <Separator />
                         <MenuItem IsEnabled="False" Header="Team Project Collection Settings">
                             <MenuItem IsEnabled="False" Header="Security..."/>

@@ -25,13 +25,23 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
             TfsTeamProjectCollection = pilgrimProjectCollection;
             _teamPilgrimServiceModel = teamPilgrimServiceModel;
 
+            Populate();
+        }
+
+        private void Populate()
+        {
             Project[] projects;
             if (teamPilgrimServiceModelProvider.TryGetProjects(out projects, TfsTeamProjectCollection.Uri))
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
                     {
+                        ProjectModels.Clear();
+
                         var pilgrimProjectModels = projects
-                            .Select(project => new ProjectServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, _teamPilgrimServiceModel, TfsTeamProjectCollection, project));
+                            .Select(
+                                project =>
+                                new ProjectServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService,
+                                                        _teamPilgrimServiceModel, TfsTeamProjectCollection, project));
 
                         foreach (var pilgrimProjectModel in pilgrimProjectModels)
                         {
@@ -40,5 +50,19 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
                     }));
             }
         }
+
+        #region Refresh Command
+
+        protected override void Refresh()
+        {
+            Populate();
+        }
+
+        protected override bool CanRefresh()
+        {
+            return true;
+        }
+
+        #endregion
     }
 }
