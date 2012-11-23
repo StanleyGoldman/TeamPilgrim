@@ -180,6 +180,7 @@
   <ItemGroup>
     <Compile Include="Business\Services\CheckinNotesCacheWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\Builds\BuildExplorerWrapper.cs" />
+    <Compile Include="Business\Services\VisualStudio\WorkItems\OpenWorkItemHelperWrapper.cs" />
     <Compile Include="Common\AttachedProperties\TrulyObservableListView.cs" />
     <Compile Include="Common\AttachedProperties\PreviewReturnKeyDown.cs" />
     <Compile Include="Common\AttachedProperties\PreviewSpaceKeyDown.cs" />
@@ -192,12 +193,12 @@
     <Compile Include="Business\Services\VisualStudio\TeamFoundation\ServerConnectedEventArgs.cs" />
     <Compile Include="Business\Services\VisualStudio\TeamFoundation\ServerConnectingEventArgs.cs" />
     <Compile Include="Business\Services\VisualStudio\VersionControl\PendingChangesPageViewModelUtilsWrapper.cs" />
-    <Compile Include="Business\Services\VisualStudio\WorkItem\DocumentServiceWrapper.cs" />
+    <Compile Include="Business\Services\VisualStudio\WorkItems\DocumentServiceWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\TeamFoundation\TeamFoundationHostWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\Builds\VsTeamFoundationBuildWrapper.cs" />
-    <Compile Include="Business\Services\VisualStudio\WorkItem\QuerySecurityCommandHelpersWrapper.cs" />
+    <Compile Include="Business\Services\VisualStudio\WorkItems\QuerySecurityCommandHelpersWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\VersionControl\VersionControlPackageWrapper.cs" />
-    <Compile Include="Business\Services\VisualStudio\WorkItem\WorkItemTrackingPackageWrapper.cs" />
+    <Compile Include="Business\Services\VisualStudio\WorkItems\WorkItemTrackingPackageWrapper.cs" />
     <Compile Include="Common\Behaviors\BindableSelectedItemBehavior.cs" />
     <Compile Include="Common\Comparer\ComparerEqualityComparer.cs" />
     <Compile Include="Common\Comparer\ComparerEqualityComparerGeneric.cs" />

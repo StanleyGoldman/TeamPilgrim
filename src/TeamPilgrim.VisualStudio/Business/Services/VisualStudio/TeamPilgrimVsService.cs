@@ -5,7 +5,7 @@ using EnvDTE80;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.Builds;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.TeamFoundation;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.VersionControl;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.WorkItem;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.WorkItems;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
 using Microsoft.TeamFoundation;

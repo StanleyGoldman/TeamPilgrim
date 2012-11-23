@@ -56,7 +56,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
             var checkedWorkItemModel = checkBox.DataContext as WorkItemModel;
             Debug.Assert(checkedWorkItemModel != null, "checkedWorkItemModel != null");
 
-            var selectedPendingChangeModels = PendingChangesWorkItemsListView.SelectedItems.Cast<WorkItemModel>().ToArray();
+            var selectedPendingChangeModels = WorkItemsListView.SelectedItems.Cast<WorkItemModel>().ToArray();
 
             if (selectedPendingChangeModels.Length <= 1)
                 return;

@@ -266,15 +266,26 @@
                         </Button>
                     </ToolBar>
 
-                    <ListView x:Name="PendingChangesWorkItemsListView" DockPanel.Dock="Bottom" 
+                    <ListView x:Name="WorkItemsListView" DockPanel.Dock="Bottom" 
                               
                               AttachedProperties:TrulyObservableListView.HasBindableSelectedItems="True"
                            
                               AttachedProperties:PreviewSpaceKeyDown.Command="{Binding Path=SelectWorkItemsCommand}"
-                              AttachedProperties:PreviewSpaceKeyDown.CommandParameter="{Binding ElementName=PendingChangesWorkItemsListView, Path=BindableTrulyObservableSelectedItems, Converter={StaticResource SelectWorkItemsCommandConverter}}"
+                              AttachedProperties:PreviewSpaceKeyDown.CommandParameter="{Binding ElementName=WorkItemsListView, Path=BindableTrulyObservableSelectedItems, Converter={StaticResource SelectWorkItemsCommandConverter}}"
+                              
+                              AttachedProperties:PreviewReturnKeyDown.Command="{Binding Path=ViewWorkItemCommand}"
+                              AttachedProperties:PreviewReturnKeyDown.CommandParameter="{Binding ElementName=WorkItemsListView, Path=SelectedItems}"
                               
                               DataContext="{Binding Path=SelectedWorkspaceModel}" 
                               ItemsSource="{Binding Path=WorkItems}">
+                        
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding ElementName=WorkItemsListView, Path=DataContext.ViewWorkItemCommand}"/>
+                                <Setter Property="AttachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding Converter={StaticResource SingleObjectToListConverter}}"/>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn>

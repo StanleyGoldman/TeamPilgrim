@@ -8,6 +8,7 @@ using System.Windows;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.WorkItems;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Comparer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Extensions;
@@ -111,6 +112,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
             SelectPendingChangesCommand = new RelayCommand<SelectPendingChangesCommandArgument>(SelectPendingChanges, CanSelectPendingChanges);
             SelectWorkItemsCommand = new RelayCommand<SelectWorkItemsCommandArgument>(SelectWorkItems, CanSelectWorkItems);
+
+            ViewWorkItemCommand = new RelayCommand<ObservableCollection<object>>(ViewWorkItem, CanViewWorkItem);
             ViewPendingChangeCommand = new RelayCommand<ObservableCollection<object>>(ViewPendingChange, CanViewPendingChange);
             CompareWithLatestCommand = new RelayCommand<ObservableCollection<object>>(CompareWithLatest, CanCompareWithLatest);
             CompareWithWorkspaceCommand = new RelayCommand<ObservableCollection<object>>(CompareWithWorkspace, CanCompareWithWorkspace);
@@ -239,6 +242,25 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         }
 
         private bool CanSelectWorkItems(SelectWorkItemsCommandArgument collection)
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region ViewWorkItem Command
+
+        public RelayCommand<ObservableCollection<object>> ViewWorkItemCommand { get; private set; }
+
+        private void ViewWorkItem(ObservableCollection<object> collection)
+        {
+            foreach (var workItemModel in collection.Cast<WorkItemModel>())
+            {
+                OpenWorkItemHelperWrapper.OpenWorkItem(workItemModel.WorkItem, collection.Count == 1);
+            }
+        }
+
+        private bool CanViewWorkItem(ObservableCollection<object> collection)
         {
             return true;
         }
