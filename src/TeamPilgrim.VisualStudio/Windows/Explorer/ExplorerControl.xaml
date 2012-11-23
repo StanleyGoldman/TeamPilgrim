@@ -37,15 +37,24 @@
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="WorkItemQueryDefinitionStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
                 <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding Path=WorkItemQueryCommandModel.OpenQueryDefinitionCommand}"/>
                 <Setter Property="AttachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding}"/>
+
+                <Setter Property="AttachedProperties:PreviewReturnKeyDown.Command" Value="{Binding Path=WorkItemQueryCommandModel.OpenQueryDefinitionCommand}"/>
+                <Setter Property="AttachedProperties:PreviewReturnKeyDown.CommandParameter" Value="{Binding}"/>
             </Style>
 
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="BuildDefinitionStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
                 <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding Path=BuildDefinitionCommandModel.ViewBuildsCommand}"/>
                 <Setter Property="AttachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding}"/>
+
+                <Setter Property="AttachedProperties:PreviewReturnKeyDown.Command" Value="{Binding Path=BuildDefinitionCommandModel.ViewBuildsCommand}"/>
+                <Setter Property="AttachedProperties:PreviewReturnKeyDown.CommandParameter" Value="{Binding}"/>
             </Style>
 
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="SourceControlStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
                 <Setter Property="AttachedProperties:MouseDoubleClick.Command" 
+                        Value="{Binding Path=DataContext.OpenSourceControlCommand, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"/>
+
+                <Setter Property="AttachedProperties:PreviewReturnKeyDown.Command"
                         Value="{Binding Path=DataContext.OpenSourceControlCommand, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"/>
             </Style>
 
