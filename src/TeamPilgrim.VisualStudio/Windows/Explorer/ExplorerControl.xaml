@@ -97,13 +97,12 @@
                         <Separator />
                         <MenuItem Header="Refresh" Command="{Binding RefreshCommand}"/>
                         <Separator />
-                        <MenuItem IsEnabled="False" Header="Team Project Collection Settings">
+                        <MenuItem Header="Team Project Collection Settings">
                             <MenuItem IsEnabled="False" Header="Security..."/>
                             <MenuItem IsEnabled="False" Header="Group Membership..."/>
                             <MenuItem IsEnabled="False" Header="Process Template Manager..."/>
                             <MenuItem IsEnabled="False" Header="Source Control File Types..."/>
                         </MenuItem>
-                        <MenuItem IsEnabled="False" Header="Properties"/>
                         <Separator />
                         <MenuItem IsEnabled="False" Header="Alerts Explorer"/>
                     </ContextMenu>
