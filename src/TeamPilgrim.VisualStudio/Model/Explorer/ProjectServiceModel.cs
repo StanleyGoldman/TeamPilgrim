@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using GalaSoft.MvvmLight.Command;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.TeamFoundation;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.BuildDefinitions;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery;
@@ -32,6 +33,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
 
             ShowProjectAlertsCommand = new RelayCommand(ShowProjectAlerts, CanShowProjectAlerts);
             OpenSourceControlCommand = new RelayCommand(OpenSourceControl, CanOpenSourceControl);
+            ShowSecuritySettingsCommand = new RelayCommand(ShowSecuritySettings, CanShowSecuritySettings);
 
             BuildDefinitionsServiceModel = new BuildDefinitionsServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, projectCollection, project);
 
@@ -57,6 +59,22 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
         }
 
         private bool CanShowProjectAlerts()
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region ShowSecuritySettings Command
+
+        public RelayCommand ShowSecuritySettingsCommand { get; private set; }
+
+        private void ShowSecuritySettings()
+        {
+            CommandHandlerPackageWrapper.OpenSecuritySettings(ProjectCollection, Project.Name, Project.Uri.ToString());
+        }
+
+        private bool CanShowSecuritySettings()
         {
             return true;
         }

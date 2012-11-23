@@ -180,6 +180,7 @@
   <ItemGroup>
     <Compile Include="Business\Services\CheckinNotesCacheWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\Builds\BuildExplorerWrapper.cs" />
+    <Compile Include="Business\Services\VisualStudio\TeamFoundation\CommandHandlerPackageWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\WorkItems\OpenWorkItemHelperWrapper.cs" />
     <Compile Include="Common\AttachedProperties\TrulyObservableListView.cs" />
     <Compile Include="Common\AttachedProperties\PreviewReturnKeyDown.cs" />
