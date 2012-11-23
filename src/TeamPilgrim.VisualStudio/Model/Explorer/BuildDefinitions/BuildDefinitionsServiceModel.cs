@@ -17,7 +17,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.BuildDefinitio
     {
         public ObservableCollection<BuildDefinitionModel> BuildDefinitions { get; private set; }
 
-        private readonly ITeamPilgrimServiceModelProvider _teamPilgrimServiceModelProvider;
         private readonly TfsTeamProjectCollection _collection;
         private readonly Project _project;
 
@@ -26,7 +25,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.BuildDefinitio
         {
             BuildDefinitions = new ObservableCollection<BuildDefinitionModel>();
 
-            _teamPilgrimServiceModelProvider = teamPilgrimServiceModelProvider;
             _collection = collection;
             _project = project;
 
@@ -43,8 +41,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.BuildDefinitio
             ManageBuildQualitiesCommand = new RelayCommand(ManageBuildQualities, CanManageBuildQualities);
             ManageBuildSecurityCommand = new RelayCommand(ManageBuildSecurity, CanManageBuildSecurity);
 
+            PopulateBuildDefinitions();
+        }
+
+        private void PopulateBuildDefinitions()
+        {
             IBuildDefinition[] buildDefinitions;
-            if (_teamPilgrimServiceModelProvider.TryGetBuildDefinitionsByProjectName(out buildDefinitions, _collection, _project.Name))
+            if (teamPilgrimServiceModelProvider.TryGetBuildDefinitionsByProjectName(out buildDefinitions, _collection, _project.Name))
             {
                 foreach (var buildDefinitionModel in buildDefinitions.Select(definition => new BuildDefinitionModel(this, definition)))
                 {
@@ -52,6 +55,21 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.BuildDefinitio
                 }
             }
         }
+
+        #region Refresh Command
+
+        protected override void Refresh()
+        {
+            BuildDefinitions.Clear();
+            PopulateBuildDefinitions();
+        }
+
+        protected override bool CanRefresh()
+        {
+            return true;
+        }
+
+        #endregion
 
         #region NewBuildDefinition Command
 
@@ -128,7 +146,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.BuildDefinitio
 
         private void DeleteBuildDefinition(BuildDefinitionModel buildDefinitionModel)
         {
-            if (_teamPilgrimServiceModelProvider.TryDeleteBuildDefinition(buildDefinitionModel.Definition))
+            if (teamPilgrimServiceModelProvider.TryDeleteBuildDefinition(buildDefinitionModel.Definition))
             {
                 BuildDefinitions.Remove(buildDefinitionModel);
             }
@@ -148,7 +166,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.BuildDefinitio
         private void CloneBuildDefinition(BuildDefinitionModel buildDefinitionModel)
         {
             IBuildDefinition buildDefinition;
-            if (_teamPilgrimServiceModelProvider.TryCloneQueryDefinition(out buildDefinition, _collection, _project, buildDefinitionModel.Definition))
+            if (teamPilgrimServiceModelProvider.TryCloneQueryDefinition(out buildDefinition, _collection, _project, buildDefinitionModel.Definition))
             {
                 BuildDefinitions.Add(new BuildDefinitionModel(this, buildDefinition));
             }

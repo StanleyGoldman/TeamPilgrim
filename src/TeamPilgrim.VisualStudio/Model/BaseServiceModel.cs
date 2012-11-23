@@ -1,4 +1,5 @@
-﻿using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
+﻿using GalaSoft.MvvmLight.Command;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
@@ -12,6 +13,24 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
         {
             this.teamPilgrimServiceModelProvider = teamPilgrimServiceModelProvider;
             this.teamPilgrimVsService = teamPilgrimVsService;
-        }       
+        
+            RefreshCommand = new RelayCommand(Refresh, CanRefresh);
+        }
+
+        #region Refresh Command
+
+        public RelayCommand RefreshCommand { get; private set; }
+
+        protected virtual void Refresh()
+        {
+            
+        }
+
+        protected virtual bool CanRefresh()
+        {
+            return false;
+        }
+
+        #endregion
     }
 }

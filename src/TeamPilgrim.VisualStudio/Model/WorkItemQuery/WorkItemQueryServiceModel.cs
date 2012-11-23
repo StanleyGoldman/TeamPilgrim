@@ -23,7 +23,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
             _projectCollection = projectCollection;
             _project = project;
 
+            QueryItems = new ObservableCollection<WorkItemQueryChildModel>();
+
             NewWorkItemCommand = new RelayCommand<string>(NewWorkItem, CanNewWorkItem);
+
             GoToWorkItemCommand = new RelayCommand(GoToWorkItem, CanGoToWorkItem);
 
             NewQueryDefinitionCommand = new RelayCommand<WorkItemQueryFolderModel>(NewQueryDefinition, CanNewQueryDefinition);
@@ -35,11 +38,34 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
             DeleteQueryItemCommand = new RelayCommand<WorkItemQueryChildModel>(DeleteQueryDefinition, CanDeleteQueryDefinition);
             OpenSeurityDialogCommand = new RelayCommand<WorkItemQueryChildModel>(OpenSeurityDialog, CanOpenSeurityDialog);
 
-            var queryHierarchy = _project.QueryHierarchy;
-            var queryItemModels = queryHierarchy.GetQueryItemViewModels(this, teamPilgrimServiceModelProvider, teamPilgrimVsService, project, 1);
-
-            QueryItems = new ObservableCollection<WorkItemQueryChildModel>(queryItemModels);
+            PopulateQueryHierarchy();
         }
+
+        private void PopulateQueryHierarchy()
+        {
+            var queryItemModels = _project.QueryHierarchy.GetQueryItemViewModels(this, teamPilgrimServiceModelProvider, teamPilgrimVsService, _project, 1);
+            foreach (var queryChildModel in queryItemModels)
+            {
+                QueryItems.Add(queryChildModel);
+            }
+        }
+
+        #region Refresh Command
+
+        protected override void Refresh()
+        {
+            QueryItems.Clear();
+
+            _project.QueryHierarchy.Refresh();
+            PopulateQueryHierarchy();
+        }
+
+        protected override bool CanRefresh()
+        {
+            return true;
+        }
+
+        #endregion
 
         #region GoToWorkItem Command
 

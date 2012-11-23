@@ -111,7 +111,7 @@
                     <ContextMenu x:Key="ProjectContextMenu" d:DataContext="{d:DesignInstance ExplorerModels:ProjectServiceModel}">
                         <MenuItem Header="Project Alerts..." Command="{Binding ShowProjectAlertsCommand}"/>
                         <Separator />
-                        <MenuItem IsEnabled="False" Header="Refresh"/>
+                        <MenuItem Header="Refresh" Command="{Binding RefreshCommand}"/>
                         <Separator />
                         <MenuItem Header="Team Project Settings">
                             <MenuItem Header="Security..." Command="{Binding ShowSecuritySettingsCommand}"/>
@@ -170,7 +170,7 @@
 
                         <MenuItem IsEnabled="False" Header="New Work Items with Microsoft Excel" />
                         <Separator />
-                        <MenuItem IsEnabled="False" Header="Refresh"/>
+                        <MenuItem Header="Refresh" Command="{Binding RefreshCommand}"/>
                     </ContextMenu>
 
                     <ContextMenu x:Key="WorkItemQueryFolderContextMenu" d:DataContext="{d:DesignInstance WorkItemQuery:WorkItemQueryFolderModel}">
@@ -249,15 +249,13 @@
 
                         <Separator />
 
-                        <MenuItem Header="Manage Build Controllers..." 
-                            Command="{Binding Path=ManageBuildControllersCommand}" />
+                        <MenuItem Header="Manage Build Controllers..." Command="{Binding ManageBuildControllersCommand}" />
 
-                        <MenuItem Header="Manage Build Qualities..."
-                            Command="{Binding Path=ManageBuildQualitiesCommand}" />
+                        <MenuItem Header="Manage Build Qualities..." Command="{Binding ManageBuildQualitiesCommand}" />
 
                         <Separator />
 
-                        <MenuItem IsEnabled="False" Header="Refresh"/>
+                        <MenuItem Header="Refresh" Command="{Binding RefreshCommand}"/>
 
                         <Separator />
 

@@ -53,6 +53,21 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
                 };
         }
 
+        #region Refresh Command
+
+        protected override void Refresh()
+        {
+            WorkItemQueryServiceModel.RefreshCommand.Execute(null);
+            BuildDefinitionsServiceModel.RefreshCommand.Execute(null);
+        }
+
+        protected override bool CanRefresh()
+        {
+            return true;
+        }
+
+        #endregion
+
         #region ShowProjectAlerts Command
 
         public RelayCommand ShowProjectAlertsCommand { get; private set; }
