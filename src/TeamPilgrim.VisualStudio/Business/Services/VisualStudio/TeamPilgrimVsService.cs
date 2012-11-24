@@ -66,6 +66,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
         
         private readonly Lazy<ISourceControlSettingsLauncher> _sourceControlSettingsLauncher;
 
+        private readonly Lazy<IProcessTemplateManagerLauncher> _processTemplateManagerLauncher;
+
         private IWorkItemControlHost _workItemControlHost;
 
         static TeamPilgrimVsService()
@@ -78,6 +80,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
             _teamFoundationBuild = new Lazy<VsTeamFoundationBuildWrapper>(() => new VsTeamFoundationBuildWrapper(_packageInstance.GetPackageService<IVsTeamFoundationBuild>()));
             _portalSettingsLauncher = new Lazy<IPortalSettingsLauncher>(() => _packageInstance.GetPackageService<IPortalSettingsLauncher>());
             _sourceControlSettingsLauncher = new Lazy<ISourceControlSettingsLauncher>(() => _packageInstance.GetPackageService<ISourceControlSettingsLauncher>());
+            _processTemplateManagerLauncher = new Lazy<IProcessTemplateManagerLauncher>(() => _packageInstance.GetPackageService<IProcessTemplateManagerLauncher>());
             _workItemTrackingPackage = new Lazy<WorkItemTrackingPackageWrapper>();
             _versionControlPackage = new Lazy<VersionControlPackageWrapper>();
             _querySecurityCommandHelpers = new Lazy<QuerySecurityCommandHelpersWrapper>();
@@ -308,6 +311,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
         public void NewTeamProject()
         {
             Dte2.ExecuteCommand("File.NewTeamProject");
+        }
+
+        public void ShowProcessTemplateManager(TfsTeamProjectCollection tfsTeamProjectCollection)
+        {
+            _processTemplateManagerLauncher.Value.Show(tfsTeamProjectCollection);
         }
     }
 }

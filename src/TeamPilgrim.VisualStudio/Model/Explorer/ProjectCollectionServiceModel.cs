@@ -30,7 +30,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
             DisconnectCommand = new RelayCommand(Disconnect, CanDisconnect);
             NewTeamProjectCommand = new RelayCommand(NewTeamProject, CanNewTeamProject);
             OpenGroupMembershipCommand = new RelayCommand(OpenGroupMembership, CanOpenGroupMembership);
+            ShowProcessTemplateManagerCommand = new RelayCommand(ShowProcessTemplateManager, CanShowProcessTemplateManager);
             ShowSecuritySettingsCommand = new RelayCommand(ShowSecuritySettings, CanShowSecuritySettings);
+            OpenSourceControlSettingsCommand = new RelayCommand(OpenSourceControlSettings, CanOpenSourceControlSettings);
 
             Populate();
         }
@@ -136,5 +138,36 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
 
         #endregion
 
+        #region ShowProcessTemplateManager Command
+
+        public RelayCommand ShowProcessTemplateManagerCommand { get; private set; }
+
+        private void ShowProcessTemplateManager()
+        {
+            teamPilgrimVsService.ShowProcessTemplateManager(TfsTeamProjectCollection);
+        }
+
+        private bool CanShowProcessTemplateManager()
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region OpenSourceControlSettings Command
+
+        public RelayCommand OpenSourceControlSettingsCommand { get; private set; }
+
+        private void OpenSourceControlSettings()
+        {
+            teamPilgrimVsService.ShowSourceControlCollectionSettings();
+        }
+
+        private bool CanOpenSourceControlSettings()
+        {
+            return true;
+        }
+
+        #endregion
     }
 }

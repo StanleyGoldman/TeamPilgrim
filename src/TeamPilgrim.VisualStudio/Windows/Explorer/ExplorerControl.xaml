@@ -100,8 +100,8 @@
                         <MenuItem Header="Team Project Collection Settings">
                             <MenuItem Header="Security..." Command="{Binding ShowSecuritySettingsCommand}"/>
                             <MenuItem Header="Group Membership..." Command="{Binding OpenGroupMembershipCommand}"/>
-                            <MenuItem IsEnabled="False" Header="Process Template Manager..."/>
-                            <MenuItem IsEnabled="False" Header="Source Control File Types..."/>
+                            <MenuItem Header="Process Template Manager..." Command="{Binding ShowProcessTemplateManagerCommand}"/>
+                            <MenuItem Header="Source Control..." Command="{Binding OpenSourceControlSettingsCommand}"/>
                         </MenuItem>
                     </ContextMenu>
 

@@ -50,5 +50,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.Vis
         void ShowSourceControlCollectionSettings();
         void DisconnectFromTfs();
         void NewTeamProject();
+        void ShowProcessTemplateManager(TfsTeamProjectCollection tfsTeamProjectCollection);
     }
 }
