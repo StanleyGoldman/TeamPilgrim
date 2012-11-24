@@ -24,6 +24,21 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
 
         public ObservableCollection<BaseModel> ChildObjects { get; private set; }
 
+        private bool _isActive;
+        public bool IsActive
+        {
+            get
+            {
+                return _isActive;
+            }
+            set
+            {
+                if (_isActive == value) return;
+                _isActive = value;
+                SendPropertyChanged("IsActive");
+            }
+        }
+
         public ProjectServiceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, TeamPilgrimServiceModel teamPilgrimServiceModel, TfsTeamProjectCollection tfsTeamProjectCollection, Project project)
             :base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
         {
@@ -51,6 +66,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
                     new TeamMembersModel(),
                     new SourceControlModel()
                 };
+            
+            IsActive = teamPilgrimVsService.ActiveProjectContext.ProjectName == Project.Name;
         }
 
         #region Refresh Command

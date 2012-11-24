@@ -185,6 +185,7 @@
     <Compile Include="Common\AttachedProperties\TrulyObservableListView.cs" />
     <Compile Include="Common\AttachedProperties\PreviewReturnKeyDown.cs" />
     <Compile Include="Common\AttachedProperties\PreviewSpaceKeyDown.cs" />
+    <Compile Include="Common\Converters\BooleanToAlternateFontWeightConverter.cs" />
     <Compile Include="Common\Converters\ObservableCollectionToTrulyObservableCollectionCoverter.cs" />
     <Compile Include="Common\Converters\SelectPendingChangesCommandConverter.cs" />
     <Compile Include="Common\Converters\SelectWorkItemsCommandConverter.cs" />

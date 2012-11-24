@@ -184,7 +184,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             TfsConnectCommand = new RelayCommand(TfsConnect, CanTfsConnect);
             ShowResolveConflicttManagerCommand = new RelayCommand(ShowResolveConflicttManager, CanShowResolveConflicttManager);
 
-            PopulatePilgrimModel();
+            PopulateTeamPilgrimServiceModel();
         }
 
         private void ProjectCollectionModelsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -209,26 +209,49 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         private void TeamFoundationHostOnContextChanged(object sender, ContextChangedEventArgs contextChangedEventArgs)
         {
-            Task.Run(() => PopulatePilgrimModel());
+            if (contextChangedEventArgs.TeamProjectCollectionChanged)
+            {
+                Task.Run(() => PopulateTeamPilgrimServiceModel());
+            }
+            else if (contextChangedEventArgs.TeamProjectChanged)
+            {
+                Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(() =>
+                    {
+                        var activeProjectContext = _teamPilgrimVsService.ActiveProjectContext;
+                        
+                        foreach (var projectModel in ActiveProjectCollectionModel.ProjectModels)
+                        {
+                            projectModel.IsActive = projectModel.Project.Name == activeProjectContext.ProjectName;
+                        }
+                    }));
+            }
         }
 
-        private void PopulatePilgrimModel()
+        private void PopulateTeamPilgrimServiceModel()
         {
-            if (_teamPilgrimVsService.ActiveProjectContext == null ||
-                _teamPilgrimVsService.ActiveProjectContext.DomainUri == null) return;
+            var activeProjectContext = _teamPilgrimVsService.ActiveProjectContext;
 
-            var tpcAddress = new Uri(_teamPilgrimVsService.ActiveProjectContext.DomainUri);
+            if (activeProjectContext == null ||
+                activeProjectContext.DomainUri == null)
+            {
+                Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle,
+                    new ThreadStart(() => ProjectCollectionModels.Clear()));
+
+                return;
+            }
+
+            var tpcAddress = new Uri(activeProjectContext.DomainUri);
             TfsTeamProjectCollection collection;
 
             if (_teamPilgrimServiceModelProvider.TryGetCollection(out collection, tpcAddress))
             {
-                Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
+                Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(() =>
                     {
                         ProjectCollectionModels.Clear();
                         if (collection != null)
                         {
-                            ProjectCollectionModels.Add(new ProjectCollectionServiceModel(_teamPilgrimServiceModelProvider,
-                                                                            _teamPilgrimVsService, this, collection));
+                            var projectCollectionServiceModel = new ProjectCollectionServiceModel(_teamPilgrimServiceModelProvider, _teamPilgrimVsService, this, collection);
+                            ProjectCollectionModels.Add(projectCollectionServiceModel);
                         }
                     }));
             }
@@ -268,7 +291,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         private void Refresh()
         {
-            Task.Run(() => PopulatePilgrimModel());
+            Task.Run(() => PopulateTeamPilgrimServiceModel());
         }
 
         private bool CanRefresh()

@@ -9,6 +9,7 @@
              xmlns:ExplorerModels="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer"
              xmlns:BuildDefinitions="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.BuildDefinitions"
              xmlns:WorkItemQuery="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery"
+             xmlns:converters="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Converters"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d" 
@@ -17,6 +18,7 @@
     <DockPanel x:Name="ExplorerDockPanel">
         <DockPanel.Resources>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <converters:BooleanToAlternateFontWeightConverter x:Key="BooleanToAlternateFontWeightConverter" TrueWeight="Bold" FalseWeight="Normal" />
             
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="DefaultStyle">
                 <EventSetter Event="UIElement.PreviewMouseRightButtonDown" Handler="OnPreviewMouseRightButtonDown"/>
@@ -299,7 +301,12 @@
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type ExplorerModels:ProjectServiceModel}" ItemsSource="{Binding Path=ChildObjects}">
-                        <TextBlock Text="{Binding Path=Project.Name}" ContextMenu="{StaticResource ResourceKey=ProjectContextMenu}" />
+                        <HierarchicalDataTemplate.Resources>
+                            <Style x:Key="ProjectContextTextStyle" TargetType="{x:Type TextBlock}">
+                                <Setter Property="FontWeight" Value="{Binding Path=IsActive, Converter={StaticResource BooleanToAlternateFontWeightConverter}}" />
+                            </Style>
+                        </HierarchicalDataTemplate.Resources>
+                        <TextBlock Text="{Binding Path=Project.Name}" ContextMenu="{StaticResource ResourceKey=ProjectContextMenu}" Style="{StaticResource ProjectContextTextStyle}" />
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type WorkItemQuery:WorkItemQueryServiceModel}" ItemsSource="{Binding Path=QueryItems}">
