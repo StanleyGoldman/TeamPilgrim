@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Windows.Threading;
+using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.Client;
@@ -24,6 +25,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
 
             TfsTeamProjectCollection = pilgrimProjectCollection;
             _teamPilgrimServiceModel = teamPilgrimServiceModel;
+
+            DisconnectCommand = new RelayCommand(Disconnect, CanDisconnect);
+            NewTeamProjectCommand = new RelayCommand(NewTeamProject, CanNewTeamProject);
 
             Populate();
         }
@@ -59,6 +63,38 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
         }
 
         protected override bool CanRefresh()
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region Disconnect Command
+
+        public RelayCommand DisconnectCommand { get; private set; }
+
+        private void Disconnect()
+        {
+            teamPilgrimVsService.DisconnectFromTfs();
+        }
+
+        private bool CanDisconnect()
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region NewTeamProject Command
+
+        public RelayCommand NewTeamProjectCommand { get; private set; }
+
+        private void NewTeamProject()
+        {
+            teamPilgrimVsService.NewTeamProject();
+        }
+
+        private bool CanNewTeamProject()
         {
             return true;
         }

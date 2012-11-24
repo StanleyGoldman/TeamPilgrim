@@ -10,6 +10,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
     {
         private readonly ITeamFoundationContextManager _teamFoundationHostObject;
         private readonly Type _teamFoundationHostObjectType;
+        private readonly Lazy<FieldInfo> _commandHandlerField;
         private readonly Lazy<MethodInfo> _promptForServerAndProjectsMethod;
 
         public event EventHandler<ServerConnectedEventArgs> ServerConnected;
@@ -34,6 +35,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
                 };
 
             _teamFoundationHostObjectType = _teamFoundationHostObject.GetType();
+            _commandHandlerField = new Lazy<FieldInfo>(() => _teamFoundationHostObjectType.GetField("m_commandHandler", BindingFlags.NonPublic | BindingFlags.Instance));
             _promptForServerAndProjectsMethod = new Lazy<MethodInfo>(() => _teamFoundationHostObjectType.GetMethod("PromptForServerAndProjects", BindingFlags.Public | BindingFlags.Instance));
 
             var connectingEventInfo = _teamFoundationHostObjectType.GetEvent("Connecting", BindingFlags.Public | BindingFlags.Instance);
@@ -58,6 +60,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
         public ITeamFoundationContext CurrentContext
         {
             get { return _teamFoundationHostObject.CurrentContext; }
+        }
+
+        public CommandHandlerPackageWrapper CommandHandlerPackage
+        {
+            get
+            {
+                return new CommandHandlerPackageWrapper(_commandHandlerField.Value.GetValue(_teamFoundationHostObject));
+            }
         }
 
         // ReSharper disable UnusedMember.Local

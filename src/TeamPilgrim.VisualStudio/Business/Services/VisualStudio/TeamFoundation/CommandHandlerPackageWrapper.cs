@@ -22,6 +22,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
             OpenWorkItemsClassificationMethod = new Lazy<MethodInfo>(() => CommandHandlerPackageType.Value.GetMethod("OpenWorkItemsClassification", BindingFlags.Static | BindingFlags.Public));
         }
 
+        private readonly object _commandHandlerPackage;
+
+        public CommandHandlerPackageWrapper(object commandHandlerPackage)
+        {
+            _commandHandlerPackage = commandHandlerPackage;
+        }
+
         public static void OpenWorkItemsClassification(TfsTeamProjectCollection tfsTeamProjectCollection, string projectName, string serviceType, Guid serviceIdentifier)
         {
             OpenWorkItemsClassificationMethod.Value.Invoke(null, new object[] { tfsTeamProjectCollection, projectName, serviceType, serviceIdentifier });

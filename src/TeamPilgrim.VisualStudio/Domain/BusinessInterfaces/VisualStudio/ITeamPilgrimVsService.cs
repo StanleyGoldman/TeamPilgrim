@@ -48,5 +48,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.Vis
         void ShowPortalSettings(TfsTeamProjectCollection tfsTeamProjectCollection, string projectName, string projectUri);
         void ShowSourceControlSettings();
         void ShowSourceControlCollectionSettings();
+        void DisconnectFromTfs();
+        void NewTeamProject();
     }
 }

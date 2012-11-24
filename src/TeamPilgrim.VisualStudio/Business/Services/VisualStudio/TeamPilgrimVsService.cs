@@ -299,5 +299,15 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
         {
             _sourceControlSettingsLauncher.Value.LaunchSourceControlCollectionSettings();
         }
+
+        public void DisconnectFromTfs()
+        {
+            Dte2.ExecuteCommand("Team.DisconnectfromTeamFoundationServer");
+        }
+
+        public void NewTeamProject()
+        {
+            Dte2.ExecuteCommand("File.NewTeamProject");
+        }
     }
 }
