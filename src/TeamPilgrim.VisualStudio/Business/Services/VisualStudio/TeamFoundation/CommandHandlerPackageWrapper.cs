@@ -24,7 +24,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
 
         public static void OpenWorkItemsClassification(TfsTeamProjectCollection tfsTeamProjectCollection, string projectName, string serviceType, Guid serviceIdentifier)
         {
-            OpenGroupMembershipMethod.Value.Invoke(null, new object[] { tfsTeamProjectCollection, projectName, serviceType, serviceIdentifier });
+            OpenWorkItemsClassificationMethod.Value.Invoke(null, new object[] { tfsTeamProjectCollection, projectName, serviceType, serviceIdentifier });
         }
 
         public static void OpenWorkItemsAreas(TfsTeamProjectCollection tfsTeamProjectCollection, string projectName)
