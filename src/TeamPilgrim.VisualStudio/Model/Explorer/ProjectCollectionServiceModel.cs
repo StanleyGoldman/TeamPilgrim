@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight.Command;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.TeamFoundation;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.Client;
@@ -28,6 +29,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
 
             DisconnectCommand = new RelayCommand(Disconnect, CanDisconnect);
             NewTeamProjectCommand = new RelayCommand(NewTeamProject, CanNewTeamProject);
+            OpenGroupMembershipCommand = new RelayCommand(OpenGroupMembership, CanOpenGroupMembership);
+            ShowSecuritySettingsCommand = new RelayCommand(ShowSecuritySettings, CanShowSecuritySettings);
 
             Populate();
         }
@@ -100,5 +103,38 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
         }
 
         #endregion
+
+        #region ShowSecuritySettings Command
+
+        public RelayCommand ShowSecuritySettingsCommand { get; private set; }
+
+        private void ShowSecuritySettings()
+        {
+            CommandHandlerPackageWrapper.OpenSecuritySettings(TfsTeamProjectCollection, null, null);
+        }
+
+        private bool CanShowSecuritySettings()
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region OpenGroupMembership Command
+
+        public RelayCommand OpenGroupMembershipCommand { get; private set; }
+
+        private void OpenGroupMembership()
+        {
+            CommandHandlerPackageWrapper.OpenGroupMembership(TfsTeamProjectCollection, null, null);
+        }
+
+        private bool CanOpenGroupMembership()
+        {
+            return true;
+        }
+
+        #endregion
+
     }
 }

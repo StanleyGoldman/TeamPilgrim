@@ -98,13 +98,11 @@
                         <MenuItem Header="Refresh" Command="{Binding RefreshCommand}"/>
                         <Separator />
                         <MenuItem Header="Team Project Collection Settings">
-                            <MenuItem IsEnabled="False" Header="Security..."/>
-                            <MenuItem IsEnabled="False" Header="Group Membership..."/>
+                            <MenuItem Header="Security..." Command="{Binding ShowSecuritySettingsCommand}"/>
+                            <MenuItem Header="Group Membership..." Command="{Binding OpenGroupMembershipCommand}"/>
                             <MenuItem IsEnabled="False" Header="Process Template Manager..."/>
                             <MenuItem IsEnabled="False" Header="Source Control File Types..."/>
                         </MenuItem>
-                        <Separator />
-                        <MenuItem IsEnabled="False" Header="Alerts Explorer"/>
                     </ContextMenu>
 
                     <ContextMenu x:Key="ProjectContextMenu" d:DataContext="{d:DesignInstance ExplorerModels:ProjectServiceModel}">

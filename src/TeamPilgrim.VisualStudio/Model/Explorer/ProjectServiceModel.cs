@@ -12,7 +12,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
 {
     public class ProjectServiceModel : BaseServiceModel
     {
-        public TfsTeamProjectCollection ProjectCollection { get; private set; }
+        public TfsTeamProjectCollection TfsTeamProjectCollection { get; private set; }
 
         public Project Project { get; private set; }
 
@@ -24,11 +24,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
 
         public ObservableCollection<BaseModel> ChildObjects { get; private set; }
 
-        public ProjectServiceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, TeamPilgrimServiceModel teamPilgrimServiceModel, TfsTeamProjectCollection projectCollection, Project project)
+        public ProjectServiceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, TeamPilgrimServiceModel teamPilgrimServiceModel, TfsTeamProjectCollection tfsTeamProjectCollection, Project project)
             :base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
         {
             TeamPilgrimServiceModel = teamPilgrimServiceModel;
-            ProjectCollection = projectCollection;
+            TfsTeamProjectCollection = tfsTeamProjectCollection;
             Project = project;
 
             ShowProjectAlertsCommand = new RelayCommand(ShowProjectAlerts, CanShowProjectAlerts);
@@ -39,9 +39,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
             ShowSecuritySettingsCommand = new RelayCommand(ShowSecuritySettings, CanShowSecuritySettings);
             OpenGroupMembershipCommand = new RelayCommand(OpenGroupMembership, CanOpenGroupMembership);
 
-            BuildDefinitionsServiceModel = new BuildDefinitionsServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, projectCollection, project);
+            BuildDefinitionsServiceModel = new BuildDefinitionsServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, tfsTeamProjectCollection, project);
 
-            WorkItemQueryServiceModel = new WorkItemQueryServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, projectCollection, project);
+            WorkItemQueryServiceModel = new WorkItemQueryServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, tfsTeamProjectCollection, project);
 
             ChildObjects = new ObservableCollection<BaseModel>
                 {
@@ -74,7 +74,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
 
         private void ShowProjectAlerts()
         {
-            CommandHandlerPackageWrapper.OpenProjectAlerts(ProjectCollection, Project.Name);
+            CommandHandlerPackageWrapper.OpenProjectAlerts(TfsTeamProjectCollection, Project.Name);
         }
 
         private bool CanShowProjectAlerts()
@@ -90,7 +90,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
 
         private void OpenGroupMembership()
         {
-            CommandHandlerPackageWrapper.OpenGroupMembership(ProjectCollection, Project.Name, Project.Uri.ToString());
+            CommandHandlerPackageWrapper.OpenGroupMembership(TfsTeamProjectCollection, Project.Name, Project.Uri.ToString());
         }
 
         private bool CanOpenGroupMembership()
@@ -106,7 +106,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
 
         private void OpenAreasAndIterations()
         {
-            teamPilgrimVsService.ShowWorkItemsAreasAndIterationsDialog(ProjectCollection, Project.Name, Project.Uri.ToString());
+            teamPilgrimVsService.ShowWorkItemsAreasAndIterationsDialog(TfsTeamProjectCollection, Project.Name, Project.Uri.ToString());
         }
 
         private bool CanOpenAreasAndIterations()
@@ -122,7 +122,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
 
         private void OpenPortalSettings()
         {
-            teamPilgrimVsService.ShowPortalSettings(ProjectCollection, Project.Name, Project.Uri.ToString());
+            teamPilgrimVsService.ShowPortalSettings(TfsTeamProjectCollection, Project.Name, Project.Uri.ToString());
         }
 
         private bool CanOpenPortalSettings()
@@ -154,7 +154,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
 
         private void ShowSecuritySettings()
         {
-            CommandHandlerPackageWrapper.OpenSecuritySettings(ProjectCollection, Project.Name, Project.Uri.ToString());
+            CommandHandlerPackageWrapper.OpenSecuritySettings(TfsTeamProjectCollection, Project.Name, Project.Uri.ToString());
         }
 
         private bool CanShowSecuritySettings()
