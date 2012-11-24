@@ -137,7 +137,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
             WorkItems = new TrulyObservableCollection<WorkItemModel>();
             WorkItems.CollectionChanged += WorkItemsOnCollectionChanged;
-         
+
             EvaluateCheckInCommand.Execute(null);
         }
 
@@ -220,12 +220,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         public class SelectWorkItemsCommandArgument
         {
             public WorkItemModel[] Collection { get; set; }
-            public bool Value { get; set; } 
+            public bool Value { get; set; }
         }
         public class SelectPendingChangesCommandArgument
         {
             public PendingChangeModel[] Collection { get; set; }
-            public bool Value { get; set; } 
+            public bool Value { get; set; }
         }
 
         public RelayCommand<SelectWorkItemsCommandArgument> SelectWorkItemsCommand { get; private set; }
@@ -487,7 +487,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private bool CanEvaluateCheckIn()
         {
-            return true;
+            return PendingChanges.Any(model => model.IncludeChange);
         }
 
         #endregion
