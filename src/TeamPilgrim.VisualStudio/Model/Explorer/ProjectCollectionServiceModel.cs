@@ -13,7 +13,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
 {
     public class ProjectCollectionServiceModel : BaseServiceModel
     {
-        private readonly TeamPilgrimServiceModel _teamPilgrimServiceModel;
+        public TeamPilgrimServiceModel TeamPilgrimServiceModel { get; private set; }
 
         public ObservableCollection<ProjectServiceModel> ProjectModels { get; private set; }
 
@@ -25,7 +25,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
             ProjectModels = new ObservableCollection<ProjectServiceModel>();
 
             TfsTeamProjectCollection = pilgrimProjectCollection;
-            _teamPilgrimServiceModel = teamPilgrimServiceModel;
+            TeamPilgrimServiceModel = teamPilgrimServiceModel;
 
             DisconnectCommand = new RelayCommand(Disconnect, CanDisconnect);
             NewTeamProjectCommand = new RelayCommand(NewTeamProject, CanNewTeamProject);
@@ -33,6 +33,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
             ShowProcessTemplateManagerCommand = new RelayCommand(ShowProcessTemplateManager, CanShowProcessTemplateManager);
             ShowSecuritySettingsCommand = new RelayCommand(ShowSecuritySettings, CanShowSecuritySettings);
             OpenSourceControlSettingsCommand = new RelayCommand(OpenSourceControlSettings, CanOpenSourceControlSettings);
+            
+            SetActiveProjectCommand = new RelayCommand<ProjectServiceModel>(SetActiveProject, CanSetActiveProject);
 
             Populate();
         }
@@ -50,7 +52,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
                             .Select(
                                 project =>
                                 new ProjectServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService,
-                                                        _teamPilgrimServiceModel, TfsTeamProjectCollection, project));
+                                                        TeamPilgrimServiceModel, TfsTeamProjectCollection, project));
 
                         foreach (var pilgrimProjectModel in pilgrimProjectModels)
                         {
@@ -70,6 +72,32 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
         protected override bool CanRefresh()
         {
             return true;
+        }
+
+        #endregion
+
+        #region SetActiveProject Command
+
+        public RelayCommand<ProjectServiceModel> SetActiveProjectCommand { get; private set; }
+
+        private void SetActiveProject(ProjectServiceModel activeProjectServiceModel)
+        {
+            if (activeProjectServiceModel.IsActive)
+                return;
+
+            foreach (var projectServiceModel in ProjectModels.Except(new[] { activeProjectServiceModel }))
+            {
+                projectServiceModel.IsActive = false;
+            }
+
+            activeProjectServiceModel.IsActive = true;
+
+            teamPilgrimVsService.TeamFoundationHost.SetContext(TfsTeamProjectCollection, activeProjectServiceModel.Project.Uri.ToString());
+        }
+
+        private bool CanSetActiveProject(ProjectServiceModel activeProjectServiceModel)
+        {
+            return !activeProjectServiceModel.IsActive;
         }
 
         #endregion

@@ -294,7 +294,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
 
         public void ShowSourceControlSettings()
         {
-            //Note: I can already see how not having chosen a project here will be a problem
             _sourceControlSettingsLauncher.Value.LaunchSourceControlSettings();
         }
 
