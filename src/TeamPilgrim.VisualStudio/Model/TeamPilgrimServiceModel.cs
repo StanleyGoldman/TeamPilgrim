@@ -13,6 +13,7 @@ using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualS
 using JustAProgrammer.TeamPilgrim.VisualStudio.Messages;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.VersionControl.Client;
@@ -21,9 +22,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
     public class TeamPilgrimServiceModel : BaseServiceModel
     {
-        private readonly ITeamPilgrimServiceModelProvider _teamPilgrimServiceModelProvider;
-        private readonly ITeamPilgrimVsService _teamPilgrimVsService;
-
         public ObservableCollection<ProjectCollectionServiceModel> ProjectCollectionModels { get; private set; }
         public ObservableCollection<WorkspaceInfoModel> WorkspaceInfoModels { get; private set; }
 
@@ -164,17 +162,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             ProjectCollectionModels.CollectionChanged += ProjectCollectionModelsOnCollectionChanged;
             WorkspaceInfoModels.CollectionChanged += WorkspaceInfoModelsOnCollectionChanged;
 
-            _teamPilgrimServiceModelProvider = teamPilgrimServiceModelProvider;
-            _teamPilgrimVsService = teamPilgrimVsService;
-
-            _teamPilgrimVsService.TeamFoundationHost.ContextChanged += TeamFoundationHostOnContextChanged;
-            _teamPilgrimVsService.TeamFoundationHost.ServerConnecting += delegate(object sender, ServerConnectingEventArgs args)
+            teamPilgrimVsService.TeamFoundationHost.ContextChanged += TeamFoundationHostOnContextChanged;
+            teamPilgrimVsService.TeamFoundationHost.ServerConnecting += delegate(object sender, ServerConnectingEventArgs args)
                 {
                     Connecting = true;
                     ConnectingServer = args.TeamProjectCollection.Name;
                 };
-
-            _teamPilgrimVsService.TeamFoundationHost.ServerConnected += delegate(object sender, ServerConnectedEventArgs args)
+            
+            teamPilgrimVsService.TeamFoundationHost.ServerConnected += delegate(object sender, ServerConnectedEventArgs args)
                 {
                     Connecting = false;
                     ConnectingServer = args.TeamProjectCollection.Name;
@@ -221,7 +216,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(() =>
                     {
-                        var activeProjectContext = _teamPilgrimVsService.ActiveProjectContext;
+                        var activeProjectContext = teamPilgrimVsService.ActiveProjectContext;
 
                         foreach (var projectModel in ActiveProjectCollectionModel.ProjectModels)
                         {
@@ -233,7 +228,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         private void PopulateTeamPilgrimServiceModel()
         {
-            var activeProjectContext = _teamPilgrimVsService.ActiveProjectContext;
+            var activeProjectContext = teamPilgrimVsService.ActiveProjectContext;
 
             if (activeProjectContext == null ||
                 activeProjectContext.DomainUri == null)
@@ -247,14 +242,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             var tpcAddress = new Uri(activeProjectContext.DomainUri);
             TfsTeamProjectCollection collection;
 
-            if (_teamPilgrimServiceModelProvider.TryGetCollection(out collection, tpcAddress))
+            if (teamPilgrimServiceModelProvider.TryGetCollection(out collection, tpcAddress))
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(() =>
                     {
                         ProjectCollectionModels.Clear();
                         if (collection != null)
                         {
-                            var projectCollectionServiceModel = new ProjectCollectionServiceModel(_teamPilgrimServiceModelProvider, _teamPilgrimVsService, this, collection);
+                            var projectCollectionServiceModel = new ProjectCollectionServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, this, collection);
                             ProjectCollectionModels.Add(projectCollectionServiceModel);
                         }
                     }));
@@ -263,7 +258,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
             {
                 WorkspaceInfo[] workspaceInfos;
-                if (_teamPilgrimServiceModelProvider.TryGetLocalWorkspaceInfos(out workspaceInfos, collection.InstanceId))
+                if (teamPilgrimServiceModelProvider.TryGetLocalWorkspaceInfos(out workspaceInfos, collection.InstanceId))
                 {
                     foreach (var workspaceInfo in workspaceInfos)
                     {
@@ -282,9 +277,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
             Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
                 {
-                    if (_teamPilgrimServiceModelProvider.TryGetWorkspace(out workspace, selectedWorkspaceInfoModel.WorkspaceInfo, projectCollectionModel.TfsTeamProjectCollection))
+                    if (teamPilgrimServiceModelProvider.TryGetWorkspace(out workspace, selectedWorkspaceInfoModel.WorkspaceInfo, projectCollectionModel.TfsTeamProjectCollection))
                     {
-                        SelectedWorkspaceModel = new WorkspaceServiceModel(_teamPilgrimServiceModelProvider, teamPilgrimVsService, this.ActiveProjectCollectionModel, workspace);
+                        SelectedWorkspaceModel = new WorkspaceServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, this.ActiveProjectCollectionModel, workspace);
                     }
                 }));
         }
@@ -311,7 +306,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         private void ShowShelveDialog()
         {
-            Messenger.Default.Send(new ShowShelveDialog());
+            Messenger.Default.Send(new ShowShelveDialog
+                {
+                    ShelvesetServiceModel = new ShelvesetServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, ActiveProjectCollectionModel, SelectedWorkspaceModel)
+                });
         }
 
         private bool CanShowShelveDialog()
@@ -350,7 +348,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
                 SelectedWorkspaceModel.Workspace.Folders
                     .Select(folder => folder.ServerItem).ToArray();
 
-            _teamPilgrimVsService.ResolveConflicts(SelectedWorkspaceModel.Workspace, paths, true, false);
+            teamPilgrimVsService.ResolveConflicts(SelectedWorkspaceModel.Workspace, paths, true, false);
         }
 
         private bool CanShowResolveConflicttManager()
@@ -366,7 +364,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         private void TfsConnect()
         {
-            _teamPilgrimVsService.TfsConnect();
+            teamPilgrimVsService.TfsConnect();
         }
 
         private bool CanTfsConnect()

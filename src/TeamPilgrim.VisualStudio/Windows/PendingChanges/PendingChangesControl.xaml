@@ -73,7 +73,7 @@
                 <Image Source="..\..\Resources\edit_diff.png" Width="32" Height="32" Style="{StaticResource ButtonImageStyle}" />
             </Button>
         </ToolBar>
-        <TabControl DockPanel.Dock="Bottom" BorderThickness="0" Padding="0">
+        <TabControl DockPanel.Dock="Right" BorderThickness="0" Padding="0">
             <TabControl.Resources>
                 <!--http://stackoverflow.com/questions/6278720/wpf-toggle-panel-visibility-->
                 <Style TargetType="TabItem">

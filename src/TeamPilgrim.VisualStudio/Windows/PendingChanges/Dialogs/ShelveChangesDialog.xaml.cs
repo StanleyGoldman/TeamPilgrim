@@ -23,5 +23,15 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialog
         {
             InitializeComponent();
         }
+
+        private void PendingChangesCheckboxClicked(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void PendingChangeWorkItemCheckboxClicked(object sender, RoutedEventArgs e)
+        {
+            
+        }
     }
 }

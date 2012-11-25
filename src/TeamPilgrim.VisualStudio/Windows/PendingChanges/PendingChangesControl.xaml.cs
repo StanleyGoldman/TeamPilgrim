@@ -28,7 +28,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
                 {
                     var shelveChangesDialog = new ShelveChangesDialog
                         {
-                            DataContext = DataContext
+                            DataContext = message.ShelvesetServiceModel
                         };
 
                     var dialogResult = shelveChangesDialog.ShowDialog();
