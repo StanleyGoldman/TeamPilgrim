@@ -10,6 +10,7 @@
              xmlns:System="clr-namespace:System;assembly=mscorlib"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:AttachedProperties="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties"
+             xmlns:Enums="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Enums"
              mc:Ignorable="d" 
              Height="Auto" d:DesignHeight="300" d:DesignWidth="850"
              d:DataContext="{d:DesignInstance Model:TeamPilgrimServiceModel}">
@@ -22,7 +23,7 @@
 
         <ObjectDataProvider x:Key="workItemCheckinActions" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
             <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="PendingChangesModel:SelectedWorkItemCheckinActionEnum"/>
+                <x:Type TypeName="Enums:SelectedWorkItemCheckinActionEnum"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
 

@@ -1,3 +1,4 @@
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Enums;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
@@ -30,7 +31,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             {
                 return _workItemCheckinAction;
             }
-            private set
+            set
             {
                 if (_workItemCheckinAction == value) return;
 

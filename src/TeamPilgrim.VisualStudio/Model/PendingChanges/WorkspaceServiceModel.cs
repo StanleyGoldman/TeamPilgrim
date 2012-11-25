@@ -542,13 +542,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
             WorkItemCollection workItemCollection;
             if (teamPilgrimServiceModelProvider.TryGetQueryDefinitionWorkItemCollection(out workItemCollection,
-                                                                                        _projectCollectionServiceModel
-                                                                                            .
-                                                                                            TfsTeamProjectCollection,
-                                                                                        SelectedWorkItemQueryDefinition
-                                                                                            .QueryDefinition,
-                                                                                        SelectedWorkItemQueryDefinition
-                                                                                            .Project.Name))
+                                                                                        _projectCollectionServiceModel.TfsTeamProjectCollection,
+                                                                                        SelectedWorkItemQueryDefinition.QueryDefinition,
+                                                                                        SelectedWorkItemQueryDefinition.Project.Name))
             {
                 var currentWorkItems = workItemCollection.Cast<WorkItem>().ToArray();
 
@@ -561,9 +557,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                 var modelsToRemove = WorkItems.Where(model => !modelIntersection.Contains(model)).ToArray();
 
                 var modelsToAdd = currentWorkItems
-                    .Where(
-                        workItem =>
-                        !modelIntersection.Select(workItemModel => workItemModel.WorkItem.Id).Contains(workItem.Id))
+                    .Where(workItem => !modelIntersection.Select(workItemModel => workItemModel.WorkItem.Id).Contains(workItem.Id))
                     .Select(workItem => new WorkItemModel(workItem)).ToArray();
 
                 foreach (var modelToAdd in modelsToAdd)
@@ -574,6 +568,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                 foreach (var modelToRemove in modelsToRemove)
                 {
                     WorkItems.Remove(modelToRemove);
+                }
+
+                var selectedWorkItemCheckinActionEnum = TeamPilgrimPackage.TeamPilgrimSettings.SelectedWorkItemCheckinAction;
+                foreach (var workItemModel in WorkItems.Where(model => !model.IsSelected))
+                {
+                    workItemModel.WorkItemCheckinAction = selectedWorkItemCheckinActionEnum;
                 }
             }
         }

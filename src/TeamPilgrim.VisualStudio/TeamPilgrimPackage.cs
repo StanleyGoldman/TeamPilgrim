@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
@@ -9,25 +8,16 @@ using System.Windows.Forms;
 using EnvDTE;
 using EnvDTE80;
 using JustAProgrammer.TeamPilgrim.Core;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Dialogs;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Explorer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Settings;
 using LogicNP.CryptoLicensing;
-using Microsoft.TeamFoundation.Client;
-using Microsoft.TeamFoundation.WorkItemTracking.Controls;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.TeamFoundation;
-using Microsoft.VisualStudio.TeamFoundation.Build;
-using Microsoft.VisualStudio.TeamFoundation.VersionControl;
-using Microsoft.VisualStudio.TeamFoundation.WorkItemTracking;
 using NLog;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio
@@ -53,6 +43,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
     // This attribute registers a tool window exposed by this package.
     [ProvideToolWindow(typeof(ExplorerWindow))]
     [ProvideToolWindow(typeof(PendingChangesWindow))]
+
+    [ProvideOptionPage(typeof(SettingsPage), "Team Pilgrim", "General", 0, 0, true)]
 
     //http://stackoverflow.com/questions/4478853/vsx-2010-package-loading-markup-xaml-parsing-cannot-find-assemblies
     [ProvideBindingPath]
@@ -83,6 +75,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
         private static TeamPilgrimVsService _teamPilgrimVsService;
 
         public static TeamPilgrimServiceModel TeamPilgrimServiceModel { get; private set; }
+        
+        public static TeamPilgrimSettings TeamPilgrimSettings { get; private set; }
 
         private uint _shellPropertyChangeCookie;
 
@@ -264,6 +258,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
 
             _teamPilgrimVsService.InitializeGlobals(Dte2);
             TeamPilgrimServiceModel = new TeamPilgrimServiceModel(new TeamPilgrimServiceModelProvider(), _teamPilgrimVsService);
+            TeamPilgrimSettings = new TeamPilgrimSettings(Dte2);
 
             Logger.Trace("End Complete Initialization");
         }

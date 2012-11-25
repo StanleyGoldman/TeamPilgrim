@@ -40,9 +40,6 @@
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Expression.Samples.Interactivity">
-      <HintPath>..\..\packages\expressionblend-81799\Expression.Samples.Interactivity.dll</HintPath>
-    </Reference>
     <Reference Include="Extensibility, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
@@ -217,13 +214,22 @@
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Model\LicenseModel.cs" />
     <Compile Include="Model\PendingChanges\CheckinNoteModel.cs" />
-    <Compile Include="Model\PendingChanges\SelectedWorkItemCheckinActionEnum.cs" />
-    <Compile Include="Model\PendingChanges\SelectedWorkItemCheckinActionEnumExtensions.cs" />
+    <Compile Include="Common\Enums\SelectedWorkItemCheckinActionEnum.cs" />
+    <Compile Include="Common\Extensions\SelectedWorkItemCheckinActionEnumExtensions.cs" />
     <Compile Include="Model\PendingChanges\WorkItemModel.cs" />
     <Compile Include="Model\PolicyFailureModel.cs" />
     <Compile Include="Model\SelectWorkItemQueryModel.cs" />
+    <Compile Include="Windows\Settings\SettingsPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Windows\Dialogs\LicenseDialog.xaml.cs">
       <DependentUpon>LicenseDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Settings\SettingsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Windows\Settings\SettingsControl.Designer.cs">
+      <DependentUpon>SettingsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Windows\PendingChanges\Dialogs\PolicyFailureDialog.xaml.cs">
       <DependentUpon>PolicyFailureDialog.xaml</DependentUpon>
@@ -274,6 +280,7 @@
     </Compile>
     <Compile Include="Windows\PendingChanges\PendingChangesWindow.cs" />
     <Compile Include="Common\Converters\SingleObjectToObservableCollectionConverter.cs" />
+    <Compile Include="TeamPilgrimSettings.cs" />
     <None Include="..\TeamPilgrim.Core\Key.snk">
       <Link>Key.snk</Link>
     </None>
@@ -296,6 +303,12 @@
       <MergeWithCTO>true</MergeWithCTO>
       <ManifestResourceName>VSPackage</ManifestResourceName>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\Settings\SettingsControl.resx">
+      <DependentUpon>SettingsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\Settings\SettingsPage.resx">
+      <DependentUpon>SettingsPage.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

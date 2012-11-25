@@ -1,7 +1,8 @@
 using System;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Enums;
 using Microsoft.TeamFoundation.VersionControl.Client;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common.Extensions
 {
     public static class SelectedWorkItemCheckinActionEnumExtensions
     {
