@@ -9,6 +9,7 @@ using GalaSoft.MvvmLight.Messaging;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Messages;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
 {
@@ -22,6 +23,34 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
             InitializeComponent();
 
             NameScope.SetNameScope(PendingChangesContextMenu, NameScope.GetNameScope(this));
+
+            Messenger.Default.Register<ShowShelveDialog>(this, message =>
+                {
+                    var shelveChangesDialog = new ShelveChangesDialog
+                        {
+                            DataContext = DataContext
+                        };
+
+                    var dialogResult = shelveChangesDialog.ShowDialog();
+                    if (dialogResult.HasValue && dialogResult.Value)
+                    {
+                        
+                    }
+                });
+
+            Messenger.Default.Register<ShowUnshelveDialog>(this, message =>
+            {
+                var unshelveChangesDialog = new UnshelveChangesDialog
+                {
+                    DataContext = DataContext
+                };
+
+                var dialogResult = unshelveChangesDialog.ShowDialog();
+                if (dialogResult.HasValue && dialogResult.Value)
+                {
+
+                }
+            });
 
             Messenger.Default.Register<ShowPendingChangesTabItemMessage>(this, message =>
             {
@@ -89,7 +118,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
 
             if (selectedPendingChangeModels.Length <= 1)
                 return;
-            
+
             if (!selectedPendingChangeModels.Contains(checkedPendingChangeModel))
                 return;
 

@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using System.Windows;
+using GalaSoft.MvvmLight.Messaging;
 using Microsoft.VisualStudio.Shell;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges

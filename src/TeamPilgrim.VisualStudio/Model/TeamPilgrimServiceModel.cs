@@ -7,8 +7,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.TeamFoundation;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Messages;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
@@ -182,6 +184,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
             RefreshCommand = new RelayCommand(Refresh, CanRefresh);
             TfsConnectCommand = new RelayCommand(TfsConnect, CanTfsConnect);
+            ShowShelveDialogCommand = new RelayCommand(ShowShelveDialog, CanShowShelveDialog);
+            ShowUnshelveDialogCommand = new RelayCommand(ShowUnshelveDialog, CanShowUnshelveDialog);
             ShowResolveConflicttManagerCommand = new RelayCommand(ShowResolveConflicttManager, CanShowResolveConflicttManager);
 
             PopulateTeamPilgrimServiceModel();
@@ -218,7 +222,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
                 Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(() =>
                     {
                         var activeProjectContext = _teamPilgrimVsService.ActiveProjectContext;
-                        
+
                         foreach (var projectModel in ActiveProjectCollectionModel.ProjectModels)
                         {
                             projectModel.IsActive = projectModel.Project.Name == activeProjectContext.ProjectName;
@@ -295,6 +299,38 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
         }
 
         private bool CanRefresh()
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region ShowShelveDialog Command
+
+        public RelayCommand ShowShelveDialogCommand { get; private set; }
+
+        private void ShowShelveDialog()
+        {
+            Messenger.Default.Send(new ShowShelveDialog());
+        }
+
+        private bool CanShowShelveDialog()
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region ShowUnshelveDialog Command
+
+        public RelayCommand ShowUnshelveDialogCommand { get; private set; }
+
+        private void ShowUnshelveDialog()
+        {
+            Messenger.Default.Send(new ShowUnshelveDialog());
+        }
+
+        private bool CanShowUnshelveDialog()
         {
             return true;
         }
