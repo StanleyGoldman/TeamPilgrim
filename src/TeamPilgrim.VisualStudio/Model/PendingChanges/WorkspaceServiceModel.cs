@@ -14,7 +14,9 @@ using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Comparer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Extensions;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Messages;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.CommandArguments;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs;
@@ -74,7 +76,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         private readonly CheckinNotesCacheWrapper _checkinNotesCacheWrapper;
 
         private WorkItemQueryDefinitionModel _selectedWorkWorkItemQueryDefinition;
-
         public WorkItemQueryDefinitionModel SelectedWorkItemQueryDefinition
         {
             get
@@ -216,17 +217,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         #endregion
 
         #region SelectWorkItems Command
-
-        public class SelectWorkItemsCommandArgument
-        {
-            public WorkItemModel[] Collection { get; set; }
-            public bool Value { get; set; }
-        }
-        public class SelectPendingChangesCommandArgument
-        {
-            public PendingChangeModel[] Collection { get; set; }
-            public bool Value { get; set; }
-        }
 
         public RelayCommand<SelectWorkItemsCommandArgument> SelectWorkItemsCommand { get; private set; }
 

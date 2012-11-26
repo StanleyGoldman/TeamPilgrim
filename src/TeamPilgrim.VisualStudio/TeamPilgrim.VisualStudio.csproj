@@ -210,6 +210,8 @@
     <Compile Include="Common\AttachedProperties\MouseDoubleClick.cs" />
     <Compile Include="Common\Extensions\CheckinEvaluationResultExtensions.cs" />
     <Compile Include="Messages\ShowUnshelveDialog.cs" />
+    <Compile Include="Model\CommandArguments\SelectPendingChangesCommandArgument.cs" />
+    <Compile Include="Model\CommandArguments\SelectWorkItemsCommandArgument.cs" />
     <Compile Include="Model\ShelveChanges\ShelvesetServiceModel.cs" />
     <Compile Include="TeamPilgrimLogManager.cs" />
     <Compile Include="Messages\ShowPendingChangesTabItem.cs" />

@@ -17,7 +17,6 @@
         d:DataContext="{d:DesignInstance ShelveChanges:ShelvesetServiceModel}" Height="596.477">
     <Window.Resources>
         <Converters:SelectPendingChangesCommandConverter x:Key="SelectPendingChangesCommandConverter" />
-
         <Converters:SingleObjectToObservableCollectionConverter x:Key="SingleObjectToListConverter" />
         <Converters:SelectWorkItemsCommandConverter x:Key="SelectWorkItemsCommandConverter" />
 
@@ -126,16 +125,22 @@
                                     <Button>Cmp with Latest</Button>
                                     -->
 
-                                <Button Content="View File"/>
-
-                                <Button Content="Undo Pending Change"/>
+                                <Button Content="Undo Pending Change"
+                                        Command="{Binding Path=UndoPendingChangeCommand}" 
+                                        CommandParameter="{Binding ElementName=PendingChangesListView, Path=SelectedItems}" />
 
                             </ToolBar>
                             <TextBlock DockPanel.Dock="Top"><Run Text="Comment:"/></TextBlock>
                             <TextBox DockPanel.Dock="Top" Text="{Binding Comment, UpdateSourceTrigger=PropertyChanged}"/>
 
                             <ListView x:Name="PendingChangesListView" 
-                					AttachedProperties:TrulyObservableListView.HasBindableSelectedItems="True">
+                					AttachedProperties:TrulyObservableListView.HasBindableSelectedItems="True"
+                                    
+                                    AttachedProperties:PreviewSpaceKeyDown.Command="{Binding Path=SelectPendingChangesCommand}"
+                                    AttachedProperties:PreviewSpaceKeyDown.CommandParameter="{Binding ElementName=PendingChangesListView, Path=BindableTrulyObservableSelectedItems, Converter={StaticResource SelectPendingChangesCommandConverter}}"
+                                      
+                                    ItemsSource="{Binding Path=PendingChanges}"
+                                    >
 
                                 <ListView.ItemContainerStyle>
                                     <Style TargetType="{x:Type ListViewItem}">
@@ -200,7 +205,7 @@
                             <ToolBar DockPanel.Dock="Top">
                                 <TextBlock><Run Text="Query:"/></TextBlock>
                                 <TextBlock Width="100" />
-                                <Button Content="..."/>
+                                <Button Content="..." Command="{Binding Path=ShowSelectWorkItemQueryCommand}"/>
 
                                 <Separator/>
 
