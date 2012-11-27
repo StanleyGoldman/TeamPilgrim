@@ -20,11 +20,14 @@ using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs;
 using Microsoft.TeamFoundation.VersionControl.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
+using NLog;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 {
     public class WorkspaceServiceModel : BaseServiceModel
     {
+        private static readonly Logger Logger = TeamPilgrimLogManager.Instance.GetCurrentClassLogger();
+
         public ObservableCollection<CheckinNoteModel> CheckinNotes { get; private set; }
 
         public Workspace Workspace { get; private set; }
@@ -154,6 +157,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         private void PendingChangesOnCollectionChanged(object sender,
                                                        NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
+            Logger.Trace("PendingChangesOnCollectionChanged: Prevent Changes: {0}", _preventPendingChangesCollectionChangeFromCausingEval); 
+            
             if (!_preventPendingChangesCollectionChangeFromCausingEval)
             {
                 EvaluateCheckInCommand.Execute(null);
@@ -169,6 +174,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private void WorkItemsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            Logger.Trace("WorkItemsOnCollectionChanged: Prevent Changes: {0}", _preventWorkItemCollectionChangeFromCausingEval);
+            
             if (!_preventWorkItemCollectionChangeFromCausingEval)
             {
                 EvaluateCheckInCommand.Execute(null);
@@ -199,6 +206,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private void SelectPendingChanges(SelectPendingChangesCommandArgument selectPendingChangesCommandArgument)
         {
+            Logger.Debug("Select Pending Changes: {0}, Count: {1}", selectPendingChangesCommandArgument.Value, selectPendingChangesCommandArgument.Collection.Count());
+
             _preventPendingChangesCollectionChangeFromCausingEval = true;
             foreach (var pendingChangeModel in selectPendingChangesCommandArgument.Collection)
             {
@@ -482,6 +491,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             if (teamPilgrimServiceModelProvider.TryEvaluateCheckin(out checkinEvaluationResult, Workspace, pendingChanges, Comment, checkinNote, workItemChanges))
             {
                 CheckinEvaluationResult = checkinEvaluationResult;
+                Logger.Debug("EvaluateCheckIn: Valid:{0}", checkinEvaluationResult.IsValid());
             }
         }
 

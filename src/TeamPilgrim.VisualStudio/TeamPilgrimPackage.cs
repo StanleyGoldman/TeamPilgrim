@@ -89,7 +89,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
         /// </summary>
         public TeamPilgrimPackage()
         {
-            Logger.Trace("Start Constructor");
+            Logger.Debug("Start Constructor");
 
             Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", this.ToString()));
 
@@ -104,7 +104,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             //Certain Visual Studio dialogs like the "Work Item Query" can be expected to throw binding errors
             //BindingErrorTraceListener.SetTrace();
 
-            Logger.Trace("End Constructor");
+            Logger.Debug("End Constructor");
         }
 
         /// <summary>
@@ -152,7 +152,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
         /// </summary>
         protected override void Initialize()
         {
-            Logger.Trace("Start Initialize");
+            Logger.Info("Initialization: " + VersionInfo.Full);
+            Logger.Debug("Start First Pass Initialization");
 
             Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
             TeamPilgrimPackage._singleInstance = this;
@@ -206,8 +207,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             TeamPilgrimPackage._teamPilgrimVsService.Initialize(_singleInstance, UIShell);
 
             CompletePackageInitialization();
-          
-            Logger.Trace("End Initialize");
+
+            Logger.Debug("End First Pass Initialization");
         }
 
         public int OnShellPropertyChange(int propid, object var)
@@ -237,11 +238,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
 
         private void CompletePackageInitialization()
         {
-            Logger.Trace("Start Complete Initialization");
+            Logger.Debug("Start Second Pass Initialization");
 
             if (Dte != null)
             {
-                Logger.Debug("Package previously initialized"); 
+                Logger.Warn("Package Previously Initialized"); 
                 return;
             }
 
@@ -260,7 +261,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             TeamPilgrimServiceModel = new TeamPilgrimServiceModel(new TeamPilgrimServiceModelProvider(), _teamPilgrimVsService);
             TeamPilgrimSettings = new TeamPilgrimSettings(Dte2);
 
-            Logger.Trace("End Complete Initialization");
+            Logger.Debug("End Second Pass Initialization");
         }
 
         #endregion
