@@ -179,9 +179,10 @@
     <Compile Include="Business\Services\VisualStudio\Builds\BuildExplorerWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\TeamFoundation\CommandHandlerPackageWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\WorkItems\OpenWorkItemHelperWrapper.cs" />
-    <Compile Include="Common\AttachedProperties\TrulyObservableListView.cs" />
+    <Compile Include="Common\AttachedProperties\PreviewSpaceKeyDownSelectPendingChanges.cs" />
     <Compile Include="Common\AttachedProperties\PreviewReturnKeyDown.cs" />
     <Compile Include="Common\AttachedProperties\PreviewSpaceKeyDown.cs" />
+    <Compile Include="Common\AttachedProperties\PreviewSpaceKeyDownSelectWorkItems.cs" />
     <Compile Include="Common\Converters\BooleanToAlternateFontWeightConverter.cs" />
     <Compile Include="Common\Converters\ObservableCollectionToTrulyObservableCollectionCoverter.cs" />
     <Compile Include="Common\Converters\SelectPendingChangesCommandConverter.cs" />
@@ -209,6 +210,8 @@
     <Compile Include="Common\VsWindowFrameEditorTypeIds.cs" />
     <Compile Include="Common\AttachedProperties\MouseDoubleClick.cs" />
     <Compile Include="Common\Extensions\CheckinEvaluationResultExtensions.cs" />
+    <Compile Include="Model\CommandArguments\SelectPendingChangesCommandArgument.cs" />
+    <Compile Include="Model\CommandArguments\SelectWorkItemsCommandArgument.cs" />
     <Compile Include="TeamPilgrimLogManager.cs" />
     <Compile Include="Messages\ShowPendingChangesTabItem.cs" />
     <Compile Include="Model\BaseModel.cs" />

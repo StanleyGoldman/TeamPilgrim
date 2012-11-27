@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.CommandArguments;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges;
 using NLog;
 
@@ -28,7 +29,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common.Converters
                 && observableCollection.Any()
                 && (!observableCollection.Last().IncludeChange);
 
-            return new WorkspaceServiceModel.SelectPendingChangesCommandArgument
+            return new SelectPendingChangesCommandArgument
                 {
                     Collection = observableCollection,
                     Value = workItemModel

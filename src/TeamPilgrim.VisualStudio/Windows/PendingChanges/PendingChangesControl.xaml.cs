@@ -8,6 +8,7 @@ using System.Windows.Media;
 using GalaSoft.MvvmLight.Messaging;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Messages;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.CommandArguments;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
@@ -68,7 +69,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
 
             var collection = selectedPendingChangeModels;
 
-            teamPilgrimModel.SelectedWorkspaceModel.SelectWorkItemsCommand.Execute(new WorkspaceServiceModel.SelectWorkItemsCommandArgument()
+            teamPilgrimModel.SelectedWorkspaceModel.SelectWorkItemsCommand.Execute(new SelectWorkItemsCommandArgument()
             {
                 Collection = collection,
                 Value = checkedWorkItemModel.IsSelected
@@ -97,7 +98,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
 
             var collection = selectedPendingChangeModels;
 
-            teamPilgrimModel.SelectedWorkspaceModel.SelectPendingChangesCommand.Execute(new WorkspaceServiceModel.SelectPendingChangesCommandArgument()
+            teamPilgrimModel.SelectedWorkspaceModel.SelectPendingChangesCommand.Execute(new SelectPendingChangesCommandArgument()
                 {
                     Collection = collection,
                     Value = checkedPendingChangeModel.IncludeChange

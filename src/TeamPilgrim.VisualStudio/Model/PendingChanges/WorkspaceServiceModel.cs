@@ -14,6 +14,7 @@ using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Comparer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Extensions;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Messages;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.CommandArguments;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
@@ -226,21 +227,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         #region SelectWorkItems Command
 
-        public class SelectWorkItemsCommandArgument
-        {
-            public WorkItemModel[] Collection { get; set; }
-            public bool Value { get; set; }
-        }
-        public class SelectPendingChangesCommandArgument
-        {
-            public PendingChangeModel[] Collection { get; set; }
-            public bool Value { get; set; }
-        }
-
         public RelayCommand<SelectWorkItemsCommandArgument> SelectWorkItemsCommand { get; private set; }
 
         private void SelectWorkItems(SelectWorkItemsCommandArgument selectWorkItemsCommandArgument)
         {
+            Logger.Debug("Select Work Items: {0}, Count: {1}", selectWorkItemsCommandArgument.Value, selectWorkItemsCommandArgument.Collection.Count());
+
             _preventWorkItemCollectionChangeFromCausingEval = true;
             foreach (var workItemModel in selectWorkItemsCommandArgument.Collection)
             {
