@@ -8,13 +8,15 @@ using Microsoft.VisualStudio.TeamFoundation;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio
 {
-    public delegate void ContextChanged(ProjectContextExt projectContext);
-    public delegate void ContextChanging(ITeamFoundationContext teamFoundationContext);
+    public delegate void SolutionStateChanged();
     
     public interface ITeamPilgrimVsService
     {
+        event SolutionStateChanged SolutionStateChanged;
+
         ProjectContextExt ActiveProjectContext { get; }
         ITeamFoundationHostWrapper TeamFoundationHost { get; }
+        bool SolutionIsOpen { get; }
 
         void OpenSourceControl(string projectName);
 

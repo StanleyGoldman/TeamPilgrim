@@ -27,11 +27,13 @@ using ProjectState = Microsoft.TeamFoundation.Common.ProjectState;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio
 {
-    public class TeamPilgrimVsService : ITeamPilgrimVsService
+    public class TeamPilgrimVsService : ITeamPilgrimVsService, IVsSolutionEvents
     {
         protected IVsUIShell VsUiShell { get; private set; }
 
         protected DTE2 Dte2 { get; set; }
+
+        protected IVsSolution VsSolution { get; set; }
 
         protected TeamFoundationServerExt TeamFoundationServerExt { get; set; }
         private static readonly Lazy<FieldInfo> TeamFoundationServerExt_TeamFoundationHostField;
@@ -42,12 +44,19 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
 
         protected DocumentServiceWrapper WorkItemTrackingDocumentService { get; set; }
 
+        public event SolutionStateChanged SolutionStateChanged;
+
         public ProjectContextExt ActiveProjectContext
         {
             get
             {
                 return TeamFoundationServerExt == null ? null : TeamFoundationServerExt.ActiveProjectContext;
             }
+        }
+
+        public bool SolutionIsOpen
+        {
+            get { return Dte2.Solution.IsOpen; }
         }
 
         private TeamPilgrimPackage _packageInstance;
@@ -63,12 +72,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
         private readonly Lazy<PendingChangesPageViewModelUtilsWrapper> _pendingChangesPageViewModelUtilsWrapper;
 
         private readonly Lazy<IPortalSettingsLauncher> _portalSettingsLauncher;
-        
+
         private readonly Lazy<ISourceControlSettingsLauncher> _sourceControlSettingsLauncher;
 
         private readonly Lazy<IProcessTemplateManagerLauncher> _processTemplateManagerLauncher;
 
         private IWorkItemControlHost _workItemControlHost;
+
+        private uint _adviseSolutionEventsCookie;
 
         static TeamPilgrimVsService()
         {
@@ -95,15 +106,18 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
             }
         }
 
-        public void InitializeGlobals(DTE2 dte2)
+        public void InitializeGlobals(DTE2 dte2, IVsSolution vsSolution)
         {
             Dte2 = dte2;
+            VsSolution = vsSolution;
             VersionControlExt = dte2.GetObject("Microsoft.VisualStudio.TeamFoundation.VersionControl.VersionControlExt") as VersionControlExt;
             TeamFoundationServerExt = dte2.GetObject("Microsoft.VisualStudio.TeamFoundation.TeamFoundationServerExt") as TeamFoundationServerExt;
             WorkItemTrackingDocumentService = new DocumentServiceWrapper(dte2.GetObject("Microsoft.VisualStudio.TeamFoundation.WorkItemTracking.DocumentService") as DocumentService);
 
             var teamFoundationHostObject = (ITeamFoundationContextManager)TeamFoundationServerExt_TeamFoundationHostField.Value.GetValue(TeamFoundationServerExt);
             TeamFoundationHost = new TeamFoundationHostWrapper(teamFoundationHostObject);
+
+            vsSolution.AdviseSolutionEvents(this, out _adviseSolutionEventsCookie);
         }
 
         public void Initialize(TeamPilgrimPackage packageInstance, IVsUIShell vsUiShell)
@@ -316,5 +330,65 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
         {
             _processTemplateManagerLauncher.Value.Show(tfsTeamProjectCollection);
         }
+
+        #region IVsSolutionEvents
+
+        int IVsSolutionEvents.OnAfterOpenProject(IVsHierarchy pHierarchy, int fAdded)
+        {
+            return VSConstants.S_OK;
+        }
+
+        int IVsSolutionEvents.OnQueryCloseProject(IVsHierarchy pHierarchy, int fRemoving, ref int pfCancel)
+        {
+            return VSConstants.S_OK;
+        }
+
+        int IVsSolutionEvents.OnBeforeCloseProject(IVsHierarchy pHierarchy, int fRemoved)
+        {
+            return VSConstants.S_OK;
+        }
+
+        int IVsSolutionEvents.OnAfterLoadProject(IVsHierarchy pStubHierarchy, IVsHierarchy pRealHierarchy)
+        {
+            return VSConstants.S_OK;
+        }
+
+        int IVsSolutionEvents.OnQueryUnloadProject(IVsHierarchy pRealHierarchy, ref int pfCancel)
+        {
+            return VSConstants.S_OK;
+        }
+
+        int IVsSolutionEvents.OnBeforeUnloadProject(IVsHierarchy pRealHierarchy, IVsHierarchy pStubHierarchy)
+        {
+            return VSConstants.S_OK;
+        }
+
+        int IVsSolutionEvents.OnAfterOpenSolution(object pUnkReserved, int fNewSolution)
+        {
+            if (SolutionStateChanged != null)
+                SolutionStateChanged();
+
+            return VSConstants.S_OK;
+        }
+
+        int IVsSolutionEvents.OnQueryCloseSolution(object pUnkReserved, ref int pfCancel)
+        {
+            return VSConstants.S_OK;
+        }
+
+        int IVsSolutionEvents.OnBeforeCloseSolution(object pUnkReserved)
+        {
+            return VSConstants.S_OK;
+        }
+
+        int IVsSolutionEvents.OnAfterCloseSolution(object pUnkReserved)
+        {
+            if (SolutionStateChanged != null)
+                SolutionStateChanged();
+
+            return VSConstants.S_OK;
+        }
+
+        #endregion
     }
 }

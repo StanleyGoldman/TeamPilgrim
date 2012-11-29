@@ -66,6 +66,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
 
         private static IVsExtensibility Extensibility { get; set; }
 
+        private static IVsSolution VsSolution;
+
         //public static ExtensionHost Host { get; set; }
 
         private static MenuCommandService MenuCommandService { get; set; }
@@ -255,9 +257,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             }
 
             Extensibility = (IVsExtensibility)GetGlobalService(typeof(IVsExtensibility));
+            VsSolution = (IVsSolution)GetService(typeof(SVsSolution));
             Dte2 = (DTE2)Extensibility.GetGlobalsObject(null).DTE;
 
-            _teamPilgrimVsService.InitializeGlobals(Dte2);
+            _teamPilgrimVsService.InitializeGlobals(Dte2, VsSolution);
             TeamPilgrimServiceModel = new TeamPilgrimServiceModel(new TeamPilgrimServiceModelProvider(), _teamPilgrimVsService);
             TeamPilgrimSettings = new TeamPilgrimSettings(Dte2);
 
