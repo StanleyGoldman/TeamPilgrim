@@ -501,7 +501,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         private void RefreshPendingChanges()
         {
             PendingChange[] currentPendingChanges;
-            if (teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, Workspace))
+
+            if (_projectCollectionServiceModel.TeamPilgrimServiceModel.SolutionIsOpen && _projectCollectionServiceModel.TeamPilgrimServiceModel.FilterSolution
+                ? teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, Workspace, teamPilgrimVsService.GetSolutionFilePaths())
+                : teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, Workspace))
             {
                 var modelIntersection =
                     PendingChanges

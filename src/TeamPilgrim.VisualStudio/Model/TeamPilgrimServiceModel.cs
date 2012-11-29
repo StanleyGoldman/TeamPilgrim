@@ -26,7 +26,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
         public ObservableCollection<WorkspaceInfoModel> WorkspaceInfoModels { get; private set; }
 
         private bool _connecting;
-
         public bool Connecting
         {
             get
@@ -40,6 +39,46 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
                 _connecting = value;
 
                 SendPropertyChanged("Connecting");
+            }
+        }
+
+        private bool _solutionIsOpen;
+        public bool SolutionIsOpen
+        {
+            get
+            {
+                return _solutionIsOpen;
+            }
+            private set
+            {
+                if (_solutionIsOpen == value) return;
+
+                _solutionIsOpen = value;
+
+                SendPropertyChanged("SolutionIsOpen");
+
+                if (SelectedWorkspaceModel != null)
+                    SelectedWorkspaceModel.RefreshPendingChangesCommand.Execute(null);
+            }
+        }
+
+        private bool _filterSolution;
+        public bool FilterSolution
+        {
+            get
+            {
+                return _filterSolution;
+            }
+            private set
+            {
+                if (_filterSolution == value) return;
+
+                _filterSolution = value;
+
+                SendPropertyChanged("FilterSolution");
+
+                if (SelectedWorkspaceModel != null)
+                    SelectedWorkspaceModel.RefreshPendingChangesCommand.Execute(null);
             }
         }
 
@@ -178,6 +217,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
                     ConnectingServer = args.TeamProjectCollection.Name;
                     ConnectedError = args.Error;
                     ConnectedStatus = args.Status;
+                };
+
+            SolutionIsOpen = _teamPilgrimVsService.SolutionIsOpen;
+            _teamPilgrimVsService.SolutionStateChanged += () =>
+                {
+                    SolutionIsOpen = _teamPilgrimVsService.SolutionIsOpen;
                 };
 
             RefreshCommand = new RelayCommand(Refresh, CanRefresh);

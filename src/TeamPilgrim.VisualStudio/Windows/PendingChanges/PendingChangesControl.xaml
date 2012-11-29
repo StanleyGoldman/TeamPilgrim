@@ -115,14 +115,10 @@
                         <ToggleButton IsEnabled="False">Comments</ToggleButton>
 
                         <Separator/>
-                        <RadioButton  IsEnabled="False" x:Name="CheckinFolderViewRadioButton" Style="{StaticResource {x:Type TypeName=ToggleButton}}" GroupName="CheckinPendingChangesViewStyle">
-                            <TextBlock>Folder</TextBlock>
-                        </RadioButton>
-                        <RadioButton  IsEnabled="False" IsChecked="True" x:Name="CheckinFlatViewRadioButton" Style="{StaticResource {x:Type TypeName=ToggleButton}}" GroupName="CheckinPendingChangesViewStyle">
-                            <TextBlock>Flat</TextBlock>
-                        </RadioButton>
-
+                        <ToggleButton IsEnabled="{Binding SolutionIsOpen}" IsChecked="{Binding Path=FilterSolution}">Filter Solution</ToggleButton>
+                        
                         <Separator/>
+
                         <!--
                         Compare Button Dropdown Disabled/Needs Implementing
                 

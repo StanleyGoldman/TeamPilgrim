@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Reflection;
+using EnvDTE;
 using EnvDTE80;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.Builds;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.TeamFoundation;
@@ -23,6 +26,7 @@ using Microsoft.VisualStudio.TeamFoundation;
 using Microsoft.VisualStudio.TeamFoundation.Build;
 using Microsoft.VisualStudio.TeamFoundation.VersionControl;
 using Microsoft.VisualStudio.TeamFoundation.WorkItemTracking;
+using Project = Microsoft.TeamFoundation.WorkItemTracking.Client.Project;
 using ProjectState = Microsoft.TeamFoundation.Common.ProjectState;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio
@@ -124,6 +128,55 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
         {
             VsUiShell = vsUiShell;
             _packageInstance = packageInstance;
+        }
+
+        public string[] GetSolutionFilePaths()
+        {
+            var solutionFilePaths = new List<string>
+                {
+                    Dte2.Solution.FileName
+                };
+
+            var enumerable = Dte2.Solution.Projects.Cast<EnvDTE.Project>().ToArray();
+
+            foreach (var project in enumerable)
+            {
+                if(project.Kind == EnvDTE.Constants.vsProjectKindMisc)
+                    continue;
+
+                solutionFilePaths.Add(project.FileName);
+
+                foreach (var projectItem in project.ProjectItems.Cast<ProjectItem>())
+                {
+                    PopulateChildProjectItems(solutionFilePaths, projectItem);
+                }
+            }
+
+            return solutionFilePaths.ToArray();
+        }
+
+        private static void PopulateChildProjectItems(List<string> result, ProjectItem item)
+        {
+            var path = item.FileNames[0];
+            try
+            {
+                var fileAttributes = File.GetAttributes(path);
+                if ((fileAttributes & FileAttributes.Directory) == FileAttributes.Directory)
+                {
+                    var items = item.ProjectItems.GetEnumerator();
+                    while (items.MoveNext())
+                    {
+                        var currentItem = (ProjectItem)items.Current;
+                        PopulateChildProjectItems(result, currentItem);
+                    }
+                }
+
+                result.Add(path);
+            }
+            catch (Exception ex)
+            {
+                result.Add(path);
+            }
         }
 
         public void CompareChangesetChangesWithLatestVersions(Workspace workspace, IList<PendingChange> pendingChanges)
