@@ -1,20 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using EnvDTE;
 using Microsoft.TeamFoundation.Build.Controls;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.VersionControl.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using Microsoft.VisualStudio.TeamFoundation;
+using Project = Microsoft.TeamFoundation.WorkItemTracking.Client.Project;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio
 {
-    public delegate void ContextChanged(ProjectContextExt projectContext);
-    public delegate void ContextChanging(ITeamFoundationContext teamFoundationContext);
+    public delegate void SolutionStateChanged();
     
     public interface ITeamPilgrimVsService
     {
+        event SolutionStateChanged SolutionStateChanged;
+
         ProjectContextExt ActiveProjectContext { get; }
         ITeamFoundationHostWrapper TeamFoundationHost { get; }
+        bool SolutionIsOpen { get; }
 
         void OpenSourceControl(string projectName);
 
@@ -51,5 +55,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.Vis
         void DisconnectFromTfs();
         void NewTeamProject();
         void ShowProcessTemplateManager(TfsTeamProjectCollection tfsTeamProjectCollection);
+        string[] GetSolutionFilePaths();
+        Workspace ActiveWorkspace { get; }
     }
 }

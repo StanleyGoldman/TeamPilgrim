@@ -41,5 +41,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
         bool TryEvaluateCheckin(out CheckinEvaluationResult checkinEvaluationResult, Workspace workspace, PendingChange[] changes, string comment, CheckinNote checkinNote = null, WorkItemCheckinInfo[] workItemChanges = null);
         
         bool TryGetAllConflicts(out Conflict[] conflicts, Workspace workspace);
+        bool TryGetPendingChanges(out PendingChange[] pendingChanges, Workspace workspace, string[] items);
     }
 }

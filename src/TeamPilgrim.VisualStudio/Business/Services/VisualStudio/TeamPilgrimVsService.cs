@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Reflection;
+using EnvDTE;
 using EnvDTE80;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.Builds;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.TeamFoundation;
@@ -23,15 +26,18 @@ using Microsoft.VisualStudio.TeamFoundation;
 using Microsoft.VisualStudio.TeamFoundation.Build;
 using Microsoft.VisualStudio.TeamFoundation.VersionControl;
 using Microsoft.VisualStudio.TeamFoundation.WorkItemTracking;
+using Project = Microsoft.TeamFoundation.WorkItemTracking.Client.Project;
 using ProjectState = Microsoft.TeamFoundation.Common.ProjectState;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio
 {
-    public class TeamPilgrimVsService : ITeamPilgrimVsService
+    public class TeamPilgrimVsService : ITeamPilgrimVsService, IVsSolutionEvents
     {
         protected IVsUIShell VsUiShell { get; private set; }
 
         protected DTE2 Dte2 { get; set; }
+
+        protected IVsSolution VsSolution { get; set; }
 
         protected TeamFoundationServerExt TeamFoundationServerExt { get; set; }
         private static readonly Lazy<FieldInfo> TeamFoundationServerExt_TeamFoundationHostField;
@@ -42,12 +48,24 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
 
         protected DocumentServiceWrapper WorkItemTrackingDocumentService { get; set; }
 
+        public event SolutionStateChanged SolutionStateChanged;
+
         public ProjectContextExt ActiveProjectContext
         {
             get
             {
                 return TeamFoundationServerExt == null ? null : TeamFoundationServerExt.ActiveProjectContext;
             }
+        }
+
+        public Workspace ActiveWorkspace
+        {
+            get { return VersionControlExt.Explorer.Workspace; }
+        }
+
+        public bool SolutionIsOpen
+        {
+            get { return Dte2.Solution.IsOpen; }
         }
 
         private TeamPilgrimPackage _packageInstance;
@@ -63,12 +81,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
         private readonly Lazy<PendingChangesPageViewModelUtilsWrapper> _pendingChangesPageViewModelUtilsWrapper;
 
         private readonly Lazy<IPortalSettingsLauncher> _portalSettingsLauncher;
-        
+
         private readonly Lazy<ISourceControlSettingsLauncher> _sourceControlSettingsLauncher;
 
         private readonly Lazy<IProcessTemplateManagerLauncher> _processTemplateManagerLauncher;
 
         private IWorkItemControlHost _workItemControlHost;
+
+        private uint _adviseSolutionEventsCookie;
 
         static TeamPilgrimVsService()
         {
@@ -95,21 +115,73 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
             }
         }
 
-        public void InitializeGlobals(DTE2 dte2)
+        public void InitializeGlobals(DTE2 dte2, IVsSolution vsSolution)
         {
             Dte2 = dte2;
+            VsSolution = vsSolution;
             VersionControlExt = dte2.GetObject("Microsoft.VisualStudio.TeamFoundation.VersionControl.VersionControlExt") as VersionControlExt;
             TeamFoundationServerExt = dte2.GetObject("Microsoft.VisualStudio.TeamFoundation.TeamFoundationServerExt") as TeamFoundationServerExt;
             WorkItemTrackingDocumentService = new DocumentServiceWrapper(dte2.GetObject("Microsoft.VisualStudio.TeamFoundation.WorkItemTracking.DocumentService") as DocumentService);
 
             var teamFoundationHostObject = (ITeamFoundationContextManager)TeamFoundationServerExt_TeamFoundationHostField.Value.GetValue(TeamFoundationServerExt);
             TeamFoundationHost = new TeamFoundationHostWrapper(teamFoundationHostObject);
+
+            vsSolution.AdviseSolutionEvents(this, out _adviseSolutionEventsCookie);
         }
 
         public void Initialize(TeamPilgrimPackage packageInstance, IVsUIShell vsUiShell)
         {
             VsUiShell = vsUiShell;
             _packageInstance = packageInstance;
+        }
+
+        public string[] GetSolutionFilePaths()
+        {
+            var solutionFilePaths = new List<string>
+                {
+                    Dte2.Solution.FileName
+                };
+
+            var enumerable = Dte2.Solution.Projects.Cast<EnvDTE.Project>().ToArray();
+
+            foreach (var project in enumerable)
+            {
+                if(project.Kind == EnvDTE.Constants.vsProjectKindMisc)
+                    continue;
+
+                solutionFilePaths.Add(project.FileName);
+
+                foreach (var projectItem in project.ProjectItems.Cast<ProjectItem>())
+                {
+                    PopulateChildProjectItems(solutionFilePaths, projectItem);
+                }
+            }
+
+            return solutionFilePaths.ToArray();
+        }
+
+        private static void PopulateChildProjectItems(List<string> result, ProjectItem item)
+        {
+            var path = item.FileNames[0];
+            try
+            {
+                var fileAttributes = File.GetAttributes(path);
+                if ((fileAttributes & FileAttributes.Directory) == FileAttributes.Directory)
+                {
+                    var items = item.ProjectItems.GetEnumerator();
+                    while (items.MoveNext())
+                    {
+                        var currentItem = (ProjectItem)items.Current;
+                        PopulateChildProjectItems(result, currentItem);
+                    }
+                }
+
+                result.Add(path);
+            }
+            catch (Exception ex)
+            {
+                result.Add(path);
+            }
         }
 
         public void CompareChangesetChangesWithLatestVersions(Workspace workspace, IList<PendingChange> pendingChanges)
@@ -316,5 +388,65 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
         {
             _processTemplateManagerLauncher.Value.Show(tfsTeamProjectCollection);
         }
+
+        #region IVsSolutionEvents
+
+        int IVsSolutionEvents.OnAfterOpenProject(IVsHierarchy pHierarchy, int fAdded)
+        {
+            return VSConstants.S_OK;
+        }
+
+        int IVsSolutionEvents.OnQueryCloseProject(IVsHierarchy pHierarchy, int fRemoving, ref int pfCancel)
+        {
+            return VSConstants.S_OK;
+        }
+
+        int IVsSolutionEvents.OnBeforeCloseProject(IVsHierarchy pHierarchy, int fRemoved)
+        {
+            return VSConstants.S_OK;
+        }
+
+        int IVsSolutionEvents.OnAfterLoadProject(IVsHierarchy pStubHierarchy, IVsHierarchy pRealHierarchy)
+        {
+            return VSConstants.S_OK;
+        }
+
+        int IVsSolutionEvents.OnQueryUnloadProject(IVsHierarchy pRealHierarchy, ref int pfCancel)
+        {
+            return VSConstants.S_OK;
+        }
+
+        int IVsSolutionEvents.OnBeforeUnloadProject(IVsHierarchy pRealHierarchy, IVsHierarchy pStubHierarchy)
+        {
+            return VSConstants.S_OK;
+        }
+
+        int IVsSolutionEvents.OnAfterOpenSolution(object pUnkReserved, int fNewSolution)
+        {
+            if (SolutionStateChanged != null)
+                SolutionStateChanged();
+
+            return VSConstants.S_OK;
+        }
+
+        int IVsSolutionEvents.OnQueryCloseSolution(object pUnkReserved, ref int pfCancel)
+        {
+            return VSConstants.S_OK;
+        }
+
+        int IVsSolutionEvents.OnBeforeCloseSolution(object pUnkReserved)
+        {
+            return VSConstants.S_OK;
+        }
+
+        int IVsSolutionEvents.OnAfterCloseSolution(object pUnkReserved)
+        {
+            if (SolutionStateChanged != null)
+                SolutionStateChanged();
+
+            return VSConstants.S_OK;
+        }
+
+        #endregion
     }
 }

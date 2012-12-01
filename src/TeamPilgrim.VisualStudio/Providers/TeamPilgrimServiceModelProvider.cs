@@ -263,6 +263,23 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             return false;
         }
 
+        public bool TryGetPendingChanges(out PendingChange[] pendingChanges, Workspace workspace, string[] items)
+        {
+            try
+            {
+                pendingChanges = workspace.GetPendingChanges(items);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.DebugException(ex);
+                LastException = ex;
+            }
+            
+            pendingChanges = null;
+            return false;
+        }
+
         public bool TryGetQueryDefinitionWorkItemCollection(out WorkItemCollection workItemCollection, TfsTeamProjectCollection tfsTeamProjectCollection, QueryDefinition queryDefinition, string projectName)
         {
             try

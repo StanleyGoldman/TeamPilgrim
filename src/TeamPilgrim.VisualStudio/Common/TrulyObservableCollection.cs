@@ -43,13 +43,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common
                     ((INotifyPropertyChanged)item).PropertyChanged += ItemPropertyChanged;
                 }
             }
-            if (e.OldItems != null)
-            {
-                foreach (var item in e.OldItems)
-                {
-                    ((INotifyPropertyChanged)item).PropertyChanged -= ItemPropertyChanged;
-                }
-            }
         }
 
         void ItemPropertyChanged(object sender, PropertyChangedEventArgs e)

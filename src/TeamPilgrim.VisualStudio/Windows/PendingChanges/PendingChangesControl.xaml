@@ -115,14 +115,10 @@
                         <ToggleButton IsEnabled="False">Comments</ToggleButton>
 
                         <Separator/>
-                        <RadioButton  IsEnabled="False" x:Name="CheckinFolderViewRadioButton" Style="{StaticResource {x:Type TypeName=ToggleButton}}" GroupName="CheckinPendingChangesViewStyle">
-                            <TextBlock>Folder</TextBlock>
-                        </RadioButton>
-                        <RadioButton  IsEnabled="False" IsChecked="True" x:Name="CheckinFlatViewRadioButton" Style="{StaticResource {x:Type TypeName=ToggleButton}}" GroupName="CheckinPendingChangesViewStyle">
-                            <TextBlock>Flat</TextBlock>
-                        </RadioButton>
-
+                        <ToggleButton IsEnabled="{Binding SolutionIsOpen}" IsChecked="{Binding Path=FilterSolution}">Filter Solution</ToggleButton>
+                        
                         <Separator/>
+
                         <!--
                         Compare Button Dropdown Disabled/Needs Implementing
                 
@@ -164,11 +160,7 @@
                     <TextBox DockPanel.Dock="Top" DataContext="{Binding Path=SelectedWorkspaceModel}" Text="{Binding Path=Comment, UpdateSourceTrigger=PropertyChanged}"></TextBox>
 
                     <ListView x:Name="PendingChangesListView" 
-                              
-                              AttachedProperties:TrulyObservableListView.HasBindableSelectedItems="True"
-                              
-                              AttachedProperties:PreviewSpaceKeyDown.Command="{Binding Path=SelectPendingChangesCommand}"
-                              AttachedProperties:PreviewSpaceKeyDown.CommandParameter="{Binding ElementName=PendingChangesListView, Path=BindableTrulyObservableSelectedItems, Converter={StaticResource SelectPendingChangesCommandConverter}}"
+                              AttachedProperties:PreviewSpaceKeyDownSelectPendingChanges.Command="{Binding Path=SelectPendingChangesCommand}"
                               
                               AttachedProperties:PreviewReturnKeyDown.Command="{Binding Path=ViewPendingChangeCommand}"
                               AttachedProperties:PreviewReturnKeyDown.CommandParameter="{Binding ElementName=PendingChangesListView, Path=SelectedItems}"
@@ -269,10 +261,7 @@
 
                     <ListView x:Name="WorkItemsListView" DockPanel.Dock="Bottom" 
                               
-                              AttachedProperties:TrulyObservableListView.HasBindableSelectedItems="True"
-                           
-                              AttachedProperties:PreviewSpaceKeyDown.Command="{Binding Path=SelectWorkItemsCommand}"
-                              AttachedProperties:PreviewSpaceKeyDown.CommandParameter="{Binding ElementName=WorkItemsListView, Path=BindableTrulyObservableSelectedItems, Converter={StaticResource SelectWorkItemsCommandConverter}}"
+                              AttachedProperties:PreviewSpaceKeyDownSelectWorkItems.Command="{Binding Path=SelectWorkItemsCommand}"
                               
                               AttachedProperties:PreviewReturnKeyDown.Command="{Binding Path=ViewWorkItemCommand}"
                               AttachedProperties:PreviewReturnKeyDown.CommandParameter="{Binding ElementName=WorkItemsListView, Path=SelectedItems}"

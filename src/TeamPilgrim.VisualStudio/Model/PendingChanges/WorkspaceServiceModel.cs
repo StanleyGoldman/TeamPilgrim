@@ -22,11 +22,14 @@ using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs;
 using Microsoft.TeamFoundation.VersionControl.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
+using NLog;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 {
     public class WorkspaceServiceModel : BaseServiceModel
     {
+        private static readonly Logger Logger = TeamPilgrimLogManager.Instance.GetCurrentClassLogger();
+
         public ObservableCollection<CheckinNoteModel> CheckinNotes { get; private set; }
 
         public Workspace Workspace { get; private set; }
@@ -155,6 +158,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         private void PendingChangesOnCollectionChanged(object sender,
                                                        NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
+            Logger.Trace("PendingChangesOnCollectionChanged: Prevent Changes: {0}", _preventPendingChangesCollectionChangeFromCausingEval); 
+            
             if (!_preventPendingChangesCollectionChangeFromCausingEval)
             {
                 EvaluateCheckInCommand.Execute(null);
@@ -170,6 +175,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private void WorkItemsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            Logger.Trace("WorkItemsOnCollectionChanged: Prevent Changes: {0}", _preventWorkItemCollectionChangeFromCausingEval);
+            
             if (!_preventWorkItemCollectionChangeFromCausingEval)
             {
                 EvaluateCheckInCommand.Execute(null);
@@ -200,6 +207,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private void SelectPendingChanges(SelectPendingChangesCommandArgument selectPendingChangesCommandArgument)
         {
+            Logger.Debug("Select Pending Changes: {0}, Count: {1}", selectPendingChangesCommandArgument.Value, selectPendingChangesCommandArgument.Collection.Count());
+
             _preventPendingChangesCollectionChangeFromCausingEval = true;
             foreach (var pendingChangeModel in selectPendingChangesCommandArgument.Collection)
             {
@@ -222,6 +231,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private void SelectWorkItems(SelectWorkItemsCommandArgument selectWorkItemsCommandArgument)
         {
+            Logger.Debug("Select Work Items: {0}, Count: {1}", selectWorkItemsCommandArgument.Value, selectWorkItemsCommandArgument.Collection.Count());
+
             _preventWorkItemCollectionChangeFromCausingEval = true;
             foreach (var workItemModel in selectWorkItemsCommandArgument.Collection)
             {
@@ -472,6 +483,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             if (teamPilgrimServiceModelProvider.TryEvaluateCheckin(out checkinEvaluationResult, Workspace, pendingChanges, Comment, checkinNote, workItemChanges))
             {
                 CheckinEvaluationResult = checkinEvaluationResult;
+                Logger.Debug("EvaluateCheckIn: Valid:{0}", checkinEvaluationResult.IsValid());
             }
         }
 
@@ -489,7 +501,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         private void RefreshPendingChanges()
         {
             PendingChange[] currentPendingChanges;
-            if (teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, Workspace))
+
+            if (_projectCollectionServiceModel.TeamPilgrimServiceModel.SolutionIsOpen && _projectCollectionServiceModel.TeamPilgrimServiceModel.FilterSolution
+                ? teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, Workspace, teamPilgrimVsService.GetSolutionFilePaths())
+                : teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, Workspace))
             {
                 var modelIntersection =
                     PendingChanges

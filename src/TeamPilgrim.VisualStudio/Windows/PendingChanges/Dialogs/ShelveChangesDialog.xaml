@@ -134,10 +134,7 @@
                             <TextBox DockPanel.Dock="Top" Text="{Binding Comment, UpdateSourceTrigger=PropertyChanged}"/>
 
                             <ListView x:Name="PendingChangesListView" 
-                					AttachedProperties:TrulyObservableListView.HasBindableSelectedItems="True"
-                                    
-                                    AttachedProperties:PreviewSpaceKeyDown.Command="{Binding Path=SelectPendingChangesCommand}"
-                                    AttachedProperties:PreviewSpaceKeyDown.CommandParameter="{Binding ElementName=PendingChangesListView, Path=BindableTrulyObservableSelectedItems, Converter={StaticResource SelectPendingChangesCommandConverter}}"
+                					AttachedProperties:PreviewSpaceKeyDownSelectPendingChanges.Command="{Binding Path=SelectPendingChangesCommand}"
                                       
                                     ItemsSource="{Binding Path=PendingChanges}"
                                     >
@@ -214,8 +211,7 @@
                                 </Button>
                             </ToolBar>
 
-                            <ListView x:Name="WorkItemsListView" DockPanel.Dock="Bottom" 
-                					AttachedProperties:TrulyObservableListView.HasBindableSelectedItems="True">
+                            <ListView x:Name="WorkItemsListView" DockPanel.Dock="Bottom">
 
                                 <ListView.ItemContainerStyle>
                                     <Style TargetType="{x:Type ListViewItem}">
