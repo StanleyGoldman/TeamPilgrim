@@ -1,24 +1,40 @@
 using System;
-using EnvDTE;
-using EnvDTE80;
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using IniParser;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Enums;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio
 {
     public class TeamPilgrimSettings
     {
-        private readonly DTE2 _dte2;
+        private const string GeneralSectionName = "General";
+        private const string SelectedWorkItemCheckinActionKeyName = "SelectedWorkItemCheckinAction";
 
-        public TeamPilgrimSettings(DTE2 dte2)
+        static TeamPilgrimSettings()
         {
-            _dte2 = dte2;
+            var directoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            Debug.Assert(directoryName != null, "directoryName != null");
+
+            GetSettingsFilePath = Path.Combine(directoryName, @"teampilgrim.ini");
         }
 
-        private Properties Properties
+        private static readonly string GetSettingsFilePath;
+
+        private readonly IniData _iniData;
+        private readonly FileIniDataParser _parser;
+
+        private KeyDataCollection GeneralSection
         {
             get
             {
-                return _dte2.Properties["Team Pilgrim", "General"];
+                if (_iniData[GeneralSectionName] == null)
+                {
+                    _iniData.Sections.AddSection(GeneralSectionName);
+                }
+
+                return _iniData[GeneralSectionName];
             }
         }
 
@@ -26,9 +42,49 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
         {
             get
             {
-                var property = Properties.Item("SelectedWorkItemCheckinAction");
-                return (SelectedWorkItemCheckinActionEnum) Enum.Parse(typeof (SelectedWorkItemCheckinActionEnum), (string) property.Value);
+                var keyDataCollection = GeneralSection;
+                if (!keyDataCollection.ContainsKey(SelectedWorkItemCheckinActionKeyName))
+                {
+                    keyDataCollection.AddKey(SelectedWorkItemCheckinActionKeyName);
+                }
+               
+                var value = keyDataCollection[SelectedWorkItemCheckinActionKeyName];
+                if (String.IsNullOrEmpty(value))
+                    return SelectedWorkItemCheckinActionEnum.Resolve;
+
+                return (SelectedWorkItemCheckinActionEnum)Enum.Parse(typeof(SelectedWorkItemCheckinActionEnum), value);
             }
+            set
+            {
+                var keyDataCollection = GeneralSection;
+                if (!keyDataCollection.ContainsKey(SelectedWorkItemCheckinActionKeyName))
+                {
+                    keyDataCollection.AddKey(SelectedWorkItemCheckinActionKeyName);
+                }
+
+                keyDataCollection[SelectedWorkItemCheckinActionKeyName] = value.ToString();
+            }
+        }
+
+        public TeamPilgrimSettings()
+        {
+            _parser = new FileIniDataParser();
+
+            try
+            {
+                _iniData = _parser.LoadFile(GetSettingsFilePath);
+            }
+            catch (Exception ex)
+            {
+                _iniData = new IniData();
+                SelectedWorkItemCheckinAction = SelectedWorkItemCheckinAction;
+                Save();
+            }
+        }
+
+        public void Save()
+        {
+            _parser.SaveFile(GetSettingsFilePath, _iniData);
         }
     }
 }

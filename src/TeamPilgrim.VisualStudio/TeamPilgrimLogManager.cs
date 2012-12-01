@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Windows;
 using NLog;
@@ -21,8 +22,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
 
         private static string GetNLogConfigFilePath()
         {
-            var thisAssembly = Assembly.GetExecutingAssembly();
-            return Path.Combine(Path.GetDirectoryName(thisAssembly.Location), @"NLog.config");
+            var directoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            Debug.Assert(directoryName != null, "directoryName != null");
+
+            return Path.Combine(directoryName, @"NLog.config");
         }
     }
 }
