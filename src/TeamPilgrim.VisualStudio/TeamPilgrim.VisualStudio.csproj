@@ -192,6 +192,7 @@
     <Compile Include="Common\Converters\SelectWorkItemsCommandConverter.cs" />
     <Compile Include="Common\TrulyObservableCollection.cs" />
     <Compile Include="Common\LoggerExtensions.cs" />
+    <Compile Include="Common\WorkItemQueryChildModelExtensions.cs" />
     <Compile Include="Domain\BusinessInterfaces\VisualStudio\ITeamFoundationHostWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\TeamFoundation\ServerConnectedEventArgs.cs" />
     <Compile Include="Business\Services\VisualStudio\TeamFoundation\ServerConnectingEventArgs.cs" />
@@ -215,6 +216,7 @@
     <Compile Include="Common\Extensions\CheckinEvaluationResultExtensions.cs" />
     <Compile Include="Model\CommandArguments\SelectPendingChangesCommandArgument.cs" />
     <Compile Include="Model\CommandArguments\SelectWorkItemsCommandArgument.cs" />
+    <Compile Include="Model\PendingChanges\PreviouslySelectedWorkItemQuery.cs" />
     <Compile Include="TeamPilgrimLogManager.cs" />
     <Compile Include="Messages\ShowPendingChangesTabItem.cs" />
     <Compile Include="Model\BaseModel.cs" />

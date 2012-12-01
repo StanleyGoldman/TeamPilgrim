@@ -168,7 +168,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
                 _selectedWorkspaceInfoModel = value;
 
-                LoadWorkspaceModel(SelectedWorkspaceInfoModel);
+                if (SelectedWorkspaceInfoModel != null) 
+                    LoadWorkspaceModel(SelectedWorkspaceInfoModel);
 
                 SendPropertyChanged("SelectedWorkspaceInfoModel");
             }

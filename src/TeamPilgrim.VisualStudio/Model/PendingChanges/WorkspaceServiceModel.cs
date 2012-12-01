@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Documents;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services;
@@ -57,6 +58,72 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             }
         }
 
+        private PreviouslySelectedWorkItemQuery[] _previouslySelectedWorkItemQueries;
+        public PreviouslySelectedWorkItemQuery[] PreviouslySelectedWorkItemQueries
+        {
+            get
+            {
+                return _previouslySelectedWorkItemQueries;
+            }
+            private set
+            {
+                if (_previouslySelectedWorkItemQueries == value) return;
+
+                _previouslySelectedWorkItemQueries = value;
+
+                SendPropertyChanged("PreviouslySelectedWorkItemQueries");
+                SendPropertyChanged("CurrentPreviouslySelectedWorkItemQuery");
+            }
+        }
+
+        public PreviouslySelectedWorkItemQuery CurrentPreviouslySelectedWorkItemQuery
+        {
+            get
+            {
+                if (SelectedWorkItemQueryDefinition == null)
+                    return null;
+
+                var current = PreviouslySelectedWorkItemQueries.FirstOrDefault(model => model.WorkItemQueryPath == SelectedWorkItemQueryDefinition.QueryDefinition.Path);
+
+                return current;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    var selectedWorkItemQueryDefinition = (WorkItemQueryDefinitionModel)_projectCollectionServiceModel.ProjectModels
+                        .Select(model => model.WorkItemQueryServiceModel.QueryItems.FindWorkItemQueryChildModelMatchingPath(value.WorkItemQueryPath))
+                        .FirstOrDefault(model => model != null);
+
+                    if (selectedWorkItemQueryDefinition == null)
+                    {
+                        var strings = TeamPilgrimPackage.TeamPilgrimSettings.PreviouslySelectedWorkItemsQueries[_projectCollectionServiceModel.TfsTeamProjectCollection.Uri.ToString()];
+
+                        var list = new List<string>(strings);
+                        list.Remove(value.WorkItemQueryPath);
+
+                        TeamPilgrimPackage.TeamPilgrimSettings.PreviouslySelectedWorkItemsQueries[_projectCollectionServiceModel.TfsTeamProjectCollection.Uri.ToString()]
+                            = list.Distinct().Take(TeamPilgrimPackage.TeamPilgrimSettings.PreviouslySelectedWorkItemQueriesMaxCount).ToArray();
+
+                        TeamPilgrimPackage.TeamPilgrimSettings.Save();
+                      
+                        if (SelectedWorkItemQueryDefinition == null)
+                        {
+                            PopulatePreviouslySelectedWorkItemQueryModels();
+                        }
+                        else
+                        {
+                            SelectedWorkItemQueryDefinition = null;
+                        }
+                    }
+                    else
+                    {
+                        SelectedWorkItemQueryDefinition = selectedWorkItemQueryDefinition;   
+                    }
+                }
+            }
+        }
+
         private CheckinEvaluationResult _checkinEvaluationResult;
         public CheckinEvaluationResult CheckinEvaluationResult
         {
@@ -94,6 +161,18 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                 SendPropertyChanged("SelectedWorkItemQueryDefinition");
 
                 RefreshSelectedDefinitionWorkItems();
+
+                var strings = TeamPilgrimPackage.TeamPilgrimSettings.PreviouslySelectedWorkItemsQueries[_projectCollectionServiceModel.TfsTeamProjectCollection.Uri.ToString()];
+
+                var list = new List<string>(strings);
+                list.Insert(0, value.QueryDefinition.Path);
+
+                TeamPilgrimPackage.TeamPilgrimSettings.PreviouslySelectedWorkItemsQueries[_projectCollectionServiceModel.TfsTeamProjectCollection.Uri.ToString()]
+                    = list.Distinct().Take(TeamPilgrimPackage.TeamPilgrimSettings.PreviouslySelectedWorkItemQueriesMaxCount).ToArray();
+
+                TeamPilgrimPackage.TeamPilgrimSettings.Save();
+
+                PopulatePreviouslySelectedWorkItemQueryModels();
             }
         }
 
@@ -143,6 +222,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             WorkItems.CollectionChanged += WorkItemsOnCollectionChanged;
 
             EvaluateCheckInCommand.Execute(null);
+            PopulatePreviouslySelectedWorkItemQueryModels();
+        }
+
+        private void PopulatePreviouslySelectedWorkItemQueryModels()
+        {
+            var previouslySelectedWorkItemsQuery = TeamPilgrimPackage.TeamPilgrimSettings.PreviouslySelectedWorkItemsQueries[_projectCollectionServiceModel.TfsTeamProjectCollection.Uri.ToString()];
+            PreviouslySelectedWorkItemQueries = previouslySelectedWorkItemsQuery.Select(workItemQueryPath => new PreviouslySelectedWorkItemQuery(workItemQueryPath)).ToArray();
         }
 
         private void VersionControlServerOnPendingChangesChanged(object sender, WorkspaceEventArgs workspaceEventArgs)
@@ -158,8 +244,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         private void PendingChangesOnCollectionChanged(object sender,
                                                        NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            Logger.Trace("PendingChangesOnCollectionChanged: Prevent Changes: {0}", _preventPendingChangesCollectionChangeFromCausingEval); 
-            
+            Logger.Trace("PendingChangesOnCollectionChanged: Prevent Changes: {0}", _preventPendingChangesCollectionChangeFromCausingEval);
+
             if (!_preventPendingChangesCollectionChangeFromCausingEval)
             {
                 EvaluateCheckInCommand.Execute(null);
@@ -176,7 +262,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         private void WorkItemsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             Logger.Trace("WorkItemsOnCollectionChanged: Prevent Changes: {0}", _preventWorkItemCollectionChangeFromCausingEval);
-            
+
             if (!_preventWorkItemCollectionChangeFromCausingEval)
             {
                 EvaluateCheckInCommand.Execute(null);
