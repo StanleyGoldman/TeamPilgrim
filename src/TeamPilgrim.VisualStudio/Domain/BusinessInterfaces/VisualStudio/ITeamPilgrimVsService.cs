@@ -56,5 +56,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.Vis
         void NewTeamProject();
         void ShowProcessTemplateManager(TfsTeamProjectCollection tfsTeamProjectCollection);
         string[] GetSolutionFilePaths();
+        Workspace ActiveWorkspace { get; }
     }
 }

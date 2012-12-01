@@ -58,6 +58,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
             }
         }
 
+        public Workspace ActiveWorkspace
+        {
+            get { return VersionControlExt.Explorer.Workspace; }
+        }
+
         public bool SolutionIsOpen
         {
             get { return Dte2.Solution.IsOpen; }

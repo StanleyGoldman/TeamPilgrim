@@ -306,9 +306,26 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
                 WorkspaceInfo[] workspaceInfos;
                 if (_teamPilgrimServiceModelProvider.TryGetLocalWorkspaceInfos(out workspaceInfos, collection.InstanceId))
                 {
+                    WorkspaceInfoModels.Clear();
+
+                    var activeWorkspace = _teamPilgrimVsService.ActiveWorkspace;
+
+                    WorkspaceInfoModel selectedWorkspaceInfoModel = null;
+
                     foreach (var workspaceInfo in workspaceInfos)
                     {
-                        WorkspaceInfoModels.Add(new WorkspaceInfoModel(workspaceInfo));
+                        var workspaceInfoModel = new WorkspaceInfoModel(workspaceInfo);
+                        WorkspaceInfoModels.Add(workspaceInfoModel);
+
+                        if (activeWorkspace != null && activeWorkspace.QualifiedName == workspaceInfo.QualifiedName)
+                        {
+                            selectedWorkspaceInfoModel = workspaceInfoModel;
+                        }
+                    }
+
+                    if (selectedWorkspaceInfoModel != null)
+                    {
+                        SelectedWorkspaceInfoModel = selectedWorkspaceInfoModel;
                     }
                 }
             }));
