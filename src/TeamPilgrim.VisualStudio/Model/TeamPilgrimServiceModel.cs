@@ -62,26 +62,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             }
         }
 
-        private bool _filterSolution;
-        public bool FilterSolution
-        {
-            get
-            {
-                return _filterSolution;
-            }
-            private set
-            {
-                if (_filterSolution == value) return;
-
-                _filterSolution = value;
-
-                SendPropertyChanged("FilterSolution");
-
-                if (SelectedWorkspaceModel != null)
-                    SelectedWorkspaceModel.RefreshPendingChangesCommand.Execute(null);
-            }
-        }
-
         private string _connectingServer;
 
         public string ConnectingServer

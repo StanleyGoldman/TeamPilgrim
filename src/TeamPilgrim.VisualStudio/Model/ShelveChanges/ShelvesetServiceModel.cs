@@ -10,6 +10,7 @@ using JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs;
+using Microsoft.TeamFoundation.VersionControl.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
@@ -53,6 +54,59 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
             }
         }
 
+        private bool _filterSolution;
+        public bool FilterSolution
+        {
+            get
+            {
+                return _filterSolution;
+            }
+            set
+            {
+                if (_filterSolution == value) return;
+
+                _filterSolution = value;
+
+                SendPropertyChanged("FilterSolution");
+
+                RefreshPendingChangesCommand.Execute(null);
+            }
+        }
+
+        private bool _evaluatePoliciesAndCheckinNotes;
+        public bool EvaluatePoliciesAndCheckinNotes
+        {
+            get
+            {
+                return _evaluatePoliciesAndCheckinNotes;
+            }
+            set
+            {
+                if (_evaluatePoliciesAndCheckinNotes == value) return;
+
+                _evaluatePoliciesAndCheckinNotes = value;
+
+                SendPropertyChanged("EvaluatePoliciesAndCheckinNotes");
+            }
+        }
+
+        private bool _preservePendingChangesLocally = true;
+        public bool PreservePendingChangesLocally
+        {
+            get
+            {
+                return _preservePendingChangesLocally;
+            }
+            set
+            {
+                if (_preservePendingChangesLocally == value) return;
+
+                _preservePendingChangesLocally = value;
+
+                SendPropertyChanged("PreservePendingChangesLocally");
+            }
+        }
+
         private WorkItemQueryDefinitionModel _selectedWorkWorkItemQueryDefinition;
         public WorkItemQueryDefinitionModel SelectedWorkItemQueryDefinition
         {
@@ -81,8 +135,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
             _projectCollectionServiceModel = projectCollectionServiceModel;
             _workspaceServiceModel = workspaceServiceModel;
 
+            FilterSolution = workspaceServiceModel.FilterSolution;
+
             ShowSelectWorkItemQueryCommand = new RelayCommand(ShowSelectWorkItemQuery, CanShowSelectWorkItemQuery);
+            RefreshPendingChangesCommand = new RelayCommand(RefreshPendingChanges, CanRefreshPendingChanges);
             RefreshSelectedDefinitionWorkItemsCommand = new RelayCommand(RefreshSelectedDefinitionWorkItems, CanRefreshSelectedDefinitionWorkItems);
+            ShelveCommand = new RelayCommand(Shelve, CanShelve);
 
             SelectPendingChangesCommand = new RelayCommand<SelectPendingChangesCommandArgument>(SelectPendingChanges, CanSelectPendingChanges);
             SelectWorkItemsCommand = new RelayCommand<SelectWorkItemsCommandArgument>(SelectWorkItems, CanSelectWorkItems);
@@ -244,6 +302,64 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
         }
 
         private bool CanShowSelectWorkItemQuery()
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region RefreshPendingChanges Command
+
+        public RelayCommand RefreshPendingChangesCommand { get; private set; }
+
+        private void RefreshPendingChanges()
+        {
+            PendingChange[] currentPendingChanges;
+
+            if (_projectCollectionServiceModel.TeamPilgrimServiceModel.SolutionIsOpen && FilterSolution
+                ? teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, _workspaceServiceModel.Workspace, teamPilgrimVsService.GetSolutionFilePaths())
+                : teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, _workspaceServiceModel.Workspace))
+            {
+                var modelIntersection =
+                    PendingChanges
+                    .Join(currentPendingChanges, model => model.Change.PendingChangeId, change => change.PendingChangeId, (model, change) => model)
+                    .ToArray();
+
+                var modelsToRemove = PendingChanges.Where(model => !modelIntersection.Contains(model)).ToArray();
+
+                var modelsToAdd = currentPendingChanges
+                    .Where(pendingChange => !modelIntersection.Select(model => model.Change.PendingChangeId).Contains(pendingChange.PendingChangeId))
+                    .Select(change => new PendingChangeModel(change)).ToArray();
+
+                foreach (var modelToAdd in modelsToAdd)
+                {
+                    PendingChanges.Add(modelToAdd);
+                }
+
+                foreach (var modelToRemove in modelsToRemove)
+                {
+                    PendingChanges.Remove(modelToRemove);
+                }
+            }
+        }
+
+        private bool CanRefreshPendingChanges()
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region Shelve Command
+
+        public RelayCommand ShelveCommand { get; private set; }
+
+        private void Shelve()
+        {
+            
+        }
+
+        private bool CanShelve()
         {
             return true;
         }

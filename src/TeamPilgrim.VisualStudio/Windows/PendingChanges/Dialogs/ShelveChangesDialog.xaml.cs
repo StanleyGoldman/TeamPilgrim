@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.CommandArguments;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges;
@@ -26,6 +16,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialog
         public ShelveChangesDialog()
         {
             InitializeComponent();
+        }
+
+        private ShelvesetServiceModel ShelvesetServiceModelDataContext
+        {
+            get { return (ShelvesetServiceModel) DataContext; }
         }
 
         private void PendingChangesCheckboxClicked(object sender, RoutedEventArgs e)
@@ -83,6 +78,19 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialog
                     Collection = collection,
                     Value = checkedWorkItemModel.IsSelected
                 });
+        }
+
+        private void OnShelveClick(object sender, RoutedEventArgs e)
+        {
+            ShelvesetServiceModelDataContext.ShelveCommand.Execute(null);
+            DialogResult = true;
+            Close();
+        }
+
+        private void OnCancelClick(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
+            Close();
         }
     }
 }

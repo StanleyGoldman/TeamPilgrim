@@ -97,6 +97,24 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             }
         }
 
+        private bool _filterSolution;
+        public bool FilterSolution
+        {
+            get
+            {
+                return _filterSolution;
+            }
+            private set
+            {
+                if (_filterSolution == value) return;
+
+                _filterSolution = value;
+
+                SendPropertyChanged("FilterSolution");
+                RefreshPendingChangesCommand.Execute(null);
+            }
+        }
+
         public WorkspaceServiceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, ProjectCollectionServiceModel projectCollectionServiceModel, Workspace workspace)
             : base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
         {
@@ -502,7 +520,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         {
             PendingChange[] currentPendingChanges;
 
-            if (_projectCollectionServiceModel.TeamPilgrimServiceModel.SolutionIsOpen && _projectCollectionServiceModel.TeamPilgrimServiceModel.FilterSolution
+            if (_projectCollectionServiceModel.TeamPilgrimServiceModel.SolutionIsOpen && FilterSolution
                 ? teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, Workspace, teamPilgrimVsService.GetSolutionFilePaths())
                 : teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, Workspace))
             {

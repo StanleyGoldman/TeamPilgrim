@@ -14,7 +14,7 @@
         mc:Ignorable="d" 
         x:Class="JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs.ShelveChangesDialog"
         Title="Team Pilgrim Shelve Changes" MinHeight="405" Width="761" MinWidth="400"
-        d:DataContext="{d:DesignInstance ShelveChanges:ShelvesetServiceModel}" Height="596.477">
+        d:DataContext="{d:DesignInstance ShelveChanges:ShelvesetServiceModel}">
     <Window.Resources>
         <Converters:SelectPendingChangesCommandConverter x:Key="SelectPendingChangesCommandConverter" />
         <Converters:SingleObjectToObservableCollectionConverter x:Key="SingleObjectToListConverter" />
@@ -40,17 +40,17 @@
         <DockPanel DockPanel.Dock="Bottom" LastChildFill="False">
             <DockPanel DockPanel.Dock="Left">
                 <DockPanel DockPanel.Dock="Top">
-                    <CheckBox />
+                    <CheckBox IsChecked="{Binding PreservePendingChangesLocally}" />
                     <TextBlock><Run Text="Preserve pending changes locally"/></TextBlock>
                 </DockPanel>
                 <DockPanel DockPanel.Dock="Top">
-                    <CheckBox />
+                    <CheckBox IsChecked="{Binding EvaluatePoliciesAndCheckinNotes}" />
                     <TextBlock><Run Text="Evaluate policies and check-in notes before shelving"/></TextBlock>
                 </DockPanel>
             </DockPanel>
             <DockPanel DockPanel.Dock="Right" LastChildFill="False">
-                <Button HorizontalAlignment="Center" VerticalAlignment="Center" Content="Shelve"/>
-                <Button HorizontalAlignment="Center" VerticalAlignment="Center" Content="Cancel"/>
+                <Button VerticalAlignment="Center" Content="Shelve" Click="OnShelveClick"/>
+                <Button VerticalAlignment="Center" Content="Cancel" Click="OnCancelClick"/>
             </DockPanel>
         </DockPanel>
         <DockPanel DockPanel.Dock="Top" >
@@ -106,9 +106,11 @@
                     <TabItem x:Name="SourceFilesTabItem" IsSelected="{Binding IsChecked, ElementName=SourceFilesRadioButton}">
                         <DockPanel>
                             <ToolBar DockPanel.Dock="Top">
+                                <!--
                                 <ToggleButton IsEnabled="False" Content="Comments"/>
 
                                 <Separator/>
+                                
                                 <RadioButton  IsEnabled="False" x:Name="CheckinFolderViewRadioButton" Style="{StaticResource {x:Type ToggleButton}}" GroupName="CheckinPendingChangesViewStyle">
                                     <TextBlock><Run Text="Folder"/></TextBlock>
                                 </RadioButton>
@@ -117,12 +119,11 @@
                                 </RadioButton>
 
                                 <Separator/>
-                                <!--
-                                    Compare Button Dropdown Disabled/Needs Implementing
+                                Compare Button Dropdown Disabled/Needs Implementing
                 
-                                    <Button>Cmp with Unmodified</Button>
-                                    <Button>Cmp with Workspace</Button>
-                                    <Button>Cmp with Latest</Button>
+                                <Button>Cmp with Unmodified</Button>
+                                <Button>Cmp with Workspace</Button>
+                                <Button>Cmp with Latest</Button>
                                     -->
 
                                 <Button Content="Undo Pending Change"

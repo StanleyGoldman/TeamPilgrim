@@ -111,15 +111,15 @@
                             </StackPanel>
                         </Button>
 
-                        <Separator />
-                        <ToggleButton IsEnabled="False">Comments</ToggleButton>
-
                         <Separator/>
-                        <ToggleButton IsEnabled="{Binding SolutionIsOpen}" IsChecked="{Binding Path=FilterSolution}">Filter Solution</ToggleButton>
+                        <ToggleButton IsEnabled="{Binding SolutionIsOpen}" IsChecked="{Binding Path=SelectedWorkspaceModel.FilterSolution}">Filter Solution</ToggleButton>
                         
                         <Separator/>
 
                         <!--
+                        <Separator />
+                        <ToggleButton IsEnabled="False">Comments</ToggleButton>
+                        
                         Compare Button Dropdown Disabled/Needs Implementing
                 
                         <Button>Cmp with Unmodified</Button>
