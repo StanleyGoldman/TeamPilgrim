@@ -11,6 +11,7 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:AttachedProperties="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties"
              xmlns:Enums="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Enums"
+             xmlns:workItemQuery="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery"
              mc:Ignorable="d" 
              Height="Auto" d:DesignHeight="300" d:DesignWidth="850"
              d:DataContext="{d:DesignInstance Model:TeamPilgrimServiceModel}">
@@ -249,7 +250,15 @@
                         <Separator />
                         
                         <TextBlock>Query:</TextBlock>
-                        <TextBlock Width="100" DataContext="{Binding Path=SelectedWorkspaceModel.SelectedWorkItemQueryDefinition}" Text="{Binding Path=QueryDefinition.Name}"></TextBlock>
+                        
+                        <ComboBox Width="200" 
+                                  DataContext="{Binding Path=SelectedWorkspaceModel}" 
+                                  DisplayMemberPath="Formatted"
+                                  ItemsSource="{Binding Path=PreviouslySelectedWorkItemQueries}"
+                                  SelectedItem="{Binding Path=CurrentPreviouslySelectedWorkItemQuery}"
+                                  
+                                  IsEditable="False"></ComboBox>
+                        
                         <Button DataContext="{Binding Path=SelectedWorkspaceModel}" Command="{Binding Path=ShowSelectWorkItemQueryCommand}">...</Button>
 
                         <Separator/>

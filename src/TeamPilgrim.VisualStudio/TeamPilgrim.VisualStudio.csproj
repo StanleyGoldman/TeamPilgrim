@@ -49,6 +49,9 @@
     <Reference Include="GalaSoft.MvvmLight.WPF4">
       <HintPath>..\..\lib\MvvmLight.4.1.23.0\lib\net40\GalaSoft.MvvmLight.WPF4.dll</HintPath>
     </Reference>
+    <Reference Include="INIFileParser">
+      <HintPath>..\..\lib\ini-parser.1.7.1\lib\INIFileParser.dll</HintPath>
+    </Reference>
     <Reference Include="LogicNP.CryptoLicensing, Version=9.0.0.0, Culture=neutral, PublicKeyToken=4a3c0a4c668b48b4">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\CryptoLicensing For .Net 2012 R2\LogicNP.CryptoLicensing.dll</HintPath>
@@ -189,6 +192,7 @@
     <Compile Include="Common\Converters\SelectWorkItemsCommandConverter.cs" />
     <Compile Include="Common\TrulyObservableCollection.cs" />
     <Compile Include="Common\LoggerExtensions.cs" />
+    <Compile Include="Common\WorkItemQueryChildModelExtensions.cs" />
     <Compile Include="Domain\BusinessInterfaces\VisualStudio\ITeamFoundationHostWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\TeamFoundation\ServerConnectedEventArgs.cs" />
     <Compile Include="Business\Services\VisualStudio\TeamFoundation\ServerConnectingEventArgs.cs" />
@@ -214,6 +218,7 @@
     <Compile Include="Model\CommandArguments\SelectPendingChangesCommandArgument.cs" />
     <Compile Include="Model\CommandArguments\SelectWorkItemsCommandArgument.cs" />
     <Compile Include="Model\ShelveChanges\ShelvesetServiceModel.cs" />
+    <Compile Include="Model\PendingChanges\PreviouslySelectedWorkItemQuery.cs" />
     <Compile Include="TeamPilgrimLogManager.cs" />
     <Compile Include="Messages\ShowPendingChangesTabItem.cs" />
     <Compile Include="Messages\ShowShelveDialog.cs" />

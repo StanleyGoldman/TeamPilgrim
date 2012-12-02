@@ -9,6 +9,7 @@ using EnvDTE;
 using EnvDTE80;
 using JustAProgrammer.TeamPilgrim.Core;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Explorer;
@@ -96,6 +97,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", this.ToString()));
 
             _teamPilgrimVsService = new TeamPilgrimVsService();
+            TeamPilgrimSettings = new TeamPilgrimSettings();
 
             //http://blogs.msdn.com/b/vsxteam/archive/2008/06/09/dr-ex-why-does-getservice-typeof-envdte-dte-return-null.aspx
             var shellService = GetGlobalService(typeof(SVsShell)) as IVsShell;
@@ -262,7 +264,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
 
             _teamPilgrimVsService.InitializeGlobals(Dte2, VsSolution);
             TeamPilgrimServiceModel = new TeamPilgrimServiceModel(new TeamPilgrimServiceModelProvider(), _teamPilgrimVsService);
-            TeamPilgrimSettings = new TeamPilgrimSettings(Dte2);
 
             Logger.Debug("End Second Pass Initialization");
         }

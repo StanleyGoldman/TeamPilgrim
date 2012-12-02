@@ -12,33 +12,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Settings
     {
         private readonly SettingsControl _settingsControl;
 
-        [Category("General")]
-        public string SelectedWorkItemCheckinAction
-        {
-            get
-            {
-                var defaultSelectedWorkItemCheckinAction = _settingsControl.SelectedWorkItemCheckinAction;
-                return defaultSelectedWorkItemCheckinAction.ToString();
-            }
-            set
-            {
-                SelectedWorkItemCheckinActionEnum result;
-                if (Enum.TryParse(value, true, out result))
-                {
-                    _settingsControl.SelectedWorkItemCheckinAction = result;
-                }
-                else
-                {
-                    _settingsControl.SelectedWorkItemCheckinAction = SelectedWorkItemCheckinActionEnum.Resolve;
-                }
-            }
-        }
-
-        public SettingsPage()
-        {
-            _settingsControl = new SettingsControl();
-        }
-
         protected override IWin32Window Window
         {
             get
@@ -47,5 +20,20 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Settings
             }
         }
 
+        public SettingsPage()
+        {
+            _settingsControl = new SettingsControl();
+        }
+
+        public override void LoadSettingsFromStorage()
+        {
+            _settingsControl.SelectedWorkItemCheckinAction = TeamPilgrimPackage.TeamPilgrimSettings.SelectedWorkItemCheckinAction;
+        }
+
+        public override void SaveSettingsToStorage()
+        {
+            TeamPilgrimPackage.TeamPilgrimSettings.SelectedWorkItemCheckinAction = _settingsControl.SelectedWorkItemCheckinAction;
+            TeamPilgrimPackage.TeamPilgrimSettings.Save();
+        }
     }
 }
