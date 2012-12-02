@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using IniParser;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Enums;
@@ -161,26 +163,26 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             }
         }
 
-        private string[] GetPreviouslySelectedWorkItemsQueries(string index)
+        private string[] GetPreviouslySelectedWorkItemsQueries(string teamProjectCollectionUri)
         {
             var keyDataCollection = PreviouslySelectedWorkItemsQueriesSection;
-            if (!keyDataCollection.ContainsKey(index))
+            if (!keyDataCollection.ContainsKey(teamProjectCollectionUri))
             {
-                keyDataCollection.AddKey(index);
+                keyDataCollection.AddKey(teamProjectCollectionUri);
             }
 
-            return keyDataCollection[index].Split(new[] { PreviouslySelectedWorkItemQueriesValueSeperator }, StringSplitOptions.RemoveEmptyEntries);
+            return keyDataCollection[teamProjectCollectionUri].Split(new[] { PreviouslySelectedWorkItemQueriesValueSeperator }, StringSplitOptions.RemoveEmptyEntries);
         }
 
-        private void SetPreviouslySelectedWorkItemsQueries(string index, string[] value)
+        private void SetPreviouslySelectedWorkItemsQueries(string teamProjectCollectionUri, string[] value)
         {
             var keyDataCollection = PreviouslySelectedWorkItemsQueriesSection;
-            if (!keyDataCollection.ContainsKey(index))
+            if (!keyDataCollection.ContainsKey(teamProjectCollectionUri))
             {
-                keyDataCollection.AddKey(index);
+                keyDataCollection.AddKey(teamProjectCollectionUri);
             }
 
-            keyDataCollection[index] = string.Join(PreviouslySelectedWorkItemQueriesValueSeperator, value);
+            keyDataCollection[teamProjectCollectionUri] = string.Join(PreviouslySelectedWorkItemQueriesValueSeperator, value);
         }
 
         public class PreviouslySelectedWorkItemsQueriesCollection
@@ -192,14 +194,40 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
                 _teamPilgrimSettings = teamPilgrimSettings;
             }
 
-            public string[] this[string index]
+            public string[] this[string teamProjectCollectionUri]
             {
-                get { return _teamPilgrimSettings.GetPreviouslySelectedWorkItemsQueries(index); }
-                set { _teamPilgrimSettings.SetPreviouslySelectedWorkItemsQueries(index, value); }
+                get { return _teamPilgrimSettings.GetPreviouslySelectedWorkItemsQueries(teamProjectCollectionUri); }
+                set { _teamPilgrimSettings.SetPreviouslySelectedWorkItemsQueries(teamProjectCollectionUri, value); }
             }
         }
 
         public PreviouslySelectedWorkItemsQueriesCollection PreviouslySelectedWorkItemsQueries { get; private set; }
+
+        public void RemovePreviouslySelectedWorkItemQuery(string teamProjectCollectionUri, string workItemQueryPath)
+        {
+            var strings = TeamPilgrimPackage.TeamPilgrimSettings.PreviouslySelectedWorkItemsQueries[teamProjectCollectionUri];
+
+            var list = new List<string>(strings);
+            list.Remove(workItemQueryPath);
+
+            TeamPilgrimPackage.TeamPilgrimSettings.PreviouslySelectedWorkItemsQueries[teamProjectCollectionUri] =
+                list.Distinct().Take(TeamPilgrimPackage.TeamPilgrimSettings.PreviouslySelectedWorkItemQueriesMaxCount).ToArray();
+
+            TeamPilgrimPackage.TeamPilgrimSettings.Save();
+        }
+
+        public void AddPreviouslySelectedWorkItemQuery(string teamProjectCollectionUri, string workItemQueryPath)
+        {
+            var strings = TeamPilgrimPackage.TeamPilgrimSettings.PreviouslySelectedWorkItemsQueries[teamProjectCollectionUri];
+
+            var list = new List<string>(strings);
+            list.Insert(0, workItemQueryPath);
+
+            TeamPilgrimPackage.TeamPilgrimSettings.PreviouslySelectedWorkItemsQueries[teamProjectCollectionUri]=
+                list.Distinct().Take(TeamPilgrimPackage.TeamPilgrimSettings.PreviouslySelectedWorkItemQueriesMaxCount).ToArray();
+
+            TeamPilgrimPackage.TeamPilgrimSettings.Save();
+        }
 
         #endregion
 
