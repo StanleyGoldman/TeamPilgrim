@@ -3,6 +3,8 @@ using System.Linq;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 {
+    //http://stackoverflow.com/questions/5242275/combobox-itemssource-changed-selecteditem-is-ruined#13520744
+
     public class PreviouslySelectedWorkItemQuery : IEquatable<PreviouslySelectedWorkItemQuery>
     {
         private readonly string _workItemQueryPath;
