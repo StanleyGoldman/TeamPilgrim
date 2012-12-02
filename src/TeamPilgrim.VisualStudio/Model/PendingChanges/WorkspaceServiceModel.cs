@@ -97,16 +97,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
                     if (selectedWorkItemQueryDefinition == null)
                     {
-                        var strings = TeamPilgrimPackage.TeamPilgrimSettings.PreviouslySelectedWorkItemsQueries[_projectCollectionServiceModel.TfsTeamProjectCollection.Uri.ToString()];
+                        TeamPilgrimPackage.TeamPilgrimSettings.RemovePreviouslySelectedWorkItemQuery(_projectCollectionServiceModel.TfsTeamProjectCollection.Uri.ToString(), value.WorkItemQueryPath);
 
-                        var list = new List<string>(strings);
-                        list.Remove(value.WorkItemQueryPath);
-
-                        TeamPilgrimPackage.TeamPilgrimSettings.PreviouslySelectedWorkItemsQueries[_projectCollectionServiceModel.TfsTeamProjectCollection.Uri.ToString()]
-                            = list.Distinct().Take(TeamPilgrimPackage.TeamPilgrimSettings.PreviouslySelectedWorkItemQueriesMaxCount).ToArray();
-
-                        TeamPilgrimPackage.TeamPilgrimSettings.Save();
-                      
                         if (SelectedWorkItemQueryDefinition == null)
                         {
                             PopulatePreviouslySelectedWorkItemQueryModels();
@@ -162,15 +154,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
                 RefreshSelectedDefinitionWorkItems();
 
-                var strings = TeamPilgrimPackage.TeamPilgrimSettings.PreviouslySelectedWorkItemsQueries[_projectCollectionServiceModel.TfsTeamProjectCollection.Uri.ToString()];
-
-                var list = new List<string>(strings);
-                list.Insert(0, value.QueryDefinition.Path);
-
-                TeamPilgrimPackage.TeamPilgrimSettings.PreviouslySelectedWorkItemsQueries[_projectCollectionServiceModel.TfsTeamProjectCollection.Uri.ToString()]
-                    = list.Distinct().Take(TeamPilgrimPackage.TeamPilgrimSettings.PreviouslySelectedWorkItemQueriesMaxCount).ToArray();
-
-                TeamPilgrimPackage.TeamPilgrimSettings.Save();
+                TeamPilgrimPackage.TeamPilgrimSettings.AddPreviouslySelectedWorkItemQuery(_projectCollectionServiceModel.TfsTeamProjectCollection.Uri.ToString(), value.QueryDefinition.Path);
 
                 PopulatePreviouslySelectedWorkItemQueryModels();
             }
