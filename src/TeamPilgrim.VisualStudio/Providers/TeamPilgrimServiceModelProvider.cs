@@ -196,7 +196,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             return false;
         }
 
-        public bool TryWorkspaceCheckin(Workspace workspace, PendingChange[] changes, string comment, CheckinNote checkinNote = null, WorkItemCheckinInfo[] workItemChanges = null, PolicyOverrideInfo policyOverride = null)
+        public bool TryCheckin(Workspace workspace, PendingChange[] changes, string comment, CheckinNote checkinNote = null, WorkItemCheckinInfo[] workItemChanges = null, PolicyOverrideInfo policyOverride = null)
         {
             try
             {
@@ -209,6 +209,39 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
                 LastException = ex;
             }
 
+            return false;
+        }
+
+        public bool TryShelve(Workspace workspace, Shelveset shelveset, PendingChange[] pendingChanges, ShelvingOptions shelvingOptions)
+        {
+            try
+            {
+                _teamPilgrimTfsService.WorkspaceShelve(workspace, shelveset, pendingChanges, shelvingOptions);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.DebugException(ex);
+                LastException = ex;
+            }
+
+            return false;
+        }
+
+        public bool TryGetVersionControlServer(out VersionControlServer versionControlServer, TfsTeamProjectCollection tfsTeamProjectCollection)
+        {
+            try
+            {
+                versionControlServer = _teamPilgrimTfsService.GetVersionControlServer(tfsTeamProjectCollection);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.DebugException(ex);
+                LastException = ex;
+            }
+
+            versionControlServer = null;
             return false;
         }
 

@@ -87,9 +87,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
             return collection.GetService<WorkItemStore>();
         }
 
-        private VersionControlServer GetVersionControlServer(TfsTeamProjectCollection collection)
+        public VersionControlServer GetVersionControlServer(TfsTeamProjectCollection collection)
         {
-            return collection.ConfigurationServer.GetService<VersionControlServer>();
+            return collection.GetService<VersionControlServer>();
         }
 
         public IBuildDefinition[] QueryBuildDefinitions(TfsTeamProjectCollection collection, string teamProject)
@@ -157,6 +157,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
         public void WorkspaceCheckin(Workspace workspace, PendingChange[] changes, string comment, CheckinNote checkinNote, WorkItemCheckinInfo[] workItemChanges, PolicyOverrideInfo policyOverride)
         {
             workspace.CheckIn(changes, comment, checkinNote, workItemChanges, policyOverride);
+        }
+
+        public void WorkspaceShelve(Workspace workspace, Shelveset shelveset, PendingChange[] pendingChanges, ShelvingOptions shelvingOptions)
+        {
+            workspace.Shelve(shelveset, pendingChanges, shelvingOptions);
         }
 
         public CheckinEvaluationResult EvaluateCheckin(Workspace workspace, PendingChange[] changes, string comment, CheckinNote checkinNote, WorkItemCheckinInfo[] workItemChanges)

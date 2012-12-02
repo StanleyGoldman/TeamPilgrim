@@ -32,7 +32,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
        
 	    bool TryGetWorkspace(out Workspace workspace, WorkspaceInfo workspaceInfo, TfsTeamProjectCollection tfsTeamProjectCollection);
         
-        bool TryWorkspaceCheckin(Workspace workspace, PendingChange[] changes, string comment, CheckinNote checkinNote = null, WorkItemCheckinInfo[] workItemChanges = null, PolicyOverrideInfo policyOverride = null);
+        bool TryCheckin(Workspace workspace, PendingChange[] changes, string comment, CheckinNote checkinNote = null, WorkItemCheckinInfo[] workItemChanges = null, PolicyOverrideInfo policyOverride = null);
         
         bool TryGetPendingChanges(out PendingChange[] pendingChanges, Workspace workspace);
         
@@ -41,6 +41,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
         bool TryEvaluateCheckin(out CheckinEvaluationResult checkinEvaluationResult, Workspace workspace, PendingChange[] changes, string comment, CheckinNote checkinNote = null, WorkItemCheckinInfo[] workItemChanges = null);
         
         bool TryGetAllConflicts(out Conflict[] conflicts, Workspace workspace);
+        
         bool TryGetPendingChanges(out PendingChange[] pendingChanges, Workspace workspace, string[] items);
+        
+        bool TryShelve(Workspace workspace, Shelveset shelveset, PendingChange[] pendingChanges, ShelvingOptions shelvingOptions);
+        
+        bool TryGetVersionControlServer(out VersionControlServer versionControlServer, TfsTeamProjectCollection tfsTeamProjectCollection);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Linq;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
@@ -356,7 +357,28 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
 
         private void Shelve()
         {
-            
+            var pendingChanges = PendingChanges
+                .Where(model => model.IncludeChange)
+                .Select(model => model.Change)
+                .ToArray();
+
+            VersionControlServer versionControlServer;
+            if (teamPilgrimServiceModelProvider.TryGetVersionControlServer(out versionControlServer,
+                                                                           _projectCollectionServiceModel
+                                                                               .TfsTeamProjectCollection))
+            {
+                Debug.Assert(versionControlServer != null, "versionControlServer != null");
+                var shelveset = new Shelveset(versionControlServer, ShelvesetName, _projectCollectionServiceModel.TfsTeamProjectCollection.AuthorizedIdentity.UniqueName );
+                
+                var shelvingOptions = ShelvingOptions.None;
+
+                if(PreservePendingChangesLocally)
+                    shelvingOptions |= ShelvingOptions.Move;
+
+                if (teamPilgrimServiceModelProvider.TryShelve(_workspaceServiceModel.Workspace, shelveset, pendingChanges, shelvingOptions))
+                {
+                }
+            }
         }
 
         private bool CanShelve()
