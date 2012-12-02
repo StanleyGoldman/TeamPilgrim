@@ -8,13 +8,18 @@ using Microsoft.TeamFoundation.Build.Client;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.VersionControl.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
+using NLog;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 {
     public class TeamPilgrimTfsService : ITeamPilgrimTfsService
     {
+        private static readonly Logger Logger = TeamPilgrimLogManager.Instance.GetCurrentClassLogger();
+
         public TfsTeamProjectCollection GetProjectCollection(Uri uri)
         {
+            Logger.Trace("GetProjectCollection");
+
             if (uri == null)
                 return null;
 
@@ -26,11 +31,15 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 
         public RegisteredProjectCollection[] GetRegisteredProjectCollections()
         {
+            Logger.Trace("GetRegisteredProjectCollections");
+
             return RegisteredTfsConnections.GetProjectCollections();
         }
 
         public bool DeleteQueryItem(TfsTeamProjectCollection teamProjectCollection, Project teamProject, Guid queryItemId)
         {
+            Logger.Trace("DeleteQueryItem");
+
             var workItemStore = GetWorkItemStore(teamProjectCollection);
             var queryHierarchy = workItemStore.GetQueryHierarchy(teamProject);
             var queryItem = queryHierarchy.Find(queryItemId);
@@ -45,6 +54,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 
         public TfsTeamProjectCollection[] GetProjectCollections()
         {
+            Logger.Trace("GetProjectCollections");
+
             RegisteredProjectCollection[] registeredProjectCollections = GetRegisteredProjectCollections();
 
             return registeredProjectCollections.Select(collection => new TfsTeamProjectCollection(collection)).ToArray();
@@ -57,23 +68,24 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 
         private Project[] GetProjects(TfsTeamProjectCollection tfsTeamProjectCollection)
         {
+            Logger.Trace("GetProjects");
+
             var workItemStore = new WorkItemStore(tfsTeamProjectCollection);
 
             return workItemStore.Projects.Cast<Project>().ToArray();
         }
 
-        private WorkItemStore GetWorkItemStore(Uri tpcAddress)
-        {
-            return GetWorkItemStore(GetProjectCollection(tpcAddress));
-        }
-
         public void DeleteBuildDefinition(IBuildDefinition buildDefinition)
         {
+            Logger.Trace("DeleteBuildDefinition");
+
             buildDefinition.Delete();
         }
 
         public IBuildDefinition CloneBuildDefinition(TfsTeamProjectCollection collection, string projectName, IBuildDefinition sourceDefinition)
         {
+            Logger.Trace("CloneBuildDefinition");
+
             var buildServer = collection.GetService<IBuildServer>();
             var clonedDefinition = buildServer.CreateBuildDefinition(projectName);
             clonedDefinition.CopyFrom(sourceDefinition);
@@ -84,16 +96,27 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 
         private WorkItemStore GetWorkItemStore(TfsTeamProjectCollection collection)
         {
+            Logger.Trace("GetWorkItemStore");
+
             return collection.GetService<WorkItemStore>();
+        }
+
+        private WorkItemStore GetWorkItemStore(Uri tpcAddress)
+        {
+            return GetWorkItemStore(GetProjectCollection(tpcAddress));
         }
 
         private VersionControlServer GetVersionControlServer(TfsTeamProjectCollection collection)
         {
+            Logger.Trace("GetVersionControlServer");
+
             return collection.ConfigurationServer.GetService<VersionControlServer>();
         }
 
         public IBuildDefinition[] QueryBuildDefinitions(TfsTeamProjectCollection collection, string teamProject)
         {
+            Logger.Trace("QueryBuildDefinitions");
+
             return collection.GetService<IBuildServer>()
                 .QueryBuildDefinitions(teamProject)
                 .ToArray();
@@ -101,6 +124,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 
         public IBuildDetail[] QueryBuildDetails(TfsTeamProjectCollection collection, string teamProject)
         {
+            Logger.Trace("QueryBuildDetails");
+
             return collection.GetService<IBuildServer>()
                 .QueryBuilds(teamProject)
                 .ToArray();
@@ -108,6 +133,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 
         public QueryFolder AddNewQueryFolder(TfsTeamProjectCollection teamProjectCollection, Project teamProject, Guid parentFolderId)
         {
+            Logger.Trace("AddNewQueryFolder");
+
             var workItemStore = GetWorkItemStore(teamProjectCollection);
             var queryHierarchy = workItemStore.GetQueryHierarchy(teamProject);
             var loadedParentFolder = queryHierarchy.Find(parentFolderId) as QueryFolder;
@@ -124,6 +151,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 
         public WorkItemCollection GetQueryDefinitionWorkItemCollection(TfsTeamProjectCollection collection, QueryDefinition queryDefinition, string projectName)
         {
+            Logger.Trace("GetQueryDefinitionWorkItemCollection");
+
             var context = new Dictionary<string, string> { { "project", projectName } };
             
             var workItemStore = GetWorkItemStore(collection);
@@ -139,6 +168,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 
         public WorkspaceInfo[] GetLocalWorkspaceInfo(Guid? projectCollectionId = null)
         {
+            Logger.Trace("GetLocalWorkspaceInfo");
+
             IEnumerable<WorkspaceInfo> allLocalWorkspaceInfo = Workstation.Current.GetAllLocalWorkspaceInfo();
 
             if (projectCollectionId.HasValue)
@@ -151,21 +182,29 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 
         public Workspace GetWorkspace(WorkspaceInfo workspaceInfo, TfsTeamProjectCollection tfsTeamProjectCollection)
         {
+            Logger.Trace("GetWorkspace");
+
             return workspaceInfo.GetWorkspace(tfsTeamProjectCollection);
         }
 
         public void WorkspaceCheckin(Workspace workspace, PendingChange[] changes, string comment, CheckinNote checkinNote, WorkItemCheckinInfo[] workItemChanges, PolicyOverrideInfo policyOverride)
         {
+            Logger.Trace("WorkspaceCheckin");
+
             workspace.CheckIn(changes, comment, checkinNote, workItemChanges, policyOverride);
         }
 
         public CheckinEvaluationResult EvaluateCheckin(Workspace workspace, PendingChange[] changes, string comment, CheckinNote checkinNote, WorkItemCheckinInfo[] workItemChanges)
         {
+            Logger.Trace("EvaluateCheckin");
+
             return workspace.EvaluateCheckin(CheckinEvaluationOptions.All, changes, changes, comment, checkinNote, workItemChanges);
         }
 
         public Conflict[] GetAllConflicts(Workspace workspace)
         {
+            Logger.Trace("GetAllConflicts");
+
             return workspace.QueryConflicts(workspace.Folders.Select(folder => folder.ServerItem).ToArray(), true);
         }
     }
