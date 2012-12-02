@@ -55,6 +55,64 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
             }
         }
 
+        private PreviouslySelectedWorkItemQuery[] _previouslySelectedWorkItemQueries;
+        public PreviouslySelectedWorkItemQuery[] PreviouslySelectedWorkItemQueries
+        {
+            get
+            {
+                return _previouslySelectedWorkItemQueries;
+            }
+            private set
+            {
+                if (_previouslySelectedWorkItemQueries == value) return;
+
+                _previouslySelectedWorkItemQueries = value;
+
+                SendPropertyChanged("PreviouslySelectedWorkItemQueries");
+                SendPropertyChanged("CurrentPreviouslySelectedWorkItemQuery");
+            }
+        }
+
+        public PreviouslySelectedWorkItemQuery CurrentPreviouslySelectedWorkItemQuery
+        {
+            get
+            {
+                if (SelectedWorkItemQueryDefinition == null)
+                    return null;
+
+                var current = PreviouslySelectedWorkItemQueries.FirstOrDefault(model => model.WorkItemQueryPath == SelectedWorkItemQueryDefinition.QueryDefinition.Path);
+
+                return current;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    var selectedWorkItemQueryDefinition = (WorkItemQueryDefinitionModel)_projectCollectionServiceModel.ProjectModels
+                        .Select(model => model.WorkItemQueryServiceModel.QueryItems.FindWorkItemQueryChildModelMatchingPath(value.WorkItemQueryPath))
+                        .FirstOrDefault(model => model != null);
+
+                    if (selectedWorkItemQueryDefinition == null)
+                    {
+                        TeamPilgrimPackage.TeamPilgrimSettings.RemovePreviouslySelectedWorkItemQuery(_projectCollectionServiceModel.TfsTeamProjectCollection.Uri.ToString(), value.WorkItemQueryPath);
+
+                        if (SelectedWorkItemQueryDefinition == null)
+                        {
+                            PopulatePreviouslySelectedWorkItemQueryModels();
+                        }
+                        else
+                        {
+                            SelectedWorkItemQueryDefinition = null;
+                        }
+                    }
+                    else
+                    {
+                        SelectedWorkItemQueryDefinition = selectedWorkItemQueryDefinition;
+                    }
+                }
+            }
+        }
+
         private bool _filterSolution;
         public bool FilterSolution
         {
@@ -136,7 +194,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
             _projectCollectionServiceModel = projectCollectionServiceModel;
             _workspaceServiceModel = workspaceServiceModel;
 
-            FilterSolution = workspaceServiceModel.FilterSolution;
+            _filterSolution = workspaceServiceModel.FilterSolution;
+            _selectedWorkWorkItemQueryDefinition = workspaceServiceModel.SelectedWorkItemQueryDefinition;
+            _comment = workspaceServiceModel.Comment;
 
             ShowSelectWorkItemQueryCommand = new RelayCommand(ShowSelectWorkItemQuery, CanShowSelectWorkItemQuery);
             RefreshPendingChangesCommand = new RelayCommand(RefreshPendingChanges, CanRefreshPendingChanges);
@@ -157,8 +217,20 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
                 }).ToList());
             PendingChanges.CollectionChanged += PendingChangesOnCollectionChanged;
 
-            WorkItems = new TrulyObservableCollection<WorkItemModel>();
+            WorkItems = new TrulyObservableCollection<WorkItemModel>(workspaceServiceModel.WorkItems.Select(model => new WorkItemModel(model.WorkItem)
+                {
+                    IsSelected = model.IsSelected,
+                    WorkItemCheckinAction = model.WorkItemCheckinAction
+                }).ToList());
             WorkItems.CollectionChanged += WorkItemsOnCollectionChanged;
+
+            PopulatePreviouslySelectedWorkItemQueryModels();
+        }
+
+        private void PopulatePreviouslySelectedWorkItemQueryModels()
+        {
+            var previouslySelectedWorkItemsQuery = TeamPilgrimPackage.TeamPilgrimSettings.PreviouslySelectedWorkItemsQueries[_projectCollectionServiceModel.TfsTeamProjectCollection.Uri.ToString()];
+            PreviouslySelectedWorkItemQueries = previouslySelectedWorkItemsQuery.Select(workItemQueryPath => new PreviouslySelectedWorkItemQuery(workItemQueryPath)).ToArray();
         }
 
         #region PendingChanges Collection
@@ -368,11 +440,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
                                                                                .TfsTeamProjectCollection))
             {
                 Debug.Assert(versionControlServer != null, "versionControlServer != null");
-                var shelveset = new Shelveset(versionControlServer, ShelvesetName, _projectCollectionServiceModel.TfsTeamProjectCollection.AuthorizedIdentity.UniqueName );
-                
+                var shelveset = new Shelveset(versionControlServer, ShelvesetName, _projectCollectionServiceModel.TfsTeamProjectCollection.AuthorizedIdentity.UniqueName);
+
                 var shelvingOptions = ShelvingOptions.None;
 
-                if(PreservePendingChangesLocally)
+                if (PreservePendingChangesLocally)
                     shelvingOptions |= ShelvingOptions.Move;
 
                 if (teamPilgrimServiceModelProvider.TryShelve(_workspaceServiceModel.Workspace, shelveset, pendingChanges, shelvingOptions))
@@ -405,11 +477,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
             {
                 var currentWorkItems = workItemCollection.Cast<WorkItem>().ToArray();
 
-                var modelIntersection =
-                    WorkItems
-                        .Join(currentWorkItems, model => model.WorkItem.Id, workItem => workItem.Id,
-                              (model, change) => model)
-                        .ToArray();
+                var modelIntersection = WorkItems == null
+                                            ? new WorkItemModel[0]
+                                            : WorkItems
+                                                    .Join(currentWorkItems, model => model.WorkItem.Id,
+                                                        workItem => workItem.Id,
+                                                        (model, change) => model)
+                                                    .ToArray();
 
                 var modelsToRemove = WorkItems.Where(model => !modelIntersection.Contains(model)).ToArray();
 

@@ -202,8 +202,15 @@
                         <DockPanel>
                             <ToolBar DockPanel.Dock="Top">
                                 <TextBlock><Run Text="Query:"/></TextBlock>
-                                <TextBlock Width="100" />
-                                <Button Content="..." Command="{Binding Path=ShowSelectWorkItemQueryCommand}"/>
+
+                                <ComboBox Width="200" 
+                                      DisplayMemberPath="Formatted"
+                                      ItemsSource="{Binding Path=PreviouslySelectedWorkItemQueries}"
+                                      SelectedItem="{Binding Path=CurrentPreviouslySelectedWorkItemQuery}"
+                                  
+                                      IsEditable="False"></ComboBox>
+
+                            <Button Content="..." Command="{Binding Path=ShowSelectWorkItemQueryCommand}"/>
 
                                 <Separator/>
 
@@ -212,9 +219,11 @@
                                 </Button>
                             </ToolBar>
 
-                            <ListView x:Name="WorkItemsListView" DockPanel.Dock="Bottom">
+                        <ListView x:Name="WorkItemsListView" DockPanel.Dock="Bottom" 
+                              AttachedProperties:PreviewSpaceKeyDownSelectWorkItems.Command="{Binding Path=SelectWorkItemsCommand}"
+                              ItemsSource="{Binding Path=WorkItems}">
 
-                                <ListView.ItemContainerStyle>
+                            <ListView.ItemContainerStyle>
                                     <Style TargetType="{x:Type ListViewItem}">
                                     </Style>
                                 </ListView.ItemContainerStyle>
