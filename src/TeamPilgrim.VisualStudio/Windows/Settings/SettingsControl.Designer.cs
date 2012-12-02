@@ -30,6 +30,7 @@
         {
             this.label1 = new System.Windows.Forms.Label();
             this.cmbDefaultWorkItemAssociation = new System.Windows.Forms.ComboBox();
+            this.chkPreservePendingChangesLocally = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
@@ -50,10 +51,21 @@
             this.cmbDefaultWorkItemAssociation.Size = new System.Drawing.Size(183, 21);
             this.cmbDefaultWorkItemAssociation.TabIndex = 1;
             // 
+            // chkPreservePendingChangesLocally
+            // 
+            this.chkPreservePendingChangesLocally.AutoSize = true;
+            this.chkPreservePendingChangesLocally.Location = new System.Drawing.Point(6, 30);
+            this.chkPreservePendingChangesLocally.Name = "chkPreservePendingChangesLocally";
+            this.chkPreservePendingChangesLocally.Size = new System.Drawing.Size(191, 17);
+            this.chkPreservePendingChangesLocally.TabIndex = 3;
+            this.chkPreservePendingChangesLocally.Text = "Preserve Pending Changes Locally";
+            this.chkPreservePendingChangesLocally.UseVisualStyleBackColor = true;
+            // 
             // SettingsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.chkPreservePendingChangesLocally);
             this.Controls.Add(this.cmbDefaultWorkItemAssociation);
             this.Controls.Add(this.label1);
             this.Name = "SettingsControl";
@@ -67,6 +79,7 @@
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox cmbDefaultWorkItemAssociation;
+        private System.Windows.Forms.CheckBox chkPreservePendingChangesLocally;
 
     }
 }

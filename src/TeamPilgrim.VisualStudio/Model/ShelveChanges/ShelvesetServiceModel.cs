@@ -91,7 +91,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
             }
         }
 
-        private bool _preservePendingChangesLocally = true;
+        private bool _preservePendingChangesLocally = TeamPilgrimPackage.TeamPilgrimSettings.PreserveShelvedChangesLocally;
         public bool PreservePendingChangesLocally
         {
             get

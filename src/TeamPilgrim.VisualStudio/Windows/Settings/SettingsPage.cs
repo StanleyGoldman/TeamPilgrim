@@ -28,11 +28,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Settings
         public override void LoadSettingsFromStorage()
         {
             _settingsControl.SelectedWorkItemCheckinAction = TeamPilgrimPackage.TeamPilgrimSettings.SelectedWorkItemCheckinAction;
+            _settingsControl.PreserveShelvedChangesLocally = TeamPilgrimPackage.TeamPilgrimSettings.PreserveShelvedChangesLocally;
         }
 
         public override void SaveSettingsToStorage()
         {
             TeamPilgrimPackage.TeamPilgrimSettings.SelectedWorkItemCheckinAction = _settingsControl.SelectedWorkItemCheckinAction;
+            TeamPilgrimPackage.TeamPilgrimSettings.PreserveShelvedChangesLocally = _settingsControl.PreserveShelvedChangesLocally;
             TeamPilgrimPackage.TeamPilgrimSettings.Save();
         }
     }

@@ -15,6 +15,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
     {
         private const string GeneralSectionName = "General";
         private const string SelectedWorkItemCheckinActionKeyName = "SelectedWorkItemCheckinAction";
+        private const string PreserveShelvedChangesLocallyKeyName = "PreserveShelvedChangesLocally";
         private const string PreviouslySelectedWorkItemQueriesValueSeperatorKeyName = "PreviouslySelectedWorkItemQueriesValueSeperator";
         private const string PreviouslySelectedWorkItemQueriesMaxCountKeyName = "PreviouslySelectedWorkItemQueriesMaxCount";
 
@@ -93,6 +94,34 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
                 }
 
                 keyDataCollection[SelectedWorkItemCheckinActionKeyName] = value.ToString();
+            }
+        }
+
+        public bool PreserveShelvedChangesLocally
+        {
+            get
+            {
+                var keyDataCollection = GeneralSection;
+                if (!keyDataCollection.ContainsKey(PreserveShelvedChangesLocallyKeyName))
+                {
+                    keyDataCollection.AddKey(PreserveShelvedChangesLocallyKeyName);
+                }
+
+                var value = keyDataCollection[PreserveShelvedChangesLocallyKeyName];
+                if (String.IsNullOrEmpty(value))
+                    return false;
+
+                return bool.Parse(value);
+            }
+            set
+            {
+                var keyDataCollection = GeneralSection;
+                if (!keyDataCollection.ContainsKey(PreserveShelvedChangesLocallyKeyName))
+                {
+                    keyDataCollection.AddKey(PreserveShelvedChangesLocallyKeyName);
+                }
+
+                keyDataCollection[PreserveShelvedChangesLocallyKeyName] = value.ToString();
             }
         }
 

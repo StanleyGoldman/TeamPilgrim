@@ -27,5 +27,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Settings
             get { return (SelectedWorkItemCheckinActionEnum)cmbDefaultWorkItemAssociation.SelectedValue; }
             set { cmbDefaultWorkItemAssociation.SelectedValue = value; }
         }
+
+        public bool PreserveShelvedChangesLocally
+        {
+            get { return chkPreservePendingChangesLocally.Checked; }
+            set { chkPreservePendingChangesLocally.Checked = value; }
+        }
     }
 }
