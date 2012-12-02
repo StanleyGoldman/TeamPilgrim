@@ -155,7 +155,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                 RefreshSelectedDefinitionWorkItems();
 
                 TeamPilgrimPackage.TeamPilgrimSettings.AddPreviouslySelectedWorkItemQuery(_projectCollectionServiceModel.TfsTeamProjectCollection.Uri.ToString(), value.QueryDefinition.Path);
-
                 PopulatePreviouslySelectedWorkItemQueryModels();
             }
         }
@@ -457,6 +456,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             CheckinEvaluationResult checkinEvaluationResult;
             if (teamPilgrimServiceModelProvider.TryEvaluateCheckin(out checkinEvaluationResult, Workspace, pendingChanges, Comment, checkinNote, workItemChanges))
             {
+                Logger.Debug("CheckIn EvaluateCheckin: Valid:{0}", checkinEvaluationResult.IsValid());
+                
                 if (checkinEvaluationResult.IsValid())
                 {
                     ProcessCheckIn(pendingChanges, checkinNote, workItemChanges);
@@ -498,6 +499,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             CheckinEvaluationResult = null;
             if (teamPilgrimServiceModelProvider.TryCheckin(Workspace, pendingChanges, Comment, checkinNote, workItemChanges, policyOverrideInfo))
             {
+                Logger.Debug("CheckIn ProcessCheckIn: Valid:{0}", CheckinEvaluationResult.IsValid());
+
                 Comment = string.Empty;
                 RefreshPendingChanges();
 
