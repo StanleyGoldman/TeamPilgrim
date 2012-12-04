@@ -230,7 +230,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         private void PendingChangesOnCollectionChanged(object sender,
                                                        NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            Logger.Trace("PendingChangesOnCollectionChanged: Prevent Changes: {0}", _backgroundFunctionPreventEvaluateCheckin);
+            Logger.Trace("PendingChangesOnCollectionChanged");
 
             EvaluateCheckInCommand.Execute(null);
         }
@@ -478,11 +478,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private void ProcessCheckIn(PendingChange[] pendingChanges, CheckinNote checkinNote, WorkItemCheckinInfo[] workItemChanges, PolicyOverrideInfo policyOverrideInfo = null)
         {
-            CheckinEvaluationResult = null;
             if (teamPilgrimServiceModelProvider.TryWorkspaceCheckin(Workspace, pendingChanges, Comment, checkinNote, workItemChanges, policyOverrideInfo))
             {
-                Logger.Debug("CheckIn ProcessCheckIn: Valid:{0}", CheckinEvaluationResult.IsValid());
-
                 Comment = string.Empty;
                 RefreshPendingChanges();
 
