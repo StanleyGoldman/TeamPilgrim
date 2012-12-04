@@ -404,6 +404,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private void CheckIn()
         {
+            Logger.Trace("CheckIn");
+
             var pendingChanges = PendingChanges
                 .Where(model => model.IncludeChange)
                 .Select(model => model.Change)
@@ -563,7 +565,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         {
             var canEvaluateCheckIn = PendingChanges.Any(model => model.IncludeChange) && !_backgroundFunctionPreventEvaluateCheckin;
 
-            Logger.Debug("CanEvaluateCheckIn: Result: {0}", canEvaluateCheckIn);
+            Logger.Trace("CanEvaluateCheckIn: Result: {0}", canEvaluateCheckIn);
 
             return canEvaluateCheckIn;
         }
