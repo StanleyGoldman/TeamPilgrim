@@ -112,9 +112,6 @@
                             </StackPanel>
                         </Button>
 
-                        <Separator />
-                        <ToggleButton IsEnabled="False">Comments</ToggleButton>
-
                         <Separator/>
                         <ToggleButton IsEnabled="{Binding SolutionIsOpen}" IsChecked="{Binding Path=FilterSolution}">Filter Solution</ToggleButton>
                         
