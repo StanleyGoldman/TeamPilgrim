@@ -52,10 +52,6 @@
     <Reference Include="INIFileParser">
       <HintPath>..\..\lib\ini-parser.1.7.1\lib\INIFileParser.dll</HintPath>
     </Reference>
-    <Reference Include="LogicNP.CryptoLicensing, Version=9.0.0.0, Culture=neutral, PublicKeyToken=4a3c0a4c668b48b4">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\CryptoLicensing For .Net 2012 R2\LogicNP.CryptoLicensing.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.ServiceLocation">
       <HintPath>..\..\lib\MvvmLight.4.1.23.0\lib\net40\Microsoft.Practices.ServiceLocation.dll</HintPath>

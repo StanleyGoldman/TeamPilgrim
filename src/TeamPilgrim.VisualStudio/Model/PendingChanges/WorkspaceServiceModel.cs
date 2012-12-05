@@ -54,7 +54,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
                 if (string.IsNullOrWhiteSpace(previousValue) ^ string.IsNullOrWhiteSpace(_comment))
                 {
-                    EvaluateCheckIn();
+                    EvaluateCheckInCommand.Execute(null);
                 }
             }
         }
@@ -234,23 +234,22 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private void VersionControlServerOnPendingChangesChanged(object sender, WorkspaceEventArgs workspaceEventArgs)
         {
+            Logger.Debug("VersionControlServerOnPendingChangesChanged");
+            
             RefreshPendingChanges();
         }
 
         #region PendingChanges Collection
 
         public TrulyObservableCollection<PendingChangeModel> PendingChanges { get; private set; }
-        private bool _preventPendingChangesCollectionChangeFromCausingEval;
+        private bool _backgroundFunctionPreventEvaluateCheckin;
 
         private void PendingChangesOnCollectionChanged(object sender,
                                                        NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            Logger.Trace("PendingChangesOnCollectionChanged: Prevent Changes: {0}", _preventPendingChangesCollectionChangeFromCausingEval);
+            Logger.Trace("PendingChangesOnCollectionChanged");
 
-            if (!_preventPendingChangesCollectionChangeFromCausingEval)
-            {
-                EvaluateCheckInCommand.Execute(null);
-            }
+            EvaluateCheckInCommand.Execute(null);
         }
 
         #endregion
@@ -258,16 +257,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         #region WorkItems Collection
 
         public TrulyObservableCollection<WorkItemModel> WorkItems { get; private set; }
-        private bool _preventWorkItemCollectionChangeFromCausingEval;
 
         private void WorkItemsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            Logger.Trace("WorkItemsOnCollectionChanged: Prevent Changes: {0}", _preventWorkItemCollectionChangeFromCausingEval);
-
-            if (!_preventWorkItemCollectionChangeFromCausingEval)
-            {
-                EvaluateCheckInCommand.Execute(null);
-            }
+            EvaluateCheckInCommand.Execute(null);
         }
 
         #endregion
@@ -296,12 +289,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         {
             Logger.Debug("Select Pending Changes: {0}, Count: {1}", selectPendingChangesCommandArgument.Value, selectPendingChangesCommandArgument.Collection.Count());
 
-            _preventPendingChangesCollectionChangeFromCausingEval = true;
+            _backgroundFunctionPreventEvaluateCheckin = true;
+
             foreach (var pendingChangeModel in selectPendingChangesCommandArgument.Collection)
             {
                 pendingChangeModel.IncludeChange = selectPendingChangesCommandArgument.Value;
             }
-            _preventPendingChangesCollectionChangeFromCausingEval = false;
+
+            _backgroundFunctionPreventEvaluateCheckin = false;
             EvaluateCheckInCommand.Execute(null);
         }
 
@@ -320,12 +315,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         {
             Logger.Debug("Select Work Items: {0}, Count: {1}", selectWorkItemsCommandArgument.Value, selectWorkItemsCommandArgument.Collection.Count());
 
-            _preventWorkItemCollectionChangeFromCausingEval = true;
+            _backgroundFunctionPreventEvaluateCheckin = true;
+            
             foreach (var workItemModel in selectWorkItemsCommandArgument.Collection)
             {
                 workItemModel.IsSelected = selectWorkItemsCommandArgument.Value;
             }
-            _preventWorkItemCollectionChangeFromCausingEval = false;
+
+            _backgroundFunctionPreventEvaluateCheckin = false;
             EvaluateCheckInCommand.Execute(null);
         }
 
@@ -424,6 +421,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private void CheckIn()
         {
+            Logger.Trace("CheckIn");
+
             var pendingChanges = PendingChanges
                 .Where(model => model.IncludeChange)
                 .Select(model => model.Change)
@@ -496,11 +495,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private void ProcessCheckIn(PendingChange[] pendingChanges, CheckinNote checkinNote, WorkItemCheckinInfo[] workItemChanges, PolicyOverrideInfo policyOverrideInfo = null)
         {
-            CheckinEvaluationResult = null;
             if (teamPilgrimServiceModelProvider.TryCheckin(Workspace, pendingChanges, Comment, checkinNote, workItemChanges, policyOverrideInfo))
             {
-                Logger.Debug("CheckIn ProcessCheckIn: Valid:{0}", CheckinEvaluationResult.IsValid());
-
                 Comment = string.Empty;
                 RefreshPendingChanges();
 
@@ -509,6 +505,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                     workItem.IsSelected = false;
                 }
 
+                RefreshPendingChangesCommand.Execute(null);
                 RefreshSelectedDefinitionWorkItemsCommand.Execute(null);
             }
         }
@@ -580,7 +577,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private bool CanEvaluateCheckIn()
         {
-            return PendingChanges.Any(model => model.IncludeChange);
+            var canEvaluateCheckIn = PendingChanges.Any(model => model.IncludeChange) && !_backgroundFunctionPreventEvaluateCheckin;
+
+            Logger.Trace("CanEvaluateCheckIn: Result: {0}", canEvaluateCheckIn);
+
+            return canEvaluateCheckIn;
         }
 
         #endregion
@@ -608,6 +609,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                     .Where(pendingChange => !modelIntersection.Select(model => model.Change.PendingChangeId).Contains(pendingChange.PendingChangeId))
                     .Select(change => new PendingChangeModel(change)).ToArray();
 
+                _backgroundFunctionPreventEvaluateCheckin = true;
+
                 foreach (var modelToAdd in modelsToAdd)
                 {
                     PendingChanges.Add(modelToAdd);
@@ -617,6 +620,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                 {
                     PendingChanges.Remove(modelToRemove);
                 }
+
+                _backgroundFunctionPreventEvaluateCheckin = false;
+
+                EvaluateCheckInCommand.Execute(null);
             }
         }
 

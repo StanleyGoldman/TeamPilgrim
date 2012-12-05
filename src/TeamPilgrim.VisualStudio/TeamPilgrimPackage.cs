@@ -15,7 +15,6 @@ using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Explorer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Settings;
-using LogicNP.CryptoLicensing;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell;
@@ -54,9 +53,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
     public sealed class TeamPilgrimPackage : Package, IVsShellPropertyEvents
     {
         private static readonly Logger Logger = TeamPilgrimLogManager.Instance.GetCurrentClassLogger();
-
-        internal const string LicenseValidationKey = "AMAAMADJHFA64RFew2wwMz1VwGqryhDyB9MoC8nB3ld26/BURon9c1Bh3Yn4Iva73o+EHmcDAAEAAQ==";
-        internal const string DecemberSixteenthExpirationLicenseKey = "NgA8Af4YVXG3w80B3wW+aUrbzQFBGFRlYW1QaWxncmltLlZpc3VhbFN0dWRpbxzfSnNOl4cJdMAj2Fsa+zBY5EWSEM/Jwlqyemw3+q1u9Hih3vgIgcyPnE8HWI8DQr6yuJCnFdOF";
 
         private static TeamPilgrimPackage _singleInstance;
 
@@ -162,26 +158,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
             TeamPilgrimPackage._singleInstance = this;
             base.Initialize();
-
-            if (!VersionInfo.IsDebug)
-            {
-                var license = new CryptoLicense(LicenseStorageMode.ToRegistry, LicenseValidationKey)
-                    {
-                        HostAssembly = Assembly.GetExecutingAssembly()
-                    };
-
-                if (!license.Load() || license.LicenseCode != DecemberSixteenthExpirationLicenseKey)
-                {
-                    license.LicenseCode = DecemberSixteenthExpirationLicenseKey;
-                    license.Save();
-                }
-
-                if (license.IsEvaluationExpired())
-                {
-                    MessageBox.Show("Team Pilgrim License validation failed");
-                    return;
-                }
-            }
 
             // Add our command handlers for menu (commands must exist in the .vsct file)
             OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
