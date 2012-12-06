@@ -4,15 +4,26 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 {
     public class PendingChangeModel : BaseModel
     {
-        public PendingChange Change { get; private set; }
-
         public PendingChangeModel(PendingChange change)
         {
-            Change = change;
+            _change = change;
+        }
+
+        private PendingChange _change;
+        public PendingChange Change
+        {
+            get { return _change; }
+            set
+            {
+                if (_change == value) return;
+
+                _change = value;
+                
+                SendPropertyChanged("IncludeChange");
+            }
         }
 
         private bool _includeChange;
-
         public bool IncludeChange
         {
             get

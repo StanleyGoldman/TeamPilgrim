@@ -583,15 +583,24 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                 ? teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, Workspace, teamPilgrimVsService.GetSolutionFilePaths())
                 : teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, Workspace))
             {
-                var modelIntersection =
-                    PendingChanges
-                    .Join(currentPendingChanges, model => model.Change.ItemId, change => change.ItemId, (model, change) => model)
+                var intersections = PendingChanges
+                    .Join(currentPendingChanges, model => model.Change.ItemId, change => change.ItemId, (model, change) => new {model, change})
                     .ToArray();
 
-                var modelsToRemove = PendingChanges.Where(model => !modelIntersection.Contains(model)).ToArray();
+                foreach (var intersection in intersections)
+                {
+                    intersection.model.Change = intersection.change;
+                }
+
+                var intersectedModels =
+                    intersections
+                    .Select(arg => arg.model)
+                    .ToArray();
+
+                var modelsToRemove = PendingChanges.Where(model => !intersectedModels.Contains(model)).ToArray();
 
                 var modelsToAdd = currentPendingChanges
-                    .Where(pendingChange => !modelIntersection.Select(model => model.Change.ItemId).Contains(pendingChange.ItemId))
+                    .Where(pendingChange => !intersectedModels.Select(model => model.Change.ItemId).Contains(pendingChange.ItemId))
                     .Select(change => new PendingChangeModel(change)).ToArray();
 
                 _backgroundFunctionPreventEvaluateCheckin = true;
