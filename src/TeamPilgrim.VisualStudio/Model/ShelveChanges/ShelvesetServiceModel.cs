@@ -444,7 +444,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
 
                 var shelvingOptions = ShelvingOptions.None;
 
-                if (PreservePendingChangesLocally)
+                if (!PreservePendingChangesLocally)
                     shelvingOptions |= ShelvingOptions.Move;
 
                 if (teamPilgrimServiceModelProvider.TryShelve(_workspaceServiceModel.Workspace, shelveset, pendingChanges, shelvingOptions))
