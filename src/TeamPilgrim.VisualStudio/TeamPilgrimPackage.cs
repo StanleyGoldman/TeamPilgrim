@@ -186,9 +186,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             TeamPilgrimPackage.MenuCommandService = base.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             TeamPilgrimPackage._teamPilgrimVsService.Initialize(_singleInstance, UIShell);
 
-            CompletePackageInitialization();
-
             Logger.Debug("End First Pass Initialization");
+
+            CompletePackageInitialization();
         }
 
         public int OnShellPropertyChange(int propid, object var)
@@ -199,6 +199,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             {
                 if ((bool)var == false)
                 {
+                    Logger.Debug("Shell Exit Zombie State");
 
                     // zombie state dependent code
                     CompletePackageInitialization();
