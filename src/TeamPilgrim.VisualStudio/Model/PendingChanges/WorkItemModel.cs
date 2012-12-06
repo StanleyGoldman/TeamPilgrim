@@ -5,7 +5,24 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 {
     public class WorkItemModel : BaseModel
     {
-        public WorkItem WorkItem { get; private set; }
+        public WorkItemModel(WorkItem workItem)
+        {
+            WorkItem = workItem;
+        }
+
+        private WorkItem _workItem;
+        public WorkItem WorkItem
+        {
+            get { return _workItem; }
+            set
+            {
+                if (_workItem == value) return;
+
+                _workItem = value;
+
+                SendPropertyChanged("WorkItem");
+            }
+        }
 
         private bool _isSelected;
         public bool IsSelected
@@ -39,11 +56,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
                 SendPropertyChanged("WorkItemCheckinAction");
             }
-        }
-
-        public WorkItemModel(WorkItem workItem)
-        {
-            WorkItem = workItem;
         }
     }
 }

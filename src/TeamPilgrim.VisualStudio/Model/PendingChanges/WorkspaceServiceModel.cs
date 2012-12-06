@@ -110,7 +110,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                     }
                     else
                     {
-                        SelectedWorkItemQueryDefinition = selectedWorkItemQueryDefinition;   
+                        SelectedWorkItemQueryDefinition = selectedWorkItemQueryDefinition;
                     }
                 }
             }
@@ -218,7 +218,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         private void VersionControlServerOnPendingChangesChanged(object sender, WorkspaceEventArgs workspaceEventArgs)
         {
             Logger.Debug("VersionControlServerOnPendingChangesChanged");
-            
+
             RefreshPendingChanges();
         }
 
@@ -299,7 +299,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             Logger.Debug("Select Work Items: {0}, Count: {1}", selectWorkItemsCommandArgument.Value, selectWorkItemsCommandArgument.Collection.Count());
 
             _backgroundFunctionPreventEvaluateCheckin = true;
-            
+
             foreach (var workItemModel in selectWorkItemsCommandArgument.Collection)
             {
                 workItemModel.IsSelected = selectWorkItemsCommandArgument.Value;
@@ -439,7 +439,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             if (teamPilgrimServiceModelProvider.TryEvaluateCheckin(out checkinEvaluationResult, Workspace, pendingChanges, Comment, checkinNote, workItemChanges))
             {
                 Logger.Debug("CheckIn EvaluateCheckin: Valid:{0}", checkinEvaluationResult.IsValid());
-                
+
                 if (checkinEvaluationResult.IsValid())
                 {
                     ProcessCheckIn(pendingChanges, checkinNote, workItemChanges);
@@ -584,7 +584,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                 : teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, Workspace))
             {
                 var intersections = PendingChanges
-                    .Join(currentPendingChanges, model => model.Change.ItemId, change => change.ItemId, (model, change) => new {model, change})
+                    .Join(currentPendingChanges, model => model.Change.ItemId, change => change.ItemId, (model, change) => new { model, change })
                     .ToArray();
 
                 foreach (var intersection in intersections)
@@ -645,16 +645,24 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             {
                 var currentWorkItems = workItemCollection.Cast<WorkItem>().ToArray();
 
-                var modelIntersection =
-                    WorkItems
-                        .Join(currentWorkItems, model => model.WorkItem.Id, workItem => workItem.Id,
-                              (model, change) => model)
+                var intersections = WorkItems
+                    .Join(currentWorkItems, model => model.WorkItem.Id, workItem => workItem.Id, (model, workitem) => new { model, workitem })
+                    .ToArray();
+
+                foreach (var intersection in intersections)
+                {
+                    intersection.model.WorkItem = intersection.workitem;
+                }
+
+                var intersectedModels =
+                    intersections
+                    .Select(arg => arg.model)
                         .ToArray();
 
-                var modelsToRemove = WorkItems.Where(model => !modelIntersection.Contains(model)).ToArray();
+                var modelsToRemove = WorkItems.Where(model => !intersectedModels.Contains(model)).ToArray();
 
                 var modelsToAdd = currentWorkItems
-                    .Where(workItem => !modelIntersection.Select(workItemModel => workItemModel.WorkItem.Id).Contains(workItem.Id))
+                    .Where(workItem => !intersectedModels.Select(workItemModel => workItemModel.WorkItem.Id).Contains(workItem.Id))
                     .Select(workItem => new WorkItemModel(workItem)).ToArray();
 
                 foreach (var modelToAdd in modelsToAdd)
