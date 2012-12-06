@@ -395,13 +395,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
             {
                 var modelIntersection =
                     PendingChanges
-                    .Join(currentPendingChanges, model => model.Change.PendingChangeId, change => change.PendingChangeId, (model, change) => model)
+                    .Join(currentPendingChanges, model => model.Change.ItemId, change => change.ItemId, (model, change) => model)
                     .ToArray();
 
                 var modelsToRemove = PendingChanges.Where(model => !modelIntersection.Contains(model)).ToArray();
 
                 var modelsToAdd = currentPendingChanges
-                    .Where(pendingChange => !modelIntersection.Select(model => model.Change.PendingChangeId).Contains(pendingChange.PendingChangeId))
+                    .Where(pendingChange => !modelIntersection.Select(model => model.Change.ItemId).Contains(pendingChange.ItemId))
                     .Select(change => new PendingChangeModel(change)).ToArray();
 
                 foreach (var modelToAdd in modelsToAdd)
