@@ -19,8 +19,6 @@
 
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <Converters:SingleObjectToObservableCollectionConverter x:Key="SingleObjectToListConverter" />
-        <Converters:SelectWorkItemsCommandConverter x:Key="SelectWorkItemsCommandConverter" />
-        <Converters:SelectPendingChangesCommandConverter x:Key="SelectPendingChangesCommandConverter" />
 
         <ObjectDataProvider x:Key="workItemCheckinActions" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
             <ObjectDataProvider.MethodParameters>

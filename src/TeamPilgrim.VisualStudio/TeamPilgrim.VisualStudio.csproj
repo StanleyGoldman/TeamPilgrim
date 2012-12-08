@@ -184,8 +184,6 @@
     <Compile Include="Common\AttachedProperties\PreviewSpaceKeyDownSelectWorkItems.cs" />
     <Compile Include="Common\Converters\BooleanToAlternateFontWeightConverter.cs" />
     <Compile Include="Common\Converters\ObservableCollectionToTrulyObservableCollectionCoverter.cs" />
-    <Compile Include="Common\Converters\SelectPendingChangesCommandConverter.cs" />
-    <Compile Include="Common\Converters\SelectWorkItemsCommandConverter.cs" />
     <Compile Include="Common\TrulyObservableCollection.cs" />
     <Compile Include="Common\LoggerExtensions.cs" />
     <Compile Include="Common\WorkItemQueryChildModelExtensions.cs" />
@@ -215,8 +213,8 @@
     <Compile Include="Model\CommandArguments\SelectWorkItemsCommandArgument.cs" />
     <Compile Include="Model\ShelveChanges\ShelvesetServiceModel.cs" />
     <Compile Include="Model\PendingChanges\PreviouslySelectedWorkItemQuery.cs" />
+    <Compile Include="Model\PendingChanges\ShowPendingChangesTabItemEnum.cs" />
     <Compile Include="TeamPilgrimLogManager.cs" />
-    <Compile Include="Messages\ShowPendingChangesTabItem.cs" />
     <Compile Include="Messages\ShowShelveDialog.cs" />
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Model\LicenseModel.cs" />

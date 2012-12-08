@@ -19,10 +19,8 @@
         d:DataContext="{d:DesignInstance ShelveChanges:ShelvesetServiceModel}">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        <Converters:SelectPendingChangesCommandConverter x:Key="SelectPendingChangesCommandConverter" />
         <Converters:SingleObjectToObservableCollectionConverter x:Key="SingleObjectToListConverter" />
         <Converters:AndClauseBooleanConverter x:Key="AndClauseBooleanConverter" />
-        <Converters:SelectWorkItemsCommandConverter x:Key="SelectWorkItemsCommandConverter" />
 
         <ObjectDataProvider x:Key="WorkItemCheckinActions" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
             <ObjectDataProvider.MethodParameters>
