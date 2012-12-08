@@ -14,7 +14,6 @@ using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Comparer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Extensions;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Messages;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.CommandArguments;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery;
@@ -28,6 +27,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 {
     public class WorkspaceServiceModel : BaseServiceModel
     {
+        public delegate void ShowPendingChangesItemDelegate(ShowPendingChangesTabItemEnum showPendingChangesTabItemEnum);
+
+        public event ShowPendingChangesItemDelegate ShowPendingChangesItem;
+
         private static readonly Logger Logger = TeamPilgrimLogManager.Instance.GetCurrentClassLogger();
 
         public ObservableCollection<CheckinNoteModel> CheckinNotes { get; private set; }
@@ -220,6 +223,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             Logger.Debug("VersionControlServerOnPendingChangesChanged");
 
             RefreshPendingChanges();
+        }
+
+        protected virtual void OnShowPendingChangesItem(ShowPendingChangesTabItemEnum showpendingchangestabitemenum)
+        {
+            var handler = ShowPendingChangesItem;
+            if (handler != null) handler(showpendingchangestabitemenum);
         }
 
         #region PendingChanges Collection
@@ -423,7 +432,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
             if (missingCheckinNotes.Any())
             {
-                Messenger.Default.Send(new ShowPendingChangesTabItemMessage { ShowPendingChangesTabItem = ShowPendingChangesTabItemEnum.CheckinNotes });
+                OnShowPendingChangesItem(ShowPendingChangesTabItemEnum.CheckinNotes);
 
                 MessageBox.Show("Check-in Validation\r\n\r\nEnter a value for " + string.Join(", ", missingCheckinNotes), "Team Pilgrim", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -456,7 +465,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                 }
                 else if (checkinEvaluationResult.PolicyFailures.Any())
                 {
-                    Messenger.Default.Send(new ShowPendingChangesTabItemMessage { ShowPendingChangesTabItem = ShowPendingChangesTabItemEnum.PolicyWarnings });
+                    OnShowPendingChangesItem(ShowPendingChangesTabItemEnum.PolicyWarnings);
 
                     var policyFailureModel = new PolicyFailureModel();
                     var policyFailureDialog = new PolicyFailureDialog()

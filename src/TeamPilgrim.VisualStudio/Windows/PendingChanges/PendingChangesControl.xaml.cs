@@ -1,12 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using GalaSoft.MvvmLight.Messaging;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Messages;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.CommandArguments;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges;
@@ -23,28 +23,56 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
             InitializeComponent();
 
             NameScope.SetNameScope(PendingChangesContextMenu, NameScope.GetNameScope(this));
+        }
 
-            Messenger.Default.Register<ShowPendingChangesTabItemMessage>(this, message =>
+        public new object DataContext
+        {
+            get { return base.DataContext; }
+            set
             {
-                switch (message.ShowPendingChangesTabItem)
-                {
-                    case ShowPendingChangesTabItemEnum.PolicyWarnings:
-                        PolicyWarningsRadioButton.IsChecked = true;
-                        break;
+                base.DataContext = value;
 
-                    case ShowPendingChangesTabItemEnum.CheckinNotes:
-                        CheckInNotesRadioButton.IsChecked = true;
-                        break;
+                var teamPilgrimServiceModel = (TeamPilgrimServiceModel) value;
+                if (teamPilgrimServiceModel == null) return;
 
-                    case ShowPendingChangesTabItemEnum.WorkItems:
-                        WorkItemsRadioButton.IsChecked = true;
-                        break;
+                teamPilgrimServiceModel.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
+                    {
+                        if (args.PropertyName == "SelectedWorkspaceModel")
+                        {
+                            AttachShowPendingChangesItemEvent(teamPilgrimServiceModel);
+                        }
+                    };
 
-                    case ShowPendingChangesTabItemEnum.SourceFiles:
-                        SourceFilesRadioButton.IsChecked = true;
-                        break;
-                }
-            });
+                AttachShowPendingChangesItemEvent(teamPilgrimServiceModel);
+            }
+        }
+
+        private void AttachShowPendingChangesItemEvent(TeamPilgrimServiceModel teamPilgrimServiceModel)
+        {
+            if (teamPilgrimServiceModel.SelectedWorkspaceModel == null) return;
+            teamPilgrimServiceModel.SelectedWorkspaceModel.ShowPendingChangesItem += SelectedWorkspaceModelOnShowPendingChangesItem;
+        }
+
+        private void SelectedWorkspaceModelOnShowPendingChangesItem(ShowPendingChangesTabItemEnum showPendingChangesTabItemEnum)
+        {
+            switch (showPendingChangesTabItemEnum)
+            {
+                case ShowPendingChangesTabItemEnum.PolicyWarnings:
+                    PolicyWarningsRadioButton.IsChecked = true;
+                    break;
+            
+                case ShowPendingChangesTabItemEnum.CheckinNotes:
+                    CheckInNotesRadioButton.IsChecked = true;
+                    break;
+            
+                case ShowPendingChangesTabItemEnum.WorkItems:
+                    WorkItemsRadioButton.IsChecked = true;
+                    break;
+            
+                case ShowPendingChangesTabItemEnum.SourceFiles:
+                    SourceFilesRadioButton.IsChecked = true;
+                    break;
+            }
         }
 
         private void PendingChangeWorkItemCheckboxClicked(object sender, System.Windows.RoutedEventArgs e)
