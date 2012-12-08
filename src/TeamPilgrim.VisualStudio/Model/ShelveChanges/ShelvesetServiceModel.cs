@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Extensions;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.CommandArguments;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer;
@@ -435,7 +436,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
                                                                                 _projectCollectionServiceModel.TfsTeamProjectCollection.AuthorizedIdentity.UniqueName, null))
             {
                 bool overwrite = false;
-                if (pendingSets.Any())
+                if (pendingSets != null && pendingSets.Any())
                 {
                     if (MessageBox.Show(string.Format("Replace shelveset\r\n\r\nThe shelveset {0} already exists. Replace?", ShelvesetName),
                             "Team Pilgrim", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
@@ -457,7 +458,18 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
                 if (teamPilgrimServiceModelProvider.TryGetVersionControlServer(out versionControlServer, _projectCollectionServiceModel.TfsTeamProjectCollection))
                 {
                     Debug.Assert(versionControlServer != null, "versionControlServer != null");
-                    var shelveset = new Shelveset(versionControlServer, ShelvesetName, _projectCollectionServiceModel.TfsTeamProjectCollection.AuthorizedIdentity.UniqueName);
+
+                    var workItemInfo = WorkItems
+                        .Where(model => model.IsSelected)
+                        .Select(model => new WorkItemCheckinInfo(model.WorkItem, model.WorkItemCheckinAction.ToWorkItemCheckinAction()))
+                        .ToArray();
+
+                    var shelveset = new Shelveset(versionControlServer, ShelvesetName, _projectCollectionServiceModel.TfsTeamProjectCollection.AuthorizedIdentity.UniqueName)
+                        {
+                            Comment = Comment,
+                            ChangesExcluded = PendingChanges.Count() != pendingChanges.Count(),
+                            WorkItemInfo = workItemInfo
+                        };
 
                     var shelvingOptions = ShelvingOptions.None;
 

@@ -235,6 +235,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
                 pendingSets = _teamPilgrimTfsService.WorkspaceQueryShelvedChanges(workspace, shelvesetName, shelvesetOwner, itemSpecs);
                 return true;
             }
+            catch (ShelvesetNotFoundException)
+            {
+                pendingSets = null;
+                return true;
+            }
             catch (Exception ex)
             {
                 Logger.DebugException(ex);
