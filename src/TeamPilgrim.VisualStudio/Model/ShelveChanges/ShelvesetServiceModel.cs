@@ -184,6 +184,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
                 SendPropertyChanged("SelectedWorkItemQueryDefinition");
 
                 RefreshSelectedDefinitionWorkItems();
+
+                TeamPilgrimPackage.TeamPilgrimSettings.AddPreviouslySelectedWorkItemQuery(_projectCollectionServiceModel.TfsTeamProjectCollection.Uri.ToString(), value.QueryDefinition.Path);
+                PopulatePreviouslySelectedWorkItemQueryModels();
             }
         }
 
