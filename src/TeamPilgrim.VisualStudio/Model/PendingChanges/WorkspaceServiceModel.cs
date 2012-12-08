@@ -136,7 +136,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         }
 
         private readonly ProjectCollectionServiceModel _projectCollectionServiceModel;
-        private readonly CheckinNotesCacheWrapper _checkinNotesCacheWrapper;
+        internal readonly CheckinNotesCacheWrapper checkinNotesCacheWrapper;
 
         private WorkItemQueryDefinitionModel _selectedWorkWorkItemQueryDefinition;
         public WorkItemQueryDefinitionModel SelectedWorkItemQueryDefinition
@@ -178,6 +178,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             }
         }
 
+        private bool _backgroundFunctionPreventEvaluateCheckin;
+
         public WorkspaceServiceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, ProjectCollectionServiceModel projectCollectionServiceModel, Workspace workspace)
             : base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
         {
@@ -187,7 +189,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             var versionControlServer = _projectCollectionServiceModel.TfsTeamProjectCollection.GetService<VersionControlServer>();
             versionControlServer.PendingChangesChanged += VersionControlServerOnPendingChangesChanged;
 
-            _checkinNotesCacheWrapper = new CheckinNotesCacheWrapper(versionControlServer);
+            checkinNotesCacheWrapper = new CheckinNotesCacheWrapper(versionControlServer);
 
             CheckInCommand = new RelayCommand(CheckIn, CanCheckIn);
             RefreshPendingChangesCommand = new RelayCommand(RefreshPendingChanges, CanRefreshPendingChanges);
@@ -242,7 +244,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         #region PendingChanges Collection
 
         public TrulyObservableCollection<PendingChangeModel> PendingChanges { get; private set; }
-        private bool _backgroundFunctionPreventEvaluateCheckin;
 
         private void PendingChangesOnCollectionChanged(object sender,
                                                        NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -525,6 +526,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private void EvaluateCheckIn()
         {
+            Logger.Trace("EvaluateCheckIn");
+
             var pendingChanges = PendingChanges
                                     .Where(model => model.IncludeChange)
                                     .Select(model => model.Change)
@@ -537,7 +540,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                 return;
             }
 
-            var currentCheckinNoteDefinitions = _checkinNotesCacheWrapper.GetCheckinNotes(pendingChanges);
+            var currentCheckinNoteDefinitions = checkinNotesCacheWrapper.GetCheckinNotes(pendingChanges);
 
             var equalityComparer = CheckinNoteFieldDefinition.NameComparer.ToGenericComparer<CheckinNoteFieldDefinition>().ToEqualityComparer();
 

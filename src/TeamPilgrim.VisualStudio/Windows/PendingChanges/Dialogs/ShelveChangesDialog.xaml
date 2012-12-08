@@ -14,10 +14,14 @@
         mc:Ignorable="d" 
         x:Class="JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs.ShelveChangesDialog"
         Title="Team Pilgrim Shelve Changes" MinHeight="405" Width="761" MinWidth="400"
+    
+        x:Name="ShelveChangesDialogWindow"
         d:DataContext="{d:DesignInstance ShelveChanges:ShelvesetServiceModel}">
     <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <Converters:SelectPendingChangesCommandConverter x:Key="SelectPendingChangesCommandConverter" />
         <Converters:SingleObjectToObservableCollectionConverter x:Key="SingleObjectToListConverter" />
+        <Converters:AndClauseBooleanConverter x:Key="AndClauseBooleanConverter" />
         <Converters:SelectWorkItemsCommandConverter x:Key="SelectWorkItemsCommandConverter" />
 
         <ObjectDataProvider x:Key="WorkItemCheckinActions" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
@@ -26,7 +30,6 @@
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
 
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Window.Resources>
     <DockPanel>
         <DockPanel.Resources>
@@ -86,7 +89,7 @@
                     <Image Source="..\..\..\Resources\note.png" Width="32" Height="32" Style="{StaticResource ButtonImageStyle}" />
                 </RadioButton>
 
-                <RadioButton x:Name="PolicyWarningsRadioButton" Style="{StaticResource {x:Type ToggleButton}}" GroupName="PendingChangesMainView">
+                <RadioButton x:Name="PolicyWarningsRadioButton" Style="{StaticResource {x:Type ToggleButton}}" GroupName="PendingChangesMainView" Visibility="{Binding EvaluatePoliciesAndCheckinNotes, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Image Source="..\..\..\Resources\page_white_delete.png" Width="32" Height="32" Style="{StaticResource ButtonImageStyle}" />
                 </RadioButton>
             </ToolBar>
@@ -280,42 +283,48 @@
                         </DockPanel>
                     </TabItem>
                     <TabItem x:Name="CheckInNotesTabItem"  IsSelected="{Binding IsChecked, ElementName=CheckInNotesRadioButton}">
-                        <ListView DockPanel.Dock="Bottom" HorizontalContentAlignment="Stretch">
-                                <ListView.ItemTemplate>
-                                    <DataTemplate DataType="PendingChanges:CheckinNoteModel">
-                                        <Expander Header="{Binding CheckinNoteFieldDefinition.Name}" IsExpanded="True">
-                                            <xctk:WatermarkTextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}">
-                                                <xctk:WatermarkTextBox.Style>
-                                                    <Style TargetType="{x:Type xctk:WatermarkTextBox}">
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding CheckinNoteFieldDefinition.Required}" Value="True">
-                                                                <Setter Property="Watermark" Value="&lt;Required&gt;" />
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </xctk:WatermarkTextBox.Style>
-                                            </xctk:WatermarkTextBox>
-                                        </Expander>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-                    </TabItem>
-                    <TabItem x:Name="PolicyWarningsTabItem" IsSelected="{Binding IsChecked, ElementName=PolicyWarningsRadioButton}">
-                        <ListView>
-                            <ListView.View>
-                                <GridView>
-                                    <GridViewColumn Header="Description">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate DataType="VersionControlClient:PolicyFailure">
-                                                <TextBlock Text="{Binding Message}"/>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                </GridView>
-                            </ListView.View>
+                        <ListView DockPanel.Dock="Bottom"  ItemsSource="{Binding Path=CheckinNotes}" HorizontalContentAlignment="Stretch">
+                            <ListView.ItemTemplate>
+                                <DataTemplate DataType="PendingChanges:CheckinNoteModel">
+                                    <Expander Header="{Binding CheckinNoteFieldDefinition.Name}" IsExpanded="True">
+                                        <xctk:WatermarkTextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}">
+                                            <xctk:WatermarkTextBox.Style>
+                                                <Style TargetType="{x:Type xctk:WatermarkTextBox}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Value="True">
+                                                            <DataTrigger.Binding>
+                                                                <MultiBinding Converter="{StaticResource AndClauseBooleanConverter}">
+                                                                    <Binding ElementName="ShelveChangesDialogWindow" Path="DataContext.EvaluatePoliciesAndCheckinNotes" />
+                                                                    <Binding Path="CheckinNoteFieldDefinition.Required" />
+                                                                </MultiBinding>
+                                                            </DataTrigger.Binding>
+                                                            <Setter Property="Watermark" Value="&lt;Required&gt;" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </xctk:WatermarkTextBox.Style>
+                                        </xctk:WatermarkTextBox>
+                                    </Expander>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
                         </ListView>
                     </TabItem>
-                </TabControl>
+                <TabItem x:Name="PolicyWarningsTabItem" IsSelected="{Binding IsChecked, ElementName=PolicyWarningsRadioButton}">
+                    <ListView>
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Description">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate DataType="VersionControlClient:PolicyFailure">
+                                            <TextBlock Text="{Binding Message}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </TabItem>
+            </TabControl>
 
         </DockPanel>
 

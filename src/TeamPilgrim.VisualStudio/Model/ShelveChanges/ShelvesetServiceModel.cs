@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Comparer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Extensions;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.CommandArguments;
@@ -15,11 +16,16 @@ using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs;
 using Microsoft.TeamFoundation.VersionControl.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
+using NLog;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
 {
     public class ShelvesetServiceModel : BaseServiceModel
     {
+        private static readonly Logger Logger = TeamPilgrimLogManager.Instance.GetCurrentClassLogger();
+
+        public ObservableCollection<CheckinNoteModel> CheckinNotes { get; private set; }
+
         private readonly ProjectCollectionServiceModel _projectCollectionServiceModel;
         private readonly WorkspaceServiceModel _workspaceServiceModel;
 
@@ -115,6 +121,23 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
             }
         }
 
+        private CheckinEvaluationResult _checkinEvaluationResult;
+        public CheckinEvaluationResult CheckinEvaluationResult
+        {
+            get
+            {
+                return _checkinEvaluationResult;
+            }
+            private set
+            {
+                if (_checkinEvaluationResult == value) return;
+
+                _checkinEvaluationResult = value;
+
+                SendPropertyChanged("CheckinEvaluationResult");
+            }
+        }
+
         private bool _filterSolution;
         public bool FilterSolution
         {
@@ -190,6 +213,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
             }
         }
 
+        private bool _backgroundFunctionPreventEvaluateCheckin;
+
         public ShelvesetServiceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider,
                                      ITeamPilgrimVsService teamPilgrimVsService,
                                      ProjectCollectionServiceModel projectCollectionServiceModel, WorkspaceServiceModel workspaceServiceModel)
@@ -203,6 +228,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
             _selectedWorkWorkItemQueryDefinition = workspaceServiceModel.SelectedWorkItemQueryDefinition;
             _comment = workspaceServiceModel.Comment;
 
+            EvaluateCheckInCommand = new RelayCommand(EvaluateCheckIn, CanEvaluateCheckIn);
             ShowSelectWorkItemQueryCommand = new RelayCommand(ShowSelectWorkItemQuery, CanShowSelectWorkItemQuery);
             RefreshPendingChangesCommand = new RelayCommand(RefreshPendingChanges, CanRefreshPendingChanges);
             RefreshSelectedDefinitionWorkItemsCommand = new RelayCommand(RefreshSelectedDefinitionWorkItems, CanRefreshSelectedDefinitionWorkItems);
@@ -215,6 +241,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
             CompareWithWorkspaceCommand = new RelayCommand<ObservableCollection<object>>(CompareWithWorkspace, CanCompareWithWorkspace);
             UndoPendingChangeCommand = new RelayCommand<ObservableCollection<object>>(UndoPendingChange, CanUndoPendingChange);
             PendingChangePropertiesCommand = new RelayCommand<ObservableCollection<object>>(PendingChangeProperties, CanPendingChangeProperties);
+
+            CheckinNotes = new ObservableCollection<CheckinNoteModel>();
 
             PendingChanges = new TrulyObservableCollection<PendingChangeModel>(workspaceServiceModel.PendingChanges.Select(model => new PendingChangeModel(model.Change)
                 {
@@ -230,6 +258,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
             WorkItems.CollectionChanged += WorkItemsOnCollectionChanged;
 
             PopulatePreviouslySelectedWorkItemQueryModels();
+
+            EvaluateCheckInCommand.Execute(null);
         }
 
         private void PopulatePreviouslySelectedWorkItemQueryModels()
@@ -245,6 +275,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
         private void PendingChangesOnCollectionChanged(object sender,
                                                        NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
+            Logger.Trace("PendingChangesOnCollectionChanged");
+
+            EvaluateCheckInCommand.Execute(null);
         }
 
         #endregion
@@ -255,6 +288,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
 
         private void WorkItemsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            Logger.Trace("WorkItemsOnCollectionChanged");
+
+            EvaluateCheckInCommand.Execute(null);
         }
 
         #endregion
@@ -265,10 +301,18 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
 
         private void SelectPendingChanges(SelectPendingChangesCommandArgument selectPendingChangesCommandArgument)
         {
+            Logger.Debug("Select Pending Changes: {0}, Count: {1}", selectPendingChangesCommandArgument.Value, selectPendingChangesCommandArgument.Collection.Count());
+
+            _backgroundFunctionPreventEvaluateCheckin = true;
+            
             foreach (var pendingChangeModel in selectPendingChangesCommandArgument.Collection)
             {
                 pendingChangeModel.IncludeChange = selectPendingChangesCommandArgument.Value;
             }
+        
+            _backgroundFunctionPreventEvaluateCheckin = false;
+
+            EvaluateCheckInCommand.Execute(null);
         }
 
         private bool CanSelectPendingChanges(SelectPendingChangesCommandArgument collection)
@@ -284,10 +328,17 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
 
         private void SelectWorkItems(SelectWorkItemsCommandArgument selectWorkItemsCommandArgument)
         {
+            Logger.Debug("Select Work Items: {0}, Count: {1}", selectWorkItemsCommandArgument.Value, selectWorkItemsCommandArgument.Collection.Count());
+         
+            _backgroundFunctionPreventEvaluateCheckin = true;
+         
             foreach (var workItemModel in selectWorkItemsCommandArgument.Collection)
             {
                 workItemModel.IsSelected = selectWorkItemsCommandArgument.Value;
             }
+          
+            _backgroundFunctionPreventEvaluateCheckin = false;
+            EvaluateCheckInCommand.Execute(null);
         }
 
         private bool CanSelectWorkItems(SelectWorkItemsCommandArgument collection)
@@ -392,6 +443,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
 
         private void RefreshPendingChanges()
         {
+            Logger.Trace("RefreshPendingChanges");
+
             PendingChange[] currentPendingChanges;
 
             if (_projectCollectionServiceModel.TeamPilgrimServiceModel.SolutionIsOpen && FilterSolution
@@ -409,6 +462,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
                     .Where(pendingChange => !modelIntersection.Select(model => model.Change.ItemId).Contains(pendingChange.ItemId))
                     .Select(change => new PendingChangeModel(change)).ToArray();
 
+                _backgroundFunctionPreventEvaluateCheckin = true;
+
                 foreach (var modelToAdd in modelsToAdd)
                 {
                     PendingChanges.Add(modelToAdd);
@@ -418,6 +473,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
                 {
                     PendingChanges.Remove(modelToRemove);
                 }
+              
+                _backgroundFunctionPreventEvaluateCheckin = false;
+                
+                EvaluateCheckInCommand.Execute(null);
             }
         }
 
@@ -467,11 +526,20 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
                         .Select(model => new WorkItemCheckinInfo(model.WorkItem, model.WorkItemCheckinAction.ToWorkItemCheckinAction()))
                         .ToArray();
 
+                    var checkinNoteFieldValues =
+                        CheckinNotes
+                        .Where(model => !string.IsNullOrWhiteSpace(model.Value))
+                        .Select(model => new CheckinNoteFieldValue(model.CheckinNoteFieldDefinition.Name, model.Value))
+                        .ToArray();
+
+                    var checkinNote = new CheckinNote(checkinNoteFieldValues);
+
                     var shelveset = new Shelveset(versionControlServer, ShelvesetName, _projectCollectionServiceModel.TfsTeamProjectCollection.AuthorizedIdentity.UniqueName)
                         {
                             Comment = Comment,
                             ChangesExcluded = PendingChanges.Count() != pendingChanges.Count(),
-                            WorkItemInfo = workItemInfo
+                            WorkItemInfo = workItemInfo,
+                            CheckinNote = checkinNote
                         };
 
                     var shelvingOptions = ShelvingOptions.None;
@@ -502,6 +570,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
 
         private void RefreshSelectedDefinitionWorkItems()
         {
+            Logger.Trace("RefreshSelectedDefinitionWorkItems");
+
             if (SelectedWorkItemQueryDefinition == null)
                 return;
 
@@ -523,9 +593,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
 
                 var modelsToRemove = WorkItems.Where(model => !modelIntersection.Contains(model)).ToArray();
 
+                var selectedWorkItemCheckinActionEnum = TeamPilgrimPackage.TeamPilgrimSettings.SelectedWorkItemCheckinAction;
                 var modelsToAdd = currentWorkItems
                     .Where(workItem => !modelIntersection.Select(workItemModel => workItemModel.WorkItem.Id).Contains(workItem.Id))
-                    .Select(workItem => new WorkItemModel(workItem)).ToArray();
+                    .Select(workItem => new WorkItemModel(workItem) { WorkItemCheckinAction = selectedWorkItemCheckinActionEnum }).ToArray();
+
+                _backgroundFunctionPreventEvaluateCheckin = false;
 
                 foreach (var modelToAdd in modelsToAdd)
                 {
@@ -537,17 +610,92 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
                     WorkItems.Remove(modelToRemove);
                 }
 
-                var selectedWorkItemCheckinActionEnum = TeamPilgrimPackage.TeamPilgrimSettings.SelectedWorkItemCheckinAction;
-                foreach (var workItemModel in WorkItems.Where(model => !model.IsSelected))
-                {
-                    workItemModel.WorkItemCheckinAction = selectedWorkItemCheckinActionEnum;
-                }
+                _backgroundFunctionPreventEvaluateCheckin = false;
+                EvaluateCheckInCommand.Execute(null);
             }
         }
 
         private bool CanRefreshSelectedDefinitionWorkItems()
         {
             return true;
+        }
+
+        #endregion
+
+        #region EvaluateCheckIn Command
+
+        public RelayCommand EvaluateCheckInCommand { get; private set; }
+
+        private void EvaluateCheckIn()
+        {
+            Logger.Trace("EvaluateCheckIn");
+
+            var pendingChanges = PendingChanges
+                                    .Where(model => model.IncludeChange)
+                                    .Select(model => model.Change)
+                                    .ToArray();
+
+            if (!pendingChanges.Any())
+            {
+                CheckinEvaluationResult = null;
+                CheckinNotes.Clear();
+                return;
+            }
+
+            var currentCheckinNoteDefinitions = _workspaceServiceModel.checkinNotesCacheWrapper.GetCheckinNotes(pendingChanges);
+
+            var equalityComparer = CheckinNoteFieldDefinition.NameComparer.ToGenericComparer<CheckinNoteFieldDefinition>().ToEqualityComparer();
+
+            var modelIntersection =
+                    CheckinNotes
+                    .Join(currentCheckinNoteDefinitions, model => model.CheckinNoteFieldDefinition, checkinNoteFieldDefinition => checkinNoteFieldDefinition, (model, change) => model, equalityComparer)
+                    .ToArray();
+
+            var modelsToRemove = CheckinNotes.Where(model => !modelIntersection.Contains(model)).ToArray();
+
+            var modelsToAdd = currentCheckinNoteDefinitions
+                .Where(checkinNoteFieldDefinition => !modelIntersection.Select(model => model.CheckinNoteFieldDefinition).Contains(checkinNoteFieldDefinition, equalityComparer))
+                .Select(checkinNoteFieldDefinition => new CheckinNoteModel(checkinNoteFieldDefinition)).ToArray();
+
+            foreach (var modelToAdd in modelsToAdd)
+            {
+                CheckinNotes.Add(modelToAdd);
+            }
+
+            foreach (var modelToRemove in modelsToRemove)
+            {
+                CheckinNotes.Remove(modelToRemove);
+            }
+
+            CheckinEvaluationResult checkinEvaluationResult;
+
+            var workItemChanges =
+                WorkItems
+                .Where(model => model.IsSelected)
+                .Select(model => new WorkItemCheckinInfo(model.WorkItem, model.WorkItemCheckinAction.ToWorkItemCheckinAction())).ToArray();
+
+            var checkinNoteFieldValues =
+                CheckinNotes
+                .Where(model => !string.IsNullOrWhiteSpace(model.Value))
+                .Select(model => new CheckinNoteFieldValue(model.CheckinNoteFieldDefinition.Name, model.Value))
+                .ToArray();
+
+            var checkinNote = new CheckinNote(checkinNoteFieldValues);
+
+            if (teamPilgrimServiceModelProvider.TryEvaluateCheckin(out checkinEvaluationResult, _workspaceServiceModel.Workspace, pendingChanges, Comment, checkinNote, workItemChanges))
+            {
+                CheckinEvaluationResult = checkinEvaluationResult;
+                Logger.Debug("EvaluateCheckIn: Valid:{0}", checkinEvaluationResult.IsValid());
+            }
+        }
+
+        private bool CanEvaluateCheckIn()
+        {
+            var canEvaluateCheckIn = !_backgroundFunctionPreventEvaluateCheckin;
+
+            Logger.Trace("CanEvaluateCheckIn: Result: {0}", canEvaluateCheckIn);
+
+            return canEvaluateCheckIn;
         }
 
         #endregion
