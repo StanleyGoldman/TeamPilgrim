@@ -184,8 +184,6 @@
     <Compile Include="Common\AttachedProperties\PreviewSpaceKeyDownSelectWorkItems.cs" />
     <Compile Include="Common\Converters\BooleanToAlternateFontWeightConverter.cs" />
     <Compile Include="Common\Converters\ObservableCollectionToTrulyObservableCollectionCoverter.cs" />
-    <Compile Include="Common\Converters\SelectPendingChangesCommandConverter.cs" />
-    <Compile Include="Common\Converters\SelectWorkItemsCommandConverter.cs" />
     <Compile Include="Common\TrulyObservableCollection.cs" />
     <Compile Include="Common\LoggerExtensions.cs" />
     <Compile Include="Common\WorkItemQueryChildModelExtensions.cs" />
