@@ -164,7 +164,7 @@
                                 </ListView.ContextMenu>
                                 <ListView.View>
                                     <GridView>
-                                        <GridViewColumn Header="File">
+                                        <GridViewColumn Header="File" Width="200">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate DataType="PendingChanges:PendingChangeModel">
                                                     <DockPanel>
@@ -178,7 +178,7 @@
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
 
-                                        <GridViewColumn Header="Change">
+                                        <GridViewColumn Header="Change" Width="70">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate DataType="PendingChanges:PendingChangeModel">
                                                     <TextBlock Text="{Binding Change.ChangeTypeName, Mode=OneWay}"/>
@@ -186,7 +186,7 @@
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
 
-                                        <GridViewColumn Header="Folder">
+                                        <GridViewColumn Header="Folder" Width="Auto">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate DataType="PendingChanges:PendingChangeModel">
                                                     <TextBlock Text="{Binding Change.LocalOrServerFolder, Mode=OneWay}"/>
