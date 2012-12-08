@@ -2,6 +2,7 @@
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows.Forms;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
@@ -429,26 +430,46 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
 
         private void Shelve()
         {
-            var pendingChanges = PendingChanges
-                .Where(model => model.IncludeChange)
-                .Select(model => model.Change)
-                .ToArray();
-
-            VersionControlServer versionControlServer;
-            if (teamPilgrimServiceModelProvider.TryGetVersionControlServer(out versionControlServer,
-                                                                           _projectCollectionServiceModel
-                                                                               .TfsTeamProjectCollection))
+            PendingSet[] pendingSets;
+            if (teamPilgrimServiceModelProvider.TryWorkspaceQueryShelvedChanges(_workspaceServiceModel.Workspace, out pendingSets, ShelvesetName,
+                                                                                _projectCollectionServiceModel.TfsTeamProjectCollection.AuthorizedIdentity.UniqueName, null))
             {
-                Debug.Assert(versionControlServer != null, "versionControlServer != null");
-                var shelveset = new Shelveset(versionControlServer, ShelvesetName, _projectCollectionServiceModel.TfsTeamProjectCollection.AuthorizedIdentity.UniqueName);
-
-                var shelvingOptions = ShelvingOptions.None;
-
-                if (!PreservePendingChangesLocally)
-                    shelvingOptions |= ShelvingOptions.Move;
-
-                if (teamPilgrimServiceModelProvider.TryShelve(_workspaceServiceModel.Workspace, shelveset, pendingChanges, shelvingOptions))
+                bool overwrite = false;
+                if (pendingSets.Any())
                 {
+                    if (MessageBox.Show(string.Format("Replace shelveset\r\n\r\nThe shelveset {0} already exists. Replace?", ShelvesetName),
+                            "Team Pilgrim", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                    {
+                        overwrite = true;
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+
+                var pendingChanges = PendingChanges
+                    .Where(model => model.IncludeChange)
+                    .Select(model => model.Change)
+                    .ToArray();
+
+                VersionControlServer versionControlServer;
+                if (teamPilgrimServiceModelProvider.TryGetVersionControlServer(out versionControlServer, _projectCollectionServiceModel.TfsTeamProjectCollection))
+                {
+                    Debug.Assert(versionControlServer != null, "versionControlServer != null");
+                    var shelveset = new Shelveset(versionControlServer, ShelvesetName, _projectCollectionServiceModel.TfsTeamProjectCollection.AuthorizedIdentity.UniqueName);
+
+                    var shelvingOptions = ShelvingOptions.None;
+
+                    if (!PreservePendingChangesLocally)
+                        shelvingOptions |= ShelvingOptions.Move;
+
+                    if(overwrite)
+                        shelvingOptions |= ShelvingOptions.Replace;
+
+                    if (teamPilgrimServiceModelProvider.TryShelve(_workspaceServiceModel.Workspace, shelveset, pendingChanges, shelvingOptions))
+                    {
+                    }
                 }
             }
         }

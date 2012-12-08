@@ -30,5 +30,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces
         Conflict[] GetAllConflicts(Workspace workspace);
         void WorkspaceShelve(Workspace workspace, Shelveset shelveset, PendingChange[] pendingChanges, ShelvingOptions shelvingOptions);
         VersionControlServer GetVersionControlServer(TfsTeamProjectCollection collection);
+        PendingSet[] WorkspaceQueryShelvedChanges(Workspace workspace, string shelvesetName, string shelvesetOwner, ItemSpec[] itemSpecs);
     }
 }

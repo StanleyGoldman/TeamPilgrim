@@ -228,6 +228,23 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             return false;
         }
 
+        public bool TryWorkspaceQueryShelvedChanges(Workspace workspace, out PendingSet[] pendingSets, string shelvesetName, string shelvesetOwner, ItemSpec[] itemSpecs)
+        {
+            try
+            {
+                pendingSets = _teamPilgrimTfsService.WorkspaceQueryShelvedChanges(workspace, shelvesetName, shelvesetOwner, itemSpecs);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.DebugException(ex);
+                LastException = ex;
+            }
+
+            pendingSets = null;
+            return false;
+        }
+
         public bool TryGetVersionControlServer(out VersionControlServer versionControlServer, TfsTeamProjectCollection tfsTeamProjectCollection)
         {
             try

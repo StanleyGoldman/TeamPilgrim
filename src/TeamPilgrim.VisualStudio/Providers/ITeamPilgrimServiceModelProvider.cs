@@ -47,5 +47,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
         bool TryShelve(Workspace workspace, Shelveset shelveset, PendingChange[] pendingChanges, ShelvingOptions shelvingOptions);
         
         bool TryGetVersionControlServer(out VersionControlServer versionControlServer, TfsTeamProjectCollection tfsTeamProjectCollection);
+        
+        bool TryWorkspaceQueryShelvedChanges(Workspace workspace, out PendingSet[] pendingSets, string shelvesetName, string shelvesetOwner, ItemSpec[] itemSpecs);
     }
 }

@@ -194,6 +194,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
             workspace.Shelve(shelveset, pendingChanges, shelvingOptions);
         }
 
+        public PendingSet[] WorkspaceQueryShelvedChanges(Workspace workspace, string shelvesetName, string shelvesetOwner, ItemSpec[] itemSpecs)
+        {
+            return workspace.QueryShelvedChanges(shelvesetName, shelvesetOwner, itemSpecs);
+        }
+
         public CheckinEvaluationResult EvaluateCheckin(Workspace workspace, PendingChange[] changes, string comment, CheckinNote checkinNote, WorkItemCheckinInfo[] workItemChanges)
         {
             Logger.Trace("EvaluateCheckin");
