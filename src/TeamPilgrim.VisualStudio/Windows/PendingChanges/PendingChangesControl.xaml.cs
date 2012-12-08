@@ -6,12 +6,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
-using GalaSoft.MvvmLight.Messaging;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Messages;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.CommandArguments;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
@@ -26,34 +24,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
             InitializeComponent();
 
             NameScope.SetNameScope(PendingChangesContextMenu, NameScope.GetNameScope(this));
-
-            Messenger.Default.Register<ShowShelveDialog>(this, message =>
-                {
-                    var shelveChangesDialog = new ShelveChangesDialog
-                        {
-                            DataContext = message.ShelvesetServiceModel
-                        };
-
-                    var dialogResult = shelveChangesDialog.ShowDialog();
-                    if (dialogResult.HasValue && dialogResult.Value)
-                    {
-                        
-                    }
-                });
-
-            Messenger.Default.Register<ShowUnshelveDialog>(this, message =>
-            {
-                var unshelveChangesDialog = new UnshelveChangesDialog
-                {
-                    DataContext = DataContext
-                };
-
-                var dialogResult = unshelveChangesDialog.ShowDialog();
-                if (dialogResult.HasValue && dialogResult.Value)
-                {
-
-                }
-            });
 		}	
 
         public new object DataContext
@@ -71,6 +41,34 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
                         if (args.PropertyName == "SelectedWorkspaceModel")
                         {
                             AttachShowPendingChangesItemEvent(teamPilgrimServiceModel);
+                        }
+                    };
+
+                teamPilgrimServiceModel.ShowShelveDialog += delegate(ShelvesetServiceModel model)
+                    {
+                        var shelveChangesDialog = new ShelveChangesDialog
+                            {
+                                DataContext = model
+                            };
+                        
+                        var dialogResult = shelveChangesDialog.ShowDialog();
+                        if (dialogResult.HasValue && dialogResult.Value)
+                        {
+                                                
+                        }
+                    };
+
+                teamPilgrimServiceModel.ShowUnshelveDialog += delegate
+                    {
+                        var unshelveChangesDialog = new UnshelveChangesDialog
+                        {
+                            DataContext = teamPilgrimServiceModel
+                        };
+                        
+                        var dialogResult = unshelveChangesDialog.ShowDialog();
+                        if (dialogResult.HasValue && dialogResult.Value)
+                        {
+                        
                         }
                     };
 

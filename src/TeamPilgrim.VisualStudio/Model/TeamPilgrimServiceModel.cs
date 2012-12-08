@@ -7,10 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Messaging;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.TeamFoundation;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Messages;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges;
@@ -22,6 +20,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
     public class TeamPilgrimServiceModel : BaseServiceModel
     {
+        public delegate void ShowShelveDialogDelegate(ShelvesetServiceModel shelvesetServiceModel);
+        public event ShowShelveDialogDelegate ShowShelveDialog;
+
+        public delegate void ShowUnshelveDialogDelegate();
+        public event ShowUnshelveDialogDelegate ShowUnshelveDialog;
+
         public ObservableCollection<ProjectCollectionServiceModel> ProjectCollectionModels { get; private set; }
         public ObservableCollection<WorkspaceInfoModel> WorkspaceInfoModels { get; private set; }
 
@@ -205,8 +209,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
             RefreshCommand = new RelayCommand(Refresh, CanRefresh);
             TfsConnectCommand = new RelayCommand(TfsConnect, CanTfsConnect);
-            ShowShelveDialogCommand = new RelayCommand(ShowShelveDialog, CanShowShelveDialog);
-            ShowUnshelveDialogCommand = new RelayCommand(ShowUnshelveDialog, CanShowUnshelveDialog);
+            ShelveCommand = new RelayCommand(Shelve, CanShelve);
+            UnshelveCommand = new RelayCommand(Unshelve, CanUnshelve);
             ShowResolveConflicttManagerCommand = new RelayCommand(ShowResolveConflicttManager, CanShowResolveConflicttManager);
 
             PopulateTeamPilgrimServiceModel();
@@ -343,35 +347,45 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
         #endregion
 
-        #region ShowShelveDialog Command
+        #region ShelveCommand Command
 
-        public RelayCommand ShowShelveDialogCommand { get; private set; }
+        public RelayCommand ShelveCommand { get; private set; }
 
-        private void ShowShelveDialog()
+        protected virtual void OnShowShelveDialog(ShelvesetServiceModel shelvesetServiceModel)
         {
-            Messenger.Default.Send(new ShowShelveDialog
-                {
-                    ShelvesetServiceModel = new ShelvesetServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, ActiveProjectCollectionModel, SelectedWorkspaceModel)
-                });
+            var handler = ShowShelveDialog;
+            if (handler != null) handler(shelvesetServiceModel);
         }
 
-        private bool CanShowShelveDialog()
+        private void Shelve()
+        {
+            OnShowShelveDialog(new ShelvesetServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, ActiveProjectCollectionModel, SelectedWorkspaceModel));
+        }
+
+        private bool CanShelve()
         {
             return true;
         }
 
         #endregion
 
-        #region ShowUnshelveDialog Command
+        #region Unshelve Command
 
-        public RelayCommand ShowUnshelveDialogCommand { get; private set; }
+        public RelayCommand UnshelveCommand { get; private set; }
 
-        private void ShowUnshelveDialog()
+
+        protected virtual void OnShowUnshelveDialog()
         {
-            Messenger.Default.Send(new ShowUnshelveDialog());
+            var handler = ShowUnshelveDialog;
+            if (handler != null) handler();
         }
 
-        private bool CanShowUnshelveDialog()
+        private void Unshelve()
+        {
+            OnShowUnshelveDialog();
+        }
+
+        private bool CanUnshelve()
         {
             return true;
         }

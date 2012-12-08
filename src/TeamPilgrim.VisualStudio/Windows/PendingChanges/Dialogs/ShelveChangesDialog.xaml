@@ -50,8 +50,8 @@
                 </DockPanel>
             </DockPanel>
             <DockPanel DockPanel.Dock="Right" LastChildFill="False">
-                <Button VerticalAlignment="Center" Content="Shelve" Click="OnShelveClick"/>
-                <Button VerticalAlignment="Center" Content="Cancel" Click="OnCancelClick"/>
+                <Button VerticalAlignment="Center" Content="Shelve" Command="{Binding ShelveCommand}"/>
+                <Button VerticalAlignment="Center" Content="Cancel" Command="{Binding CancelCommand}"/>
             </DockPanel>
         </DockPanel>
         <DockPanel DockPanel.Dock="Top" >

@@ -13,14 +13,49 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialog
     /// </summary>
     public partial class ShelveChangesDialog : Window
     {
+        public new object DataContext
+        {
+            get { return base.DataContext; }
+            set
+            {
+                base.DataContext = value;
+
+                var shelvesetServiceModel = (ShelvesetServiceModel) value;
+                if (shelvesetServiceModel == null) return;
+
+                shelvesetServiceModel.Dismiss += delegate(bool success)
+                    {
+                        DialogResult = success;
+                        Close();
+                    };
+
+                shelvesetServiceModel.ShowPendingChangesItem += delegate(ShowPendingChangesTabItemEnum showPendingChangesTabItem)
+                    {
+                        switch (showPendingChangesTabItem)
+                        {
+                            case ShowPendingChangesTabItemEnum.PolicyWarnings:
+                                PolicyWarningsRadioButton.IsChecked = true;
+                                break;
+
+                            case ShowPendingChangesTabItemEnum.CheckinNotes:
+                                CheckInNotesRadioButton.IsChecked = true;
+                                break;
+
+                            case ShowPendingChangesTabItemEnum.WorkItems:
+                                WorkItemsRadioButton.IsChecked = true;
+                                break;
+
+                            case ShowPendingChangesTabItemEnum.SourceFiles:
+                                SourceFilesRadioButton.IsChecked = true;
+                                break;
+                        }
+                    };
+            }
+        }
+
         public ShelveChangesDialog()
         {
             InitializeComponent();
-        }
-
-        private ShelvesetServiceModel ShelvesetServiceModelDataContext
-        {
-            get { return (ShelvesetServiceModel) DataContext; }
         }
 
         private void PendingChangesCheckboxClicked(object sender, RoutedEventArgs e)
@@ -78,19 +113,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialog
                     Collection = collection,
                     Value = checkedWorkItemModel.IsSelected
                 });
-        }
-
-        private void OnShelveClick(object sender, RoutedEventArgs e)
-        {
-            ShelvesetServiceModelDataContext.ShelveCommand.Execute(null);
-            DialogResult = true;
-            Close();
-        }
-
-        private void OnCancelClick(object sender, RoutedEventArgs e)
-        {
-            DialogResult = false;
-            Close();
         }
     }
 }

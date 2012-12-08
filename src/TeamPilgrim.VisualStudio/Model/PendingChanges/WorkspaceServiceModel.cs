@@ -28,11 +28,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 {
     public class WorkspaceServiceModel : BaseServiceModel
     {
-        public delegate void ShowPendingChangesItemDelegate(ShowPendingChangesTabItemEnum showPendingChangesTabItemEnum);
-
-        public event ShowPendingChangesItemDelegate ShowPendingChangesItem;
-
         private static readonly Logger Logger = TeamPilgrimLogManager.Instance.GetCurrentClassLogger();
+
+        public delegate void ShowPendingChangesItemDelegate(ShowPendingChangesTabItemEnum showPendingChangesTabItemEnum);
+        public event ShowPendingChangesItemDelegate ShowPendingChangesItem;
 
         public ObservableCollection<CheckinNoteModel> CheckinNotes { get; private set; }
 

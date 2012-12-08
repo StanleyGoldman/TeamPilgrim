@@ -208,14 +208,12 @@
     <Compile Include="Common\VsWindowFrameEditorTypeIds.cs" />
     <Compile Include="Common\AttachedProperties\MouseDoubleClick.cs" />
     <Compile Include="Common\Extensions\CheckinEvaluationResultExtensions.cs" />
-    <Compile Include="Messages\ShowUnshelveDialog.cs" />
     <Compile Include="Model\CommandArguments\SelectPendingChangesCommandArgument.cs" />
     <Compile Include="Model\CommandArguments\SelectWorkItemsCommandArgument.cs" />
     <Compile Include="Model\ShelveChanges\ShelvesetServiceModel.cs" />
     <Compile Include="Model\PendingChanges\PreviouslySelectedWorkItemQuery.cs" />
     <Compile Include="Model\PendingChanges\ShowPendingChangesTabItemEnum.cs" />
     <Compile Include="TeamPilgrimLogManager.cs" />
-    <Compile Include="Messages\ShowShelveDialog.cs" />
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Model\LicenseModel.cs" />
     <Compile Include="Model\PendingChanges\CheckinNoteModel.cs" />
