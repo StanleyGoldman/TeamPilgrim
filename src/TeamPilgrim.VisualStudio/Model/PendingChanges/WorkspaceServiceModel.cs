@@ -54,6 +54,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
                 if (string.IsNullOrWhiteSpace(previousValue) ^ string.IsNullOrWhiteSpace(_comment))
                 {
+                    Logger.Debug("Comment IsNullOrWhiteSpace Status Changed");
                     EvaluateCheckInCommand.Execute(null);
                 }
             }
@@ -222,7 +223,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             WorkItems = new TrulyObservableCollection<WorkItemModel>();
             WorkItems.CollectionChanged += WorkItemsOnCollectionChanged;
 
-            EvaluateCheckInCommand.Execute(null);
             PopulatePreviouslySelectedWorkItemQueryModels();
         }
 
@@ -260,6 +260,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private void WorkItemsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            Logger.Trace("WorkItemsOnCollectionChanged");
+
             EvaluateCheckInCommand.Execute(null);
         }
 
@@ -528,6 +530,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                                     .Select(model => model.Change)
                                     .ToArray();
 
+            if (!pendingChanges.Any())
+            {
+                CheckinEvaluationResult = null;
+                CheckinNotes.Clear();
+                return;
+            }
+
             var currentCheckinNoteDefinitions = _checkinNotesCacheWrapper.GetCheckinNotes(pendingChanges);
 
             var equalityComparer = CheckinNoteFieldDefinition.NameComparer.ToGenericComparer<CheckinNoteFieldDefinition>().ToEqualityComparer();
@@ -577,7 +586,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private bool CanEvaluateCheckIn()
         {
-            var canEvaluateCheckIn = PendingChanges.Any(model => model.IncludeChange) && !_backgroundFunctionPreventEvaluateCheckin;
+            var canEvaluateCheckIn = !_backgroundFunctionPreventEvaluateCheckin;
 
             Logger.Trace("CanEvaluateCheckIn: Result: {0}", canEvaluateCheckIn);
 
