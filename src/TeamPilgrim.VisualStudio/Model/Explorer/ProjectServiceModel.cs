@@ -61,9 +61,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
             ChildObjects = new ObservableCollection<BaseModel>
                 {
                     WorkItemQueryServiceModel, 
-                    new ReportsModel(),
                     BuildDefinitionsServiceModel,
-                    new TeamMembersModel(),
                     new SourceControlModel()
                 };
             
