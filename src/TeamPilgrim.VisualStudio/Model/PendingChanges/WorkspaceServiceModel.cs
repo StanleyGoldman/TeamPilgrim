@@ -660,6 +660,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private void RefreshSelectedDefinitionWorkItems()
         {
+            Logger.Trace("RefreshSelectedDefinitionWorkItems");
+
             if (SelectedWorkItemQueryDefinition == null)
                 return;
 
@@ -687,10 +689,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
                 var modelsToRemove = WorkItems.Where(model => !intersectedModels.Contains(model)).ToArray();
 
+                var selectedWorkItemCheckinActionEnum = TeamPilgrimPackage.TeamPilgrimSettings.SelectedWorkItemCheckinAction;
                 var modelsToAdd = currentWorkItems
                     .Where(workItem => !intersectedModels.Select(workItemModel => workItemModel.WorkItem.Id).Contains(workItem.Id))
-                    .Select(workItem => new WorkItemModel(workItem)).ToArray();
+                    .Select(workItem => new WorkItemModel(workItem) { WorkItemCheckinAction = selectedWorkItemCheckinActionEnum }).ToArray();
 
+                _backgroundFunctionPreventEvaluateCheckin = false;
+                
                 foreach (var modelToAdd in modelsToAdd)
                 {
                     WorkItems.Add(modelToAdd);
@@ -700,12 +705,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                 {
                     WorkItems.Remove(modelToRemove);
                 }
-
-                var selectedWorkItemCheckinActionEnum = TeamPilgrimPackage.TeamPilgrimSettings.SelectedWorkItemCheckinAction;
-                foreach (var workItemModel in WorkItems.Where(model => !model.IsSelected))
-                {
-                    workItemModel.WorkItemCheckinAction = selectedWorkItemCheckinActionEnum;
-                }
+               
+                _backgroundFunctionPreventEvaluateCheckin = false;
+                EvaluateCheckInCommand.Execute(null);
             }
         }
 
