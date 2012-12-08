@@ -12,15 +12,17 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces
         TfsTeamProjectCollection GetProjectCollection(Uri uri);
 
         Project[] GetProjects(Uri tpcAddress);
+        Project[] GetProjects(TfsTeamProjectCollection tfsTeamProjectCollection);
+
         RegisteredProjectCollection[] GetRegisteredProjectCollections();
 
         QueryFolder AddNewQueryFolder(TfsTeamProjectCollection teamProjectCollection, Project teamProject, Guid parentFolderId);
-        bool DeleteQueryItem(TfsTeamProjectCollection teamProjectCollection, Project teamProject, Guid queryItemId);
+        bool DeleteQueryItem(TfsTeamProjectCollection tfsTeamProjectCollection, Project teamProject, Guid queryItemId);
 
-        IBuildDefinition[] QueryBuildDefinitions(TfsTeamProjectCollection collection, string teamProject);
-        IBuildDetail[] QueryBuildDetails(TfsTeamProjectCollection collection, string teamProject);
+        IBuildDefinition[] QueryBuildDefinitions(TfsTeamProjectCollection tfsTeamProjectCollection, string teamProject);
+        IBuildDetail[] QueryBuildDetails(TfsTeamProjectCollection tfsTeamProjectCollection, string teamProject);
 		
-		IBuildDefinition CloneBuildDefinition(TfsTeamProjectCollection collection, string projectName, IBuildDefinition sourceDefinition);
+		IBuildDefinition CloneBuildDefinition(TfsTeamProjectCollection tfsTeamProjectCollection, string projectName, IBuildDefinition sourceDefinition);
         void DeleteBuildDefinition(IBuildDefinition buildDefinition);
         WorkspaceInfo[] GetLocalWorkspaceInfo(Guid? projectCollectionId = null);
         Workspace GetWorkspace(WorkspaceInfo workspaceInfo, TfsTeamProjectCollection tfsTeamProjectCollection);
@@ -29,7 +31,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces
         CheckinEvaluationResult EvaluateCheckin(Workspace workspace, PendingChange[] changes, string comment, CheckinNote checkinNote, WorkItemCheckinInfo[] workItemChanges);
         Conflict[] GetAllConflicts(Workspace workspace);
         void WorkspaceShelve(Workspace workspace, Shelveset shelveset, PendingChange[] pendingChanges, ShelvingOptions shelvingOptions);
-        VersionControlServer GetVersionControlServer(TfsTeamProjectCollection collection);
+        VersionControlServer GetVersionControlServer(TfsTeamProjectCollection tfsTeamProjectCollection);
         PendingSet[] WorkspaceQueryShelvedChanges(Workspace workspace, string shelvesetName, string shelvesetOwner, ItemSpec[] itemSpecs);
     }
 }

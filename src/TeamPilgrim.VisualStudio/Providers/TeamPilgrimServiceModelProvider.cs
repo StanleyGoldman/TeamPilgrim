@@ -79,6 +79,23 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             return false;
         }
 
+        public bool TryGetProjects(out Project[] projects, TfsTeamProjectCollection tfsTeamProjectCollection)
+        {
+            try
+            {
+                projects = _teamPilgrimTfsService.GetProjects(tfsTeamProjectCollection);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.DebugException(ex);
+                LastException = ex;
+            }
+
+            projects = null;
+            return false;
+        }
+
         public bool TryDeleteQueryItem(out bool result, TfsTeamProjectCollection teamProjectCollection, Project teamProject, Guid queryItemId)
         {
             try
