@@ -160,7 +160,7 @@
                     <TextBlock DockPanel.Dock="Top">Comment:</TextBlock>
                     <TextBox DockPanel.Dock="Top" DataContext="{Binding Path=SelectedWorkspaceModel}" Text="{Binding Path=Comment, UpdateSourceTrigger=PropertyChanged}"></TextBox>
 
-                    <ListView x:Name="PendingChangesListView" 
+                    <ListView x:Name="PendingChangesListView" HorizontalAlignment="Stretch"
                               AttachedProperties:PreviewSpaceKeyDownSelectPendingChanges.Command="{Binding Path=SelectPendingChangesCommand}"
                               
                               AttachedProperties:PreviewReturnKeyDown.Command="{Binding Path=ViewPendingChangeCommand}"
@@ -203,7 +203,7 @@
                         </ListView.ContextMenu>
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="File">
+                                <GridViewColumn Header="File" Width="200">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate DataType="PendingChangesModel:PendingChangeModel">
                                             <DockPanel>
@@ -217,7 +217,7 @@
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
-                                <GridViewColumn Header="Change">
+                                <GridViewColumn Header="Change" Width="70">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate DataType="PendingChangesModel:PendingChangeModel">
                                             <TextBlock Text="{Binding Path=Change.ChangeTypeName, Mode=OneWay}"/>
@@ -225,7 +225,7 @@
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
-                                <GridViewColumn Header="Folder">
+                                <GridViewColumn Header="Folder" Width="Auto">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate DataType="PendingChangesModel:PendingChangeModel">
                                             <TextBlock Text="{Binding Path=Change.LocalOrServerFolder, Mode=OneWay}"/>
