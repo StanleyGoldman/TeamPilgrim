@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,6 +23,20 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialog
 
                 var shelvesetServiceModel = (ShelvesetServiceModel) value;
                 if (shelvesetServiceModel == null) return;
+
+                shelvesetServiceModel.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
+                    {
+                        if (args.PropertyName == "EvaluatePoliciesAndCheckinNotes")
+                        {
+                            if (!shelvesetServiceModel.EvaluatePoliciesAndCheckinNotes)
+                            {
+                                if (PolicyWarningsRadioButton.IsChecked.HasValue && PolicyWarningsRadioButton.IsChecked.Value)
+                                {
+                                    SourceFilesRadioButton.IsChecked = true;
+                                }
+                            }
+                        }
+                    };
 
                 shelvesetServiceModel.Dismiss += delegate(bool success)
                     {
