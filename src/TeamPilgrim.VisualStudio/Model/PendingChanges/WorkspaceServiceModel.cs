@@ -295,7 +295,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private bool CanViewPendingChange(ObservableCollection<object> collection)
         {
-            return true;
+            return collection != null && collection.Any();
         }
 
         #endregion
@@ -319,9 +319,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             EvaluateCheckInCommand.Execute(null);
         }
 
-        private bool CanSelectPendingChanges(SelectPendingChangesCommandArgument collection)
+        private bool CanSelectPendingChanges(SelectPendingChangesCommandArgument commandArgument)
         {
-            return true;
+            return commandArgument.Collection != null && commandArgument.Collection.Any();
         }
 
         #endregion
@@ -345,9 +345,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             EvaluateCheckInCommand.Execute(null);
         }
 
-        private bool CanSelectWorkItems(SelectWorkItemsCommandArgument collection)
+        private bool CanSelectWorkItems(SelectWorkItemsCommandArgument commandArgument)
         {
-            return true;
+            return commandArgument.Collection != null && commandArgument.Collection.Any();
         }
 
         #endregion
@@ -366,7 +366,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private bool CanViewWorkItem(ObservableCollection<object> collection)
         {
-            return true;
+            return collection != null && collection.Any();
         }
 
         #endregion
@@ -382,7 +382,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private bool CanCompareWithWorkspace(ObservableCollection<object> collection)
         {
-            return collection.Count == 1;
+            return collection != null && collection.Count == 1;
         }
 
         #endregion
@@ -398,7 +398,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private bool CanCompareWithLatest(ObservableCollection<object> collection)
         {
-            return collection.Count == 1;
+            return collection != null && collection.Count == 1;
         }
 
         #endregion
@@ -414,7 +414,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private bool CanUndoPendingChange(ObservableCollection<object> collection)
         {
-            return true;
+            return collection != null && collection.Any();
         }
 
         #endregion
@@ -425,11 +425,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private void PendingChangeProperties(ObservableCollection<object> collection)
         {
+            //TODO: Implement PendingChangeProperties
         }
 
         private bool CanPendingChangeProperties(ObservableCollection<object> collection)
         {
-            return true;
+            return collection != null && collection.Count == 1;
         }
 
         #endregion
@@ -531,7 +532,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private bool CanCheckIn()
         {
-            return true;
+            return PendingChanges.Any(model => model.IncludeChange);
         }
 
         #endregion
@@ -607,7 +608,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         {
             var canEvaluateCheckIn = !_backgroundFunctionPreventEvaluateCheckin;
 
-            Logger.Trace("CanEvaluateCheckIn: Result: {0}", canEvaluateCheckIn);
+            Logger.Trace("CanEvaluateCheckIn: {0}", canEvaluateCheckIn);
 
             return canEvaluateCheckIn;
         }
@@ -714,7 +715,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                     .Select(workItem => new WorkItemModel(workItem) { WorkItemCheckinAction = selectedWorkItemCheckinActionEnum }).ToArray();
 
                 _backgroundFunctionPreventEvaluateCheckin = false;
-                
+
                 foreach (var modelToAdd in modelsToAdd)
                 {
                     WorkItems.Add(modelToAdd);
@@ -724,7 +725,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                 {
                     WorkItems.Remove(modelToRemove);
                 }
-               
+
                 _backgroundFunctionPreventEvaluateCheckin = false;
                 EvaluateCheckInCommand.Execute(null);
             }
@@ -743,6 +744,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private void ShowSelectWorkItemQuery()
         {
+            //TODO: This should be an event, and the dialog should be displayed by a control object
+
             var selectWorkItemQueryModel = new SelectWorkItemQueryModel(_projectCollectionServiceModel);
             var selectWorkItemQueryDialog = new SelectWorkItemQueryDialog
                 {
@@ -780,7 +783,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private bool CanShelve()
         {
-            return true;
+            return PendingChanges.Any();
         }
 
         #endregion

@@ -334,9 +334,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
             EvaluateCheckInCommand.Execute(null);
         }
 
-        private bool CanSelectPendingChanges(SelectPendingChangesCommandArgument collection)
+        private bool CanSelectPendingChanges(SelectPendingChangesCommandArgument commandArgument)
         {
-            return true;
+            return commandArgument.Collection != null && commandArgument.Collection.Any();
         }
 
         #endregion
@@ -360,9 +360,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
             EvaluateCheckInCommand.Execute(null);
         }
 
-        private bool CanSelectWorkItems(SelectWorkItemsCommandArgument collection)
+        private bool CanSelectWorkItems(SelectWorkItemsCommandArgument commandArgument)
         {
-            return true;
+            return commandArgument.Collection != null && commandArgument.Collection.Any();
         }
 
         #endregion
@@ -378,7 +378,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
 
         private bool CanCompareWithWorkspace(ObservableCollection<object> collection)
         {
-            return collection.Count == 1;
+            return collection != null && collection.Count == 1;
         }
 
         #endregion
@@ -394,7 +394,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
 
         private bool CanCompareWithLatest(ObservableCollection<object> collection)
         {
-            return collection.Count == 1;
+            return collection != null && collection.Count == 1;
         }
 
         #endregion
@@ -410,7 +410,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
 
         private bool CanUndoPendingChange(ObservableCollection<object> collection)
         {
-            return true;
+            return collection != null && collection.Count == 1;
         }
 
         #endregion
@@ -421,11 +421,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
 
         private void PendingChangeProperties(ObservableCollection<object> collection)
         {
+            //TODO: Implement PendingChangeProperties
         }
 
         private bool CanPendingChangeProperties(ObservableCollection<object> collection)
         {
-            return true;
+            return collection != null && collection.Count == 1;
         }
 
         #endregion
@@ -595,7 +596,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
 
         private bool CanShelve()
         {
-            return true;
+            return PendingChanges.Any(model => model.IncludeChange);
         }
 
         #endregion
