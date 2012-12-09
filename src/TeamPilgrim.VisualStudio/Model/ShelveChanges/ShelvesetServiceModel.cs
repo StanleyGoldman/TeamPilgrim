@@ -230,6 +230,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
             _projectCollectionServiceModel = projectCollectionServiceModel;
             _workspaceServiceModel = workspaceServiceModel;
 
+            var versionControlServer = _projectCollectionServiceModel.TfsTeamProjectCollection.GetService<VersionControlServer>();
+            versionControlServer.PendingChangesChanged += VersionControlServerOnPendingChangesChanged;
+
             _filterSolution = workspaceServiceModel.FilterSolution;
             _selectedWorkWorkItemQueryDefinition = workspaceServiceModel.SelectedWorkItemQueryDefinition;
             _comment = workspaceServiceModel.Comment;
@@ -267,6 +270,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
             PopulatePreviouslySelectedWorkItemQueryModels();
 
             EvaluateCheckInCommand.Execute(null);
+        }
+      
+        private void VersionControlServerOnPendingChangesChanged(object sender, WorkspaceEventArgs workspaceEventArgs)
+        {
+            Logger.Debug("VersionControlServerOnPendingChangesChanged");
+
+            RefreshPendingChanges();
         }
 
         private void PopulatePreviouslySelectedWorkItemQueryModels()
