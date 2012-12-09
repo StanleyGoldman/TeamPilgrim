@@ -20,12 +20,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
     public class TeamPilgrimServiceModel : BaseServiceModel
     {
-        public delegate void ShowShelveDialogDelegate(ShelvesetServiceModel shelvesetServiceModel);
-        public event ShowShelveDialogDelegate ShowShelveDialog;
-
-        public delegate void ShowUnshelveDialogDelegate();
-        public event ShowUnshelveDialogDelegate ShowUnshelveDialog;
-
         public ObservableCollection<ProjectCollectionServiceModel> ProjectCollectionModels { get; private set; }
         public ObservableCollection<WorkspaceInfoModel> WorkspaceInfoModels { get; private set; }
 
@@ -209,8 +203,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
             RefreshCommand = new RelayCommand(Refresh, CanRefresh);
             TfsConnectCommand = new RelayCommand(TfsConnect, CanTfsConnect);
-            ShelveCommand = new RelayCommand(Shelve, CanShelve);
-            UnshelveCommand = new RelayCommand(Unshelve, CanUnshelve);
             ShowResolveConflicttManagerCommand = new RelayCommand(ShowResolveConflicttManager, CanShowResolveConflicttManager);
 
             PopulateTeamPilgrimServiceModel();
@@ -341,51 +333,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
         }
 
         private bool CanRefresh()
-        {
-            return true;
-        }
-
-        #endregion
-
-        #region ShelveCommand Command
-
-        public RelayCommand ShelveCommand { get; private set; }
-
-        protected virtual void OnShowShelveDialog(ShelvesetServiceModel shelvesetServiceModel)
-        {
-            var handler = ShowShelveDialog;
-            if (handler != null) handler(shelvesetServiceModel);
-        }
-
-        private void Shelve()
-        {
-            OnShowShelveDialog(new ShelvesetServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, ActiveProjectCollectionModel, SelectedWorkspaceModel));
-        }
-
-        private bool CanShelve()
-        {
-            return true;
-        }
-
-        #endregion
-
-        #region Unshelve Command
-
-        public RelayCommand UnshelveCommand { get; private set; }
-
-
-        protected virtual void OnShowUnshelveDialog()
-        {
-            var handler = ShowUnshelveDialog;
-            if (handler != null) handler();
-        }
-
-        private void Unshelve()
-        {
-            OnShowUnshelveDialog();
-        }
-
-        private bool CanUnshelve()
         {
             return true;
         }

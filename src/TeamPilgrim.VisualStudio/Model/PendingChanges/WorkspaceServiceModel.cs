@@ -30,6 +30,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
     {
         private static readonly Logger Logger = TeamPilgrimLogManager.Instance.GetCurrentClassLogger();
 
+        public delegate void ShowShelveDialogDelegate(ShelvesetServiceModel shelvesetServiceModel);
+        public event ShowShelveDialogDelegate ShowShelveDialog;
+
+        public delegate void ShowUnshelveDialogDelegate();
+        public event ShowUnshelveDialogDelegate ShowUnshelveDialog;
+
         public delegate void ShowPendingChangesItemDelegate(ShowPendingChangesTabItemEnum showPendingChangesTabItemEnum);
         public event ShowPendingChangesItemDelegate ShowPendingChangesItem;
 
@@ -193,6 +199,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
             checkinNotesCacheWrapper = new CheckinNotesCacheWrapper(versionControlServer);
 
+            ShelveCommand = new RelayCommand(Shelve, CanShelve);
+            UnshelveCommand = new RelayCommand(Unshelve, CanUnshelve);
             CheckInCommand = new RelayCommand(CheckIn, CanCheckIn);
             RefreshPendingChangesCommand = new RelayCommand(RefreshPendingChanges, CanRefreshPendingChanges);
             RefreshSelectedDefinitionWorkItemsCommand = new RelayCommand(RefreshSelectedDefinitionWorkItems, CanRefreshSelectedDefinitionWorkItems);
@@ -749,6 +757,51 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         }
 
         private bool CanShowSelectWorkItemQuery()
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region ShelveCommand Command
+
+        public RelayCommand ShelveCommand { get; private set; }
+
+        protected virtual void OnShowShelveDialog(ShelvesetServiceModel shelvesetServiceModel)
+        {
+            var handler = ShowShelveDialog;
+            if (handler != null) handler(shelvesetServiceModel);
+        }
+
+        private void Shelve()
+        {
+            OnShowShelveDialog(new ShelvesetServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, _projectCollectionServiceModel, this));
+        }
+
+        private bool CanShelve()
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region Unshelve Command
+
+        public RelayCommand UnshelveCommand { get; private set; }
+
+
+        protected virtual void OnShowUnshelveDialog()
+        {
+            var handler = ShowUnshelveDialog;
+            if (handler != null) handler();
+        }
+
+        private void Unshelve()
+        {
+            OnShowUnshelveDialog();
+        }
+
+        private bool CanUnshelve()
         {
             return true;
         }

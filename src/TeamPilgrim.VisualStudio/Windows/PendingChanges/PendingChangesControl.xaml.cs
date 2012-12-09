@@ -44,34 +44,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
                         }
                     };
 
-                teamPilgrimServiceModel.ShowShelveDialog += delegate(ShelvesetServiceModel model)
-                    {
-                        var shelveChangesDialog = new ShelveChangesDialog
-                            {
-                                DataContext = model
-                            };
-                        
-                        var dialogResult = shelveChangesDialog.ShowDialog();
-                        if (dialogResult.HasValue && dialogResult.Value)
-                        {
-                                                
-                        }
-                    };
-
-                teamPilgrimServiceModel.ShowUnshelveDialog += delegate
-                    {
-                        var unshelveChangesDialog = new UnshelveChangesDialog
-                        {
-                            DataContext = teamPilgrimServiceModel
-                        };
-                        
-                        var dialogResult = unshelveChangesDialog.ShowDialog();
-                        if (dialogResult.HasValue && dialogResult.Value)
-                        {
-                        
-                        }
-                    };
-
                 AttachShowPendingChangesItemEvent(teamPilgrimServiceModel);
             }
         }
@@ -79,7 +51,37 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
         private void AttachShowPendingChangesItemEvent(TeamPilgrimServiceModel teamPilgrimServiceModel)
         {
             if (teamPilgrimServiceModel.SelectedWorkspaceModel == null) return;
+
             teamPilgrimServiceModel.SelectedWorkspaceModel.ShowPendingChangesItem += SelectedWorkspaceModelOnShowPendingChangesItem;
+            teamPilgrimServiceModel.SelectedWorkspaceModel.ShowShelveDialog += SelectedWorkspaceModelOnShowShelveDialog;
+            teamPilgrimServiceModel.SelectedWorkspaceModel.ShowUnshelveDialog += SelectedWorkspaceModelOnShowUnshelveDialog;
+        }
+
+        private void SelectedWorkspaceModelOnShowUnshelveDialog()
+        {
+                var unshelveChangesDialog = new UnshelveChangesDialog
+                {
+                    DataContext = DataContext
+                };
+
+                var dialogResult = unshelveChangesDialog.ShowDialog();
+                if (dialogResult.HasValue && dialogResult.Value)
+                {
+
+                }
+        }
+
+        private void SelectedWorkspaceModelOnShowShelveDialog(ShelvesetServiceModel model)
+        {
+            var shelveChangesDialog = new ShelveChangesDialog
+                {
+                    DataContext = model
+                };
+
+            var dialogResult = shelveChangesDialog.ShowDialog();
+            if (dialogResult.HasValue && dialogResult.Value)
+            {
+            }
         }
 
         private void SelectedWorkspaceModelOnShowPendingChangesItem(ShowPendingChangesTabItemEnum showPendingChangesTabItemEnum)
