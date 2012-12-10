@@ -63,9 +63,17 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
             {
                 if (_comment == value) return;
 
+                var previousValue = _comment;
+
                 _comment = value;
 
                 SendPropertyChanged("Comment");
+
+                if (string.IsNullOrWhiteSpace(previousValue) ^ string.IsNullOrWhiteSpace(_comment))
+                {
+                    Logger.Debug("Comment IsNullOrWhiteSpace Status Changed");
+                    EvaluateCheckInCommand.Execute(null);
+                }
             }
         }
 
