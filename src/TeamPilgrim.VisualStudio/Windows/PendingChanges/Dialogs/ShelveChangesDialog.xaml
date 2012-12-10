@@ -308,7 +308,7 @@
                         </ListView>
                     </TabItem>
                 <TabItem x:Name="PolicyWarningsTabItem" IsSelected="{Binding IsChecked, ElementName=PolicyWarningsRadioButton}">
-                    <ListView>
+                    <ListView DataContext="{Binding Path=CheckinEvaluationResult}" ItemsSource="{Binding Path=PolicyFailures}">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="Description">

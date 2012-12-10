@@ -531,6 +531,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
 
         private void Shelve()
         {
+            var pendingChanges = PendingChanges
+                .Where(model => model.IncludeChange)
+                .Select(model => model.Change)
+                .ToArray();
+
             if (EvaluatePoliciesAndCheckinNotes)
             {
                 var missingCheckinNotes = CheckinNotes
@@ -545,11 +550,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
                     return;
                 }
             }
-
-            var pendingChanges = PendingChanges
-                .Where(model => model.IncludeChange)
-                .Select(model => model.Change)
-                .ToArray();
 
             VersionControlServer versionControlServer;
             if (teamPilgrimServiceModelProvider.TryGetVersionControlServer(out versionControlServer, _projectCollectionServiceModel.TfsTeamProjectCollection))
@@ -569,12 +569,45 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
 
                 var checkinNote = new CheckinNote(checkinNoteFieldValues);
 
+                string policyOverrideComment = null;
+                if (EvaluatePoliciesAndCheckinNotes)
+                {
+                    CheckinEvaluationResult checkinEvaluationResult;
+                    if (teamPilgrimServiceModelProvider.TryEvaluateCheckin(out checkinEvaluationResult, _workspaceServiceModel.Workspace, pendingChanges, Comment, checkinNote, workItemInfo))
+                    {
+                        if (!checkinEvaluationResult.IsValid())
+                        {
+                            OnShowPendingChangesItem(ShowPendingChangesTabItemEnum.PolicyWarnings);
+
+                            var policyFailureModel = new PolicyFailureModel();
+                            var policyFailureDialog = new PolicyFailureDialog()
+                            {
+                                DataContext = policyFailureModel
+                            };
+
+                            var dialogResult = policyFailureDialog.ShowDialog();
+                            if (!dialogResult.HasValue || !dialogResult.Value || !policyFailureModel.Override)
+                            {
+                                CheckinEvaluationResult = checkinEvaluationResult;
+                                return;
+                            }
+
+                            policyOverrideComment = policyFailureModel.Reason;
+                        }
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+
                 var shelveset = new Shelveset(versionControlServer, ShelvesetName, _projectCollectionServiceModel.TfsTeamProjectCollection.AuthorizedIdentity.UniqueName)
                     {
                         Comment = Comment,
                         ChangesExcluded = PendingChanges.Count() != pendingChanges.Count(),
                         WorkItemInfo = workItemInfo,
-                        CheckinNote = checkinNote
+                        CheckinNote = checkinNote,
+                        PolicyOverrideComment = policyOverrideComment
                     };
 
                 PendingSet[] pendingSets;
