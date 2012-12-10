@@ -103,16 +103,13 @@
                                 <TextBlock>Shelve</TextBlock>
                             </StackPanel>
                         </Button>
-                        
-                        <!--
                         <Button  DataContext="{Binding Path=SelectedWorkspaceModel}" Command="{Binding UnshelveCommand}">
                             <StackPanel Orientation="Horizontal">
                                 <Image Source="../../Resources/unshelve.png" Width="16" Height="16" Margin="0,0,2,0"  />
                                 <TextBlock>Unshelve</TextBlock>
                             </StackPanel>
                         </Button>
-                        -->
-                        
+
                         <Separator/>
                         <ToggleButton IsEnabled="{Binding SolutionIsOpen}" IsChecked="{Binding Path=SelectedWorkspaceModel.FilterSolution}">Filter Solution</ToggleButton>
                         
