@@ -171,7 +171,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
             }
         }
 
-        private bool _evaluatePoliciesAndCheckinNotes;
+        private bool _evaluatePoliciesAndCheckinNotes = TeamPilgrimPackage.TeamPilgrimSettings.EvaluatePoliciesDuringShelve;
         public bool EvaluatePoliciesAndCheckinNotes
         {
             get

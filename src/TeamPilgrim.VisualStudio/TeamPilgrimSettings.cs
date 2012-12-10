@@ -16,8 +16,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
         private const string GeneralSectionName = "General";
         private const string SelectedWorkItemCheckinActionKeyName = "SelectedWorkItemCheckinAction";
         private const string PreserveShelvedChangesLocallyKeyName = "PreserveShelvedChangesLocally";
+        private const string EvaluatePoliciesDuringShelveKeyName = "EvaluatePoliciesDuringShelve";
         private const string PreviouslySelectedWorkItemQueriesValueSeperatorKeyName = "PreviouslySelectedWorkItemQueriesValueSeperator";
         private const string PreviouslySelectedWorkItemQueriesMaxCountKeyName = "PreviouslySelectedWorkItemQueriesMaxCount";
+
+        private const string ShelvingSectionName = "Shelving";
 
         private const string PreviouslySelectedWorkItemQueriesSectionName = "PreviouslySelectedWorkItemQueries";
 
@@ -48,6 +51,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
                 SelectedWorkItemCheckinAction = SelectedWorkItemCheckinAction;
                 PreviouslySelectedWorkItemQueriesValueSeperator = PreviouslySelectedWorkItemQueriesValueSeperator;
                 PreviouslySelectedWorkItemQueriesMaxCount = PreviouslySelectedWorkItemQueriesMaxCount;
+                PreserveShelvedChangesLocally = PreserveShelvedChangesLocally;
+                EvaluatePoliciesDuringShelve = EvaluatePoliciesDuringShelve;
                 Save();
             }
 
@@ -94,34 +99,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
                 }
 
                 keyDataCollection[SelectedWorkItemCheckinActionKeyName] = value.ToString();
-            }
-        }
-
-        public bool PreserveShelvedChangesLocally
-        {
-            get
-            {
-                var keyDataCollection = GeneralSection;
-                if (!keyDataCollection.ContainsKey(PreserveShelvedChangesLocallyKeyName))
-                {
-                    keyDataCollection.AddKey(PreserveShelvedChangesLocallyKeyName);
-                }
-
-                var value = keyDataCollection[PreserveShelvedChangesLocallyKeyName];
-                if (String.IsNullOrEmpty(value))
-                    return false;
-
-                return bool.Parse(value);
-            }
-            set
-            {
-                var keyDataCollection = GeneralSection;
-                if (!keyDataCollection.ContainsKey(PreserveShelvedChangesLocallyKeyName))
-                {
-                    keyDataCollection.AddKey(PreserveShelvedChangesLocallyKeyName);
-                }
-
-                keyDataCollection[PreserveShelvedChangesLocallyKeyName] = value.ToString();
             }
         }
 
@@ -174,9 +151,82 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
                 keyDataCollection[PreviouslySelectedWorkItemQueriesMaxCountKeyName] = value.ToString();
             }
         }
-
+    
         #endregion
 
+        #region Shelving
+
+        private KeyDataCollection ShelvingSection
+        {
+            get
+            {
+                if (!_iniData.Sections.ContainsSection(ShelvingSectionName))
+                {
+                    _iniData.Sections.AddSection(ShelvingSectionName);
+                }
+
+                return _iniData[ShelvingSectionName];
+            }
+        }
+
+        public bool PreserveShelvedChangesLocally
+        {
+            get
+            {
+                var keyDataCollection = ShelvingSection;
+                if (!keyDataCollection.ContainsKey(PreserveShelvedChangesLocallyKeyName))
+                {
+                    keyDataCollection.AddKey(PreserveShelvedChangesLocallyKeyName);
+                }
+
+                var value = keyDataCollection[PreserveShelvedChangesLocallyKeyName];
+                if (String.IsNullOrEmpty(value))
+                    return false;
+
+                return bool.Parse(value);
+            }
+            set
+            {
+                var keyDataCollection = ShelvingSection;
+                if (!keyDataCollection.ContainsKey(PreserveShelvedChangesLocallyKeyName))
+                {
+                    keyDataCollection.AddKey(PreserveShelvedChangesLocallyKeyName);
+                }
+
+                keyDataCollection[PreserveShelvedChangesLocallyKeyName] = value.ToString();
+            }
+        }
+
+        public bool EvaluatePoliciesDuringShelve
+        {
+            get
+            {
+                var keyDataCollection = ShelvingSection;
+                if (!keyDataCollection.ContainsKey(EvaluatePoliciesDuringShelveKeyName))
+                {
+                    keyDataCollection.AddKey(EvaluatePoliciesDuringShelveKeyName);
+                }
+
+                var value = keyDataCollection[EvaluatePoliciesDuringShelveKeyName];
+                if (String.IsNullOrEmpty(value))
+                    return false;
+
+                return bool.Parse(value);
+            }
+            set
+            {
+                var keyDataCollection = ShelvingSection;
+                if (!keyDataCollection.ContainsKey(EvaluatePoliciesDuringShelveKeyName))
+                {
+                    keyDataCollection.AddKey(EvaluatePoliciesDuringShelveKeyName);
+                }
+
+                keyDataCollection[EvaluatePoliciesDuringShelveKeyName] = value.ToString();
+            }
+        }
+
+        #endregion
+     
         #region PreviouslySelectedWorkItemsQueries
 
         private KeyDataCollection PreviouslySelectedWorkItemsQueriesSection
