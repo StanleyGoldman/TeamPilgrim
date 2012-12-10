@@ -477,56 +477,56 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             {
                 Logger.Debug("CheckIn EvaluateCheckin: Valid:{0}", checkinEvaluationResult.IsValid());
 
-                if (checkinEvaluationResult.IsValid())
-                {
-                    ProcessCheckIn(pendingChanges, checkinNote, workItemChanges);
-                }
-                else if (checkinEvaluationResult.Conflicts.Any())
-                {
-                    MessageBox.Show(
-                        "Check In\r\n\r\nNo files checked in due to conflicting changes. Please use Conflicts Manager to resolve conflicts and try again.", "Team Pilgrim", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                PolicyOverrideInfo policyOverrideInfo = null;
 
-                    var conflictedServerItems = checkinEvaluationResult.Conflicts.Select(conflict => conflict.ServerItem).ToArray();
-                    teamPilgrimVsService.ResolveConflicts(Workspace, conflictedServerItems, false, false);
-                }
-                else if (checkinEvaluationResult.PolicyFailures.Any())
+                if (!checkinEvaluationResult.IsValid())
                 {
-                    OnShowPendingChangesItem(ShowPendingChangesTabItemEnum.PolicyWarnings);
-
-                    var policyFailureModel = new PolicyFailureModel();
-                    var policyFailureDialog = new PolicyFailureDialog()
+                    if (checkinEvaluationResult.Conflicts.Any())
                     {
-                        DataContext = policyFailureModel
-                    };
+                        MessageBox.Show(
+                            "Check In\r\n\r\nNo files checked in due to conflicting changes. Please use Conflicts Manager to resolve conflicts and try again.",
+                            "Team Pilgrim", MessageBoxButton.OK, MessageBoxImage.Exclamation);
 
-                    var dialogResult = policyFailureDialog.ShowDialog();
-                    if (dialogResult.HasValue && dialogResult.Value && policyFailureModel.Override)
-                    {
-                        string reason = policyFailureModel.Reason;
-                        ProcessCheckIn(pendingChanges, checkinNote, workItemChanges, new PolicyOverrideInfo(reason, checkinEvaluationResult.PolicyFailures));
+                        var conflictedServerItems = checkinEvaluationResult.Conflicts.Select(conflict => conflict.ServerItem).ToArray();
+                        teamPilgrimVsService.ResolveConflicts(Workspace, conflictedServerItems, false, false);
+
+                        return;
                     }
-                    else
+                    
+                    if (checkinEvaluationResult.PolicyFailures.Any())
                     {
-                        CheckinEvaluationResult = checkinEvaluationResult;
+                        OnShowPendingChangesItem(ShowPendingChangesTabItemEnum.PolicyWarnings);
+
+                        var policyFailureModel = new PolicyFailureModel();
+                        var policyFailureDialog = new PolicyFailureDialog()
+                            {
+                                DataContext = policyFailureModel
+                            };
+
+                        var dialogResult = policyFailureDialog.ShowDialog();
+                        if (!dialogResult.HasValue || !dialogResult.Value || !policyFailureModel.Override)
+                        {
+                            CheckinEvaluationResult = checkinEvaluationResult;
+                            return;
+                        }
+
+                        policyOverrideInfo = new PolicyOverrideInfo(policyFailureModel.Reason, checkinEvaluationResult.PolicyFailures);
                     }
                 }
-            }
-        }
 
-        private void ProcessCheckIn(PendingChange[] pendingChanges, CheckinNote checkinNote, WorkItemCheckinInfo[] workItemChanges, PolicyOverrideInfo policyOverrideInfo = null)
-        {
-            if (teamPilgrimServiceModelProvider.TryCheckin(Workspace, pendingChanges, Comment, checkinNote, workItemChanges, policyOverrideInfo))
-            {
-                Comment = string.Empty;
-                RefreshPendingChanges();
-
-                foreach (var workItem in WorkItems.Where(model => model.IsSelected))
+                if (teamPilgrimServiceModelProvider.TryCheckin(Workspace, pendingChanges, Comment, checkinNote, workItemChanges, policyOverrideInfo))
                 {
-                    workItem.IsSelected = false;
-                }
+                    Comment = string.Empty;
+                    RefreshPendingChanges();
 
-                RefreshPendingChangesCommand.Execute(null);
-                RefreshSelectedDefinitionWorkItemsCommand.Execute(null);
+                    foreach (var workItem in WorkItems.Where(model => model.IsSelected))
+                    {
+                        workItem.IsSelected = false;
+                    }
+
+                    RefreshPendingChangesCommand.Execute(null);
+                    RefreshSelectedDefinitionWorkItemsCommand.Execute(null);
+                }
             }
         }
 
