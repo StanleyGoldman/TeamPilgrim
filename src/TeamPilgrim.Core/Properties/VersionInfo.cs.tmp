@@ -30,7 +30,7 @@ namespace JustAProgrammer.TeamPilgrim.Core
         /// <summary>
         /// The patch version number for this assembly.
         /// </summary>
-        public const string Patch = "6";
+        public const string Patch = "7";
 
         /// <summary>
         /// The changeset for this assembly.

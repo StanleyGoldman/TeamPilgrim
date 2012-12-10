@@ -15,12 +15,8 @@
     <DockPanel>
         
         <DockPanel DockPanel.Dock="Bottom" LastChildFill="False">
-            <Button DockPanel.Dock="Right" Click="CancelButtonClick">
-                <TextBlock>Cancel</TextBlock>
-            </Button>
-            <Button DockPanel.Dock="Right" Click="OkButtonClick">
-                OK
-            </Button>
+            <Button DockPanel.Dock="Right" Click="CancelButtonClick" Content="Cancel" />
+            <Button DockPanel.Dock="Right" Click="OkButtonClick" Content="OK" />
         </DockPanel>
         
         <ScrollViewer DockPanel.Dock="Top" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">

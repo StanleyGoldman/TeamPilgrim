@@ -14,9 +14,9 @@ using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Comparer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Extensions;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Messages;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.CommandArguments;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs;
@@ -29,6 +29,15 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
     public class WorkspaceServiceModel : BaseServiceModel
     {
         private static readonly Logger Logger = TeamPilgrimLogManager.Instance.GetCurrentClassLogger();
+
+        public delegate void ShowShelveDialogDelegate(ShelvesetServiceModel shelvesetServiceModel);
+        public event ShowShelveDialogDelegate ShowShelveDialog;
+
+        public delegate void ShowUnshelveDialogDelegate();
+        public event ShowUnshelveDialogDelegate ShowUnshelveDialog;
+
+        public delegate void ShowPendingChangesItemDelegate(ShowPendingChangesTabItemEnum showPendingChangesTabItemEnum);
+        public event ShowPendingChangesItemDelegate ShowPendingChangesItem;
 
         public ObservableCollection<CheckinNoteModel> CheckinNotes { get; private set; }
 
@@ -53,6 +62,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
                 if (string.IsNullOrWhiteSpace(previousValue) ^ string.IsNullOrWhiteSpace(_comment))
                 {
+                    Logger.Debug("Comment IsNullOrWhiteSpace Status Changed");
                     EvaluateCheckInCommand.Execute(null);
                 }
             }
@@ -134,10 +144,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         }
 
         private readonly ProjectCollectionServiceModel _projectCollectionServiceModel;
-        private readonly CheckinNotesCacheWrapper _checkinNotesCacheWrapper;
+        internal readonly CheckinNotesCacheWrapper checkinNotesCacheWrapper;
 
         private WorkItemQueryDefinitionModel _selectedWorkWorkItemQueryDefinition;
-
         public WorkItemQueryDefinitionModel SelectedWorkItemQueryDefinition
         {
             get
@@ -155,10 +164,29 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                 RefreshSelectedDefinitionWorkItems();
 
                 TeamPilgrimPackage.TeamPilgrimSettings.AddPreviouslySelectedWorkItemQuery(_projectCollectionServiceModel.TfsTeamProjectCollection.Uri.ToString(), value.QueryDefinition.Path);
-
                 PopulatePreviouslySelectedWorkItemQueryModels();
             }
         }
+
+        private bool _filterSolution;
+        public bool FilterSolution
+        {
+            get
+            {
+                return _filterSolution;
+            }
+            private set
+            {
+                if (_filterSolution == value) return;
+
+                _filterSolution = value;
+
+                SendPropertyChanged("FilterSolution");
+                RefreshPendingChangesCommand.Execute(null);
+            }
+        }
+
+        private bool _backgroundFunctionPreventEvaluateCheckin;
 
         public WorkspaceServiceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, ProjectCollectionServiceModel projectCollectionServiceModel, Workspace workspace)
             : base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
@@ -169,8 +197,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             var versionControlServer = _projectCollectionServiceModel.TfsTeamProjectCollection.GetService<VersionControlServer>();
             versionControlServer.PendingChangesChanged += VersionControlServerOnPendingChangesChanged;
 
-            _checkinNotesCacheWrapper = new CheckinNotesCacheWrapper(versionControlServer);
+            checkinNotesCacheWrapper = new CheckinNotesCacheWrapper(versionControlServer);
 
+            ShelveCommand = new RelayCommand(Shelve, CanShelve);
+            UnshelveCommand = new RelayCommand(Unshelve, CanUnshelve);
             CheckInCommand = new RelayCommand(CheckIn, CanCheckIn);
             RefreshPendingChangesCommand = new RelayCommand(RefreshPendingChanges, CanRefreshPendingChanges);
             RefreshSelectedDefinitionWorkItemsCommand = new RelayCommand(RefreshSelectedDefinitionWorkItems, CanRefreshSelectedDefinitionWorkItems);
@@ -205,7 +235,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             WorkItems = new TrulyObservableCollection<WorkItemModel>();
             WorkItems.CollectionChanged += WorkItemsOnCollectionChanged;
 
-            EvaluateCheckInCommand.Execute(null);
             PopulatePreviouslySelectedWorkItemQueryModels();
         }
 
@@ -222,10 +251,15 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             RefreshPendingChanges();
         }
 
+        protected virtual void OnShowPendingChangesItem(ShowPendingChangesTabItemEnum showpendingchangestabitemenum)
+        {
+            var handler = ShowPendingChangesItem;
+            if (handler != null) handler(showpendingchangestabitemenum);
+        }
+
         #region PendingChanges Collection
 
         public TrulyObservableCollection<PendingChangeModel> PendingChanges { get; private set; }
-        private bool _backgroundFunctionPreventEvaluateCheckin;
 
         private void PendingChangesOnCollectionChanged(object sender,
                                                        NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -243,6 +277,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private void WorkItemsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            Logger.Trace("WorkItemsOnCollectionChanged");
+
             EvaluateCheckInCommand.Execute(null);
         }
 
@@ -259,7 +295,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private bool CanViewPendingChange(ObservableCollection<object> collection)
         {
-            return true;
+            return collection != null && collection.Any();
         }
 
         #endregion
@@ -283,9 +319,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             EvaluateCheckInCommand.Execute(null);
         }
 
-        private bool CanSelectPendingChanges(SelectPendingChangesCommandArgument collection)
+        private bool CanSelectPendingChanges(SelectPendingChangesCommandArgument commandArgument)
         {
-            return true;
+            return commandArgument.Collection != null && commandArgument.Collection.Any();
         }
 
         #endregion
@@ -309,9 +345,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             EvaluateCheckInCommand.Execute(null);
         }
 
-        private bool CanSelectWorkItems(SelectWorkItemsCommandArgument collection)
+        private bool CanSelectWorkItems(SelectWorkItemsCommandArgument commandArgument)
         {
-            return true;
+            return commandArgument.Collection != null && commandArgument.Collection.Any();
         }
 
         #endregion
@@ -330,7 +366,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private bool CanViewWorkItem(ObservableCollection<object> collection)
         {
-            return true;
+            return collection != null && collection.Any();
         }
 
         #endregion
@@ -346,7 +382,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private bool CanCompareWithWorkspace(ObservableCollection<object> collection)
         {
-            return collection.Count == 1;
+            return collection != null && collection.Count == 1;
         }
 
         #endregion
@@ -362,7 +398,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private bool CanCompareWithLatest(ObservableCollection<object> collection)
         {
-            return collection.Count == 1;
+            return collection != null && collection.Count == 1;
         }
 
         #endregion
@@ -378,7 +414,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private bool CanUndoPendingChange(ObservableCollection<object> collection)
         {
-            return true;
+            return collection != null && collection.Any();
         }
 
         #endregion
@@ -389,11 +425,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private void PendingChangeProperties(ObservableCollection<object> collection)
         {
+            //TODO: Implement PendingChangeProperties
         }
 
         private bool CanPendingChangeProperties(ObservableCollection<object> collection)
         {
-            return true;
+            return collection != null && collection.Count == 1;
         }
 
         #endregion
@@ -421,7 +458,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
             if (missingCheckinNotes.Any())
             {
-                Messenger.Default.Send(new ShowPendingChangesTabItemMessage { ShowPendingChangesTabItem = ShowPendingChangesTabItemEnum.CheckinNotes });
+                OnShowPendingChangesItem(ShowPendingChangesTabItemEnum.CheckinNotes);
 
                 MessageBox.Show("Check-in Validation\r\n\r\nEnter a value for " + string.Join(", ", missingCheckinNotes), "Team Pilgrim", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -440,62 +477,62 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             {
                 Logger.Debug("CheckIn EvaluateCheckin: Valid:{0}", checkinEvaluationResult.IsValid());
 
-                if (checkinEvaluationResult.IsValid())
-                {
-                    ProcessCheckIn(pendingChanges, checkinNote, workItemChanges);
-                }
-                else if (checkinEvaluationResult.Conflicts.Any())
-                {
-                    MessageBox.Show(
-                        "Check In\r\n\r\nNo files checked in due to conflicting changes. Please use Conflicts Manager to resolve conflicts and try again.", "Team Pilgrim", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                PolicyOverrideInfo policyOverrideInfo = null;
 
-                    var conflictedServerItems = checkinEvaluationResult.Conflicts.Select(conflict => conflict.ServerItem).ToArray();
-                    teamPilgrimVsService.ResolveConflicts(Workspace, conflictedServerItems, false, false);
-                }
-                else if (checkinEvaluationResult.PolicyFailures.Any())
+                if (!checkinEvaluationResult.IsValid())
                 {
-                    Messenger.Default.Send(new ShowPendingChangesTabItemMessage { ShowPendingChangesTabItem = ShowPendingChangesTabItemEnum.PolicyWarnings });
-
-                    var policyFailureModel = new PolicyFailureModel();
-                    var policyFailureDialog = new PolicyFailureDialog()
+                    if (checkinEvaluationResult.Conflicts.Any())
                     {
-                        DataContext = policyFailureModel
-                    };
+                        MessageBox.Show(
+                            "Check In\r\n\r\nNo files checked in due to conflicting changes. Please use Conflicts Manager to resolve conflicts and try again.",
+                            "Team Pilgrim", MessageBoxButton.OK, MessageBoxImage.Exclamation);
 
-                    var dialogResult = policyFailureDialog.ShowDialog();
-                    if (dialogResult.HasValue && dialogResult.Value && policyFailureModel.Override)
-                    {
-                        string reason = policyFailureModel.Reason;
-                        ProcessCheckIn(pendingChanges, checkinNote, workItemChanges, new PolicyOverrideInfo(reason, checkinEvaluationResult.PolicyFailures));
+                        var conflictedServerItems = checkinEvaluationResult.Conflicts.Select(conflict => conflict.ServerItem).ToArray();
+                        teamPilgrimVsService.ResolveConflicts(Workspace, conflictedServerItems, false, false);
+
+                        return;
                     }
-                    else
+                    
+                    if (checkinEvaluationResult.PolicyFailures.Any())
                     {
-                        CheckinEvaluationResult = checkinEvaluationResult;
+                        OnShowPendingChangesItem(ShowPendingChangesTabItemEnum.PolicyWarnings);
+
+                        var policyFailureModel = new PolicyFailureModel();
+                        var policyFailureDialog = new PolicyFailureDialog()
+                            {
+                                DataContext = policyFailureModel
+                            };
+
+                        var dialogResult = policyFailureDialog.ShowDialog();
+                        if (!dialogResult.HasValue || !dialogResult.Value || !policyFailureModel.Override)
+                        {
+                            CheckinEvaluationResult = checkinEvaluationResult;
+                            return;
+                        }
+
+                        policyOverrideInfo = new PolicyOverrideInfo(policyFailureModel.Reason, checkinEvaluationResult.PolicyFailures);
                     }
                 }
-            }
-        }
 
-        private void ProcessCheckIn(PendingChange[] pendingChanges, CheckinNote checkinNote, WorkItemCheckinInfo[] workItemChanges, PolicyOverrideInfo policyOverrideInfo = null)
-        {
-            if (teamPilgrimServiceModelProvider.TryWorkspaceCheckin(Workspace, pendingChanges, Comment, checkinNote, workItemChanges, policyOverrideInfo))
-            {
-                Comment = string.Empty;
-                RefreshPendingChanges();
-
-                foreach (var workItem in WorkItems.Where(model => model.IsSelected))
+                if (teamPilgrimServiceModelProvider.TryCheckin(Workspace, pendingChanges, Comment, checkinNote, workItemChanges, policyOverrideInfo))
                 {
-                    workItem.IsSelected = false;
-                }
+                    Comment = string.Empty;
+                    RefreshPendingChanges();
 
-                RefreshPendingChangesCommand.Execute(null);
-                RefreshSelectedDefinitionWorkItemsCommand.Execute(null);
+                    foreach (var workItem in WorkItems.Where(model => model.IsSelected))
+                    {
+                        workItem.IsSelected = false;
+                    }
+
+                    RefreshPendingChangesCommand.Execute(null);
+                    RefreshSelectedDefinitionWorkItemsCommand.Execute(null);
+                }
             }
         }
 
         private bool CanCheckIn()
         {
-            return true;
+            return PendingChanges.Any(model => model.IncludeChange);
         }
 
         #endregion
@@ -506,12 +543,21 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private void EvaluateCheckIn()
         {
+            Logger.Trace("EvaluateCheckIn");
+
             var pendingChanges = PendingChanges
                                     .Where(model => model.IncludeChange)
                                     .Select(model => model.Change)
                                     .ToArray();
 
-            var currentCheckinNoteDefinitions = _checkinNotesCacheWrapper.GetCheckinNotes(pendingChanges);
+            if (!pendingChanges.Any())
+            {
+                CheckinEvaluationResult = null;
+                CheckinNotes.Clear();
+                return;
+            }
+
+            var currentCheckinNoteDefinitions = checkinNotesCacheWrapper.GetCheckinNotes(pendingChanges);
 
             var equalityComparer = CheckinNoteFieldDefinition.NameComparer.ToGenericComparer<CheckinNoteFieldDefinition>().ToEqualityComparer();
 
@@ -560,9 +606,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private bool CanEvaluateCheckIn()
         {
-            var canEvaluateCheckIn = PendingChanges.Any(model => model.IncludeChange) && !_backgroundFunctionPreventEvaluateCheckin;
+            var canEvaluateCheckIn = !_backgroundFunctionPreventEvaluateCheckin;
 
-            Logger.Trace("CanEvaluateCheckIn: Result: {0}", canEvaluateCheckIn);
+            Logger.Trace("CanEvaluateCheckIn: {0}", canEvaluateCheckIn);
 
             return canEvaluateCheckIn;
         }
@@ -579,7 +625,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
             PendingChange[] currentPendingChanges;
 
-            if (_projectCollectionServiceModel.TeamPilgrimServiceModel.SolutionIsOpen && _projectCollectionServiceModel.TeamPilgrimServiceModel.FilterSolution
+            if (_projectCollectionServiceModel.TeamPilgrimServiceModel.SolutionIsOpen && FilterSolution
                 ? teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, Workspace, teamPilgrimVsService.GetSolutionFilePaths())
                 : teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, Workspace))
             {
@@ -634,6 +680,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private void RefreshSelectedDefinitionWorkItems()
         {
+            Logger.Trace("RefreshSelectedDefinitionWorkItems");
+
             if (SelectedWorkItemQueryDefinition == null)
                 return;
 
@@ -661,9 +709,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
                 var modelsToRemove = WorkItems.Where(model => !intersectedModels.Contains(model)).ToArray();
 
+                var selectedWorkItemCheckinActionEnum = TeamPilgrimPackage.TeamPilgrimSettings.SelectedWorkItemCheckinAction;
                 var modelsToAdd = currentWorkItems
                     .Where(workItem => !intersectedModels.Select(workItemModel => workItemModel.WorkItem.Id).Contains(workItem.Id))
-                    .Select(workItem => new WorkItemModel(workItem)).ToArray();
+                    .Select(workItem => new WorkItemModel(workItem) { WorkItemCheckinAction = selectedWorkItemCheckinActionEnum }).ToArray();
+
+                _backgroundFunctionPreventEvaluateCheckin = false;
 
                 foreach (var modelToAdd in modelsToAdd)
                 {
@@ -675,11 +726,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                     WorkItems.Remove(modelToRemove);
                 }
 
-                var selectedWorkItemCheckinActionEnum = TeamPilgrimPackage.TeamPilgrimSettings.SelectedWorkItemCheckinAction;
-                foreach (var workItemModel in WorkItems.Where(model => !model.IsSelected))
-                {
-                    workItemModel.WorkItemCheckinAction = selectedWorkItemCheckinActionEnum;
-                }
+                _backgroundFunctionPreventEvaluateCheckin = false;
+                EvaluateCheckInCommand.Execute(null);
             }
         }
 
@@ -696,6 +744,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         private void ShowSelectWorkItemQuery()
         {
+            //TODO: This should be an event, and the dialog should be displayed by a control object
+
             var selectWorkItemQueryModel = new SelectWorkItemQueryModel(_projectCollectionServiceModel);
             var selectWorkItemQueryDialog = new SelectWorkItemQueryDialog
                 {
@@ -710,6 +760,51 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         }
 
         private bool CanShowSelectWorkItemQuery()
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region ShelveCommand Command
+
+        public RelayCommand ShelveCommand { get; private set; }
+
+        protected virtual void OnShowShelveDialog(ShelvesetServiceModel shelvesetServiceModel)
+        {
+            var handler = ShowShelveDialog;
+            if (handler != null) handler(shelvesetServiceModel);
+        }
+
+        private void Shelve()
+        {
+            OnShowShelveDialog(new ShelvesetServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, _projectCollectionServiceModel, this));
+        }
+
+        private bool CanShelve()
+        {
+            return PendingChanges.Any();
+        }
+
+        #endregion
+
+        #region Unshelve Command
+
+        public RelayCommand UnshelveCommand { get; private set; }
+
+
+        protected virtual void OnShowUnshelveDialog()
+        {
+            var handler = ShowUnshelveDialog;
+            if (handler != null) handler();
+        }
+
+        private void Unshelve()
+        {
+            OnShowUnshelveDialog();
+        }
+
+        private bool CanUnshelve()
         {
             return true;
         }

@@ -18,6 +18,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
         
         bool TryGetProjects(out Project[] projects, Uri tpcAddress);
 
+        bool TryGetProjects(out Project[] projects, TfsTeamProjectCollection tfsTeamProjectCollection);
+
         bool TryDeleteQueryItem(out bool result, TfsTeamProjectCollection teamProjectCollection, Project teamProject, Guid queryItemId);
 
         bool TryGetBuildDefinitionsByProjectName(out IBuildDefinition[] buildDefinitions, TfsTeamProjectCollection collection, string projectName);
@@ -32,7 +34,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
        
 	    bool TryGetWorkspace(out Workspace workspace, WorkspaceInfo workspaceInfo, TfsTeamProjectCollection tfsTeamProjectCollection);
         
-        bool TryWorkspaceCheckin(Workspace workspace, PendingChange[] changes, string comment, CheckinNote checkinNote = null, WorkItemCheckinInfo[] workItemChanges = null, PolicyOverrideInfo policyOverride = null);
+        bool TryCheckin(Workspace workspace, PendingChange[] changes, string comment, CheckinNote checkinNote = null, WorkItemCheckinInfo[] workItemChanges = null, PolicyOverrideInfo policyOverride = null);
         
         bool TryGetPendingChanges(out PendingChange[] pendingChanges, Workspace workspace);
         
@@ -41,6 +43,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
         bool TryEvaluateCheckin(out CheckinEvaluationResult checkinEvaluationResult, Workspace workspace, PendingChange[] changes, string comment, CheckinNote checkinNote = null, WorkItemCheckinInfo[] workItemChanges = null);
         
         bool TryGetAllConflicts(out Conflict[] conflicts, Workspace workspace);
+        
         bool TryGetPendingChanges(out PendingChange[] pendingChanges, Workspace workspace, string[] items);
+        
+        bool TryShelve(Workspace workspace, Shelveset shelveset, PendingChange[] pendingChanges, ShelvingOptions shelvingOptions);
+        
+        bool TryGetVersionControlServer(out VersionControlServer versionControlServer, TfsTeamProjectCollection tfsTeamProjectCollection);
+        
+        bool TryWorkspaceQueryShelvedChanges(Workspace workspace, out PendingSet[] pendingSets, string shelvesetName, string shelvesetOwner, ItemSpec[] itemSpecs);
     }
 }

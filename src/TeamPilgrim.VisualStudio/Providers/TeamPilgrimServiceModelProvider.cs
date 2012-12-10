@@ -79,6 +79,23 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             return false;
         }
 
+        public bool TryGetProjects(out Project[] projects, TfsTeamProjectCollection tfsTeamProjectCollection)
+        {
+            try
+            {
+                projects = _teamPilgrimTfsService.GetProjects(tfsTeamProjectCollection);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.DebugException(ex);
+                LastException = ex;
+            }
+
+            projects = null;
+            return false;
+        }
+
         public bool TryDeleteQueryItem(out bool result, TfsTeamProjectCollection teamProjectCollection, Project teamProject, Guid queryItemId)
         {
             try
@@ -196,7 +213,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             return false;
         }
 
-        public bool TryWorkspaceCheckin(Workspace workspace, PendingChange[] changes, string comment, CheckinNote checkinNote = null, WorkItemCheckinInfo[] workItemChanges = null, PolicyOverrideInfo policyOverride = null)
+        public bool TryCheckin(Workspace workspace, PendingChange[] changes, string comment, CheckinNote checkinNote = null, WorkItemCheckinInfo[] workItemChanges = null, PolicyOverrideInfo policyOverride = null)
         {
             try
             {
@@ -209,6 +226,61 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
                 LastException = ex;
             }
 
+            return false;
+        }
+
+        public bool TryShelve(Workspace workspace, Shelveset shelveset, PendingChange[] pendingChanges, ShelvingOptions shelvingOptions)
+        {
+            try
+            {
+                _teamPilgrimTfsService.WorkspaceShelve(workspace, shelveset, pendingChanges, shelvingOptions);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.DebugException(ex);
+                LastException = ex;
+            }
+
+            return false;
+        }
+
+        public bool TryWorkspaceQueryShelvedChanges(Workspace workspace, out PendingSet[] pendingSets, string shelvesetName, string shelvesetOwner, ItemSpec[] itemSpecs)
+        {
+            try
+            {
+                pendingSets = _teamPilgrimTfsService.WorkspaceQueryShelvedChanges(workspace, shelvesetName, shelvesetOwner, itemSpecs);
+                return true;
+            }
+            catch (ShelvesetNotFoundException)
+            {
+                pendingSets = null;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.DebugException(ex);
+                LastException = ex;
+            }
+
+            pendingSets = null;
+            return false;
+        }
+
+        public bool TryGetVersionControlServer(out VersionControlServer versionControlServer, TfsTeamProjectCollection tfsTeamProjectCollection)
+        {
+            try
+            {
+                versionControlServer = _teamPilgrimTfsService.GetVersionControlServer(tfsTeamProjectCollection);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.DebugException(ex);
+                LastException = ex;
+            }
+
+            versionControlServer = null;
             return false;
         }
 

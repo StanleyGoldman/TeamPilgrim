@@ -187,8 +187,6 @@
     <Compile Include="Common\AttachedProperties\PreviewSpaceKeyDownSelectWorkItems.cs" />
     <Compile Include="Common\Converters\BooleanToAlternateFontWeightConverter.cs" />
     <Compile Include="Common\Converters\ObservableCollectionToTrulyObservableCollectionCoverter.cs" />
-    <Compile Include="Common\Converters\SelectPendingChangesCommandConverter.cs" />
-    <Compile Include="Common\Converters\SelectWorkItemsCommandConverter.cs" />
     <Compile Include="Common\TrulyObservableCollection.cs" />
     <Compile Include="Common\LoggerExtensions.cs" />
     <Compile Include="Common\WorkItemQueryChildModelExtensions.cs" />
@@ -215,9 +213,10 @@
     <Compile Include="Common\Extensions\CheckinEvaluationResultExtensions.cs" />
     <Compile Include="Model\CommandArguments\SelectPendingChangesCommandArgument.cs" />
     <Compile Include="Model\CommandArguments\SelectWorkItemsCommandArgument.cs" />
+    <Compile Include="Model\ShelveChanges\ShelvesetServiceModel.cs" />
     <Compile Include="Model\PendingChanges\PreviouslySelectedWorkItemQuery.cs" />
+    <Compile Include="Model\PendingChanges\ShowPendingChangesTabItemEnum.cs" />
     <Compile Include="TeamPilgrimLogManager.cs" />
-    <Compile Include="Messages\ShowPendingChangesTabItem.cs" />
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Model\LicenseModel.cs" />
     <Compile Include="Model\PendingChanges\CheckinNoteModel.cs" />
@@ -226,6 +225,9 @@
     <Compile Include="Model\PendingChanges\WorkItemModel.cs" />
     <Compile Include="Model\PolicyFailureModel.cs" />
     <Compile Include="Model\SelectWorkItemQueryModel.cs" />
+    <Compile Include="Windows\PendingChanges\Dialogs\UnshelveChangesDialog.xaml.cs">
+      <DependentUpon>UnshelveChangesDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\Settings\SettingsPage.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -281,6 +283,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\TeamPilgrim.Core\Properties\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="Windows\PendingChanges\Dialogs\ShelveChangesDialog.xaml.cs">
+      <DependentUpon>ShelveChangesDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\PendingChanges\PendingChangesControl.xaml.cs">
       <DependentUpon>PendingChangesControl.xaml</DependentUpon>
@@ -367,6 +372,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Windows\PendingChanges\Dialogs\UnshelveChangesDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Windows\PendingChanges\Dialogs\PolicyFailureDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -378,6 +387,10 @@
     <Page Include="Windows\PendingChanges\Dialogs\SelectWorkItemQueryDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\PendingChanges\Dialogs\ShelveChangesDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\PendingChanges\PendingChangesControl.xaml">
       <Generator>MSBuild:Compile</Generator>

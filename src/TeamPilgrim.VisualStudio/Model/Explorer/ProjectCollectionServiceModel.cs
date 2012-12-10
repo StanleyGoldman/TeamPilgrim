@@ -42,7 +42,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
         private void Populate()
         {
             Project[] projects;
-            if (teamPilgrimServiceModelProvider.TryGetProjects(out projects, TfsTeamProjectCollection.Uri))
+            if (teamPilgrimServiceModelProvider.TryGetProjects(out projects, TfsTeamProjectCollection))
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
                     {

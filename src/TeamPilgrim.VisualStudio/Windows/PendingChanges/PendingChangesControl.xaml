@@ -19,8 +19,6 @@
 
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <Converters:SingleObjectToObservableCollectionConverter x:Key="SingleObjectToListConverter" />
-        <Converters:SelectWorkItemsCommandConverter x:Key="SelectWorkItemsCommandConverter" />
-        <Converters:SelectPendingChangesCommandConverter x:Key="SelectPendingChangesCommandConverter" />
 
         <ObjectDataProvider x:Key="workItemCheckinActions" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
             <ObjectDataProvider.MethodParameters>
@@ -74,7 +72,7 @@
                 <Image Source="..\..\Resources\edit_diff.png" Width="32" Height="32" Style="{StaticResource ButtonImageStyle}" />
             </Button>
         </ToolBar>
-        <TabControl DockPanel.Dock="Bottom" BorderThickness="0" Padding="0">
+        <TabControl DockPanel.Dock="Right" BorderThickness="0" Padding="0">
             <TabControl.Resources>
                 <!--http://stackoverflow.com/questions/6278720/wpf-toggle-panel-visibility-->
                 <Style TargetType="TabItem">
@@ -99,25 +97,31 @@
 
                         <Separator/>
                         
-                        <Button IsEnabled="False">
+                        <Button DataContext="{Binding Path=SelectedWorkspaceModel}" Command="{Binding ShelveCommand}">
                             <StackPanel Orientation="Horizontal">
                                 <Image Source="../../Resources/shelve.png" Width="16" Height="16" Margin="0,0,2,0"  />
                                 <TextBlock>Shelve</TextBlock>
                             </StackPanel>
                         </Button>
-                        <Button IsEnabled="False">
+                        
+                        <!--
+                        <Button  DataContext="{Binding Path=SelectedWorkspaceModel}" Command="{Binding UnshelveCommand}">
                             <StackPanel Orientation="Horizontal">
                                 <Image Source="../../Resources/unshelve.png" Width="16" Height="16" Margin="0,0,2,0"  />
                                 <TextBlock>Unshelve</TextBlock>
                             </StackPanel>
                         </Button>
-
+                        -->
+                        
                         <Separator/>
-                        <ToggleButton IsEnabled="{Binding SolutionIsOpen}" IsChecked="{Binding Path=FilterSolution}">Filter Solution</ToggleButton>
+                        <ToggleButton IsEnabled="{Binding SolutionIsOpen}" IsChecked="{Binding Path=SelectedWorkspaceModel.FilterSolution}">Filter Solution</ToggleButton>
                         
                         <Separator/>
 
                         <!--
+                        <Separator />
+                        <ToggleButton IsEnabled="False">Comments</ToggleButton>
+                        
                         Compare Button Dropdown Disabled/Needs Implementing
                 
                         <Button>Cmp with Unmodified</Button>
@@ -157,7 +161,7 @@
                     <TextBlock DockPanel.Dock="Top">Comment:</TextBlock>
                     <TextBox DockPanel.Dock="Top" DataContext="{Binding Path=SelectedWorkspaceModel}" Text="{Binding Path=Comment, UpdateSourceTrigger=PropertyChanged}"></TextBox>
 
-                    <ListView x:Name="PendingChangesListView" 
+                    <ListView x:Name="PendingChangesListView" HorizontalAlignment="Stretch"
                               AttachedProperties:PreviewSpaceKeyDownSelectPendingChanges.Command="{Binding Path=SelectPendingChangesCommand}"
                               
                               AttachedProperties:PreviewReturnKeyDown.Command="{Binding Path=ViewPendingChangeCommand}"
@@ -200,7 +204,7 @@
                         </ListView.ContextMenu>
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="File">
+                                <GridViewColumn Header="File" Width="200">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate DataType="PendingChangesModel:PendingChangeModel">
                                             <DockPanel>
@@ -214,7 +218,7 @@
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
-                                <GridViewColumn Header="Change">
+                                <GridViewColumn Header="Change" Width="70">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate DataType="PendingChangesModel:PendingChangeModel">
                                             <TextBlock Text="{Binding Path=Change.ChangeTypeName, Mode=OneWay}"/>
@@ -222,7 +226,7 @@
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
-                                <GridViewColumn Header="Folder">
+                                <GridViewColumn Header="Folder" Width="Auto">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate DataType="PendingChangesModel:PendingChangeModel">
                                             <TextBlock Text="{Binding Path=Change.LocalOrServerFolder, Mode=OneWay}"/>
