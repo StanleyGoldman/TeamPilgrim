@@ -28,7 +28,7 @@
   <!-- Coordinate targets -->
 
   <Target Name="Build">
-    <CallTarget Targets="Clean;Compile;CompileLocal;Test" />
+    <CallTarget Targets="Clean;Compile" />
   </Target>
 
   <!-- Clean -->

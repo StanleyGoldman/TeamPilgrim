@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>SlowCheetah.Tasks.Unofficial</id>
+    <version>1.0.0</version>
+    <authors>Sayed Ibrahim Hashimi and Chuck England</authors>
+    <owners>Sayed Ibrahim Hashimi and Chuck England</owners>
+    <licenseUrl>http://visualstudiogallery.msdn.microsoft.com/site/69023d00-a4f9-4a34-a6cd-7e854ba318b5/eula?licenseType=None</licenseUrl>
+    <projectUrl>http://visualstudiogallery.msdn.microsoft.com/69023d00-a4f9-4a34-a6cd-7e854ba318b5</projectUrl>
+    <iconUrl>http://i1.visualstudiogallery.msdn.s-msft.com/69023d00-a4f9-4a34-a6cd-7e854ba318b5/image/file/57230/9/screenshot.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>This package enables you to transform your app.config or any other XML file based on the build configuration. It also adds additional tooling to help you create XML transforms.. Written by: Sayed Ibrahim Hashimi, Chuck England and Bill Hiebert</description>
+    <releaseNotes>Some old version for transforms only</releaseNotes>
+    <copyright>Copyright 2012</copyright>
+    <tags>XML app.config transform XDT</tags>
+  </metadata>
+</package>
