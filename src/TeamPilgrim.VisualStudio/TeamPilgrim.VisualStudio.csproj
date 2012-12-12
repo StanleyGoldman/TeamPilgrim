@@ -325,7 +325,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="NLog.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
       <SubType>Designer</SubType>
       <TransformOnBuild>true</TransformOnBuild>
@@ -333,10 +333,12 @@
     <None Include="NLog.Debug.config">
       <DependentUpon>NLog.config</DependentUpon>
       <IsTransformFile>True</IsTransformFile>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="NLog.Release.config">
       <DependentUpon>NLog.config</DependentUpon>
       <IsTransformFile>True</IsTransformFile>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
@@ -419,7 +421,16 @@
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">
+  </Target>
+  
+  <Target Name="TransformFiles" AfterTargets="GetVsixSourceItems">
     <Message Importance="High" Text="Calling SlowCheetah Transform" />
     <CallTarget Targets="TransformAllFiles" />
+    <!--<Message Text="%25(VSIXSourceItem.FullPath): %(VSIXSourceItem.FullPath)" Importance="High"/>-->
+    <ItemGroup>
+      <VSIXSourceItem Remove="*NLog.config" />
+      <VSIXSourceItem Include="$(OutputPath)\NLog.config" />
+    </ItemGroup>
+    <!--<Message Text="%25(VSIXSourceItem.FullPath): %(VSIXSourceItem.FullPath)" Importance="High"/>-->
   </Target>
 </Project>

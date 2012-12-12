@@ -8,3 +8,4 @@ build/
 _NCrunch*/
 _ReSharper*/
 VersionInfo.cs
+build.log
