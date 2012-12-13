@@ -127,9 +127,13 @@
                                 <Button>Cmp with Latest</Button>
                                     -->
 
+                                <ToggleButton IsEnabled="{Binding Path=SolutionIsOpen}" IsChecked="{Binding Path=FilterSolution}">Filter Solution</ToggleButton>
+
+                                <Separator/>
+
                                 <Button Content="Undo Pending Change"
-                                        Command="{Binding Path=UndoPendingChangeCommand}" 
-                                        CommandParameter="{Binding ElementName=PendingChangesListView, Path=SelectedItems}" />
+                                            Command="{Binding Path=UndoPendingChangeCommand}" 
+                                            CommandParameter="{Binding ElementName=PendingChangesListView, Path=SelectedItems}" />
 
                             </ToolBar>
                             <TextBlock DockPanel.Dock="Top"><Run Text="Comment:"/></TextBlock>

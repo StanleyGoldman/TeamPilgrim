@@ -1,8 +1,10 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
+using System.Windows.Threading;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Comparer;
@@ -293,6 +295,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
                 }).ToList());
             WorkItems.CollectionChanged += WorkItemsOnCollectionChanged;
 
+            SolutionIsOpen = teamPilgrimVsService.Solution.IsOpen && !string.IsNullOrEmpty(teamPilgrimVsService.Solution.FileName);
+            teamPilgrimVsService.SolutionStateChanged += () =>
+            {
+                SolutionIsOpen = teamPilgrimVsService.Solution.IsOpen && !string.IsNullOrEmpty(teamPilgrimVsService.Solution.FileName);
+            };
+
             PopulatePreviouslySelectedWorkItemQueryModels();
 
             EvaluateCheckInCommand.Execute(null);
@@ -301,8 +309,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
         private void VersionControlServerOnPendingChangesChanged(object sender, WorkspaceEventArgs workspaceEventArgs)
         {
             Logger.Debug("VersionControlServerOnPendingChangesChanged");
-
-            RefreshPendingChanges();
+            Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)RefreshPendingChanges);
         }
 
         private void PopulatePreviouslySelectedWorkItemQueryModels()
@@ -503,8 +510,23 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
 
             PendingChange[] currentPendingChanges;
 
-            if (SolutionIsOpen && FilterSolution
-                ? teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, _workspaceServiceModel.Workspace, teamPilgrimVsService.GetSolutionFilePaths())
+            var filterItems = SolutionIsOpen && FilterSolution;
+            string[] solutionFilePaths = null;
+
+            if (filterItems)
+            {
+                try
+                {
+                    solutionFilePaths = teamPilgrimVsService.GetSolutionFilePaths();
+                }
+                catch (Exception)
+                {
+                    filterItems = false;
+                }
+            }
+
+            if (filterItems
+                ? teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, _workspaceServiceModel.Workspace, solutionFilePaths)
                 : teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, _workspaceServiceModel.Workspace))
             {
                 var modelIntersection =
