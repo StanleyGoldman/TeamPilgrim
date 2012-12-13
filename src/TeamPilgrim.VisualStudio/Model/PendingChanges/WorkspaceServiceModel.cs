@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Documents;
+using System.Windows.Threading;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services;
@@ -168,6 +169,25 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             }
         }
 
+        private bool _solutionIsOpen;
+        public bool SolutionIsOpen
+        {
+            get
+            {
+                return _solutionIsOpen;
+            }
+            private set
+            {
+                if (_solutionIsOpen == value) return;
+
+                _solutionIsOpen = value;
+
+                SendPropertyChanged("SolutionIsOpen");
+                
+                RefreshPendingChangesCommand.Execute(null);
+            }
+        }
+
         private bool _filterSolution;
         public bool FilterSolution
         {
@@ -175,7 +195,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             {
                 return _filterSolution;
             }
-            private set
+            set
             {
                 if (_filterSolution == value) return;
 
@@ -232,6 +252,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             }
             PendingChanges.CollectionChanged += PendingChangesOnCollectionChanged;
 
+            SolutionIsOpen = teamPilgrimVsService.Solution.IsOpen && !string.IsNullOrEmpty(teamPilgrimVsService.Solution.FileName);
+            teamPilgrimVsService.SolutionStateChanged += () =>
+            {
+                SolutionIsOpen = teamPilgrimVsService.Solution.IsOpen && !string.IsNullOrEmpty(teamPilgrimVsService.Solution.FileName);
+            };
+
             WorkItems = new TrulyObservableCollection<WorkItemModel>();
             WorkItems.CollectionChanged += WorkItemsOnCollectionChanged;
 
@@ -247,8 +273,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         private void VersionControlServerOnPendingChangesChanged(object sender, WorkspaceEventArgs workspaceEventArgs)
         {
             Logger.Debug("VersionControlServerOnPendingChangesChanged");
-
-            RefreshPendingChanges();
+            Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)RefreshPendingChanges);
         }
 
         protected virtual void OnShowPendingChangesItem(ShowPendingChangesTabItemEnum showpendingchangestabitemenum)
@@ -492,7 +517,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
                         return;
                     }
-                    
+
                     if (checkinEvaluationResult.PolicyFailures.Any())
                     {
                         OnShowPendingChangesItem(ShowPendingChangesTabItemEnum.PolicyWarnings);
@@ -625,8 +650,23 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
             PendingChange[] currentPendingChanges;
 
-            if (_projectCollectionServiceModel.TeamPilgrimServiceModel.SolutionIsOpen && FilterSolution
-                ? teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, Workspace, teamPilgrimVsService.GetSolutionFilePaths())
+            var filterItems = SolutionIsOpen && FilterSolution;
+            string[] solutionFilePaths = null;
+
+            if (filterItems)
+            {
+                try
+                {
+                    solutionFilePaths = teamPilgrimVsService.GetSolutionFilePaths();
+                }
+                catch (Exception)
+                {
+                    filterItems = false;
+                }
+            }
+
+            if (filterItems
+                ? teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, Workspace, solutionFilePaths)
                 : teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, Workspace))
             {
                 var intersections = PendingChanges

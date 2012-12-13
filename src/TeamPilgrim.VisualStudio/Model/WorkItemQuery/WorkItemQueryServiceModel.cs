@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using GalaSoft.MvvmLight.Command;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.WorkItems;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Extensions;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
@@ -148,7 +149,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
 
         private void OpenQueryDefinition(WorkItemQueryDefinitionModel workItemQueryDefinitionModel)
         {
-            teamPilgrimVsService.OpenQueryDefinition(_projectCollection, workItemQueryDefinitionModel.QueryDefinition.Id);
+            WitDefaultCommandHandlerWrapper.ViewQuery(workItemQueryDefinitionModel.QueryDefinition);
         }
 
         private bool CanOpenQueryDefinition(WorkItemQueryDefinitionModel workItemQueryDefinitionModel)

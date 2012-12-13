@@ -111,7 +111,7 @@
                         </Button>
 
                         <Separator/>
-                        <ToggleButton IsEnabled="{Binding SolutionIsOpen}" IsChecked="{Binding Path=SelectedWorkspaceModel.FilterSolution}">Filter Solution</ToggleButton>
+                        <ToggleButton DataContext="{Binding Path=SelectedWorkspaceModel}" IsEnabled="{Binding Path=SolutionIsOpen}" IsChecked="{Binding Path=FilterSolution}">Filter Solution</ToggleButton>
                         
                         <Separator/>
 

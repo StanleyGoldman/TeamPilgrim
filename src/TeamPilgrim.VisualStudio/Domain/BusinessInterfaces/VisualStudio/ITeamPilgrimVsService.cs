@@ -18,12 +18,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.Vis
 
         ProjectContextExt ActiveProjectContext { get; }
         ITeamFoundationHostWrapper TeamFoundationHost { get; }
-        bool SolutionIsOpen { get; }
 
         void OpenSourceControl(string projectName);
 
         void NewQueryDefinition(Project project, QueryFolder parent);
-        void OpenQueryDefinition(TfsTeamProjectCollection projectCollection, Guid queryDefinitionId);
         void EditQueryDefinition(TfsTeamProjectCollection projectCollection, Guid queryDefinitionId);
         void CloseQueryDefinitionFrames(TfsTeamProjectCollection projectCollection, Guid queryDefinitionId);
 
@@ -57,5 +55,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.Vis
         void ShowProcessTemplateManager(TfsTeamProjectCollection tfsTeamProjectCollection);
         string[] GetSolutionFilePaths();
         Workspace ActiveWorkspace { get; }
+        Solution Solution { get; }
     }
 }

@@ -63,9 +63,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
             get { return VersionControlExt.Explorer.Workspace; }
         }
 
-        public bool SolutionIsOpen
+        public Solution Solution
         {
-            get { return Dte2.Solution.IsOpen; }
+            get { return Dte2.Solution; }
         }
 
         private TeamPilgrimPackage _packageInstance;
@@ -214,16 +214,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
         {
             parent = parent ?? WorkItemTrackingDocumentService.GetDefaultParent(project, false);
             _workItemTrackingPackage.Value.NewQuery(project.Name, parent);
-        }
-
-        public void OpenQueryDefinition(TfsTeamProjectCollection projectCollection, Guid queryDefinitionId)
-        {
-            var queryDocument = WorkItemTrackingDocumentService.GetQuery(projectCollection, queryDefinitionId.ToString(), this);
-
-            var resultsDocument = WorkItemTrackingDocumentService.GetLinkResults(queryDocument, this) ??
-                                            WorkItemTrackingDocumentService.CreateLinkResults(queryDocument, this);
-
-            WorkItemTrackingDocumentService.ShowResults(resultsDocument);
         }
 
         public void EditQueryDefinition(TfsTeamProjectCollection projectCollection, Guid queryDefinitionId)

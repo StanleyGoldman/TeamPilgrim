@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.TeamFoundation;
@@ -37,26 +38,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
                 _connecting = value;
 
                 SendPropertyChanged("Connecting");
-            }
-        }
-
-        private bool _solutionIsOpen;
-        public bool SolutionIsOpen
-        {
-            get
-            {
-                return _solutionIsOpen;
-            }
-            private set
-            {
-                if (_solutionIsOpen == value) return;
-
-                _solutionIsOpen = value;
-
-                SendPropertyChanged("SolutionIsOpen");
-
-                if (SelectedWorkspaceModel != null)
-                    SelectedWorkspaceModel.RefreshPendingChangesCommand.Execute(null);
             }
         }
 
@@ -195,12 +176,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
                     ConnectedStatus = args.Status;
                 };
 
-            SolutionIsOpen = teamPilgrimVsService.SolutionIsOpen;
-            teamPilgrimVsService.SolutionStateChanged += () =>
-                {
-                    SolutionIsOpen = teamPilgrimVsService.SolutionIsOpen;
-                };
-
             RefreshCommand = new RelayCommand(Refresh, CanRefresh);
             TfsConnectCommand = new RelayCommand(TfsConnect, CanTfsConnect);
             ShowResolveConflicttManagerCommand = new RelayCommand(ShowResolveConflicttManager, CanShowResolveConflicttManager);
@@ -236,7 +211,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             }
             else if (contextChangedEventArgs.TeamProjectChanged)
             {
-                Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(() =>
+                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new ThreadStart(() =>
                     {
                         var activeProjectContext = teamPilgrimVsService.ActiveProjectContext;
 
@@ -255,7 +230,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             if (activeProjectContext == null ||
                 activeProjectContext.DomainUri == null)
             {
-                Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle,
+                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
                     new ThreadStart(() => ProjectCollectionModels.Clear()));
 
                 return;
@@ -266,7 +241,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
             if (teamPilgrimServiceModelProvider.TryGetCollection(out collection, tpcAddress))
             {
-                Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(() =>
+                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new ThreadStart(() =>
                     {
                         ProjectCollectionModels.Clear();
                         if (collection != null)
@@ -277,7 +252,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
                     }));
             }
 
-            Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new ThreadStart(delegate
             {
                 WorkspaceInfo[] workspaceInfos;
                 if (teamPilgrimServiceModelProvider.TryGetLocalWorkspaceInfos(out workspaceInfos, collection.InstanceId))
@@ -314,7 +289,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 
             Debug.Assert(projectCollectionModel != null, "projectCollectionModel != null");
 
-            Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new ThreadStart(delegate
                 {
                     if (teamPilgrimServiceModelProvider.TryGetWorkspace(out workspace, selectedWorkspaceInfoModel.WorkspaceInfo, projectCollectionModel.TfsTeamProjectCollection))
                     {
