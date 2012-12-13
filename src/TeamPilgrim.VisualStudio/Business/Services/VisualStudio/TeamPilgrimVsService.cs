@@ -216,16 +216,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
             _workItemTrackingPackage.Value.NewQuery(project.Name, parent);
         }
 
-        public void OpenQueryDefinition(TfsTeamProjectCollection projectCollection, Guid queryDefinitionId)
-        {
-            var queryDocument = WorkItemTrackingDocumentService.GetQuery(projectCollection, queryDefinitionId.ToString(), this);
-
-            var resultsDocument = WorkItemTrackingDocumentService.GetLinkResults(queryDocument, this) ??
-                                            WorkItemTrackingDocumentService.CreateLinkResults(queryDocument, this);
-
-            WorkItemTrackingDocumentService.ShowResults(resultsDocument);
-        }
-
         public void EditQueryDefinition(TfsTeamProjectCollection projectCollection, Guid queryDefinitionId)
         {
             var queryDocument = WorkItemTrackingDocumentService.GetQuery(projectCollection, queryDefinitionId.ToString(), this);

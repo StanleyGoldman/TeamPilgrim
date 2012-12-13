@@ -181,6 +181,7 @@
     <Compile Include="Business\Services\VisualStudio\Builds\BuildExplorerWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\TeamFoundation\CommandHandlerPackageWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\WorkItems\OpenWorkItemHelperWrapper.cs" />
+    <Compile Include="Business\Services\VisualStudio\WorkItems\WitDefaultCommandHandlerWrapper.cs" />
     <Compile Include="Common\AttachedProperties\PreviewSpaceKeyDownSelectPendingChanges.cs" />
     <Compile Include="Common\AttachedProperties\PreviewReturnKeyDown.cs" />
     <Compile Include="Common\AttachedProperties\PreviewSpaceKeyDown.cs" />
@@ -422,7 +423,6 @@
   </Target>
   <Target Name="AfterBuild">
   </Target>
-  
   <Target Name="TransformFiles" AfterTargets="GetVsixSourceItems">
     <Message Importance="High" Text="Calling SlowCheetah Transform" />
     <CallTarget Targets="TransformAllFiles" />

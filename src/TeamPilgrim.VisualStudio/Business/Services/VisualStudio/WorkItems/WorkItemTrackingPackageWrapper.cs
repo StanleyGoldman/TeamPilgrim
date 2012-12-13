@@ -14,6 +14,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
         private readonly Lazy<MethodInfo> _openNewWorkItemMethod;
         private readonly Lazy<MethodInfo> _goToWorkItemMethod;
         private readonly Lazy<MethodInfo> _newQueryMethod;
+        private Lazy<PropertyInfo> _defaultCommandHandlerProperty;
 
         public WorkItemTrackingPackageWrapper()
         {
@@ -25,9 +26,19 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
             Debug.Assert(instanceField != null, "instanceField != null");
             _witPackageInstance = instanceField.GetValue(null);
 
+            _defaultCommandHandlerProperty = new Lazy<PropertyInfo>(() => _witPackageType.GetProperty("DefaultCommandHandler", BindingFlags.Public | BindingFlags.Instance));
+
             _openNewWorkItemMethod = new Lazy<MethodInfo>(() => _witPackageType.GetMethod("OpenNewWorkItem", BindingFlags.Public | BindingFlags.Instance));
             _newQueryMethod = new Lazy<MethodInfo>(() => _witPackageType.GetMethod("NewQuery", BindingFlags.Public | BindingFlags.Instance, null, new Type[] { typeof(string), typeof(QueryFolder) }, null));
             _goToWorkItemMethod = new Lazy<MethodInfo>(() => _witPackageType.GetMethod("GoToWorkItem", BindingFlags.NonPublic | BindingFlags.Instance));
+        }
+
+        public WitDefaultCommandHandlerWrapper DefaultCommandHandler
+        {
+            get
+            {
+                return new WitDefaultCommandHandlerWrapper(_defaultCommandHandlerProperty.Value.GetValue(_witPackageInstance));
+            }
         }
 
         public void NewQuery(string projectName, QueryFolder parent)
