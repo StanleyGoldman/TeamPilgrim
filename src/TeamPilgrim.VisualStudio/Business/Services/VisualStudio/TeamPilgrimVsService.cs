@@ -63,9 +63,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
             get { return VersionControlExt.Explorer.Workspace; }
         }
 
-        public bool SolutionIsOpen
+        public Solution Solution
         {
-            get { return Dte2.Solution.IsOpen; }
+            get { return Dte2.Solution; }
         }
 
         private TeamPilgrimPackage _packageInstance;

@@ -152,6 +152,24 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
             }
         }
 
+        private bool _solutionIsOpen;
+        public bool SolutionIsOpen
+        {
+            get
+            {
+                return _solutionIsOpen;
+            }
+            private set
+            {
+                if (_solutionIsOpen == value) return;
+
+                _solutionIsOpen = value;
+
+                SendPropertyChanged("SolutionIsOpen");
+                RefreshPendingChangesCommand.Execute(null);
+            }
+        }
+
         private bool _filterSolution;
         public bool FilterSolution
         {
@@ -485,7 +503,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
 
             PendingChange[] currentPendingChanges;
 
-            if (_projectCollectionServiceModel.TeamPilgrimServiceModel.SolutionIsOpen && FilterSolution
+            if (SolutionIsOpen && FilterSolution
                 ? teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, _workspaceServiceModel.Workspace, teamPilgrimVsService.GetSolutionFilePaths())
                 : teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, _workspaceServiceModel.Workspace))
             {

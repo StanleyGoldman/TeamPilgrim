@@ -18,7 +18,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.Vis
 
         ProjectContextExt ActiveProjectContext { get; }
         ITeamFoundationHostWrapper TeamFoundationHost { get; }
-        bool SolutionIsOpen { get; }
 
         void OpenSourceControl(string projectName);
 
@@ -57,5 +56,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.Vis
         void ShowProcessTemplateManager(TfsTeamProjectCollection tfsTeamProjectCollection);
         string[] GetSolutionFilePaths();
         Workspace ActiveWorkspace { get; }
+        Solution Solution { get; }
     }
 }

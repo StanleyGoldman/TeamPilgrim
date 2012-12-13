@@ -41,26 +41,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
             }
         }
 
-        private bool _solutionIsOpen;
-        public bool SolutionIsOpen
-        {
-            get
-            {
-                return _solutionIsOpen;
-            }
-            private set
-            {
-                if (_solutionIsOpen == value) return;
-
-                _solutionIsOpen = value;
-
-                SendPropertyChanged("SolutionIsOpen");
-
-                if (SelectedWorkspaceModel != null)
-                    SelectedWorkspaceModel.RefreshPendingChangesCommand.Execute(null);
-            }
-        }
-
         private string _connectingServer;
 
         public string ConnectingServer
@@ -194,12 +174,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
                     ConnectingServer = args.TeamProjectCollection.Name;
                     ConnectedError = args.Error;
                     ConnectedStatus = args.Status;
-                };
-
-            SolutionIsOpen = teamPilgrimVsService.SolutionIsOpen;
-            teamPilgrimVsService.SolutionStateChanged += () =>
-                {
-                    SolutionIsOpen = teamPilgrimVsService.SolutionIsOpen;
                 };
 
             RefreshCommand = new RelayCommand(Refresh, CanRefresh);
