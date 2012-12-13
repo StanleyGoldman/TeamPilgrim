@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
+using System.Windows;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.TeamFoundation;
@@ -44,7 +45,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
             Project[] projects;
             if (teamPilgrimServiceModelProvider.TryGetProjects(out projects, TfsTeamProjectCollection))
             {
-                Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
+                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
                     {
                         ProjectModels.Clear();
 

@@ -5,13 +5,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
 {
     public class BaseModel : INotifyPropertyChanged
     {
-        private readonly Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
         private PropertyChangedEventHandler _propertyChangedEvent;
-
-        public Dispatcher Dispatcher
-        {
-            get { return _dispatcher; }
-        }
 
         public event PropertyChangedEventHandler PropertyChanged
         {

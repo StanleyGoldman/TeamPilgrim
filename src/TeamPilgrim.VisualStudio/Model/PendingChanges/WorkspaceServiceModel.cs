@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Documents;
+using System.Windows.Threading;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services;
@@ -247,8 +248,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         private void VersionControlServerOnPendingChangesChanged(object sender, WorkspaceEventArgs workspaceEventArgs)
         {
             Logger.Debug("VersionControlServerOnPendingChangesChanged");
-
-            RefreshPendingChanges();
+            Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)RefreshPendingChanges);
         }
 
         protected virtual void OnShowPendingChangesItem(ShowPendingChangesTabItemEnum showpendingchangestabitemenum)
@@ -492,7 +492,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
                         return;
                     }
-                    
+
                     if (checkinEvaluationResult.PolicyFailures.Any())
                     {
                         OnShowPendingChangesItem(ShowPendingChangesTabItemEnum.PolicyWarnings);
