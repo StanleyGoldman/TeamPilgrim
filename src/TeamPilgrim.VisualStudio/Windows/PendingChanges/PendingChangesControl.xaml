@@ -12,6 +12,7 @@
              xmlns:AttachedProperties="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties"
              xmlns:Enums="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Enums"
              xmlns:workItemQuery="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery"
+             xmlns:listViewLayout="clr-namespace:Itenso.Windows.Controls.ListViewLayout;assembly=Itenso.Windows.Controls.ListViewLayout"
              mc:Ignorable="d" 
              Height="Auto" d:DesignHeight="300" d:DesignWidth="850"
              d:DataContext="{d:DesignInstance Model:TeamPilgrimServiceModel}">
@@ -162,6 +163,9 @@
                     <TextBox DockPanel.Dock="Top" DataContext="{Binding Path=SelectedWorkspaceModel}" Text="{Binding Path=Comment, UpdateSourceTrigger=PropertyChanged}"></TextBox>
 
                     <ListView x:Name="PendingChangesListView" HorizontalAlignment="Stretch"
+                              
+                              listViewLayout:ListViewLayoutManager.Enabled="true"
+                              
                               AttachedProperties:PreviewSpaceKeyDownSelectPendingChanges.Command="{Binding Path=SelectPendingChangesCommand}"
                               
                               AttachedProperties:PreviewReturnKeyDown.Command="{Binding Path=ViewPendingChangeCommand}"
@@ -204,7 +208,8 @@
                         </ListView.ContextMenu>
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="File" Width="200">
+                                <GridViewColumn Header="File" Width="200"
+                                        listViewLayout:RangeColumn.MinWidth="150">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate DataType="PendingChangesModel:PendingChangeModel">
                                             <DockPanel>
@@ -218,7 +223,8 @@
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
-                                <GridViewColumn Header="Change" Width="70">
+                                <GridViewColumn Header="Change" Width="70"
+                                        listViewLayout:RangeColumn.MinWidth="50">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate DataType="PendingChangesModel:PendingChangeModel">
                                             <TextBlock Text="{Binding Path=Change.ChangeTypeName, Mode=OneWay}"/>
@@ -226,7 +232,10 @@
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
-                                <GridViewColumn Header="Folder" Width="Auto">
+                                <GridViewColumn Header="Folder" Width="200"
+                                        listViewLayout:RangeColumn.MinWidth="200"
+                                        listViewLayout:RangeColumn.IsFillColumn="true">
+                                    
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate DataType="PendingChangesModel:PendingChangeModel">
                                             <TextBlock Text="{Binding Path=Change.LocalOrServerFolder, Mode=OneWay}"/>
