@@ -175,6 +175,8 @@
                                 <ListView.View>
                                     <GridView>
                                         <GridViewColumn Width="200"
+                                                x:Name="GridViewColumnPendingChangesFileName"
+                                           
                                                 listViewLayout:RangeColumn.MinWidth="150"
                                                 AttachedProperties:GridViewSort.PropertyName="Change.FileName">
 
@@ -196,6 +198,9 @@
                                         </GridViewColumn>
 
                                         <GridViewColumn Width="70"
+                                                
+                                                x:Name="GridViewColumnPendingChangesChangeTypeName"
+                                                        
                                                 listViewLayout:RangeColumn.MinWidth="50"
                                                 AttachedProperties:GridViewSort.PropertyName="Change.ChangeTypeName">
 
@@ -211,6 +216,9 @@
                                         </GridViewColumn>
 
                                         <GridViewColumn Width="200"
+                                                
+                                                x:Name="GridViewColumnPendingChangesLocalOrServerFolder"
+                                                        
                                                 listViewLayout:RangeColumn.MinWidth="200"
                                                 listViewLayout:RangeColumn.IsFillColumn="true"
                                                 AttachedProperties:GridViewSort.PropertyName="Change.LocalOrServerFolder">
