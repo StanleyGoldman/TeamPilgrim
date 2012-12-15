@@ -174,10 +174,14 @@
                                 </ListView.ContextMenu>
                                 <ListView.View>
                                     <GridView>
-                                        <GridViewColumn Header="File" Width="200"
+                                        <GridViewColumn Width="200"
                                                 listViewLayout:RangeColumn.MinWidth="150"
                                                 AttachedProperties:GridViewSort.PropertyName="Change.FileName">
-                                            
+
+                                            <GridViewColumn.Header>
+                                                <GridViewColumnHeader>File</GridViewColumnHeader>
+                                            </GridViewColumn.Header>
+
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate DataType="PendingChanges:PendingChangeModel">
                                                     <DockPanel>
@@ -191,10 +195,14 @@
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
 
-                                        <GridViewColumn Header="Change" Width="70"
+                                        <GridViewColumn Width="70"
                                                 listViewLayout:RangeColumn.MinWidth="50"
                                                 AttachedProperties:GridViewSort.PropertyName="Change.ChangeTypeName">
-                                            
+
+                                            <GridViewColumn.Header>
+                                                <GridViewColumnHeader>Change</GridViewColumnHeader>
+                                            </GridViewColumn.Header>
+
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate DataType="PendingChanges:PendingChangeModel">
                                                     <TextBlock Text="{Binding Change.ChangeTypeName, Mode=OneWay}"/>
@@ -202,11 +210,15 @@
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
 
-                                        <GridViewColumn Header="Folder" Width="200"
+                                        <GridViewColumn Width="200"
                                                 listViewLayout:RangeColumn.MinWidth="200"
                                                 listViewLayout:RangeColumn.IsFillColumn="true"
                                                 AttachedProperties:GridViewSort.PropertyName="Change.LocalOrServerFolder">
-                                            
+
+                                            <GridViewColumn.Header>
+                                                <GridViewColumnHeader>Folder</GridViewColumnHeader>
+                                            </GridViewColumn.Header>
+
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate DataType="PendingChanges:PendingChangeModel">
                                                     <TextBlock Text="{Binding Change.LocalOrServerFolder, Mode=OneWay}"/>

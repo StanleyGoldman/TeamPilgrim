@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.CommandArguments;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges;
@@ -14,6 +15,18 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialog
     /// </summary>
     public partial class ShelveChangesDialog : Window
     {
+        public ShelveChangesDialog()
+        {
+            InitializeComponent();
+            
+            Loaded += OnLoaded;
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
+        {
+            GridViewSort.ApplySort(PendingChangesListView.Items, "Change.LocalOrServerFolder", PendingChangesListView, (GridViewColumnHeader)GridViewColumnPendingChangesLocalOrServerFolder.Header);
+        }
+
         public new object DataContext
         {
             get { return base.DataContext; }
@@ -66,11 +79,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialog
                         }
                     };
             }
-        }
-
-        public ShelveChangesDialog()
-        {
-            InitializeComponent();
         }
 
         private void PendingChangesCheckboxClicked(object sender, RoutedEventArgs e)
