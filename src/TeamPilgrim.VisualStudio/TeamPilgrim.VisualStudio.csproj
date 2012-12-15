@@ -185,6 +185,7 @@
     <Compile Include="Business\Services\VisualStudio\TeamFoundation\CommandHandlerPackageWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\WorkItems\OpenWorkItemHelperWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\WorkItems\WitDefaultCommandHandlerWrapper.cs" />
+    <Compile Include="Common\AttachedProperties\GridViewSort.cs" />
     <Compile Include="Common\AttachedProperties\PreviewSpaceKeyDownSelectPendingChanges.cs" />
     <Compile Include="Common\AttachedProperties\PreviewReturnKeyDown.cs" />
     <Compile Include="Common\AttachedProperties\PreviewSpaceKeyDown.cs" />

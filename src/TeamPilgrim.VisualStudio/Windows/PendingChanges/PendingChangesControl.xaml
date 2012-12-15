@@ -166,6 +166,9 @@
                               
                               listViewLayout:ListViewLayoutManager.Enabled="true"
                               
+                              IsSynchronizedWithCurrentItem="True"
+                              AttachedProperties:GridViewSort.AutoSort="True"
+                              
                               AttachedProperties:PreviewSpaceKeyDownSelectPendingChanges.Command="{Binding Path=SelectPendingChangesCommand}"
                               
                               AttachedProperties:PreviewReturnKeyDown.Command="{Binding Path=ViewPendingChangeCommand}"
@@ -209,7 +212,9 @@
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="File" Width="200"
-                                        listViewLayout:RangeColumn.MinWidth="150">
+                                        listViewLayout:RangeColumn.MinWidth="150"
+                                        AttachedProperties:GridViewSort.PropertyName="Change.FileName">
+                                    
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate DataType="PendingChangesModel:PendingChangeModel">
                                             <DockPanel>
@@ -224,7 +229,9 @@
                                 </GridViewColumn>
 
                                 <GridViewColumn Header="Change" Width="70"
-                                        listViewLayout:RangeColumn.MinWidth="50">
+                                        listViewLayout:RangeColumn.MinWidth="50"
+                                        AttachedProperties:GridViewSort.PropertyName="Change.ChangeTypeName">
+                                    
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate DataType="PendingChangesModel:PendingChangeModel">
                                             <TextBlock Text="{Binding Path=Change.ChangeTypeName, Mode=OneWay}"/>
@@ -234,7 +241,8 @@
 
                                 <GridViewColumn Header="Folder" Width="200"
                                         listViewLayout:RangeColumn.MinWidth="200"
-                                        listViewLayout:RangeColumn.IsFillColumn="true">
+                                        listViewLayout:RangeColumn.IsFillColumn="true"
+                                        AttachedProperties:GridViewSort.PropertyName="Change.LocalOrServerFolder">
                                     
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate DataType="PendingChangesModel:PendingChangeModel">
