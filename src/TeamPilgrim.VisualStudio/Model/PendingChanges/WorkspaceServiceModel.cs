@@ -34,7 +34,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
         public delegate void ShowShelveDialogDelegate(ShelvesetServiceModel shelvesetServiceModel);
         public event ShowShelveDialogDelegate ShowShelveDialog;
 
-        public delegate void ShowUnshelveDialogDelegate();
+        public delegate void ShowUnshelveDialogDelegate(UnshelveChangesServiceModel unshelveChangesServiceModel);
         public event ShowUnshelveDialogDelegate ShowUnshelveDialog;
 
         public delegate void ShowPendingChangesItemDelegate(ShowPendingChangesTabItemEnum showPendingChangesTabItemEnum);
@@ -832,16 +832,15 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
         public RelayCommand UnshelveCommand { get; private set; }
 
-
-        protected virtual void OnShowUnshelveDialog()
+        protected virtual void OnShowUnshelveDialog(UnshelveChangesServiceModel unshelveChangesServiceModel)
         {
             var handler = ShowUnshelveDialog;
-            if (handler != null) handler();
+            if (handler != null) handler(unshelveChangesServiceModel);
         }
 
         private void Unshelve()
         {
-            OnShowUnshelveDialog();
+            OnShowUnshelveDialog(new UnshelveChangesServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, _projectCollectionServiceModel, this));
         }
 
         private bool CanUnshelve()

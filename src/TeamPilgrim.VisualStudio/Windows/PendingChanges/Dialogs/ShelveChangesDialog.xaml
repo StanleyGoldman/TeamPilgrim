@@ -1,4 +1,4 @@
-﻿<Window
+﻿<Window x:Class="JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs.ShelveChangesDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:Converters="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Converters" 
@@ -13,8 +13,9 @@
         xmlns:ShelveChanges="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges"
         xmlns:listViewLayout="clr-namespace:Itenso.Windows.Controls.ListViewLayout;assembly=Itenso.Windows.Controls.ListViewLayout"
         mc:Ignorable="d" 
-        x:Class="JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs.ShelveChangesDialog"
-        Title="Team Pilgrim Shelve Changes" MinHeight="405" Width="761" MinWidth="400"
+        
+        Title="Team Pilgrim Shelve Changes"
+        MinHeight="405" Width="761" MinWidth="400"
     
         x:Name="ShelveChangesDialogWindow"
         d:DataContext="{d:DesignInstance ShelveChanges:ShelvesetServiceModel}">

@@ -221,6 +221,7 @@
     <Compile Include="Model\ShelveChanges\ShelvesetServiceModel.cs" />
     <Compile Include="Model\PendingChanges\PreviouslySelectedWorkItemQuery.cs" />
     <Compile Include="Model\PendingChanges\ShowPendingChangesTabItemEnum.cs" />
+    <Compile Include="Model\UnshelveChangesServiceModel.cs" />
     <Compile Include="TeamPilgrimLogManager.cs" />
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Model\LicenseModel.cs" />
