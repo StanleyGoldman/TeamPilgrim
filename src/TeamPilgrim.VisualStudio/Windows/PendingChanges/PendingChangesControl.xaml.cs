@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.CommandArguments;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges;
@@ -24,7 +25,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
             InitializeComponent();
 
             NameScope.SetNameScope(PendingChangesContextMenu, NameScope.GetNameScope(this));
-		}	
+       
+            Loaded += OnLoaded;
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
+        {
+            GridViewSort.ApplySort(PendingChangesListView.Items, "Change.LocalOrServerFolder", PendingChangesListView, (GridViewColumnHeader)GridViewColumnPendingChangesLocalOrServerFolder.Header);
+        }
 
         public new object DataContext
         {

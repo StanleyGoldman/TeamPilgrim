@@ -52,6 +52,9 @@
     <Reference Include="INIFileParser">
       <HintPath>..\..\lib\ini-parser.1.7.1\lib\INIFileParser.dll</HintPath>
     </Reference>
+    <Reference Include="Itenso.Windows.Controls.ListViewLayout">
+      <HintPath>..\..\lib2\ListViewLayoutManager\Release\Itenso.Windows.Controls.ListViewLayout.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.ServiceLocation">
       <HintPath>..\..\lib\MvvmLight.4.1.23.0\lib\net40\Microsoft.Practices.ServiceLocation.dll</HintPath>
@@ -182,6 +185,7 @@
     <Compile Include="Business\Services\VisualStudio\TeamFoundation\CommandHandlerPackageWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\WorkItems\OpenWorkItemHelperWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\WorkItems\WitDefaultCommandHandlerWrapper.cs" />
+    <Compile Include="Common\AttachedProperties\GridViewSort.cs" />
     <Compile Include="Common\AttachedProperties\PreviewSpaceKeyDownSelectPendingChanges.cs" />
     <Compile Include="Common\AttachedProperties\PreviewReturnKeyDown.cs" />
     <Compile Include="Common\AttachedProperties\PreviewSpaceKeyDown.cs" />
