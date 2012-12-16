@@ -95,7 +95,7 @@
                 <Image Source="/TeamPilgrim.VisualStudio;component/Resources\refresh_16xLG.png" Width="16" Height="16" />
             </Button>
             <Button Command="{Binding Path=TfsConnectCommand}">
-                <Image Source="/TeamPilgrim.VisualStudio;component/Resources\lightningBolt_16xLG.png" Width="16" Height="16" />
+                <Image Source="/TeamPilgrim.VisualStudio;component/Resources\icons_generalicons_connecttotfs.png" Width="16" Height="16" />
             </Button>
         </ToolBar>
         

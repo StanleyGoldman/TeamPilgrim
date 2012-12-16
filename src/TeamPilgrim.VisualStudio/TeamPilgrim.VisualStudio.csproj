@@ -380,7 +380,6 @@
     <Resource Include="Resources\note.png" />
     <Resource Include="Resources\edit_diff.png" />
     <Resource Include="Resources\Arrow_UndoRevertRestore_16xLG_color.png" />
-    <Resource Include="Resources\lightningBolt_16xLG.png" />
     <Resource Include="Resources\Conflicts%28large%29_11131.png" />
     <Resource Include="Resources\CheckIn_13188_32x.png" />
     <Resource Include="Resources\CheckIn_13188.png" />
@@ -390,6 +389,7 @@
     <Resource Include="Resources\build_Solution_16xLG.png" />
     <Resource Include="Resources\folder_Closed_16xLG.png" />
     <Resource Include="Resources\images_querylist.png" />
+    <Resource Include="Resources\icons_generalicons_connecttotfs.png" />
     <Content Include="Resources\Package.ico" />
   </ItemGroup>
   <ItemGroup>
