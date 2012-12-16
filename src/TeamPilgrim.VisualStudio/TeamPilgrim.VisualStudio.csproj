@@ -335,6 +335,11 @@
       <SubType>Designer</SubType>
       <TransformOnBuild>true</TransformOnBuild>
     </Content>
+    <Resource Include="Resources\TFSServer_13310_16x.png" />
+    <Resource Include="Resources\Textfile_818_32x.png" />
+    <Resource Include="Resources\PolicyWarnings%28large%29_7879.png" />
+    <Resource Include="Resources\Solution_8308.png" />
+    <Resource Include="Resources\refresh_16xLG.png" />
     <None Include="NLog.Debug.config">
       <DependentUpon>NLog.config</DependentUpon>
       <IsTransformFile>True</IsTransformFile>
@@ -364,14 +369,20 @@
   <ItemGroup>
     <Resource Include="Resources\Shelve.png" />
     <Resource Include="Resources\Unshelve.png" />
-    <Resource Include="Resources\page_save.png" />
     <Resource Include="Resources\page_white_delete.png" />
     <Resource Include="Resources\page_white_text.png" />
-    <Resource Include="Resources\tfs_connect.png" />
-    <Resource Include="Resources\arrow_refresh.png" />
     <Resource Include="Resources\clipboard_sign.png" />
     <Resource Include="Resources\note.png" />
     <Resource Include="Resources\edit_diff.png" />
+    <Resource Include="Resources\Arrow_UndoRevertRestore_16xLG_color.png" />
+    <Resource Include="Resources\lightningBolt_16xLG.png" />
+    <Resource Include="Resources\Conflicts%28large%29_11131.png" />
+    <Resource Include="Resources\CheckIn_13188_32x.png" />
+    <Resource Include="Resources\CheckIn_13188.png" />
+    <Resource Include="Resources\Arrow_UndoRevertRestore_16xLG.png" />
+    <Resource Include="Resources\clock_16xLG.png" />
+    <Resource Include="Resources\build_Selection_16xLG.png" />
+    <Resource Include="Resources\build_Solution_16xLG.png" />
     <Content Include="Resources\Package.ico" />
   </ItemGroup>
   <ItemGroup>

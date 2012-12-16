@@ -54,7 +54,7 @@
             </ToolBar.Resources>
 
             <RadioButton IsChecked="True" x:Name="SourceFilesRadioButton" Style="{StaticResource {x:Type TypeName=ToggleButton}}" GroupName="PendingChangesMainView">
-                <Image Source="..\..\Resources\page_white_text.png" Width="32" Height="32" Style="{StaticResource ButtonImageStyle}" />
+                <Image Source="/TeamPilgrim.VisualStudio;component/Resources\Textfile_818_32x.png" Width="32" Height="32" Style="{StaticResource ButtonImageStyle}" />
             </RadioButton>
 
             <RadioButton x:Name="WorkItemsRadioButton" Style="{StaticResource {x:Type TypeName=ToggleButton}}" GroupName="PendingChangesMainView">
@@ -66,11 +66,11 @@
             </RadioButton>
 
             <RadioButton x:Name="PolicyWarningsRadioButton" Style="{StaticResource {x:Type TypeName=ToggleButton}}" GroupName="PendingChangesMainView">
-                <Image Source="..\..\Resources\page_white_delete.png" Width="32" Height="32" Style="{StaticResource ButtonImageStyle}" />
+                <Image Source="/TeamPilgrim.VisualStudio;component/Resources\PolicyWarnings(large)_7879.png" Width="32" Height="32" Style="{StaticResource ButtonImageStyle}" />
             </RadioButton>
 
             <Button Command="{Binding Path=ShowResolveConflicttManagerCommand}">
-                <Image Source="..\..\Resources\edit_diff.png" Width="32" Height="32" Style="{StaticResource ButtonImageStyle}" />
+                <Image Source="/TeamPilgrim.VisualStudio;component/Resources\Conflicts(large)_11131.png" Width="32" Height="32" Style="{StaticResource ButtonImageStyle}" />
             </Button>
         </ToolBar>
         <TabControl DockPanel.Dock="Right" BorderThickness="0" Padding="0">
@@ -91,7 +91,7 @@
                     <ToolBar DockPanel.Dock="Top">
                         <Button DataContext="{Binding Path=SelectedWorkspaceModel}" Command="{Binding Path=CheckInCommand}">
                             <StackPanel Orientation="Horizontal">
-                                <Image Source="../../Resources/page_save.png" Width="16" Height="16" Margin="0,0,2,0"  />
+                                <Image Source="/TeamPilgrim.VisualStudio;component/Resources\CheckIn_13188.png" Width="16" Height="16" Margin="0,0,2,0"  />
                                 <TextBlock>Check In</TextBlock>
                             </StackPanel>
                         </Button>
@@ -115,7 +115,14 @@
                         -->
                         
                         <Separator/>
-                        <ToggleButton DataContext="{Binding Path=SelectedWorkspaceModel}" IsEnabled="{Binding Path=SolutionIsOpen}" IsChecked="{Binding Path=FilterSolution}">Filter Solution</ToggleButton>
+                        <ToggleButton 
+                            DataContext="{Binding Path=SelectedWorkspaceModel}" 
+                            IsEnabled="{Binding Path=SolutionIsOpen}" 
+                            IsChecked="{Binding Path=FilterSolution}"
+                            ToolTip="Filter by Solution">
+                            
+                            <Image Source="/TeamPilgrim.VisualStudio;component/Resources\Solution_8308.png" Width="16" Height="16"></Image>
+                        </ToggleButton>
                         
                         <Separator/>
 
@@ -136,12 +143,15 @@
 
                         <Button DataContext="{Binding Path=SelectedWorkspaceModel}"
                                 Command="{Binding Path=UndoPendingChangeCommand}" 
-                                CommandParameter="{Binding ElementName=PendingChangesListView, Path=SelectedItems}">Undo Pending Change</Button>
+                                CommandParameter="{Binding ElementName=PendingChangesListView, Path=SelectedItems}"
+                                ToolTip="Undo pending changes">
+                            <Image Source="/TeamPilgrim.VisualStudio;component/Resources\Arrow_UndoRevertRestore_16xLG.png" Width="16" Height="16"></Image>
+                        </Button>
 
                         <Separator/>
                         
                         <Button DataContext="{Binding Path=SelectedWorkspaceModel}" Command="{Binding Path=RefreshPendingChangesCommand}">
-                            <Image Source="..\..\Resources\arrow_refresh.png" Width="16" Height="16" />
+                            <Image Source="/TeamPilgrim.VisualStudio;component/Resources\refresh_16xLG.png" Width="16" Height="16" />
                         </Button>
 
                         <Separator/>
@@ -205,7 +215,11 @@
 
                                 <MenuItem Header="Undo"
                                     Command="{Binding Path=UndoPendingChangeCommand}" 
-                                    CommandParameter="{Binding ElementName=PendingChangesListView, Path=SelectedItems}" />
+                                    CommandParameter="{Binding ElementName=PendingChangesListView, Path=SelectedItems}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/TeamPilgrim.VisualStudio;component/Resources/Arrow_UndoRevertRestore_16xLG_color.png"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
 
                             </ContextMenu>
                         </ListView.ContextMenu>
@@ -282,7 +296,7 @@
                     <ToolBar DockPanel.Dock="Top">
                         <Button DataContext="{Binding Path=SelectedWorkspaceModel}" Command="{Binding Path=CheckInCommand}">
                             <StackPanel Orientation="Horizontal">
-                                <Image Source="../../Resources/page_save.png" Width="16" Height="16" Margin="0,0,2,0"  />
+                                <Image Source="/TeamPilgrim.VisualStudio;component/Resources\CheckIn_13188.png" Width="16" Height="16" Margin="0,0,2,0"  />
                                 <TextBlock>Check In</TextBlock>
                             </StackPanel>
                         </Button>
@@ -304,7 +318,7 @@
                         <Separator/>
 
                         <Button DataContext="{Binding Path=SelectedWorkspaceModel}" Command="{Binding Path=RefreshSelectedDefinitionWorkItemsCommand}">
-                            <Image Source="..\..\Resources\arrow_refresh.png" Width="16" Height="16" />
+                            <Image Source="/TeamPilgrim.VisualStudio;component/Resources\refresh_16xLG.png" Width="16" Height="16" />
                         </Button>
                     </ToolBar>
 
@@ -381,7 +395,7 @@
                     <ToolBar DockPanel.Dock="Top">
                         <Button DataContext="{Binding Path=SelectedWorkspaceModel}" Command="{Binding Path=CheckInCommand}">
                             <StackPanel Orientation="Horizontal">
-                                <Image Source="../../Resources/page_save.png" Width="16" Height="16" Margin="0,0,2,0"  />
+                                <Image Source="/TeamPilgrim.VisualStudio;component/Resources\CheckIn_13188.png" Width="16" Height="16" Margin="0,0,2,0"  />
                                 <TextBlock>Check In</TextBlock>
                             </StackPanel>
                         </Button>
@@ -412,7 +426,7 @@
                     <ToolBar DockPanel.Dock="Top">
                         <Button DataContext="{Binding Path=SelectedWorkspaceModel}" Command="{Binding Path=CheckInCommand}">
                             <StackPanel Orientation="Horizontal">
-                                <Image Source="../../Resources/page_save.png" Width="16" Height="16" Margin="0,0,2,0"  />
+                                <Image Source="/TeamPilgrim.VisualStudio;component/Resources\CheckIn_13188.png" Width="16" Height="16" Margin="0,0,2,0" />
                                 <TextBlock>Check In</TextBlock>
                             </StackPanel>
                         </Button>

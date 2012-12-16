@@ -77,10 +77,10 @@
         </DockPanel.Resources>
         <ToolBar ToolBarTray.IsLocked="True" ToolBar.OverflowMode="AsNeeded" DockPanel.Dock="Top">
             <Button Command="{Binding Path=RefreshCommand}">
-                <Image Source="..\..\Resources\arrow_refresh.png" Width="16" Height="16" />
+                <Image Source="/TeamPilgrim.VisualStudio;component/Resources\refresh_16xLG.png" Width="16" Height="16" />
             </Button>
             <Button Command="{Binding Path=TfsConnectCommand}">
-                <Image Source="..\..\Resources\tfs_connect.png" Width="16" Height="16" />
+                <Image Source="/TeamPilgrim.VisualStudio;component/Resources\lightningBolt_16xLG.png" Width="16" Height="16" />
             </Button>
         </ToolBar>
         
@@ -298,7 +298,10 @@
                     </ContextMenu>
 
                     <HierarchicalDataTemplate DataType="{x:Type ExplorerModels:ProjectCollectionServiceModel}" ItemsSource="{Binding Path=ProjectModels}">
-                        <TextBlock Text="{Binding Path=TfsTeamProjectCollection.Name}" ContextMenu="{StaticResource ResourceKey=ProjectCollectionContextMenu}" />
+                        <DockPanel>
+                            <Image Source="/TeamPilgrim.VisualStudio;component/Resources\TFSServer_13310_16x.png" Margin="0,0,2,0" />
+                            <TextBlock Text="{Binding Path=TfsTeamProjectCollection.Name}" ContextMenu="{StaticResource ResourceKey=ProjectCollectionContextMenu}" />
+                        </DockPanel>
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type ExplorerModels:ProjectServiceModel}" ItemsSource="{Binding Path=ChildObjects}">
@@ -323,11 +326,17 @@
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type BuildDefinitions:BuildDefinitionsServiceModel}" ItemsSource="{Binding Path=BuildDefinitions}">
-                        <TextBlock Text="Builds" ContextMenu="{StaticResource ResourceKey=BuildDefinitionsContextMenu}" />
+                        <DockPanel>
+                            <Image Source="/TeamPilgrim.VisualStudio;component/Resources\build_Selection_16xLG.png" Margin="0,0,2,0" />
+                            <TextBlock Text="Builds" ContextMenu="{StaticResource ResourceKey=BuildDefinitionsContextMenu}" />
+                        </DockPanel>
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type BuildDefinitions:BuildDefinitionModel}">
-                        <TextBlock Text="{Binding Path=Definition.Name}" ContextMenu="{StaticResource ResourceKey=BuildDefinitionContextMenu}" />
+                        <DockPanel>
+                            <Image Source="/TeamPilgrim.VisualStudio;component/Resources\build_Solution_16xLG.png" Margin="0,0,2,0" />
+                            <TextBlock Text="{Binding Path=Definition.Name}" ContextMenu="{StaticResource ResourceKey=BuildDefinitionContextMenu}" />
+                        </DockPanel>
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type ExplorerModels:ReportsModel}">
