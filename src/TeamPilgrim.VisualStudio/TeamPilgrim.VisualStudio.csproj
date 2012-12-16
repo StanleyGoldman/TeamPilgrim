@@ -98,6 +98,7 @@
     <Reference Include="NLog">
       <HintPath>..\..\lib\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationFramework.Aero" />
     <Reference Include="SlowCheetah.Tasks">
       <HintPath>..\..\lib\SlowCheetah.Tasks.Unofficial.1.0.0\lib\SlowCheetah.Tasks.dll</HintPath>
     </Reference>
@@ -337,6 +338,7 @@
       <SubType>Designer</SubType>
       <TransformOnBuild>true</TransformOnBuild>
     </Content>
+    <Resource Include="Resources\ServerProject.png" />
     <Resource Include="Resources\Team_16xLG.png" />
     <Resource Include="Resources\user_16xLG.png" />
     <Resource Include="Resources\WorkItem_16xLG.png" />
@@ -390,6 +392,7 @@
     <Resource Include="Resources\folder_Closed_16xLG.png" />
     <Resource Include="Resources\images_querylist.png" />
     <Resource Include="Resources\icons_generalicons_connecttotfs.png" />
+    <Resource Include="Resources\LinkedServer_12789_16x.png" />
     <Content Include="Resources\Package.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -420,6 +423,10 @@
     <Page Include="Windows\PendingChanges\PendingChangesControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\ResourceDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

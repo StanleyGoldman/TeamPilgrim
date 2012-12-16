@@ -327,6 +327,7 @@
                         </HierarchicalDataTemplate.Resources>
                         
                         <DockPanel Style="{StaticResource TreeViewDockPanel}">
+                            <Image Source="/TeamPilgrim.VisualStudio;component/Resources\LinkedServer_12789_16x.png" Margin="0,0,2,0" />
                             <TextBlock Text="{Binding Path=Project.Name}" ContextMenu="{StaticResource ResourceKey=ProjectContextMenu}" Style="{StaticResource ProjectContextTextStyle}" />
                         </DockPanel>
                     </HierarchicalDataTemplate>
@@ -380,6 +381,7 @@
 
                     <HierarchicalDataTemplate DataType="{x:Type ExplorerModels:SourceControlModel}">
                         <DockPanel Style="{StaticResource TreeViewDockPanel}">
+                            <Image Source="/TeamPilgrim.VisualStudio;component/Resources\ServerProject.png" Margin="0,0,2,0" />
                             <TextBlock Text="Source Control" />
                         </DockPanel>
                     </HierarchicalDataTemplate>
