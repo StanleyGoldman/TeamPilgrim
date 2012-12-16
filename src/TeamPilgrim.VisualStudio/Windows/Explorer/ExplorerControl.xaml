@@ -19,6 +19,7 @@
         <DockPanel.Resources>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <converters:BooleanToAlternateFontWeightConverter x:Key="BooleanToAlternateFontWeightConverter" TrueWeight="Bold" FalseWeight="Normal" />
+            <converters:WorkItemQueryFolderModelImageConverter x:Key="WorkItemQueryFolderModelImageConverter"/>
             
             <Style TargetType="{x:Type TreeViewItem}"  x:Key="DefaultStyle">
                 <EventSetter Event="UIElement.PreviewMouseRightButtonDown" Handler="OnPreviewMouseRightButtonDown"/>
@@ -321,7 +322,10 @@
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type WorkItemQuery:WorkItemQueryFolderModel}" ItemsSource="{Binding Path=QueryItems}">
-                        <TextBlock Text="{Binding Path=Name}" ContextMenu="{StaticResource ResourceKey=WorkItemQueryFolderContextMenu}"  />
+                        <DockPanel>
+                            <Image Source="{Binding Converter={StaticResource WorkItemQueryFolderModelImageConverter}}" Margin="0,0,2,0" />
+                            <TextBlock Text="{Binding Path=Name}" ContextMenu="{StaticResource ResourceKey=WorkItemQueryFolderContextMenu}"  />
+                        </DockPanel>
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type WorkItemQuery:WorkItemQueryDefinitionModel}">

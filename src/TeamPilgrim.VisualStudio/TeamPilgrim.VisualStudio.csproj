@@ -192,6 +192,7 @@
     <Compile Include="Common\AttachedProperties\PreviewSpaceKeyDownSelectWorkItems.cs" />
     <Compile Include="Common\Converters\BooleanToAlternateFontWeightConverter.cs" />
     <Compile Include="Common\Converters\ObservableCollectionToTrulyObservableCollectionCoverter.cs" />
+    <Compile Include="Common\Converters\WorkItemQueryFolderModelImageConverter.cs" />
     <Compile Include="Common\TrulyObservableCollection.cs" />
     <Compile Include="Common\LoggerExtensions.cs" />
     <Compile Include="Common\WorkItemQueryChildModelExtensions.cs" />
@@ -336,6 +337,8 @@
       <SubType>Designer</SubType>
       <TransformOnBuild>true</TransformOnBuild>
     </Content>
+    <Resource Include="Resources\Team_16xLG.png" />
+    <Resource Include="Resources\user_16xLG.png" />
     <Resource Include="Resources\WorkItem_16xLG.png" />
     <Resource Include="Resources\TFSServer_13310_16x.png" />
     <Resource Include="Resources\Textfile_818_32x.png" />
@@ -385,6 +388,7 @@
     <Resource Include="Resources\clock_16xLG.png" />
     <Resource Include="Resources\build_Selection_16xLG.png" />
     <Resource Include="Resources\build_Solution_16xLG.png" />
+    <Resource Include="Resources\folder_Closed_16xLG.png" />
     <Content Include="Resources\Package.ico" />
   </ItemGroup>
   <ItemGroup>
