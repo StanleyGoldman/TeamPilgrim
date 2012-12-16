@@ -314,7 +314,10 @@
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type WorkItemQuery:WorkItemQueryServiceModel}" ItemsSource="{Binding Path=QueryItems}">
-                        <TextBlock Text="Work Items" ContextMenu="{StaticResource ResourceKey=WorkItemQueryContainerContextMenu}"  />
+                        <DockPanel>
+                            <Image Source="/TeamPilgrim.VisualStudio;component/Resources\WorkItem_16xLG.png" Margin="0,0,2,0" />
+                            <TextBlock Text="Work Items" ContextMenu="{StaticResource ResourceKey=WorkItemQueryContainerContextMenu}"  />
+                        </DockPanel>
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type WorkItemQuery:WorkItemQueryFolderModel}" ItemsSource="{Binding Path=QueryItems}">
