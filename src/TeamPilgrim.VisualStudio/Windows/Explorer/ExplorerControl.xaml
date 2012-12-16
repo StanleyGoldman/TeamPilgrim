@@ -329,7 +329,10 @@
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type WorkItemQuery:WorkItemQueryDefinitionModel}">
-                        <TextBlock Text="{Binding Path=Name}" ContextMenu="{StaticResource ResourceKey=WorkItemQueryDefinitionContextMenu}"  />
+                        <DockPanel>
+                            <Image Source="/TeamPilgrim.VisualStudio;component/Resources\images_querylist.png" Margin="0,0,2,0" />
+                            <TextBlock Text="{Binding Path=Name}" ContextMenu="{StaticResource ResourceKey=WorkItemQueryDefinitionContextMenu}"  />
+                        </DockPanel>
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type BuildDefinitions:BuildDefinitionsServiceModel}" ItemsSource="{Binding Path=BuildDefinitions}">

@@ -389,6 +389,7 @@
     <Resource Include="Resources\build_Selection_16xLG.png" />
     <Resource Include="Resources\build_Solution_16xLG.png" />
     <Resource Include="Resources\folder_Closed_16xLG.png" />
+    <Resource Include="Resources\images_querylist.png" />
     <Content Include="Resources\Package.ico" />
   </ItemGroup>
   <ItemGroup>
