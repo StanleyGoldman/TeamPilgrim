@@ -12,13 +12,16 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
 
         public QueryFolder QueryFolder { get; private set; }
 
+        public QueryFolderTypeEnum? QueryFolderType { get; private set; }
+
         public Project Project { get; private set; }
 
-        public WorkItemQueryFolderModel(IWorkItemQueryCommandModel workItemQueryCommandModel, Project project, int depth, QueryFolder queryFolder, IEnumerable<WorkItemQueryChildModel> childQueryItemViewModels)
+        public WorkItemQueryFolderModel(IWorkItemQueryCommandModel workItemQueryCommandModel, Project project, int depth, QueryFolder queryFolder, IEnumerable<WorkItemQueryChildModel> childQueryItemViewModels, QueryFolderTypeEnum? queryFolderType)
             : base(workItemQueryCommandModel, depth)
         {
             Project = project;
             QueryFolder = queryFolder;
+            QueryFolderType = queryFolderType;
 
             var childQueryItemViewModelsArray = childQueryItemViewModels.ToArray();
 
