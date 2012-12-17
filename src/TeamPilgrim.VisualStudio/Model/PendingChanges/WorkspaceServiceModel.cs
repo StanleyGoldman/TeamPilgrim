@@ -673,11 +673,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                     .Join(currentPendingChanges, model => model.Change.ItemId, change => change.ItemId, (model, change) => new { model, change })
                     .ToArray();
 
-                foreach (var intersection in intersections)
-                {
-                    intersection.model.Change = intersection.change;
-                }
-
                 var intersectedModels =
                     intersections
                     .Select(arg => arg.model)
@@ -690,6 +685,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
                     .Select(change => new PendingChangeModel(change)).ToArray();
 
                 _backgroundFunctionPreventEvaluateCheckin = true;
+
+                foreach (var intersection in intersections)
+                {
+                    intersection.model.Change = intersection.change;
+                }
 
                 foreach (var modelToAdd in modelsToAdd)
                 {
