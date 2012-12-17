@@ -95,44 +95,46 @@
 
                     <TabItem x:Name="SourceFilesTabItem" IsSelected="{Binding IsChecked, ElementName=SourceFilesRadioButton}">
                         <DockPanel>
-                            <ToolBar DockPanel.Dock="Top">
-                                <!--
-                                <ToggleButton IsEnabled="False" Content="Comments"/>
+                            <ToolBarTray DockPanel.Dock="Top">
+                                <ToolBar>
+                                    <!--
+                                    <ToggleButton IsEnabled="False" Content="Comments"/>
 
-                                <Separator/>
+                                    <Separator/>
                                 
-                                <RadioButton  IsEnabled="False" x:Name="CheckinFolderViewRadioButton" Style="{StaticResource {x:Type ToggleButton}}" GroupName="CheckinPendingChangesViewStyle">
-                                    <TextBlock><Run Text="Folder"/></TextBlock>
-                                </RadioButton>
-                                <RadioButton  IsEnabled="False" IsChecked="True" x:Name="CheckinFlatViewRadioButton" Style="{StaticResource {x:Type ToggleButton}}" GroupName="CheckinPendingChangesViewStyle">
-                                    <TextBlock><Run Text="Flat"/></TextBlock>
-                                </RadioButton>
+                                    <RadioButton  IsEnabled="False" x:Name="CheckinFolderViewRadioButton" Style="{StaticResource {x:Type ToggleButton}}" GroupName="CheckinPendingChangesViewStyle">
+                                        <TextBlock><Run Text="Folder"/></TextBlock>
+                                    </RadioButton>
+                                    <RadioButton  IsEnabled="False" IsChecked="True" x:Name="CheckinFlatViewRadioButton" Style="{StaticResource {x:Type ToggleButton}}" GroupName="CheckinPendingChangesViewStyle">
+                                        <TextBlock><Run Text="Flat"/></TextBlock>
+                                    </RadioButton>
 
-                                <Separator/>
-                                Compare Button Dropdown Disabled/Needs Implementing
+                                    <Separator/>
+                                    Compare Button Dropdown Disabled/Needs Implementing
                 
-                                <Button>Cmp with Unmodified</Button>
-                                <Button>Cmp with Workspace</Button>
-                                <Button>Cmp with Latest</Button>
-                                    -->
+                                    <Button>Cmp with Unmodified</Button>
+                                    <Button>Cmp with Workspace</Button>
+                                    <Button>Cmp with Latest</Button>
+                                        -->
 
-                                <ToggleButton 
-                                        ToolTip="Filter by Solution"
-                                        IsEnabled="{Binding Path=SolutionIsOpen}" 
-                                        IsChecked="{Binding Path=FilterSolution}">
-                                    <Image Source="/TeamPilgrim.VisualStudio;component/Resources\Solution_8308.png" Width="16" Height="16"></Image>
-                                </ToggleButton>
+                                    <ToggleButton 
+                                            ToolTip="Filter by Solution"
+                                            IsEnabled="{Binding Path=SolutionIsOpen}" 
+                                            IsChecked="{Binding Path=FilterSolution}">
+                                        <Image Source="/TeamPilgrim.VisualStudio;component/Resources\Solution_8308.png" Width="16" Height="16"></Image>
+                                    </ToggleButton>
 
-                                <Separator/>
+                                    <Separator/>
 
-                                <Button 
-                                        ToolTip="Undo pending changes"
-                                        Command="{Binding Path=UndoPendingChangeCommand}" 
-                                        CommandParameter="{Binding ElementName=PendingChangesListView, Path=SelectedItems}">
-                                    <Image Source="/TeamPilgrim.VisualStudio;component/Resources\Arrow_UndoRevertRestore_16xLG.png" Width="16" Height="16"></Image>
-                                </Button>
+                                    <Button 
+                                            ToolTip="Undo pending changes"
+                                            Command="{Binding Path=UndoPendingChangeCommand}" 
+                                            CommandParameter="{Binding ElementName=PendingChangesListView, Path=SelectedItems}">
+                                        <Image Source="/TeamPilgrim.VisualStudio;component/Resources\Arrow_UndoRevertRestore_16xLG.png" Width="16" Height="16"></Image>
+                                    </Button>
 
-                            </ToolBar>
+                                </ToolBar>
+                            </ToolBarTray>
                             <TextBlock DockPanel.Dock="Top"><Run Text="Comment:"/></TextBlock>
                             <TextBox DockPanel.Dock="Top" Text="{Binding Comment, UpdateSourceTrigger=PropertyChanged}"/>
 
