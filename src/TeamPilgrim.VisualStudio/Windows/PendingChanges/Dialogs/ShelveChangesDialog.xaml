@@ -19,24 +19,30 @@
         x:Name="ShelveChangesDialogWindow"
         d:DataContext="{d:DesignInstance ShelveChanges:ShelvesetServiceModel}">
     <Window.Resources>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        <Converters:SingleObjectToObservableCollectionConverter x:Key="SingleObjectToListConverter" />
-        <Converters:AndClauseBooleanConverter x:Key="AndClauseBooleanConverter" />
+    	<ResourceDictionary>
+    		<ResourceDictionary.MergedDictionaries>
+    			<ResourceDictionary Source="/TeamPilgrim.VisualStudio;component/Windows\ResourceDictionary.xaml"/>
+    		</ResourceDictionary.MergedDictionaries>
+            
+    		<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    		<Converters:SingleObjectToObservableCollectionConverter x:Key="SingleObjectToListConverter" />
+    		<Converters:AndClauseBooleanConverter x:Key="AndClauseBooleanConverter" />
 
-        <ObjectDataProvider x:Key="WorkItemCheckinActions" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
-            <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="Enums:SelectedWorkItemCheckinActionEnum"/>
-            </ObjectDataProvider.MethodParameters>
-        </ObjectDataProvider>
+    		<ObjectDataProvider x:Key="WorkItemCheckinActions" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
+    			<ObjectDataProvider.MethodParameters>
+    				<x:Type TypeName="Enums:SelectedWorkItemCheckinActionEnum"/>
+    			</ObjectDataProvider.MethodParameters>
+    		</ObjectDataProvider>
 
-    </Window.Resources>
-    <DockPanel>
-        <DockPanel.Resources>
             <Style TargetType="ToolBar">
                 <Setter Property="ToolBarTray.IsLocked" Value="True"/>
                 <Setter Property="OverflowMode" Value="AsNeeded"/>
+                <Setter Property="Template" Value="{DynamicResource ToolbarTemplate}" />
             </Style>
-        </DockPanel.Resources>
+        </ResourceDictionary>
+
+    </Window.Resources>
+    <DockPanel>
         <TextBlock DockPanel.Dock="Top" Text="Shelveset name:" />
         <TextBox DockPanel.Dock="Top" Text="{Binding ShelvesetName, UpdateSourceTrigger=PropertyChanged}"/>
         <DockPanel DockPanel.Dock="Bottom" LastChildFill="False">
@@ -56,43 +62,25 @@
             </DockPanel>
         </DockPanel>
         <DockPanel DockPanel.Dock="Top" >
-            <ToolBar>
-                <ToolBar.Resources>
+            <ToolBarTray Orientation="Vertical" DockPanel.Dock="Left">
+                <ToolBar>
+                    <RadioButton IsChecked="True" x:Name="SourceFilesRadioButton" Style="{StaticResource {x:Type ToggleButton}}" GroupName="PendingChangesMainView">
+                        <Image Source="..\..\..\Resources\page_white_text.png" Width="32" Height="32" />
+                    </RadioButton>
 
-                    <TransformGroup x:Key="ButtonImageTransform">
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="-90"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
+                    <RadioButton x:Name="WorkItemsRadioButton" Style="{StaticResource {x:Type ToggleButton}}" GroupName="PendingChangesMainView">
+                        <Image Source="..\..\..\Resources\clipboard_sign.png" Width="32" Height="32" />
+                    </RadioButton>
 
-                    <Style TargetType="{x:Type Image}" x:Key="ButtonImageStyle">
-                        <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
-                        <Setter Property="RenderTransform" Value="{StaticResource ResourceKey=ButtonImageTransform}" />
-                    </Style>
-                </ToolBar.Resources>
+                    <RadioButton x:Name="CheckInNotesRadioButton" Style="{StaticResource {x:Type ToggleButton}}" GroupName="PendingChangesMainView">
+                        <Image Source="..\..\..\Resources\note.png" Width="32" Height="32" />
+                    </RadioButton>
 
-                <ToolBar.LayoutTransform>
-                    <RotateTransform Angle="90" />
-                </ToolBar.LayoutTransform>
-
-                <RadioButton IsChecked="True" x:Name="SourceFilesRadioButton" Style="{StaticResource {x:Type ToggleButton}}" GroupName="PendingChangesMainView">
-                    <Image Source="..\..\..\Resources\page_white_text.png" Width="32" Height="32" Style="{StaticResource ButtonImageStyle}" />
-                </RadioButton>
-
-                <RadioButton x:Name="WorkItemsRadioButton" Style="{StaticResource {x:Type ToggleButton}}" GroupName="PendingChangesMainView">
-                    <Image Source="..\..\..\Resources\clipboard_sign.png" Width="32" Height="32" Style="{StaticResource ButtonImageStyle}" />
-                </RadioButton>
-
-                <RadioButton x:Name="CheckInNotesRadioButton" Style="{StaticResource {x:Type ToggleButton}}" GroupName="PendingChangesMainView">
-                    <Image Source="..\..\..\Resources\note.png" Width="32" Height="32" Style="{StaticResource ButtonImageStyle}" />
-                </RadioButton>
-
-                <RadioButton x:Name="PolicyWarningsRadioButton" Style="{StaticResource {x:Type ToggleButton}}" GroupName="PendingChangesMainView" Visibility="{Binding EvaluatePoliciesAndCheckinNotes, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <Image Source="..\..\..\Resources\page_white_delete.png" Width="32" Height="32" Style="{StaticResource ButtonImageStyle}" />
-                </RadioButton>
-            </ToolBar>
-
+                    <RadioButton x:Name="PolicyWarningsRadioButton" Style="{StaticResource {x:Type ToggleButton}}" GroupName="PendingChangesMainView" Visibility="{Binding EvaluatePoliciesAndCheckinNotes, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Image Source="..\..\..\Resources\page_white_delete.png" Width="32" Height="32" />
+                    </RadioButton>
+                </ToolBar>
+            </ToolBarTray>
             <TabControl DockPanel.Dock="Right">
                     <TabControl.Resources>
                         <!--http://stackoverflow.com/questions/6278720/wpf-toggle-panel-visibility-->
