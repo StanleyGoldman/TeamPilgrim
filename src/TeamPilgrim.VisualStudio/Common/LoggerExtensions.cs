@@ -5,6 +5,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common
 {
     public static class LoggerExtensions
     {
+        public static Logger Logger<T>(this T value)
+        {
+            return TeamPilgrimLogManager.Instance.GetLogger(typeof(T).FullName);
+        }
+
         public static void DebugException(this Logger logger, Exception ex)
         {
             logger.DebugException(String.Empty, ex);

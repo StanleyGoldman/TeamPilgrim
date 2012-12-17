@@ -9,7 +9,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common
     public class BindingErrorTraceListener : DefaultTraceListener
     {
         private static BindingErrorTraceListener _listener;
-        private static readonly Logger Logger = TeamPilgrimLogManager.Instance.GetCurrentClassLogger();
 
         public static void SetTrace()
         { SetTrace(SourceLevels.Error, TraceOptions.None); }
@@ -52,7 +51,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common
             var final = _message.ToString();
             _message.Length = 0;
 
-            Logger.Trace(final);
+            this.Logger().Trace(final);
             MessageBox.Show(final, "Binding Error", MessageBoxButton.OK,
               MessageBoxImage.Error);
         }

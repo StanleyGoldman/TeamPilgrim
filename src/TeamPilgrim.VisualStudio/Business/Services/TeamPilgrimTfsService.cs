@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
 using Microsoft.TeamFoundation.Build.Client;
 using Microsoft.TeamFoundation.Client;
@@ -14,11 +15,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 {
     public class TeamPilgrimTfsService : ITeamPilgrimTfsService
     {
-        private static readonly Logger Logger = TeamPilgrimLogManager.Instance.GetCurrentClassLogger();
-
         public TfsTeamProjectCollection GetProjectCollection(Uri uri)
         {
-            Logger.Trace("GetProjectCollection Uri: {0}", uri);
+            this.Logger().Trace("GetProjectCollection Uri: {0}", uri);
 
             if (uri == null)
                 return null;
@@ -31,14 +30,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 
         public RegisteredProjectCollection[] GetRegisteredProjectCollections()
         {
-            Logger.Trace("GetRegisteredProjectCollections");
+            this.Logger().Trace("GetRegisteredProjectCollections");
 
             return RegisteredTfsConnections.GetProjectCollections();
         }
 
         public bool DeleteQueryItem(TfsTeamProjectCollection tfsTeamProjectCollection, Project teamProject, Guid queryItemId)
         {
-            Logger.Trace("DeleteQueryItem");
+            this.Logger().Trace("DeleteQueryItem");
 
             var workItemStore = GetWorkItemStore(tfsTeamProjectCollection);
             var queryHierarchy = workItemStore.GetQueryHierarchy(teamProject);
@@ -54,7 +53,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 
         public TfsTeamProjectCollection[] GetProjectCollections()
         {
-            Logger.Trace("GetProjectCollections");
+            this.Logger().Trace("GetProjectCollections");
 
             RegisteredProjectCollection[] registeredProjectCollections = GetRegisteredProjectCollections();
 
@@ -68,7 +67,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 
         public Project[] GetProjects(TfsTeamProjectCollection tfsTeamProjectCollection)
         {
-            Logger.Trace("GetProjects ProjectCollection: {0}", tfsTeamProjectCollection.Name);
+            this.Logger().Trace("GetProjects ProjectCollection: {0}", tfsTeamProjectCollection.Name);
 
             var workItemStore = new WorkItemStore(tfsTeamProjectCollection);
 
@@ -77,14 +76,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 
         public void DeleteBuildDefinition(IBuildDefinition buildDefinition)
         {
-            Logger.Trace("DeleteBuildDefinition");
+            this.Logger().Trace("DeleteBuildDefinition");
 
             buildDefinition.Delete();
         }
 
         public IBuildDefinition CloneBuildDefinition(TfsTeamProjectCollection tfsTeamProjectCollection, string projectName, IBuildDefinition sourceDefinition)
         {
-            Logger.Trace("CloneBuildDefinition");
+            this.Logger().Trace("CloneBuildDefinition");
 
             var buildServer = tfsTeamProjectCollection.GetService<IBuildServer>();
             var clonedDefinition = buildServer.CreateBuildDefinition(projectName);
@@ -96,21 +95,21 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 
         private WorkItemStore GetWorkItemStore(TfsTeamProjectCollection tfsTeamProjectCollection)
         {
-            Logger.Trace("GetWorkItemStore");
+            this.Logger().Trace("GetWorkItemStore");
 
             return tfsTeamProjectCollection.GetService<WorkItemStore>();
         }
 
         public VersionControlServer GetVersionControlServer(TfsTeamProjectCollection tfsTeamProjectCollection)
         {
-            Logger.Trace("GetVersionControlServer");
+            this.Logger().Trace("GetVersionControlServer");
 
             return tfsTeamProjectCollection.GetService<VersionControlServer>();
         }
 
         public IBuildDefinition[] QueryBuildDefinitions(TfsTeamProjectCollection tfsTeamProjectCollection, string teamProject)
         {
-            Logger.Trace("QueryBuildDefinitions ProjectCollection: {0} Project: {1}", tfsTeamProjectCollection.Name, teamProject);
+            this.Logger().Trace("QueryBuildDefinitions ProjectCollection: {0} Project: {1}", tfsTeamProjectCollection.Name, teamProject);
 
             return tfsTeamProjectCollection.GetService<IBuildServer>()
                 .QueryBuildDefinitions(teamProject)
@@ -119,7 +118,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 
         public IBuildDetail[] QueryBuildDetails(TfsTeamProjectCollection tfsTeamProjectCollection, string teamProject)
         {
-            Logger.Trace("QueryBuildDetails ProjectCollection: {0} Project: {1}", tfsTeamProjectCollection.Name, teamProject);
+            this.Logger().Trace("QueryBuildDetails ProjectCollection: {0} Project: {1}", tfsTeamProjectCollection.Name, teamProject);
 
             return tfsTeamProjectCollection.GetService<IBuildServer>()
                 .QueryBuilds(teamProject)
@@ -128,7 +127,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 
         public QueryFolder AddNewQueryFolder(TfsTeamProjectCollection teamProjectCollection, Project teamProject, Guid parentFolderId)
         {
-            Logger.Trace("AddNewQueryFolder");
+            this.Logger().Trace("AddNewQueryFolder");
 
             var workItemStore = GetWorkItemStore(teamProjectCollection);
             var queryHierarchy = workItemStore.GetQueryHierarchy(teamProject);
@@ -146,7 +145,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 
         public WorkItemCollection GetQueryDefinitionWorkItemCollection(TfsTeamProjectCollection collection, QueryDefinition queryDefinition, string projectName)
         {
-            Logger.Trace("GetQueryDefinitionWorkItemCollection");
+            this.Logger().Trace("GetQueryDefinitionWorkItemCollection");
 
             var context = new Dictionary<string, string> { { "project", projectName } };
             
@@ -165,11 +164,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
         {
             if (projectCollectionId != null)
             {
-                Logger.Trace("GetLocalWorkspaceInfo ProjectCollectionID: {0}", projectCollectionId.Value.ToString());
+                this.Logger().Trace("GetLocalWorkspaceInfo ProjectCollectionID: {0}", projectCollectionId.Value.ToString());
             }
             else
             {
-                Logger.Trace("GetLocalWorkspaceInfo");
+                this.Logger().Trace("GetLocalWorkspaceInfo");
             }
 
             IEnumerable<WorkspaceInfo> allLocalWorkspaceInfo = Workstation.Current.GetAllLocalWorkspaceInfo();
@@ -184,14 +183,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 
         public Workspace GetWorkspace(WorkspaceInfo workspaceInfo, TfsTeamProjectCollection tfsTeamProjectCollection)
         {
-            Logger.Trace("GetWorkspace  ProjectCollection: {0} Workspace: {1}", tfsTeamProjectCollection.Name, workspaceInfo.Name);
+            this.Logger().Trace("GetWorkspace  ProjectCollection: {0} Workspace: {1}", tfsTeamProjectCollection.Name, workspaceInfo.Name);
 
             return workspaceInfo.GetWorkspace(tfsTeamProjectCollection);
         }
 
         public void WorkspaceCheckin(Workspace workspace, PendingChange[] changes, string comment, CheckinNote checkinNote, WorkItemCheckinInfo[] workItemChanges, PolicyOverrideInfo policyOverride)
         {
-            Logger.Trace("WorkspaceCheckin");
+            this.Logger().Trace("WorkspaceCheckin");
 
             workspace.CheckIn(changes, comment, checkinNote, workItemChanges, policyOverride);
         }
@@ -208,14 +207,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 
         public CheckinEvaluationResult EvaluateCheckin(Workspace workspace, PendingChange[] changes, string comment, CheckinNote checkinNote, WorkItemCheckinInfo[] workItemChanges)
         {
-            Logger.Trace("EvaluateCheckin");
+            this.Logger().Trace("EvaluateCheckin");
 
             return workspace.EvaluateCheckin(CheckinEvaluationOptions.All, changes, changes, comment, checkinNote, workItemChanges);
         }
 
         public Conflict[] GetAllConflicts(Workspace workspace)
         {
-            Logger.Trace("GetAllConflicts");
+            this.Logger().Trace("GetAllConflicts");
 
             return workspace.QueryConflicts(workspace.Folders.Select(folder => folder.ServerItem).ToArray(), true);
         }

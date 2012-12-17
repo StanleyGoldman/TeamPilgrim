@@ -24,8 +24,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
 {
     public class ShelvesetServiceModel : BaseServiceModel
     {
-        private static readonly Logger Logger = TeamPilgrimLogManager.Instance.GetCurrentClassLogger();
-
         public delegate void ShowPendingChangesItemDelegate(ShowPendingChangesTabItemEnum showPendingChangesTabItemEnum);
         public event ShowPendingChangesItemDelegate ShowPendingChangesItem;
 
@@ -73,7 +71,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
 
                 if (string.IsNullOrWhiteSpace(previousValue) ^ string.IsNullOrWhiteSpace(_comment))
                 {
-                    Logger.Debug("Comment IsNullOrWhiteSpace Status Changed");
+                    this.Logger().Debug("Comment IsNullOrWhiteSpace Status Changed");
                     EvaluateCheckInCommand.Execute(null);
                 }
             }
@@ -308,7 +306,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
       
         private void VersionControlServerOnPendingChangesChanged(object sender, WorkspaceEventArgs workspaceEventArgs)
         {
-            Logger.Debug("VersionControlServerOnPendingChangesChanged");
+            this.Logger().Debug("VersionControlServerOnPendingChangesChanged");
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)RefreshPendingChanges);
         }
 
@@ -337,7 +335,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
         private void PendingChangesOnCollectionChanged(object sender,
                                                        NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            Logger.Trace("PendingChangesOnCollectionChanged");
+            this.Logger().Trace("PendingChangesOnCollectionChanged");
 
             EvaluateCheckInCommand.Execute(null);
         }
@@ -350,7 +348,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
 
         private void WorkItemsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            Logger.Trace("WorkItemsOnCollectionChanged");
+            this.Logger().Trace("WorkItemsOnCollectionChanged");
 
             EvaluateCheckInCommand.Execute(null);
         }
@@ -363,7 +361,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
 
         private void SelectPendingChanges(SelectPendingChangesCommandArgument selectPendingChangesCommandArgument)
         {
-            Logger.Debug("Select Pending Changes: {0}, Count: {1}", selectPendingChangesCommandArgument.Value, selectPendingChangesCommandArgument.Collection.Count());
+            this.Logger().Debug("Select Pending Changes: {0}, Count: {1}", selectPendingChangesCommandArgument.Value, selectPendingChangesCommandArgument.Collection.Count());
 
             _backgroundFunctionPreventEvaluateCheckin = true;
 
@@ -390,7 +388,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
 
         private void SelectWorkItems(SelectWorkItemsCommandArgument selectWorkItemsCommandArgument)
         {
-            Logger.Debug("Select Work Items: {0}, Count: {1}", selectWorkItemsCommandArgument.Value, selectWorkItemsCommandArgument.Collection.Count());
+            this.Logger().Debug("Select Work Items: {0}, Count: {1}", selectWorkItemsCommandArgument.Value, selectWorkItemsCommandArgument.Collection.Count());
 
             _backgroundFunctionPreventEvaluateCheckin = true;
 
@@ -506,7 +504,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
 
         private void RefreshPendingChanges()
         {
-            Logger.Trace("RefreshPendingChanges");
+            this.Logger().Trace("RefreshPendingChanges");
 
             PendingChange[] currentPendingChanges;
 
@@ -723,7 +721,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
 
         private void RefreshSelectedDefinitionWorkItems()
         {
-            Logger.Trace("RefreshSelectedDefinitionWorkItems");
+            this.Logger().Trace("RefreshSelectedDefinitionWorkItems");
 
             if (SelectedWorkItemQueryDefinition == null)
                 return;
@@ -781,7 +779,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
 
         private void EvaluateCheckIn()
         {
-            Logger.Trace("EvaluateCheckIn");
+            this.Logger().Trace("EvaluateCheckIn");
 
             var pendingChanges = PendingChanges
                                     .Where(model => model.IncludeChange)
@@ -838,7 +836,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
             if (teamPilgrimServiceModelProvider.TryEvaluateCheckin(out checkinEvaluationResult, _workspaceServiceModel.Workspace, pendingChanges, Comment, checkinNote, workItemChanges))
             {
                 CheckinEvaluationResult = checkinEvaluationResult;
-                Logger.Debug("EvaluateCheckIn: Valid:{0}", checkinEvaluationResult.IsValid());
+                this.Logger().Debug("EvaluateCheckIn: Valid:{0}", checkinEvaluationResult.IsValid());
             }
         }
 
@@ -846,7 +844,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
         {
             var canEvaluateCheckIn = !_backgroundFunctionPreventEvaluateCheckin;
 
-            Logger.Trace("CanEvaluateCheckIn: Result: {0}", canEvaluateCheckIn);
+            this.Logger().Trace("CanEvaluateCheckIn: Result: {0}", canEvaluateCheckIn);
 
             return canEvaluateCheckIn;
         }
