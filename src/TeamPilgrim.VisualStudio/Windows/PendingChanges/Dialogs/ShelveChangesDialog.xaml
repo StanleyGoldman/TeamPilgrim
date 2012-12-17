@@ -65,7 +65,7 @@
             <ToolBarTray Orientation="Vertical" DockPanel.Dock="Left">
                 <ToolBar>
                     <RadioButton IsChecked="True" x:Name="SourceFilesRadioButton" Style="{StaticResource {x:Type ToggleButton}}" GroupName="PendingChangesMainView">
-                        <Image Source="..\..\..\Resources\page_white_text.png" Width="32" Height="32" />
+                        <Image Source="/TeamPilgrim.VisualStudio;component/Resources\Textfile_818_32x.png" Width="32" Height="32" />
                     </RadioButton>
 
                     <RadioButton x:Name="WorkItemsRadioButton" Style="{StaticResource {x:Type ToggleButton}}" GroupName="PendingChangesMainView">
@@ -77,7 +77,7 @@
                     </RadioButton>
 
                     <RadioButton x:Name="PolicyWarningsRadioButton" Style="{StaticResource {x:Type ToggleButton}}" GroupName="PendingChangesMainView" Visibility="{Binding EvaluatePoliciesAndCheckinNotes, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <Image Source="..\..\..\Resources\page_white_delete.png" Width="32" Height="32" />
+                        <Image Source="/TeamPilgrim.VisualStudio;component/Resources\PolicyWarnings(large)_7879.png" Width="32" Height="32" />
                     </RadioButton>
                 </ToolBar>
             </ToolBarTray>
@@ -116,13 +116,21 @@
                                 <Button>Cmp with Latest</Button>
                                     -->
 
-                                <ToggleButton IsEnabled="{Binding Path=SolutionIsOpen}" IsChecked="{Binding Path=FilterSolution}">Filter Solution</ToggleButton>
+                                <ToggleButton 
+                                        ToolTip="Filter by Solution"
+                                        IsEnabled="{Binding Path=SolutionIsOpen}" 
+                                        IsChecked="{Binding Path=FilterSolution}">
+                                    <Image Source="/TeamPilgrim.VisualStudio;component/Resources\Solution_8308.png" Width="16" Height="16"></Image>
+                                </ToggleButton>
 
                                 <Separator/>
 
-                                <Button Content="Undo Pending Change"
-                                            Command="{Binding Path=UndoPendingChangeCommand}" 
-                                            CommandParameter="{Binding ElementName=PendingChangesListView, Path=SelectedItems}" />
+                                <Button 
+                                        ToolTip="Undo pending changes"
+                                        Command="{Binding Path=UndoPendingChangeCommand}" 
+                                        CommandParameter="{Binding ElementName=PendingChangesListView, Path=SelectedItems}">
+                                    <Image Source="/TeamPilgrim.VisualStudio;component/Resources\Arrow_UndoRevertRestore_16xLG.png" Width="16" Height="16"></Image>
+                                </Button>
 
                             </ToolBar>
                             <TextBlock DockPanel.Dock="Top"><Run Text="Comment:"/></TextBlock>

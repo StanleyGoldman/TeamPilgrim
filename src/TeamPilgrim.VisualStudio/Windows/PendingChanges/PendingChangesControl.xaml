@@ -106,10 +106,10 @@
 
                             <Separator/>
                             <ToggleButton 
-                            DataContext="{Binding Path=SelectedWorkspaceModel}" 
-                            IsEnabled="{Binding Path=SolutionIsOpen}" 
-                            IsChecked="{Binding Path=FilterSolution}"
-                            ToolTip="Filter by Solution">
+                                DataContext="{Binding Path=SelectedWorkspaceModel}" 
+                                IsEnabled="{Binding Path=SolutionIsOpen}" 
+                                IsChecked="{Binding Path=FilterSolution}"
+                                ToolTip="Filter by Solution">
 
                                 <Image Source="/TeamPilgrim.VisualStudio;component/Resources\Solution_8308.png" Width="16" Height="16"></Image>
                             </ToggleButton>
