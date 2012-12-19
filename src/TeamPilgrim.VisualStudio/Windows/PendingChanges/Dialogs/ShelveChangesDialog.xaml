@@ -19,20 +19,20 @@
         x:Name="ShelveChangesDialogWindow"
         d:DataContext="{d:DesignInstance ShelveChanges:ShelvesetServiceModel}">
     <Window.Resources>
-    	<ResourceDictionary>
-    		<ResourceDictionary.MergedDictionaries>
-    			<ResourceDictionary Source="/TeamPilgrim.VisualStudio;component/Windows\ResourceDictionary.xaml"/>
-    		</ResourceDictionary.MergedDictionaries>
-            
-    		<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-    		<Converters:SingleObjectToObservableCollectionConverter x:Key="SingleObjectToListConverter" />
-    		<Converters:AndClauseBooleanConverter x:Key="AndClauseBooleanConverter" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/TeamPilgrim.VisualStudio;component/Windows\ResourceDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
 
-    		<ObjectDataProvider x:Key="WorkItemCheckinActions" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
-    			<ObjectDataProvider.MethodParameters>
-    				<x:Type TypeName="Enums:SelectedWorkItemCheckinActionEnum"/>
-    			</ObjectDataProvider.MethodParameters>
-    		</ObjectDataProvider>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <Converters:SingleObjectToObservableCollectionConverter x:Key="SingleObjectToListConverter" />
+            <Converters:AndClauseBooleanConverter x:Key="AndClauseBooleanConverter" />
+
+            <ObjectDataProvider x:Key="WorkItemCheckinActions" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="Enums:SelectedWorkItemCheckinActionEnum"/>
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
 
             <Style TargetType="ToolBar">
                 <Setter Property="ToolBarTray.IsLocked" Value="True"/>
@@ -82,22 +82,22 @@
                 </ToolBar>
             </ToolBarTray>
             <TabControl DockPanel.Dock="Right">
-                    <TabControl.Resources>
-                        <!--http://stackoverflow.com/questions/6278720/wpf-toggle-panel-visibility-->
-                        <Style TargetType="{x:Type TabItem}">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type TabItem}"/>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </TabControl.Resources>
+                <TabControl.Resources>
+                    <!--http://stackoverflow.com/questions/6278720/wpf-toggle-panel-visibility-->
+                    <Style TargetType="{x:Type TabItem}">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type TabItem}"/>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </TabControl.Resources>
 
-                    <TabItem x:Name="SourceFilesTabItem" IsSelected="{Binding IsChecked, ElementName=SourceFilesRadioButton}">
-                        <DockPanel>
-                            <ToolBarTray DockPanel.Dock="Top">
-                                <ToolBar>
-                                    <!--
+                <TabItem x:Name="SourceFilesTabItem" IsSelected="{Binding IsChecked, ElementName=SourceFilesRadioButton}">
+                    <DockPanel>
+                        <ToolBarTray DockPanel.Dock="Top">
+                            <ToolBar>
+                                <!--
                                     <ToggleButton IsEnabled="False" Content="Comments"/>
 
                                     <Separator/>
@@ -117,28 +117,28 @@
                                     <Button>Cmp with Latest</Button>
                                         -->
 
-                                    <ToggleButton 
+                                <ToggleButton 
                                             ToolTip="Filter by Solution"
                                             IsEnabled="{Binding Path=SolutionIsOpen}" 
                                             IsChecked="{Binding Path=FilterSolution}">
-                                        <Image Source="/TeamPilgrim.VisualStudio;component/Resources\Solution_8308.png" Width="16" Height="16"></Image>
-                                    </ToggleButton>
+                                    <Image Source="/TeamPilgrim.VisualStudio;component/Resources\Solution_8308.png" Width="16" Height="16"></Image>
+                                </ToggleButton>
 
-                                    <Separator/>
+                                <Separator/>
 
-                                    <Button 
+                                <Button 
                                             ToolTip="Undo pending changes"
                                             Command="{Binding Path=UndoPendingChangeCommand}" 
                                             CommandParameter="{Binding ElementName=PendingChangesListView, Path=SelectedItems}">
-                                        <Image Source="/TeamPilgrim.VisualStudio;component/Resources\Arrow_UndoRevertRestore_16xLG.png" Width="16" Height="16"></Image>
-                                    </Button>
+                                    <Image Source="/TeamPilgrim.VisualStudio;component/Resources\Arrow_UndoRevertRestore_16xLG.png" Width="16" Height="16"></Image>
+                                </Button>
 
-                                </ToolBar>
-                            </ToolBarTray>
-                            <TextBlock DockPanel.Dock="Top"><Run Text="Comment:"/></TextBlock>
-                            <TextBox DockPanel.Dock="Top" Text="{Binding Comment, UpdateSourceTrigger=PropertyChanged}"/>
+                            </ToolBar>
+                        </ToolBarTray>
+                        <TextBlock DockPanel.Dock="Top"><Run Text="Comment:"/></TextBlock>
+                        <TextBox DockPanel.Dock="Top" Text="{Binding Comment, UpdateSourceTrigger=PropertyChanged}"/>
 
-                            <ListView x:Name="PendingChangesListView" 
+                        <ListView x:Name="PendingChangesListView" 
                 					AttachedProperties:PreviewSpaceKeyDownSelectPendingChanges.Command="{Binding Path=SelectPendingChangesCommand}"
                                     
                                     listViewLayout:ListViewLayoutManager.Enabled="true"
@@ -147,72 +147,72 @@
                                       
                                     ItemsSource="{Binding Path=PendingChanges}">
 
-                                <ListView.ItemContainerStyle>
-                                    <Style TargetType="{x:Type ListViewItem}">
-                                    </Style>
-                                </ListView.ItemContainerStyle>
-                                <ListView.ContextMenu>
-                                    <ContextMenu d:DataContext="{d:DesignInstance {x:Type ShelveChanges:ShelvesetServiceModel}}" x:Name="PendingChangesContextMenu">
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListViewItem}">
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.ContextMenu>
+                                <ContextMenu d:DataContext="{d:DesignInstance {x:Type ShelveChanges:ShelvesetServiceModel}}" x:Name="PendingChangesContextMenu">
 
-                                        <MenuItem Header="View"/>
+                                    <MenuItem Header="View"/>
 
-                                        <Separator />
-                                        <MenuItem Header="Compare">
+                                    <Separator />
+                                    <MenuItem Header="Compare">
 
-                                            <MenuItem Header="With workspace version..." />
+                                        <MenuItem Header="With workspace version..." />
 
-                                            <MenuItem Header="With latest version..." />
+                                        <MenuItem Header="With latest version..." />
 
-                                        </MenuItem>
+                                    </MenuItem>
 
-                                        <MenuItem Header="Undo" />
+                                    <MenuItem Header="Undo" />
 
-                                    </ContextMenu>
-                                </ListView.ContextMenu>
-                                <ListView.View>
-                                    <GridView>
-                                        <GridViewColumn Width="200"
+                                </ContextMenu>
+                            </ListView.ContextMenu>
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Width="200"
                                                 x:Name="GridViewColumnPendingChangesFileName"
                                            
                                                 listViewLayout:RangeColumn.MinWidth="150"
                                                 AttachedProperties:GridViewSort.PropertyName="Change.FileName">
 
-                                            <GridViewColumn.Header>
-                                                <GridViewColumnHeader>File</GridViewColumnHeader>
-                                            </GridViewColumn.Header>
+                                        <GridViewColumn.Header>
+                                            <GridViewColumnHeader>File</GridViewColumnHeader>
+                                        </GridViewColumn.Header>
 
-                                            <GridViewColumn.CellTemplate>
-                                                <DataTemplate DataType="PendingChanges:PendingChangeModel">
-                                                    <DockPanel>
-                                                        <CheckBox DockPanel.Dock="Left"
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate DataType="PendingChanges:PendingChangeModel">
+                                                <DockPanel>
+                                                    <CheckBox DockPanel.Dock="Left"
                 												DataContext="{Binding}"
                 												IsChecked="{Binding IncludeChange}" 
                 												Click="PendingChangesCheckboxClicked"/>
-                                                        <TextBlock Text="{Binding Change.FileName, Mode=OneWay}" DockPanel.Dock="Right"/>
-                                                    </DockPanel>
-                                                </DataTemplate>
-                                            </GridViewColumn.CellTemplate>
-                                        </GridViewColumn>
+                                                    <TextBlock Text="{Binding Change.FileName, Mode=OneWay}" DockPanel.Dock="Right"/>
+                                                </DockPanel>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
 
-                                        <GridViewColumn Width="70"
+                                    <GridViewColumn Width="70"
                                                 
                                                 x:Name="GridViewColumnPendingChangesChangeTypeName"
                                                         
                                                 listViewLayout:RangeColumn.MinWidth="50"
                                                 AttachedProperties:GridViewSort.PropertyName="Change.ChangeTypeName">
 
-                                            <GridViewColumn.Header>
-                                                <GridViewColumnHeader>Change</GridViewColumnHeader>
-                                            </GridViewColumn.Header>
+                                        <GridViewColumn.Header>
+                                            <GridViewColumnHeader>Change</GridViewColumnHeader>
+                                        </GridViewColumn.Header>
 
-                                            <GridViewColumn.CellTemplate>
-                                                <DataTemplate DataType="PendingChanges:PendingChangeModel">
-                                                    <TextBlock Text="{Binding Change.ChangeTypeName, Mode=OneWay}"/>
-                                                </DataTemplate>
-                                            </GridViewColumn.CellTemplate>
-                                        </GridViewColumn>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate DataType="PendingChanges:PendingChangeModel">
+                                                <TextBlock Text="{Binding Change.ChangeTypeName, Mode=OneWay}"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
 
-                                        <GridViewColumn Width="200"
+                                    <GridViewColumn Width="200"
                                                 
                                                 x:Name="GridViewColumnPendingChangesLocalOrServerFolder"
                                                         
@@ -220,27 +220,27 @@
                                                 listViewLayout:RangeColumn.IsFillColumn="true"
                                                 AttachedProperties:GridViewSort.PropertyName="Change.LocalOrServerFolder">
 
-                                            <GridViewColumn.Header>
-                                                <GridViewColumnHeader>Folder</GridViewColumnHeader>
-                                            </GridViewColumn.Header>
+                                        <GridViewColumn.Header>
+                                            <GridViewColumnHeader>Folder</GridViewColumnHeader>
+                                        </GridViewColumn.Header>
 
-                                            <GridViewColumn.CellTemplate>
-                                                <DataTemplate DataType="PendingChanges:PendingChangeModel">
-                                                    <TextBlock Text="{Binding Change.LocalOrServerFolder, Mode=OneWay}"/>
-                                                </DataTemplate>
-                                            </GridViewColumn.CellTemplate>
-                                        </GridViewColumn>
-                                    </GridView>
-                                </ListView.View>
-                            </ListView>
-                        </DockPanel>
-                    </TabItem>
-                    <TabItem x:Name="WorkItemsTabItem" IsSelected="{Binding IsChecked, ElementName=WorkItemsRadioButton}">
-                        <DockPanel>
-                            <ToolBar DockPanel.Dock="Top">
-                                <TextBlock><Run Text="Query:"/></TextBlock>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate DataType="PendingChanges:PendingChangeModel">
+                                                <TextBlock Text="{Binding Change.LocalOrServerFolder, Mode=OneWay}"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </DockPanel>
+                </TabItem>
+                <TabItem x:Name="WorkItemsTabItem" IsSelected="{Binding IsChecked, ElementName=WorkItemsRadioButton}">
+                    <DockPanel>
+                        <ToolBar DockPanel.Dock="Top">
+                            <TextBlock><Run Text="Query:"/></TextBlock>
 
-                                <ComboBox Width="200" 
+                            <ComboBox Width="200" 
                                       DisplayMemberPath="Formatted"
                                       ItemsSource="{Binding Path=PreviouslySelectedWorkItemQueries}"
                                       SelectedItem="{Binding Path=CurrentPreviouslySelectedWorkItemQuery}"
@@ -249,100 +249,104 @@
 
                             <Button Content="..." Command="{Binding Path=ShowSelectWorkItemQueryCommand}"/>
 
-                                <Separator/>
+                            <Separator/>
 
-                                <Button>
-                                    <Image Source="/TeamPilgrim.VisualStudio;component/Resources/refresh_16xLG.png" Width="16" Height="16" />
-                                </Button>
-                            </ToolBar>
+                            <Button>
+                                <Image Source="/TeamPilgrim.VisualStudio;component/Resources/refresh_16xLG.png" Width="16" Height="16" />
+                            </Button>
+                        </ToolBar>
 
                         <ListView x:Name="WorkItemsListView" DockPanel.Dock="Bottom" 
+                              listViewLayout:ListViewLayoutManager.Enabled="true"
                               AttachedProperties:PreviewSpaceKeyDownSelectWorkItems.Command="{Binding Path=SelectWorkItemsCommand}"
                               ItemsSource="{Binding Path=WorkItems}">
 
                             <ListView.ItemContainerStyle>
-                                    <Style TargetType="{x:Type ListViewItem}">
-                                    </Style>
-                                </ListView.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListViewItem}">
+                                </Style>
+                            </ListView.ItemContainerStyle>
 
-                                <ListView.View>
-                                    <GridView>
-                                        <GridViewColumn>
-                                            <GridViewColumn.CellTemplate>
-                                                <DataTemplate DataType="PendingChanges:WorkItemModel">
-                                                    <CheckBox IsChecked="{Binding IsSelected}"
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn listViewLayout:FixedColumn.Width="20">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate DataType="PendingChanges:WorkItemModel">
+                                                <CheckBox IsChecked="{Binding IsSelected}"
                 											DataContext="{Binding}"
                 											Click="PendingChangeWorkItemCheckboxClicked" />
-                                                </DataTemplate>
-                                            </GridViewColumn.CellTemplate>
-                                        </GridViewColumn>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
 
-                                        <GridViewColumn Header="Check-in Action">
-                                            <GridViewColumn.CellTemplate>
-                                                <DataTemplate DataType="PendingChanges:WorkItemModel">
-                                                    <ComboBox 
+                                    <GridViewColumn Header="Check-in Action"
+                                                listViewLayout:RangeColumn.MinWidth="100" >
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate DataType="PendingChanges:WorkItemModel">
+                                                <ComboBox 
                 											Visibility="{Binding IsSelected, Converter={StaticResource ResourceKey=BooleanToVisibilityConverter}}"
                 											ItemsSource="{Binding Source={StaticResource ResourceKey=WorkItemCheckinActions}}" 
                 											SelectedItem="{Binding WorkItemCheckinAction}" />
-                                                </DataTemplate>
-                                            </GridViewColumn.CellTemplate>
-                                        </GridViewColumn>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
 
-                                        <GridViewColumn Header="ID">
-                                            <GridViewColumn.CellTemplate>
-                                                <DataTemplate DataType="PendingChanges:WorkItemModel">
-                                                    <TextBlock Text="{Binding WorkItem.Id, Mode=OneWay}"/>
-                                                </DataTemplate>
-                                            </GridViewColumn.CellTemplate>
-                                        </GridViewColumn>
+                                    <GridViewColumn Header="ID" listViewLayout:RangeColumn.MinWidth="75">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate DataType="PendingChanges:WorkItemModel">
+                                                <TextBlock Text="{Binding WorkItem.Id, Mode=OneWay}"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
 
-                                        <GridViewColumn Header="Type">
-                                            <GridViewColumn.CellTemplate>
-                                                <DataTemplate DataType="PendingChanges:WorkItemModel">
-                                                    <TextBlock Text="{Binding WorkItem.Type.Name, Mode=OneWay}"/>
-                                                </DataTemplate>
-                                            </GridViewColumn.CellTemplate>
-                                        </GridViewColumn>
+                                    <GridViewColumn Header="Type" listViewLayout:RangeColumn.MinWidth="80">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate DataType="PendingChanges:WorkItemModel">
+                                                <TextBlock Text="{Binding WorkItem.Type.Name, Mode=OneWay}"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
 
-                                        <GridViewColumn Header="Title">
-                                            <GridViewColumn.CellTemplate>
-                                                <DataTemplate DataType="PendingChanges:WorkItemModel">
-                                                    <TextBlock Text="{Binding WorkItem.Title, Mode=OneWay}"/>
-                                                </DataTemplate>
-                                            </GridViewColumn.CellTemplate>
-                                        </GridViewColumn>
-                                    </GridView>
-                                </ListView.View>
-                            </ListView>
-                        </DockPanel>
-                    </TabItem>
-                    <TabItem x:Name="CheckInNotesTabItem"  IsSelected="{Binding IsChecked, ElementName=CheckInNotesRadioButton}">
-                        <ListView DockPanel.Dock="Bottom"  ItemsSource="{Binding Path=CheckinNotes}" HorizontalContentAlignment="Stretch">
-                            <ListView.ItemTemplate>
-                                <DataTemplate DataType="PendingChanges:CheckinNoteModel">
-                                    <Expander Header="{Binding CheckinNoteFieldDefinition.Name}" IsExpanded="True">
-                                        <xctk:WatermarkTextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}">
-                                            <xctk:WatermarkTextBox.Style>
-                                                <Style TargetType="{x:Type xctk:WatermarkTextBox}">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Value="True">
-                                                            <DataTrigger.Binding>
-                                                                <MultiBinding Converter="{StaticResource AndClauseBooleanConverter}">
-                                                                    <Binding ElementName="ShelveChangesDialogWindow" Path="DataContext.EvaluatePoliciesAndCheckinNotes" />
-                                                                    <Binding Path="CheckinNoteFieldDefinition.Required" />
-                                                                </MultiBinding>
-                                                            </DataTrigger.Binding>
-                                                            <Setter Property="Watermark" Value="&lt;Required&gt;" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </xctk:WatermarkTextBox.Style>
-                                        </xctk:WatermarkTextBox>
-                                    </Expander>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
+                                    <GridViewColumn Header="Title"
+                                    		listViewLayout:RangeColumn.MinWidth="80"
+                                    		listViewLayout:RangeColumn.IsFillColumn="True">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate DataType="PendingChanges:WorkItemModel">
+                                                <TextBlock Text="{Binding WorkItem.Title, Mode=OneWay}"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView>
+                            </ListView.View>
                         </ListView>
-                    </TabItem>
+                    </DockPanel>
+                </TabItem>
+                <TabItem x:Name="CheckInNotesTabItem"  IsSelected="{Binding IsChecked, ElementName=CheckInNotesRadioButton}">
+                    <ListView DockPanel.Dock="Bottom"  ItemsSource="{Binding Path=CheckinNotes}" HorizontalContentAlignment="Stretch">
+                        <ListView.ItemTemplate>
+                            <DataTemplate DataType="PendingChanges:CheckinNoteModel">
+                                <Expander Header="{Binding CheckinNoteFieldDefinition.Name}" IsExpanded="True">
+                                    <xctk:WatermarkTextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}">
+                                        <xctk:WatermarkTextBox.Style>
+                                            <Style TargetType="{x:Type xctk:WatermarkTextBox}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Value="True">
+                                                        <DataTrigger.Binding>
+                                                            <MultiBinding Converter="{StaticResource AndClauseBooleanConverter}">
+                                                                <Binding ElementName="ShelveChangesDialogWindow" Path="DataContext.EvaluatePoliciesAndCheckinNotes" />
+                                                                <Binding Path="CheckinNoteFieldDefinition.Required" />
+                                                            </MultiBinding>
+                                                        </DataTrigger.Binding>
+                                                        <Setter Property="Watermark" Value="&lt;Required&gt;" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </xctk:WatermarkTextBox.Style>
+                                    </xctk:WatermarkTextBox>
+                                </Expander>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </TabItem>
                 <TabItem x:Name="PolicyWarningsTabItem" IsSelected="{Binding IsChecked, ElementName=PolicyWarningsRadioButton}">
                     <ListView DataContext="{Binding Path=CheckinEvaluationResult}" ItemsSource="{Binding Path=PolicyFailures}">
                         <ListView.View>

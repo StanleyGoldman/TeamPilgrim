@@ -315,6 +315,8 @@
 
                     <ListView x:Name="WorkItemsListView" DockPanel.Dock="Bottom" 
                               
+                              listViewLayout:ListViewLayoutManager.Enabled="true"
+                              
                               AttachedProperties:PreviewSpaceKeyDownSelectWorkItems.Command="{Binding Path=SelectWorkItemsCommand}"
                               
                               AttachedProperties:PreviewReturnKeyDown.Command="{Binding Path=ViewWorkItemCommand}"
@@ -332,7 +334,8 @@
                         
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn>
+                                <GridViewColumn listViewLayout:FixedColumn.Width="20">
+                                    
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate DataType="PendingChangesModel:WorkItemModel">
                                             <CheckBox IsChecked="{Binding Path=IsSelected}"
@@ -342,7 +345,8 @@
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
-                                <GridViewColumn Header="Check-in Action">
+                                <GridViewColumn Header="Check-in Action"
+                                                listViewLayout:RangeColumn.MinWidth="100" >
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate DataType="PendingChangesModel:WorkItemModel">
                                             <ComboBox 
@@ -353,7 +357,7 @@
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
-                                <GridViewColumn Header="ID">
+                                <GridViewColumn Header="ID" listViewLayout:RangeColumn.MinWidth="75">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate DataType="PendingChangesModel:WorkItemModel">
                                             <TextBlock Text="{Binding Path=WorkItem.Id, Mode=OneWay}"/>
@@ -361,7 +365,7 @@
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
-                                <GridViewColumn Header="Type">
+                                <GridViewColumn Header="Type" listViewLayout:RangeColumn.MinWidth="80">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate DataType="PendingChangesModel:WorkItemModel">
                                             <TextBlock Text="{Binding Path=WorkItem.Type.Name, Mode=OneWay}"/>
@@ -369,7 +373,10 @@
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
-                                <GridViewColumn Header="Title">
+                                <GridViewColumn Header="Title"
+                                    listViewLayout:RangeColumn.MinWidth="80"
+                                    listViewLayout:RangeColumn.IsFillColumn="True">
+                                    
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate DataType="PendingChangesModel:WorkItemModel">
                                             <TextBlock Text="{Binding Path=WorkItem.Title, Mode=OneWay}"/>
