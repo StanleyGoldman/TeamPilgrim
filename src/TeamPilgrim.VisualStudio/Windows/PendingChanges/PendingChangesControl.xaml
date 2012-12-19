@@ -216,8 +216,7 @@
                         </ListView.ContextMenu>
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Width="200"
-
+                                <GridViewColumn
                                         x:Name="GridViewColumnPendingChangesFileName"
 
                                         listViewLayout:RangeColumn.MinWidth="150"
@@ -240,11 +239,10 @@
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
-                                <GridViewColumn Width="70"
-
+                                <GridViewColumn
                                         x:Name="GridViewColumnPendingChangesChangeTypeName"
 
-                                        listViewLayout:RangeColumn.MinWidth="50"
+                                        listViewLayout:RangeColumn.MinWidth="70"
                                         AttachedProperties:GridViewSort.PropertyName="Change.ChangeTypeName">
 
                                     <GridViewColumn.Header>
@@ -258,8 +256,7 @@
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
-                                <GridViewColumn Width="200"
-                                                
+                                <GridViewColumn 
                                         x:Name="GridViewColumnPendingChangesLocalOrServerFolder"
 
                                         listViewLayout:RangeColumn.MinWidth="200"
