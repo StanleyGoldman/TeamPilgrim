@@ -23,6 +23,7 @@
             </ResourceDictionary.MergedDictionaries>
             
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <Converters:SelectedPendingChangesSummaryEnumBooleanConverter x:Key="SelectedPendingChangesSummaryEnumBooleanConverter" />
             <Converters:SingleObjectToObservableCollectionConverter x:Key="SingleObjectToListConverter" />
 
             <ObjectDataProvider x:Key="workItemCheckinActions" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
@@ -216,6 +217,21 @@
                         </ListView.ContextMenu>
                         <ListView.View>
                             <GridView>
+                                <GridViewColumn listViewLayout:FixedColumn.Width="20">
+                                    <GridViewColumn.Header>
+                                        <CheckBox IsThreeState="True" IsChecked="{Binding Path=SelectedPendingChangesSummary, Converter={StaticResource SelectedPendingChangesSummaryEnumBooleanConverter}}"/>
+                                    </GridViewColumn.Header>
+                                    
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox DockPanel.Dock="Left"
+                                                    DataContext="{Binding}"
+                                                    IsChecked="{Binding Path=IncludeChange}" 
+                                                    Click="PendingChangesCheckboxClicked"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                
                                 <GridViewColumn
                                         x:Name="GridViewColumnPendingChangesFileName"
 
@@ -228,13 +244,7 @@
 
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate DataType="PendingChangesModel:PendingChangeModel">
-                                            <DockPanel>
-                                                <CheckBox DockPanel.Dock="Left"
-                                                          DataContext="{Binding}"
-                                                          IsChecked="{Binding Path=IncludeChange}" 
-                                                          Click="PendingChangesCheckboxClicked"/>
-                                                <TextBlock Text="{Binding Path=Change.FileName, Mode=OneWay}" DockPanel.Dock="Right"/>
-                                            </DockPanel>
+                                            <TextBlock Text="{Binding Path=Change.FileName, Mode=OneWay}" DockPanel.Dock="Right"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>

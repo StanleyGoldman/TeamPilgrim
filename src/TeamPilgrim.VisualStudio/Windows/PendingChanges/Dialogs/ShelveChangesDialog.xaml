@@ -171,6 +171,17 @@
                             </ListView.ContextMenu>
                             <ListView.View>
                                 <GridView>
+                                    <GridViewColumn listViewLayout:FixedColumn.Width="20" >
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <CheckBox DockPanel.Dock="Left"
+                									DataContext="{Binding}"
+                									IsChecked="{Binding IncludeChange}" 
+                									Click="PendingChangesCheckboxClicked"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    
                                     <GridViewColumn
                                                 x:Name="GridViewColumnPendingChangesFileName"
                                            
@@ -183,13 +194,7 @@
 
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate DataType="PendingChanges:PendingChangeModel">
-                                                <DockPanel>
-                                                    <CheckBox DockPanel.Dock="Left"
-                												DataContext="{Binding}"
-                												IsChecked="{Binding IncludeChange}" 
-                												Click="PendingChangesCheckboxClicked"/>
-                                                    <TextBlock Text="{Binding Change.FileName, Mode=OneWay}" DockPanel.Dock="Right"/>
-                                                </DockPanel>
+                                                <TextBlock Text="{Binding Change.FileName, Mode=OneWay}" DockPanel.Dock="Right"/>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>

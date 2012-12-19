@@ -193,6 +193,7 @@
     <Compile Include="Common\AttachedProperties\PreviewSpaceKeyDownSelectWorkItems.cs" />
     <Compile Include="Common\Converters\BooleanToAlternateFontWeightConverter.cs" />
     <Compile Include="Common\Converters\ObservableCollectionToTrulyObservableCollectionCoverter.cs" />
+    <Compile Include="Common\Converters\SelectedPendingChangesSummaryEnumBooleanConverter.cs" />
     <Compile Include="Common\Converters\WorkItemQueryFolderModelImageConverter.cs" />
     <Compile Include="Common\TrulyObservableCollection.cs" />
     <Compile Include="Common\LoggerExtensions.cs" />
