@@ -168,7 +168,6 @@
                               
                               listViewLayout:ListViewLayoutManager.Enabled="true"
                               
-                              IsSynchronizedWithCurrentItem="True"
                               AttachedProperties:GridViewSort.AutoSort="True"
                               
                               AttachedProperties:PreviewSpaceKeyDownSelectPendingChanges.Command="{Binding Path=SelectPendingChangesCommand}"

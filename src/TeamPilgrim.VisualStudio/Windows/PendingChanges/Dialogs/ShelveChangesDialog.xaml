@@ -143,8 +143,7 @@
                                     
                                     listViewLayout:ListViewLayoutManager.Enabled="true"
 
-                                    IsSynchronizedWithCurrentItem="True"
-                                    AttachedProperties:GridViewSort.AutoSort="True"
+                                      AttachedProperties:GridViewSort.AutoSort="True"
                                       
                                     ItemsSource="{Binding Path=PendingChanges}">
 
