@@ -23,7 +23,8 @@
             </ResourceDictionary.MergedDictionaries>
             
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-            <Converters:SelectedPendingChangesSummaryEnumBooleanConverter x:Key="SelectedPendingChangesSummaryEnumBooleanConverter" />
+            <Converters:SelectedPendingChangesSummaryEnumIsCheckedBooleanConverter x:Key="SelectedPendingChangesSummaryEnumIsCheckedBooleanConverter" />
+            <Converters:SelectedPendingChangesSummaryEnumIsTriStateBooleanConverter x:Key="SelectedPendingChangesSummaryEnumIsTriStateBooleanConverter" />
             <Converters:SingleObjectToObservableCollectionConverter x:Key="SingleObjectToListConverter" />
 
             <ObjectDataProvider x:Key="workItemCheckinActions" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
@@ -219,7 +220,14 @@
                             <GridView>
                                 <GridViewColumn listViewLayout:FixedColumn.Width="20">
                                     <GridViewColumn.Header>
-                                        <CheckBox IsThreeState="True" IsChecked="{Binding Path=SelectedPendingChangesSummary, Converter={StaticResource SelectedPendingChangesSummaryEnumBooleanConverter}}"/>
+                                        <CheckBox
+                                            x:Name="PendingChangesAllCheckbox"
+                                            IsThreeState="true"
+                                            IsChecked="{Binding Path=PendingChangesSummary, Converter={StaticResource SelectedPendingChangesSummaryEnumIsCheckedBooleanConverter}, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}"
+                                            TargetUpdated="PendingChangesAllCheckbox_OnTargetUpdated"
+                                            
+                                            SourceUpdated="PendingChangesAllCheckbox_OnSourceUpdated"
+                                            />
                                     </GridViewColumn.Header>
                                     
                                     <GridViewColumn.CellTemplate>

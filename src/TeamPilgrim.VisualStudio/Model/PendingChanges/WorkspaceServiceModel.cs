@@ -204,25 +204,25 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             }
         }
 
-        public enum SelectedPendingChangesSummaryEnum
+        public enum PendingChangesSummaryEnum
         {
             All,
             Some,
             None
         }
 
-        private SelectedPendingChangesSummaryEnum _selectedPendingChangesSummary = SelectedPendingChangesSummaryEnum.None;
-        public SelectedPendingChangesSummaryEnum SelectedPendingChangesSummary
+        private PendingChangesSummaryEnum _pendingChangesSummary = PendingChangesSummaryEnum.None;
+        public PendingChangesSummaryEnum PendingChangesSummary
         {
-            get { return _selectedPendingChangesSummary; }
+            get { return _pendingChangesSummary; }
             set
             {
-                if (_selectedPendingChangesSummary == value)
+                if (_pendingChangesSummary == value)
                     return;
                 
-                _selectedPendingChangesSummary = value;
+                _pendingChangesSummary = value;
 
-                SendPropertyChanged("SelectedPendingChangesSummary");
+                SendPropertyChanged("PendingChangesSummary");
             }
         }
 
@@ -322,25 +322,25 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
             this.Logger().Trace("PopulateSelectedPendingChangesSummary");
 
-            SelectedPendingChangesSummaryEnum selectedPendingChangesSummaryEnum;
+            PendingChangesSummaryEnum pendingChangesSummaryEnum;
 
             if (PendingChanges.Count == 0)
             {
-                selectedPendingChangesSummaryEnum = SelectedPendingChangesSummaryEnum.None;
+                pendingChangesSummaryEnum = PendingChangesSummaryEnum.None;
             }
 
             var includedCount = PendingChanges.Count(model => model.IncludeChange);
 
             if (includedCount == 0)
             {
-                selectedPendingChangesSummaryEnum = SelectedPendingChangesSummaryEnum.None;
+                pendingChangesSummaryEnum = PendingChangesSummaryEnum.None;
             }
 
-            selectedPendingChangesSummaryEnum = PendingChanges.Count == includedCount
-                                                    ? SelectedPendingChangesSummaryEnum.All
-                                                    : SelectedPendingChangesSummaryEnum.Some;
+            pendingChangesSummaryEnum = PendingChanges.Count == includedCount
+                                                    ? PendingChangesSummaryEnum.All
+                                                    : PendingChangesSummaryEnum.Some;
 
-            SelectedPendingChangesSummary = selectedPendingChangesSummaryEnum;
+            PendingChangesSummary = pendingChangesSummaryEnum;
         }
 
         #endregion
@@ -390,6 +390,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             }
 
             _backgroundFunctionPreventDataUpdate = false;
+
+            PopulateSelectedPendingChangesSummary();
             EvaluateCheckInCommand.Execute(null);
         }
 
@@ -750,6 +752,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
                 _backgroundFunctionPreventDataUpdate = false;
 
+                PopulateSelectedPendingChangesSummary();
                 EvaluateCheckInCommand.Execute(null);
             }
         }

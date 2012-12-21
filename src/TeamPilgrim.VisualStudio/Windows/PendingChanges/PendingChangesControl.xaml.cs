@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.CommandArguments;
@@ -25,7 +26,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
             InitializeComponent();
 
             NameScope.SetNameScope(PendingChangesContextMenu, NameScope.GetNameScope(this));
-       
+
             Loaded += OnLoaded;
         }
 
@@ -41,7 +42,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
             {
                 base.DataContext = value;
 
-                var teamPilgrimServiceModel = (TeamPilgrimServiceModel) value;
+                var teamPilgrimServiceModel = (TeamPilgrimServiceModel)value;
                 if (teamPilgrimServiceModel == null) return;
 
                 teamPilgrimServiceModel.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
@@ -67,16 +68,16 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
 
         private void SelectedWorkspaceModelOnShowUnshelveDialog()
         {
-                var unshelveChangesDialog = new UnshelveChangesDialog
-                {
-                    DataContext = DataContext
-                };
+            var unshelveChangesDialog = new UnshelveChangesDialog
+            {
+                DataContext = DataContext
+            };
 
-                var dialogResult = unshelveChangesDialog.ShowDialog();
-                if (dialogResult.HasValue && dialogResult.Value)
-                {
+            var dialogResult = unshelveChangesDialog.ShowDialog();
+            if (dialogResult.HasValue && dialogResult.Value)
+            {
 
-                }
+            }
         }
 
         private void SelectedWorkspaceModelOnShowShelveDialog(ShelvesetServiceModel model)
@@ -99,15 +100,15 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
                 case ShowPendingChangesTabItemEnum.PolicyWarnings:
                     PolicyWarningsRadioButton.IsChecked = true;
                     break;
-            
+
                 case ShowPendingChangesTabItemEnum.CheckinNotes:
                     CheckInNotesRadioButton.IsChecked = true;
                     break;
-            
+
                 case ShowPendingChangesTabItemEnum.WorkItems:
                     WorkItemsRadioButton.IsChecked = true;
                     break;
-            
+
                 case ShowPendingChangesTabItemEnum.SourceFiles:
                     SourceFilesRadioButton.IsChecked = true;
                     break;
@@ -157,7 +158,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
 
             if (selectedPendingChangeModels.Length <= 1)
                 return;
-            
+
             if (!selectedPendingChangeModels.Contains(checkedPendingChangeModel))
                 return;
 
@@ -170,6 +171,31 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
                     Collection = collection,
                     Value = checkedPendingChangeModel.IncludeChange
                 });
+        }
+
+        private void PendingChangesAllCheckboxOnClick(object sender, RoutedEventArgs e)
+        {
+            var teamPilgrimModel = (TeamPilgrimServiceModel)DataContext;
+            var selectedWorkspaceModel = teamPilgrimModel.SelectedWorkspaceModel;
+
+            var checkAll =
+                selectedWorkspaceModel.PendingChangesSummary == WorkspaceServiceModel.PendingChangesSummaryEnum.None;
+
+            selectedWorkspaceModel.SelectPendingChangesCommand.Execute(new SelectPendingChangesCommandArgument()
+            {
+                Collection = selectedWorkspaceModel.PendingChanges.ToArray(),
+                Value = checkAll
+            });
+        }
+
+        private void PendingChangesAllCheckbox_OnTargetUpdated(object sender, DataTransferEventArgs e)
+        {
+            
+        }
+
+        private void PendingChangesAllCheckbox_OnSourceUpdated(object sender, DataTransferEventArgs e)
+        {
+            
         }
     }
 }
