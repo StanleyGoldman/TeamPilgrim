@@ -1,8 +1,7 @@
 ﻿using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 {
     public class SelectWorkItemQueryModel : BaseModel
     {

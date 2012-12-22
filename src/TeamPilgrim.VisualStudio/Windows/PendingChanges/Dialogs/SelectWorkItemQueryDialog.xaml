@@ -7,9 +7,10 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:behaviours="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Behaviors"
         xmlns:core="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core"
-        xmlns:workItemQuery="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery" Height="300" Width="300"
+        xmlns:workItemQuery="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery"
+        xmlns:versionControl="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl" Height="300" Width="300"
         mc:Ignorable="d" 
-        d:DataContext="{d:DesignInstance model:SelectWorkItemQueryModel}">
+        d:DataContext="{d:DesignInstance versionControl:SelectWorkItemQueryModel}">
     
     <DockPanel>
         

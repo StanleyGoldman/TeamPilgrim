@@ -5,7 +5,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Explorer
 {

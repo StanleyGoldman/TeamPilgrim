@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:converters="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Converters"
              xmlns:versionControlClient="clr-namespace:Microsoft.TeamFoundation.VersionControl.Client;assembly=Microsoft.TeamFoundation.VersionControl.Client"
-             xmlns:pendingChangesModel="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:attachedProperties="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties"
@@ -14,6 +13,7 @@
              xmlns:listViewLayout="clr-namespace:Itenso.Windows.Controls.ListViewLayout;assembly=Itenso.Windows.Controls.ListViewLayout"
              xmlns:controls="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Controls"
              xmlns:core="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core"
+             xmlns:versionControl="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl"
              mc:Ignorable="d" 
              Height="Auto" d:DesignHeight="300" d:DesignWidth="850"
              d:DataContext="{d:DesignInstance core:TeamPilgrimServiceModel}">
@@ -157,7 +157,7 @@
                           SelectedValue="{Binding Path=SelectedWorkspaceInfoModel}">
 
                                 <ComboBox.ItemTemplate>
-                                    <DataTemplate DataType="pendingChangesModel:WorkspaceInfoModel">
+                                    <DataTemplate DataType="versionControl:WorkspaceInfoModel">
                                         <TextBlock Text="{Binding Path=WorkspaceInfo.Name}"></TextBlock>
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
@@ -190,7 +190,7 @@
                             </Style>
                         </ListView.ItemContainerStyle>
                         <ListView.ContextMenu>
-                            <ContextMenu d:DataContext="{d:DesignInstance pendingChangesModel:WorkspaceServiceModel}" x:Name="PendingChangesContextMenu">
+                            <ContextMenu d:DataContext="{d:DesignInstance versionControl:WorkspaceServiceModel}" x:Name="PendingChangesContextMenu">
 
                                 <MenuItem Header="View" 
                                     Command="{Binding Path=ViewPendingChangeCommand}" 
@@ -251,7 +251,7 @@
                                     </GridViewColumn.Header>
 
                                     <GridViewColumn.CellTemplate>
-                                        <DataTemplate DataType="pendingChangesModel:PendingChangeModel">
+                                        <DataTemplate DataType="versionControl:PendingChangeModel">
                                             <TextBlock Text="{Binding Path=Change.FileName, Mode=OneWay}" DockPanel.Dock="Right"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
@@ -268,7 +268,7 @@
                                     </GridViewColumn.Header>
 
                                     <GridViewColumn.CellTemplate>
-                                        <DataTemplate DataType="pendingChangesModel:PendingChangeModel">
+                                        <DataTemplate DataType="versionControl:PendingChangeModel">
                                             <TextBlock Text="{Binding Path=Change.ChangeTypeName, Mode=OneWay}"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
@@ -287,7 +287,7 @@
                                     </GridViewColumn.Header>
 
                                     <GridViewColumn.CellTemplate>
-                                        <DataTemplate DataType="pendingChangesModel:PendingChangeModel">
+                                        <DataTemplate DataType="versionControl:PendingChangeModel">
                                             <TextBlock Text="{Binding Path=Change.LocalOrServerFolder, Mode=OneWay}"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
@@ -415,7 +415,7 @@
                     </ToolBar>
                     <ListView DataContext="{Binding Path=SelectedWorkspaceModel}" ItemsSource="{Binding Path=CheckinNotes}" DockPanel.Dock="Bottom" HorizontalContentAlignment="Stretch">
                         <ListView.ItemTemplate>
-                            <DataTemplate DataType="pendingChangesModel:CheckinNoteModel">
+                            <DataTemplate DataType="versionControl:CheckinNoteModel">
                                 <Expander Header="{Binding Path=CheckinNoteFieldDefinition.Name}" IsExpanded="True">
                                     <xctk:WatermarkTextBox Text="{Binding Path=Value, UpdateSourceTrigger=PropertyChanged}">
                                         <xctk:WatermarkTextBox.Style>

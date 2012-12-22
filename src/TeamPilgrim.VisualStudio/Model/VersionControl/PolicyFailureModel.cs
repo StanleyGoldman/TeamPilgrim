@@ -1,4 +1,4 @@
-﻿namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
+﻿namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 {
     public class PolicyFailureModel : BaseModel
     {

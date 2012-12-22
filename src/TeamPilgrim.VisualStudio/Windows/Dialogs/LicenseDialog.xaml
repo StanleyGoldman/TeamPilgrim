@@ -5,7 +5,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:Model="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model"
         xmlns:Client="clr-namespace:Microsoft.TeamFoundation.WorkItemTracking.Client;assembly=Microsoft.TeamFoundation.WorkItemTracking.Client"
-        xmlns:Explorer="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:behaviours="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Behaviors"
         xmlns:Children="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery"

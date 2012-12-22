@@ -3,8 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.CommandArguments;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl.CommandArguments;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties

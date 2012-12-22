@@ -1,6 +1,6 @@
 using Microsoft.TeamFoundation.VersionControl.Client;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 {
     public class WorkspaceInfoModel : BaseModel
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 {
     //http://stackoverflow.com/questions/5242275/combobox-itemssource-changed-selecteditem-is-ruined#13520744
 

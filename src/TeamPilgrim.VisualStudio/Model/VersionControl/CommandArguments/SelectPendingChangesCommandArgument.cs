@@ -1,6 +1,4 @@
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges;
-
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.CommandArguments
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl.CommandArguments
 {
     public class SelectPendingChangesCommandArgument
     {

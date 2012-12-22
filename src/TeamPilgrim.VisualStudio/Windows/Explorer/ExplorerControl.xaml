@@ -5,13 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:attachedProperties="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties"
              xmlns:explorer="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Explorer"
-             xmlns:explorerModels="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer"
              xmlns:workItemQuery="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery"
              xmlns:converters="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Converters"
              xmlns:core="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core"
              xmlns:buildDefinitions="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions"
              xmlns:reporting="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Reporting"
              xmlns:teams="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Teams"
+             xmlns:versionControl="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d" 
@@ -394,7 +394,7 @@
                         </DockPanel>
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type explorerModels:SourceControlModel}">
+                    <HierarchicalDataTemplate DataType="{x:Type versionControl:SourceControlModel}">
                         <DockPanel Style="{StaticResource TreeViewDockPanel}">
                             <Image Source="/TeamPilgrim.VisualStudio;component/Resources\ServerProject.png" Margin="0,0,2,0" />
                             <TextBlock Text="Source Control" />

@@ -10,7 +10,7 @@ using System.Windows.Threading;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.TeamFoundation;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.VersionControl.Client;

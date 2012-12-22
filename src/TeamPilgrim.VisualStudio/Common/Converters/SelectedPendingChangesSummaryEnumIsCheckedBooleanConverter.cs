@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Enums;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common.Converters
 {

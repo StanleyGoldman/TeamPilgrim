@@ -1,14 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows;
-using System.Windows.Documents;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Messaging;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.WorkItems;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
@@ -16,18 +12,15 @@ using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Comparer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Enums;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Extensions;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.CommandArguments;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl.CommandArguments;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs;
 using Microsoft.TeamFoundation.VersionControl.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
-using NLog;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 {
     public class WorkspaceServiceModel : BaseServiceModel
     {

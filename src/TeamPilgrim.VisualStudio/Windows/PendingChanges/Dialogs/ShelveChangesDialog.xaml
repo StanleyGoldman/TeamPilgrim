@@ -6,20 +6,19 @@
         xmlns:enums="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Enums" 
         xmlns:attachedProperties="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-        xmlns:pendingChanges="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:versionControlClient="clr-namespace:Microsoft.TeamFoundation.VersionControl.Client;assembly=Microsoft.TeamFoundation.VersionControl.Client"
-        xmlns:shelveChanges="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges"
         xmlns:listViewLayout="clr-namespace:Itenso.Windows.Controls.ListViewLayout;assembly=Itenso.Windows.Controls.ListViewLayout"
         xmlns:controls="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Controls"
         xmlns:workItemQuery="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery"
+        xmlns:versionControl="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl"
         mc:Ignorable="d" 
         x:Class="JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs.ShelveChangesDialog"
         Title="Team Pilgrim Shelve Changes" MinHeight="405" Width="761" MinWidth="400"
     
         x:Name="ShelveChangesDialogWindow"
-        d:DataContext="{d:DesignInstance shelveChanges:ShelvesetServiceModel}">
+        d:DataContext="{d:DesignInstance versionControl:ShelvesetServiceModel}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -157,7 +156,7 @@
                                 </Style>
                             </ListView.ItemContainerStyle>
                             <ListView.ContextMenu>
-                                <ContextMenu d:DataContext="{d:DesignInstance {x:Type shelveChanges:ShelvesetServiceModel}}" x:Name="PendingChangesContextMenu">
+                                <ContextMenu d:DataContext="{d:DesignInstance {x:Type versionControl:ShelvesetServiceModel}}" x:Name="PendingChangesContextMenu">
 
                                     <MenuItem Header="View"/>
 
@@ -206,7 +205,7 @@
                                         </GridViewColumn.Header>
 
                                         <GridViewColumn.CellTemplate>
-                                            <DataTemplate DataType="pendingChanges:PendingChangeModel">
+                                            <DataTemplate DataType="versionControl:PendingChangeModel">
                                                 <TextBlock Text="{Binding Change.FileName, Mode=OneWay}" DockPanel.Dock="Right"/>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
@@ -224,7 +223,7 @@
                                         </GridViewColumn.Header>
 
                                         <GridViewColumn.CellTemplate>
-                                            <DataTemplate DataType="pendingChanges:PendingChangeModel">
+                                            <DataTemplate DataType="versionControl:PendingChangeModel">
                                                 <TextBlock Text="{Binding Change.ChangeTypeName, Mode=OneWay}"/>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
@@ -242,7 +241,7 @@
                                         </GridViewColumn.Header>
 
                                         <GridViewColumn.CellTemplate>
-                                            <DataTemplate DataType="pendingChanges:PendingChangeModel">
+                                            <DataTemplate DataType="versionControl:PendingChangeModel">
                                                 <TextBlock Text="{Binding Change.LocalOrServerFolder, Mode=OneWay}"/>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
@@ -340,7 +339,7 @@
                 <TabItem x:Name="CheckInNotesTabItem"  IsSelected="{Binding IsChecked, ElementName=CheckInNotesRadioButton}">
                     <ListView DockPanel.Dock="Bottom"  ItemsSource="{Binding Path=CheckinNotes}" HorizontalContentAlignment="Stretch">
                         <ListView.ItemTemplate>
-                            <DataTemplate DataType="pendingChanges:CheckinNoteModel">
+                            <DataTemplate DataType="versionControl:CheckinNoteModel">
                                 <Expander Header="{Binding CheckinNoteFieldDefinition.Name}" IsExpanded="True">
                                     <xctk:WatermarkTextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}">
                                         <xctk:WatermarkTextBox.Style>

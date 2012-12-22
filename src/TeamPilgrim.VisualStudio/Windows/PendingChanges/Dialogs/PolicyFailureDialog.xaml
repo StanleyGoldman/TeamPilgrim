@@ -4,9 +4,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:model="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model"
-        xmlns:converters="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Converters" Height="300" Width="300"
+        xmlns:converters="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Converters"
+        xmlns:versionControl="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl" Height="300" Width="300"
         mc:Ignorable="d" 
-        d:DataContext="{d:DesignInstance model:PolicyFailureModel}">
+        d:DataContext="{d:DesignInstance versionControl:PolicyFailureModel}">
     
     <DockPanel>
         <DockPanel.Resources>
