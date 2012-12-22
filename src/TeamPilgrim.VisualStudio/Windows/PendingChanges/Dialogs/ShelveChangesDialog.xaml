@@ -13,6 +13,7 @@
         xmlns:ShelveChanges="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges"
         xmlns:listViewLayout="clr-namespace:Itenso.Windows.Controls.ListViewLayout;assembly=Itenso.Windows.Controls.ListViewLayout"
         xmlns:controls="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Controls"
+        xmlns:workItemQuery="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery"
         mc:Ignorable="d" 
         x:Class="JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs.ShelveChangesDialog"
         Title="Team Pilgrim Shelve Changes" MinHeight="405" Width="761" MinWidth="400"
@@ -284,7 +285,7 @@
                                 <GridView>
                                     <GridViewColumn listViewLayout:FixedColumn.Width="20">
                                         <GridViewColumn.CellTemplate>
-                                            <DataTemplate DataType="PendingChanges:WorkItemModel">
+                                            <DataTemplate DataType="workItemQuery:WorkItemModel">
                                                 <CheckBox IsChecked="{Binding IsSelected}"
                 											DataContext="{Binding}"
                 											Click="PendingChangeWorkItemCheckboxClicked" />
@@ -295,7 +296,7 @@
                                     <GridViewColumn Header="Check-in Action"
                                                 listViewLayout:RangeColumn.MinWidth="100" >
                                         <GridViewColumn.CellTemplate>
-                                            <DataTemplate DataType="PendingChanges:WorkItemModel">
+                                            <DataTemplate DataType="workItemQuery:WorkItemModel">
                                                 <ComboBox 
                 											Visibility="{Binding IsSelected, Converter={StaticResource ResourceKey=BooleanToVisibilityConverter}}"
                 											ItemsSource="{Binding Source={StaticResource ResourceKey=WorkItemCheckinActions}}" 
@@ -306,7 +307,7 @@
 
                                     <GridViewColumn Header="ID" listViewLayout:RangeColumn.MinWidth="75">
                                         <GridViewColumn.CellTemplate>
-                                            <DataTemplate DataType="PendingChanges:WorkItemModel">
+                                            <DataTemplate DataType="workItemQuery:WorkItemModel">
                                                 <TextBlock Text="{Binding WorkItem.Id, Mode=OneWay}"/>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
@@ -314,7 +315,7 @@
 
                                     <GridViewColumn Header="Type" listViewLayout:RangeColumn.MinWidth="80">
                                         <GridViewColumn.CellTemplate>
-                                            <DataTemplate DataType="PendingChanges:WorkItemModel">
+                                            <DataTemplate DataType="workItemQuery:WorkItemModel">
                                                 <TextBlock Text="{Binding WorkItem.Type.Name, Mode=OneWay}"/>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
@@ -324,7 +325,7 @@
                                     		listViewLayout:RangeColumn.MinWidth="80"
                                     		listViewLayout:RangeColumn.IsFillColumn="True">
                                         <GridViewColumn.CellTemplate>
-                                            <DataTemplate DataType="PendingChanges:WorkItemModel">
+                                            <DataTemplate DataType="workItemQuery:WorkItemModel">
                                                 <TextBlock Text="{Binding WorkItem.Title, Mode=OneWay}"/>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>

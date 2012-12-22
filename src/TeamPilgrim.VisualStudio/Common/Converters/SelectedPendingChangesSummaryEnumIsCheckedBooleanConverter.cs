@@ -6,6 +6,7 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Enums;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common.Converters
@@ -14,15 +15,15 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            switch ((PendingChangesSummaryEnum)value)
+            switch ((CollectionSelectionSummaryEnum)value)
             {
-                case PendingChangesSummaryEnum.All:
+                case CollectionSelectionSummaryEnum.All:
                     return true;
 
-                case PendingChangesSummaryEnum.Some:
+                case CollectionSelectionSummaryEnum.Some:
                     return null;
 
-                case PendingChangesSummaryEnum.None:
+                case CollectionSelectionSummaryEnum.None:
                     return false;
             }
 

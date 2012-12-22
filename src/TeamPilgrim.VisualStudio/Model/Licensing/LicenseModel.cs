@@ -1,7 +1,6 @@
 ﻿using System;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Licensing
 {
     public class LicenseModel : BaseModel
     {

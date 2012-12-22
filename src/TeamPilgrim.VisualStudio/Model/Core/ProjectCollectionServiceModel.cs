@@ -10,7 +10,7 @@ using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core
 {
     public class ProjectCollectionServiceModel : BaseServiceModel
     {

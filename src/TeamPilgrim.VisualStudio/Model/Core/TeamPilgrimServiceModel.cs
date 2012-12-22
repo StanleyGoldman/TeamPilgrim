@@ -10,14 +10,12 @@ using System.Windows.Threading;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.TeamFoundation;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.VersionControl.Client;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core
 {
     public class TeamPilgrimServiceModel : BaseServiceModel
     {

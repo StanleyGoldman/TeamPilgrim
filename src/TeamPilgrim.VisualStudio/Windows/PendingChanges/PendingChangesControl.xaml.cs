@@ -8,10 +8,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Enums;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.CommandArguments;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
@@ -179,7 +182,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
             var selectedWorkspaceModel = teamPilgrimModel.SelectedWorkspaceModel;
 
             var checkAll =
-                selectedWorkspaceModel.PendingChangesSummary == PendingChangesSummaryEnum.None;
+                selectedWorkspaceModel.PendingChangesSummary == CollectionSelectionSummaryEnum.None;
 
             selectedWorkspaceModel.SelectPendingChangesCommand.Execute(new SelectPendingChangesCommandArgument()
             {

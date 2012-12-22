@@ -1,4 +1,5 @@
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.CommandArguments
 {

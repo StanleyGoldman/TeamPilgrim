@@ -1,4 +1,4 @@
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common.Enums
 {
     public enum ShowPendingChangesTabItemEnum
     {

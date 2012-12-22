@@ -7,14 +7,17 @@
              xmlns:AttachedProperties="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties"
              xmlns:Explorer="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Explorer"
              xmlns:ExplorerModels="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer"
-             xmlns:BuildDefinitions="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.BuildDefinitions"
              xmlns:WorkItemQuery="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery"
              xmlns:converters="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Converters"
+             xmlns:core="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core"
+             xmlns:BuildDefinitions="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions"
+             xmlns:reporting="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Reporting"
+             xmlns:teams="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Teams"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d" 
              Height="Auto" d:DesignHeight="300" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance Model:TeamPilgrimServiceModel}">
+             d:DataContext="{d:DesignInstance core:TeamPilgrimServiceModel}">
     <DockPanel>
         <DockPanel.Resources>
             <ResourceDictionary>
@@ -112,7 +115,7 @@
         <ScrollViewer DockPanel.Dock="Bottom" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
             <TreeView ItemsSource="{Binding Path=ProjectCollectionModels}" ItemContainerStyleSelector="{StaticResource teamPilgrilViewStyleSelector}" BorderBrush="#00828790" BorderThickness="1">
                 <TreeView.Resources>
-                    <ContextMenu x:Key="ProjectCollectionContextMenu" d:DataContext="{d:DesignInstance ExplorerModels:ProjectCollectionServiceModel}">
+                    <ContextMenu x:Key="ProjectCollectionContextMenu" d:DataContext="{d:DesignInstance core:ProjectCollectionServiceModel}">
                         <MenuItem Header="Connect to Team Project..." Command="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.DataContext.TeamPilgrimServiceModel.TfsConnectCommand}"/>
                         <MenuItem Header="New Team Project..." Command="{Binding NewTeamProjectCommand}"/>
                         <Separator />
@@ -128,7 +131,7 @@
                         </MenuItem>
                     </ContextMenu>
 
-                    <ContextMenu x:Key="ProjectContextMenu" d:DataContext="{d:DesignInstance ExplorerModels:ProjectServiceModel}">
+                    <ContextMenu x:Key="ProjectContextMenu" d:DataContext="{d:DesignInstance core:ProjectServiceModel}">
                         <MenuItem Header="Project Alerts..." Command="{Binding ShowProjectAlertsCommand}"/>
                         <Separator />
                         <MenuItem Header="Refresh" Command="{Binding RefreshCommand}"/>
@@ -317,14 +320,14 @@
                             CommandParameter="{Binding}" />
                     </ContextMenu>
 
-                    <HierarchicalDataTemplate DataType="{x:Type ExplorerModels:ProjectCollectionServiceModel}" ItemsSource="{Binding Path=ProjectModels}">
+                    <HierarchicalDataTemplate DataType="{x:Type core:ProjectCollectionServiceModel}" ItemsSource="{Binding Path=ProjectModels}">
                         <DockPanel Style="{StaticResource TreeViewDockPanel}">
                             <Image Source="/TeamPilgrim.VisualStudio;component/Resources\TFSServer_13310_16x.png" Margin="0,0,2,0" />
                             <TextBlock Text="{Binding Path=TfsTeamProjectCollection.Name}" ContextMenu="{StaticResource ResourceKey=ProjectCollectionContextMenu}" />
                         </DockPanel>
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type ExplorerModels:ProjectServiceModel}" ItemsSource="{Binding Path=ChildObjects}">
+                    <HierarchicalDataTemplate DataType="{x:Type core:ProjectServiceModel}" ItemsSource="{Binding Path=ChildObjects}">
                         <HierarchicalDataTemplate.Resources>
                             <Style x:Key="ProjectContextTextStyle" TargetType="{x:Type TextBlock}">
                                 <Setter Property="FontWeight" Value="{Binding Path=IsActive, Converter={StaticResource BooleanToAlternateFontWeightConverter}}" />
@@ -372,13 +375,13 @@
                         </DockPanel>
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type ExplorerModels:ReportsModel}">
+                    <HierarchicalDataTemplate DataType="{x:Type reporting:ReportsModel}">
                         <DockPanel Style="{StaticResource TreeViewDockPanel}">
                             <TextBlock Text="Reports" />
                         </DockPanel>
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type ExplorerModels:TeamMembersModel}">
+                    <HierarchicalDataTemplate DataType="{x:Type teams:TeamMembersModel}">
                         <DockPanel Style="{StaticResource TreeViewDockPanel}">
                             <TextBlock Text="Team Members" />
                         </DockPanel>

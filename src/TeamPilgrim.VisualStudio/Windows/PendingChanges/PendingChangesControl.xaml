@@ -14,9 +14,10 @@
              xmlns:workItemQuery="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery"
              xmlns:listViewLayout="clr-namespace:Itenso.Windows.Controls.ListViewLayout;assembly=Itenso.Windows.Controls.ListViewLayout"
              xmlns:controls="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Controls"
+             xmlns:core="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core"
              mc:Ignorable="d" 
              Height="Auto" d:DesignHeight="300" d:DesignWidth="850"
-             d:DataContext="{d:DesignInstance Model:TeamPilgrimServiceModel}">
+             d:DataContext="{d:DesignInstance core:TeamPilgrimServiceModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -349,7 +350,7 @@
                                 <GridViewColumn listViewLayout:FixedColumn.Width="20">
                                     
                                     <GridViewColumn.CellTemplate>
-                                        <DataTemplate DataType="PendingChangesModel:WorkItemModel">
+                                        <DataTemplate DataType="workItemQuery:WorkItemModel">
                                             <CheckBox IsChecked="{Binding Path=IsSelected}"
                                                       DataContext="{Binding}"
                                                       Click="PendingChangeWorkItemCheckboxClicked" />
@@ -360,7 +361,7 @@
                                 <GridViewColumn Header="Check-in Action"
                                                 listViewLayout:RangeColumn.MinWidth="100" >
                                     <GridViewColumn.CellTemplate>
-                                        <DataTemplate DataType="PendingChangesModel:WorkItemModel">
+                                        <DataTemplate DataType="workItemQuery:WorkItemModel">
                                             <ComboBox 
                                                 Visibility="{Binding Path=IsSelected, Converter={StaticResource ResourceKey=BooleanToVisibilityConverter}}"
                                                 ItemsSource="{Binding Source={StaticResource ResourceKey=workItemCheckinActions}}" 
@@ -371,7 +372,7 @@
 
                                 <GridViewColumn Header="ID" listViewLayout:RangeColumn.MinWidth="75">
                                     <GridViewColumn.CellTemplate>
-                                        <DataTemplate DataType="PendingChangesModel:WorkItemModel">
+                                        <DataTemplate DataType="workItemQuery:WorkItemModel">
                                             <TextBlock Text="{Binding Path=WorkItem.Id, Mode=OneWay}"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
@@ -379,7 +380,7 @@
 
                                 <GridViewColumn Header="Type" listViewLayout:RangeColumn.MinWidth="80">
                                     <GridViewColumn.CellTemplate>
-                                        <DataTemplate DataType="PendingChangesModel:WorkItemModel">
+                                        <DataTemplate DataType="workItemQuery:WorkItemModel">
                                             <TextBlock Text="{Binding Path=WorkItem.Type.Name, Mode=OneWay}"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
@@ -390,7 +391,7 @@
                                     listViewLayout:RangeColumn.IsFillColumn="True">
                                     
                                     <GridViewColumn.CellTemplate>
-                                        <DataTemplate DataType="PendingChangesModel:WorkItemModel">
+                                        <DataTemplate DataType="workItemQuery:WorkItemModel">
                                             <TextBlock Text="{Binding Path=WorkItem.Title, Mode=OneWay}"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>

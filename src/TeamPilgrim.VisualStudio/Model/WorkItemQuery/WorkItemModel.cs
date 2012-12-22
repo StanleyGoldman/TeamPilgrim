@@ -1,7 +1,7 @@
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Enums;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
 {
     public class WorkItemModel : BaseModel
     {

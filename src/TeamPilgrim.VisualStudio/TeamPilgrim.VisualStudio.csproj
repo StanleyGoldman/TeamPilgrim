@@ -220,22 +220,22 @@
     <Compile Include="Common\VsWindowFrameEditorTypeIds.cs" />
     <Compile Include="Common\AttachedProperties\MouseDoubleClick.cs" />
     <Compile Include="Common\Extensions\CheckinEvaluationResultExtensions.cs" />
-    <Compile Include="Model\CommandArguments\SelectPendingChangesCommandArgument.cs" />
-    <Compile Include="Model\CommandArguments\SelectWorkItemsCommandArgument.cs" />
-    <Compile Include="Model\PendingChanges\PendingChangesSummaryEnum.cs" />
-    <Compile Include="Model\ShelveChanges\ShelvesetServiceModel.cs" />
-    <Compile Include="Model\PendingChanges\PreviouslySelectedWorkItemQuery.cs" />
-    <Compile Include="Model\PendingChanges\ShowPendingChangesTabItemEnum.cs" />
+    <Compile Include="Model\Version Control\CommandArguments\SelectPendingChangesCommandArgument.cs" />
+    <Compile Include="Model\Version Control\CommandArguments\SelectWorkItemsCommandArgument.cs" />
+    <Compile Include="Common\Enums\CollectionSelectionSummaryEnum.cs" />
+    <Compile Include="Model\Version Control\ShelvesetServiceModel.cs" />
+    <Compile Include="Model\Version Control\PreviouslySelectedWorkItemQuery.cs" />
+    <Compile Include="Common\Enums\ShowPendingChangesTabItemEnum.cs" />
     <Compile Include="Model\WorkItemQuery\QueryFolderTypeEnum.cs" />
     <Compile Include="TeamPilgrimLogManager.cs" />
     <Compile Include="Model\BaseModel.cs" />
-    <Compile Include="Model\LicenseModel.cs" />
-    <Compile Include="Model\PendingChanges\CheckinNoteModel.cs" />
+    <Compile Include="Model\Licensing\LicenseModel.cs" />
+    <Compile Include="Model\Version Control\CheckinNoteModel.cs" />
     <Compile Include="Common\Enums\SelectedWorkItemCheckinActionEnum.cs" />
     <Compile Include="Common\Extensions\SelectedWorkItemCheckinActionEnumExtensions.cs" />
-    <Compile Include="Model\PendingChanges\WorkItemModel.cs" />
-    <Compile Include="Model\PolicyFailureModel.cs" />
-    <Compile Include="Model\SelectWorkItemQueryModel.cs" />
+    <Compile Include="Model\WorkItemQuery\WorkItemModel.cs" />
+    <Compile Include="Model\Version Control\PolicyFailureModel.cs" />
+    <Compile Include="Model\Version Control\SelectWorkItemQueryModel.cs" />
     <Compile Include="Windows\PendingChanges\Dialogs\UnshelveChangesDialog.xaml.cs">
       <DependentUpon>UnshelveChangesDialog.xaml</DependentUpon>
     </Compile>
@@ -263,19 +263,19 @@
     <Compile Include="Domain\BusinessInterfaces\ITeamPilgrimTfsService.cs" />
     <Compile Include="Business\Services\VisualStudio\TeamPilgrimVsService.cs" />
     <Compile Include="Model\BaseServiceModel.cs" />
-    <Compile Include="Model\Explorer\BuildDefinitions\BuildDefinitionModel.cs" />
-    <Compile Include="Model\Explorer\BuildDefinitions\IBuildDefinitionCommandModel.cs" />
-    <Compile Include="Model\Explorer\ReportsModel.cs">
+    <Compile Include="Model\BuildDefinitions\BuildDefinitionModel.cs" />
+    <Compile Include="Model\BuildDefinitions\IBuildDefinitionCommandModel.cs" />
+    <Compile Include="Model\Reporting\ReportsModel.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Model\WorkItemQuery\IWorkItemQueryCommandModel.cs" />
-    <Compile Include="Model\Explorer\BuildDefinitions\BuildDefinitionsServiceModel.cs" />
-    <Compile Include="Model\PendingChanges\PendingChangeModel.cs" />
-    <Compile Include="Model\TeamPilgrimServiceModel.cs" />
-    <Compile Include="Model\Explorer\ProjectCollectionServiceModel.cs" />
-    <Compile Include="Model\Explorer\ProjectServiceModel.cs" />
-    <Compile Include="Model\PendingChanges\WorkspaceInfoModel.cs" />
-    <Compile Include="Model\PendingChanges\WorkspaceServiceModel.cs" />
+    <Compile Include="Model\BuildDefinitions\BuildDefinitionsServiceModel.cs" />
+    <Compile Include="Model\Version Control\PendingChangeModel.cs" />
+    <Compile Include="Model\Core\TeamPilgrimServiceModel.cs" />
+    <Compile Include="Model\Core\ProjectCollectionServiceModel.cs" />
+    <Compile Include="Model\Core\ProjectServiceModel.cs" />
+    <Compile Include="Model\Version Control\WorkspaceInfoModel.cs" />
+    <Compile Include="Model\Version Control\WorkspaceServiceModel.cs" />
     <Compile Include="Providers\TeamPilgrimServiceModelProvider.cs" />
     <Compile Include="Windows\Explorer\ExplorerTreeViewStyleSelector.cs" />
     <Compile Include="Windows\Explorer\ExplorerControl.xaml.cs">
@@ -309,8 +309,8 @@
     </None>
     <Compile Include="PkgCmdID.cs" />
     <Compile Include="Common\Extensions\EnumerableQueryItemExtensions.cs" />
-    <Compile Include="Model\Explorer\SourceControlModel.cs" />
-    <Compile Include="Model\Explorer\TeamMembersModel.cs" />
+    <Compile Include="Model\Version Control\SourceControlModel.cs" />
+    <Compile Include="Model\Teams\TeamMembersModel.cs" />
     <Compile Include="Model\WorkItemQuery\WorkItemQueryDefinitionModel.cs" />
     <Compile Include="Model\WorkItemQuery\WorkItemQueryFolderModel.cs" />
     <Compile Include="Model\WorkItemQuery\WorkItemQueryServiceModel.cs" />

@@ -8,9 +8,11 @@ using System.Windows.Threading;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Comparer;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Enums;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Extensions;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.CommandArguments;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery;
@@ -189,8 +191,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
             }
         }
 
-        private PendingChangesSummaryEnum _pendingChangesSummary = PendingChangesSummaryEnum.None;
-        public PendingChangesSummaryEnum PendingChangesSummary
+        private CollectionSelectionSummaryEnum _pendingChangesSummary = CollectionSelectionSummaryEnum.None;
+        public CollectionSelectionSummaryEnum PendingChangesSummary
         {
             get { return _pendingChangesSummary; }
             set
@@ -340,20 +342,20 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
 
             if (PendingChanges.Count == 0)
             {
-                PendingChangesSummary = PendingChangesSummaryEnum.None;
+                PendingChangesSummary = CollectionSelectionSummaryEnum.None;
                 return;
             }
 
             var includedCount = PendingChanges.Count(model => model.IncludeChange);
             if (includedCount == 0)
             {
-                PendingChangesSummary = PendingChangesSummaryEnum.None;
+                PendingChangesSummary = CollectionSelectionSummaryEnum.None;
                 return;
             }
 
             PendingChangesSummary = PendingChanges.Count == includedCount
-                                        ? PendingChangesSummaryEnum.All
-                                        : PendingChangesSummaryEnum.Some;
+                                        ? CollectionSelectionSummaryEnum.All
+                                        : CollectionSelectionSummaryEnum.Some;
         }
 
         protected virtual void OnShowPendingChangesItem(ShowPendingChangesTabItemEnum showpendingchangestabitemenum)
