@@ -313,6 +313,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
             SolutionIsOpen = teamPilgrimVsService.Solution.IsOpen && !string.IsNullOrEmpty(teamPilgrimVsService.Solution.FileName);
             teamPilgrimVsService.SolutionStateChanged += () =>
             {
+                FilterSolution = false; 
                 SolutionIsOpen = teamPilgrimVsService.Solution.IsOpen && !string.IsNullOrEmpty(teamPilgrimVsService.Solution.FileName);
             };
 

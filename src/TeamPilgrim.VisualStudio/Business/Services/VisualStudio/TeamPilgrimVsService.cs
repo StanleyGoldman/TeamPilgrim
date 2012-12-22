@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -27,6 +28,7 @@ using Microsoft.VisualStudio.TeamFoundation;
 using Microsoft.VisualStudio.TeamFoundation.Build;
 using Microsoft.VisualStudio.TeamFoundation.VersionControl;
 using Microsoft.VisualStudio.TeamFoundation.WorkItemTracking;
+using NLog;
 using Project = Microsoft.TeamFoundation.WorkItemTracking.Client.Project;
 using ProjectState = Microsoft.TeamFoundation.Common.ProjectState;
 
@@ -34,6 +36,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
 {
     public class TeamPilgrimVsService : ITeamPilgrimVsService, IVsSolutionEvents
     {
+        private static readonly Logger Logger = TeamPilgrimLogManager.Instance.GetCurrentClassLogger();
+
         protected IVsUIShell VsUiShell { get; private set; }
 
         protected DTE2 Dte2 { get; set; }
@@ -138,27 +142,78 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
 
         public string[] GetSolutionFilePaths()
         {
+            Logger.Trace("GetSolutionFilePaths");
+
+            Solution solution = Dte2.Solution;
             var solutionFilePaths = new List<string>
                 {
-                    Dte2.Solution.FileName
+                    solution.FileName
                 };
 
-            var enumerable = Dte2.Solution.Projects.Cast<EnvDTE.Project>().ToArray();
+            var projects = solution.Projects.Cast<EnvDTE.Project>().ToArray();
 
-            foreach (var project in enumerable)
+            foreach (var project in projects)
             {
-                if(project.Kind == EnvDTE.Constants.vsProjectKindMisc)
-                    continue;
+                PopulateProject(solutionFilePaths, project);
+            }
 
+            return solutionFilePaths.ToArray();
+        }
+
+        private static void PopulateProject(List<string> solutionFilePaths, EnvDTE.Project project)
+        {
+            var vsProjectKindSolutionItems = project.Kind == EnvDTE.Constants.vsProjectKindSolutionItems;
+            var vsProjectKindUnmodeled = project.Kind == EnvDTE.Constants.vsProjectKindUnmodeled;
+
+            if (vsProjectKindUnmodeled)
+            {
+                Logger.Debug("Project Not Yet Loaded: {0}", project.Name);
+                return;
+            }
+
+            if (vsProjectKindSolutionItems)
+            {
+                Logger.Trace("Solution Folder: {0}", project.Name);
+
+                foreach (var projectItem in project.ProjectItems.Cast<ProjectItem>())
+                {
+                    var vsProjectItemKindSolutionItems = projectItem.Kind == EnvDTE.Constants.vsProjectItemKindSolutionItems;
+
+                    if (vsProjectItemKindSolutionItems)
+                    {
+                        if (projectItem.SubProject != null)
+                        {
+                            PopulateProject(solutionFilePaths, projectItem.SubProject);
+                        }
+                        else
+                        {
+                            Debug.Assert(projectItem.FileCount == 1);
+
+                            var fileName = projectItem.FileNames[1];
+
+                            if (fileName != null)
+                            {
+                                solutionFilePaths.Add(fileName);
+                            }
+                            else
+                            {
+                                Logger.Debug("Project Not Yet Loaded: {0}", projectItem.Name);
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Logger.Trace("Project: {0}", project.FileName);
+                
                 solutionFilePaths.Add(project.FileName);
-
+                
                 foreach (var projectItem in project.ProjectItems.Cast<ProjectItem>())
                 {
                     PopulateChildProjectItems(solutionFilePaths, projectItem);
                 }
             }
-
-            return solutionFilePaths.ToArray();
         }
 
         private static void PopulateChildProjectItems(List<string> result, ProjectItem item)
