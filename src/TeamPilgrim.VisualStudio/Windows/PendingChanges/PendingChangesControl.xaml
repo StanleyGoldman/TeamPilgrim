@@ -3,14 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:Converters="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Converters"
-             xmlns:Model="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model"
-             xmlns:VersionControlClient="clr-namespace:Microsoft.TeamFoundation.VersionControl.Client;assembly=Microsoft.TeamFoundation.VersionControl.Client"
-             xmlns:PendingChangesModel="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges"
-             xmlns:System="clr-namespace:System;assembly=mscorlib"
+             xmlns:converters="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Converters"
+             xmlns:versionControlClient="clr-namespace:Microsoft.TeamFoundation.VersionControl.Client;assembly=Microsoft.TeamFoundation.VersionControl.Client"
+             xmlns:pendingChangesModel="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-             xmlns:AttachedProperties="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties"
-             xmlns:Enums="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Enums"
+             xmlns:attachedProperties="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties"
+             xmlns:enums="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Enums"
              xmlns:workItemQuery="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery"
              xmlns:listViewLayout="clr-namespace:Itenso.Windows.Controls.ListViewLayout;assembly=Itenso.Windows.Controls.ListViewLayout"
              xmlns:controls="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Controls"
@@ -25,12 +24,12 @@
             </ResourceDictionary.MergedDictionaries>
             
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-            <Converters:SelectedPendingChangesSummaryEnumIsCheckedBooleanConverter x:Key="SelectedPendingChangesSummaryEnumIsCheckedBooleanConverter" />
-            <Converters:SingleObjectToObservableCollectionConverter x:Key="SingleObjectToListConverter" />
+            <converters:SelectedPendingChangesSummaryEnumIsCheckedBooleanConverter x:Key="SelectedPendingChangesSummaryEnumIsCheckedBooleanConverter" />
+            <converters:SingleObjectToObservableCollectionConverter x:Key="SingleObjectToListConverter" />
 
-            <ObjectDataProvider x:Key="workItemCheckinActions" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
+            <ObjectDataProvider x:Key="WorkItemCheckinActions" MethodName="GetValues" ObjectType="{x:Type system:Enum}">
                 <ObjectDataProvider.MethodParameters>
-                    <x:Type TypeName="Enums:SelectedWorkItemCheckinActionEnum"/>
+                    <x:Type TypeName="enums:SelectedWorkItemCheckinActionEnum"/>
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
 
@@ -44,19 +43,22 @@
     <DockPanel>
         <ToolBarTray Orientation="Vertical">
             <ToolBar>
-                <RadioButton IsChecked="True" x:Name="SourceFilesRadioButton" Style="{StaticResource {x:Type TypeName=ToggleButton}}" GroupName="PendingChangesMainView">
+                <ToolBar.Resources>
+                    <Style x:Key="ToggleButtonType" TargetType="{x:Type ToggleButton}" />
+                </ToolBar.Resources>
+                <RadioButton IsChecked="True" x:Name="SourceFilesRadioButton" Style="{StaticResource ToggleButtonType}" GroupName="PendingChangesMainView">
                     <Image Source="/TeamPilgrim.VisualStudio;component/Resources\Textfile_818_32x.png" Width="32" Height="32" />
                 </RadioButton>
 
-                <RadioButton x:Name="WorkItemsRadioButton" Style="{StaticResource {x:Type TypeName=ToggleButton}}" GroupName="PendingChangesMainView">
+                <RadioButton x:Name="WorkItemsRadioButton" Style="{StaticResource ToggleButtonType}" GroupName="PendingChangesMainView">
                     <Image Source="..\..\Resources\clipboard_sign.png" Width="32" Height="32" />
                 </RadioButton>
 
-                <RadioButton x:Name="CheckInNotesRadioButton" Style="{StaticResource {x:Type TypeName=ToggleButton}}" GroupName="PendingChangesMainView">
+                <RadioButton x:Name="CheckInNotesRadioButton" Style="{StaticResource ToggleButtonType}" GroupName="PendingChangesMainView">
                     <Image Source="..\..\Resources\note.png" Width="32" Height="32" />
                 </RadioButton>
 
-                <RadioButton x:Name="PolicyWarningsRadioButton" Style="{StaticResource {x:Type TypeName=ToggleButton}}" GroupName="PendingChangesMainView">
+                <RadioButton x:Name="PolicyWarningsRadioButton" Style="{StaticResource ToggleButtonType}" GroupName="PendingChangesMainView">
                     <Image Source="/TeamPilgrim.VisualStudio;component/Resources\PolicyWarnings(large)_7879.png" Width="32" Height="32" />
                 </RadioButton>
 
@@ -155,7 +157,7 @@
                           SelectedValue="{Binding Path=SelectedWorkspaceInfoModel}">
 
                                 <ComboBox.ItemTemplate>
-                                    <DataTemplate DataType="PendingChangesModel:WorkspaceInfoModel">
+                                    <DataTemplate DataType="pendingChangesModel:WorkspaceInfoModel">
                                         <TextBlock Text="{Binding Path=WorkspaceInfo.Name}"></TextBlock>
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
@@ -171,24 +173,24 @@
                               
                               listViewLayout:ListViewLayoutManager.Enabled="true"
                               
-                              AttachedProperties:GridViewSort.AutoSort="True"
+                              attachedProperties:GridViewSort.AutoSort="True"
                               
-                              AttachedProperties:PreviewSpaceKeyDownSelectPendingChanges.Command="{Binding Path=SelectPendingChangesCommand}"
+                              attachedProperties:PreviewSpaceKeyDownSelectPendingChanges.Command="{Binding Path=SelectPendingChangesCommand}"
                               
-                              AttachedProperties:PreviewReturnKeyDown.Command="{Binding Path=ViewPendingChangeCommand}"
-                              AttachedProperties:PreviewReturnKeyDown.CommandParameter="{Binding ElementName=PendingChangesListView, Path=SelectedItems}"
+                              attachedProperties:PreviewReturnKeyDown.Command="{Binding Path=ViewPendingChangeCommand}"
+                              attachedProperties:PreviewReturnKeyDown.CommandParameter="{Binding ElementName=PendingChangesListView, Path=SelectedItems}"
                               
                               DataContext="{Binding Path=SelectedWorkspaceModel}" 
                               ItemsSource="{Binding Path=PendingChanges}">
 
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">
-                                <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding ElementName=PendingChangesListView, Path=DataContext.ViewPendingChangeCommand}"/>
-                                <Setter Property="AttachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding Converter={StaticResource SingleObjectToListConverter}}"/>
+                                <Setter Property="attachedProperties:MouseDoubleClick.Command" Value="{Binding ElementName=PendingChangesListView, Path=DataContext.ViewPendingChangeCommand}"/>
+                                <Setter Property="attachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding Converter={StaticResource SingleObjectToListConverter}}"/>
                             </Style>
                         </ListView.ItemContainerStyle>
                         <ListView.ContextMenu>
-                            <ContextMenu d:DataContext="{d:DesignInstance PendingChangesModel:WorkspaceServiceModel}" x:Name="PendingChangesContextMenu">
+                            <ContextMenu d:DataContext="{d:DesignInstance pendingChangesModel:WorkspaceServiceModel}" x:Name="PendingChangesContextMenu">
 
                                 <MenuItem Header="View" 
                                     Command="{Binding Path=ViewPendingChangeCommand}" 
@@ -242,14 +244,14 @@
                                         x:Name="GridViewColumnPendingChangesFileName"
 
                                         listViewLayout:RangeColumn.MinWidth="150"
-                                        AttachedProperties:GridViewSort.PropertyName="Change.FileName">
+                                        attachedProperties:GridViewSort.PropertyName="Change.FileName">
 
                                     <GridViewColumn.Header>
                                         <GridViewColumnHeader>File</GridViewColumnHeader>
                                     </GridViewColumn.Header>
 
                                     <GridViewColumn.CellTemplate>
-                                        <DataTemplate DataType="PendingChangesModel:PendingChangeModel">
+                                        <DataTemplate DataType="pendingChangesModel:PendingChangeModel">
                                             <TextBlock Text="{Binding Path=Change.FileName, Mode=OneWay}" DockPanel.Dock="Right"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
@@ -259,14 +261,14 @@
                                         x:Name="GridViewColumnPendingChangesChangeTypeName"
 
                                         listViewLayout:RangeColumn.MinWidth="70"
-                                        AttachedProperties:GridViewSort.PropertyName="Change.ChangeTypeName">
+                                        attachedProperties:GridViewSort.PropertyName="Change.ChangeTypeName">
 
                                     <GridViewColumn.Header>
                                         <GridViewColumnHeader>Change</GridViewColumnHeader>
                                     </GridViewColumn.Header>
 
                                     <GridViewColumn.CellTemplate>
-                                        <DataTemplate DataType="PendingChangesModel:PendingChangeModel">
+                                        <DataTemplate DataType="pendingChangesModel:PendingChangeModel">
                                             <TextBlock Text="{Binding Path=Change.ChangeTypeName, Mode=OneWay}"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
@@ -278,14 +280,14 @@
                                         listViewLayout:RangeColumn.MinWidth="200"
                                         listViewLayout:RangeColumn.IsFillColumn="true"
 
-                                        AttachedProperties:GridViewSort.PropertyName="Change.LocalOrServerFolder">
+                                        attachedProperties:GridViewSort.PropertyName="Change.LocalOrServerFolder">
 
                                     <GridViewColumn.Header>
                                         <GridViewColumnHeader>Folder</GridViewColumnHeader>
                                     </GridViewColumn.Header>
 
                                     <GridViewColumn.CellTemplate>
-                                        <DataTemplate DataType="PendingChangesModel:PendingChangeModel">
+                                        <DataTemplate DataType="pendingChangesModel:PendingChangeModel">
                                             <TextBlock Text="{Binding Path=Change.LocalOrServerFolder, Mode=OneWay}"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
@@ -330,18 +332,18 @@
                               
                               listViewLayout:ListViewLayoutManager.Enabled="true"
                               
-                              AttachedProperties:PreviewSpaceKeyDownSelectWorkItems.Command="{Binding Path=SelectWorkItemsCommand}"
+                              attachedProperties:PreviewSpaceKeyDownSelectWorkItems.Command="{Binding Path=SelectWorkItemsCommand}"
                               
-                              AttachedProperties:PreviewReturnKeyDown.Command="{Binding Path=ViewWorkItemCommand}"
-                              AttachedProperties:PreviewReturnKeyDown.CommandParameter="{Binding ElementName=WorkItemsListView, Path=SelectedItems}"
+                              attachedProperties:PreviewReturnKeyDown.Command="{Binding Path=ViewWorkItemCommand}"
+                              attachedProperties:PreviewReturnKeyDown.CommandParameter="{Binding ElementName=WorkItemsListView, Path=SelectedItems}"
                               
                               DataContext="{Binding Path=SelectedWorkspaceModel}" 
                               ItemsSource="{Binding Path=WorkItems}">
                         
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">
-                                <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding ElementName=WorkItemsListView, Path=DataContext.ViewWorkItemCommand}"/>
-                                <Setter Property="AttachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding Converter={StaticResource SingleObjectToListConverter}}"/>
+                                <Setter Property="attachedProperties:MouseDoubleClick.Command" Value="{Binding ElementName=WorkItemsListView, Path=DataContext.ViewWorkItemCommand}"/>
+                                <Setter Property="attachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding Converter={StaticResource SingleObjectToListConverter}}"/>
                             </Style>
                         </ListView.ItemContainerStyle>
                         
@@ -364,7 +366,7 @@
                                         <DataTemplate DataType="workItemQuery:WorkItemModel">
                                             <ComboBox 
                                                 Visibility="{Binding Path=IsSelected, Converter={StaticResource ResourceKey=BooleanToVisibilityConverter}}"
-                                                ItemsSource="{Binding Source={StaticResource ResourceKey=workItemCheckinActions}}" 
+                                                ItemsSource="{Binding Source={StaticResource ResourceKey=WorkItemCheckinActions}}" 
                                                 SelectedItem="{Binding Path=WorkItemCheckinAction}" />
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
@@ -413,7 +415,7 @@
                     </ToolBar>
                     <ListView DataContext="{Binding Path=SelectedWorkspaceModel}" ItemsSource="{Binding Path=CheckinNotes}" DockPanel.Dock="Bottom" HorizontalContentAlignment="Stretch">
                         <ListView.ItemTemplate>
-                            <DataTemplate DataType="PendingChangesModel:CheckinNoteModel">
+                            <DataTemplate DataType="pendingChangesModel:CheckinNoteModel">
                                 <Expander Header="{Binding Path=CheckinNoteFieldDefinition.Name}" IsExpanded="True">
                                     <xctk:WatermarkTextBox Text="{Binding Path=Value, UpdateSourceTrigger=PropertyChanged}">
                                         <xctk:WatermarkTextBox.Style>
@@ -447,7 +449,7 @@
                             <GridView>
                                 <GridViewColumn Header="Description">
                                     <GridViewColumn.CellTemplate>
-                                        <DataTemplate DataType="VersionControlClient:PolicyFailure">
+                                        <DataTemplate DataType="versionControlClient:PolicyFailure">
                                             <TextBlock Text="{Binding Path=Message}"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>

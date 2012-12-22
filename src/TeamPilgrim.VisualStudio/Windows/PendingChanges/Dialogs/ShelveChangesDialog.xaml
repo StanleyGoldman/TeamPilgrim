@@ -1,16 +1,16 @@
 ﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:Converters="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Converters" 
-        xmlns:System="clr-namespace:System;assembly=mscorlib" 
-        xmlns:Enums="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Enums" 
-        xmlns:AttachedProperties="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties"
+        xmlns:converters="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Converters" 
+        xmlns:system="clr-namespace:System;assembly=mscorlib" 
+        xmlns:enums="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Enums" 
+        xmlns:attachedProperties="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-        xmlns:PendingChanges="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges" 
+        xmlns:pendingChanges="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges" 
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        xmlns:VersionControlClient="clr-namespace:Microsoft.TeamFoundation.VersionControl.Client;assembly=Microsoft.TeamFoundation.VersionControl.Client"
-        xmlns:ShelveChanges="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges"
+        xmlns:versionControlClient="clr-namespace:Microsoft.TeamFoundation.VersionControl.Client;assembly=Microsoft.TeamFoundation.VersionControl.Client"
+        xmlns:shelveChanges="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges"
         xmlns:listViewLayout="clr-namespace:Itenso.Windows.Controls.ListViewLayout;assembly=Itenso.Windows.Controls.ListViewLayout"
         xmlns:controls="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Controls"
         xmlns:workItemQuery="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery"
@@ -19,7 +19,7 @@
         Title="Team Pilgrim Shelve Changes" MinHeight="405" Width="761" MinWidth="400"
     
         x:Name="ShelveChangesDialogWindow"
-        d:DataContext="{d:DesignInstance ShelveChanges:ShelvesetServiceModel}">
+        d:DataContext="{d:DesignInstance shelveChanges:ShelvesetServiceModel}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -27,13 +27,12 @@
             </ResourceDictionary.MergedDictionaries>
 
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-            <Converters:SelectedPendingChangesSummaryEnumIsCheckedBooleanConverter x:Key="SelectedPendingChangesSummaryEnumIsCheckedBooleanConverter" />
-            <Converters:SingleObjectToObservableCollectionConverter x:Key="SingleObjectToListConverter" />
-            <Converters:AndClauseBooleanConverter x:Key="AndClauseBooleanConverter" />
+            <converters:SelectedPendingChangesSummaryEnumIsCheckedBooleanConverter x:Key="SelectedPendingChangesSummaryEnumIsCheckedBooleanConverter" />
+            <converters:AndClauseBooleanConverter x:Key="AndClauseBooleanConverter" />
 
-            <ObjectDataProvider x:Key="WorkItemCheckinActions" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
+            <ObjectDataProvider x:Key="WorkItemCheckinActions" MethodName="GetValues" ObjectType="{x:Type system:Enum}">
                 <ObjectDataProvider.MethodParameters>
-                    <x:Type TypeName="Enums:SelectedWorkItemCheckinActionEnum"/>
+                    <x:Type TypeName="enums:SelectedWorkItemCheckinActionEnum"/>
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
 
@@ -67,19 +66,22 @@
         <DockPanel DockPanel.Dock="Top" >
             <ToolBarTray Orientation="Vertical" DockPanel.Dock="Left">
                 <ToolBar>
-                    <RadioButton IsChecked="True" x:Name="SourceFilesRadioButton" Style="{StaticResource {x:Type ToggleButton}}" GroupName="PendingChangesMainView">
+                    <ToolBar.Resources>
+                        <Style x:Key="ToggleButtonType" TargetType="{x:Type ToggleButton}" />
+                    </ToolBar.Resources>
+                    <RadioButton IsChecked="True" x:Name="SourceFilesRadioButton" Style="{StaticResource ToggleButtonType}" GroupName="PendingChangesMainView">
                         <Image Source="/TeamPilgrim.VisualStudio;component/Resources\Textfile_818_32x.png" Width="32" Height="32" />
                     </RadioButton>
 
-                    <RadioButton x:Name="WorkItemsRadioButton" Style="{StaticResource {x:Type ToggleButton}}" GroupName="PendingChangesMainView">
+                    <RadioButton x:Name="WorkItemsRadioButton" Style="{StaticResource ToggleButtonType}" GroupName="PendingChangesMainView">
                         <Image Source="..\..\..\Resources\clipboard_sign.png" Width="32" Height="32" />
                     </RadioButton>
 
-                    <RadioButton x:Name="CheckInNotesRadioButton" Style="{StaticResource {x:Type ToggleButton}}" GroupName="PendingChangesMainView">
+                    <RadioButton x:Name="CheckInNotesRadioButton" Style="{StaticResource ToggleButtonType}" GroupName="PendingChangesMainView">
                         <Image Source="..\..\..\Resources\note.png" Width="32" Height="32" />
                     </RadioButton>
 
-                    <RadioButton x:Name="PolicyWarningsRadioButton" Style="{StaticResource {x:Type ToggleButton}}" GroupName="PendingChangesMainView" Visibility="{Binding EvaluatePoliciesAndCheckinNotes, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <RadioButton x:Name="PolicyWarningsRadioButton" Style="{StaticResource ToggleButtonType}" GroupName="PendingChangesMainView" Visibility="{Binding EvaluatePoliciesAndCheckinNotes, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <Image Source="/TeamPilgrim.VisualStudio;component/Resources\PolicyWarnings(large)_7879.png" Width="32" Height="32" />
                     </RadioButton>
                 </ToolBar>
@@ -105,10 +107,10 @@
 
                                     <Separator/>
                                 
-                                    <RadioButton  IsEnabled="False" x:Name="CheckinFolderViewRadioButton" Style="{StaticResource {x:Type ToggleButton}}" GroupName="CheckinPendingChangesViewStyle">
+                                    <RadioButton  IsEnabled="False" x:Name="CheckinFolderViewRadioButton" Style="{StaticResource ToggleButtonType}" GroupName="CheckinPendingChangesViewStyle">
                                         <TextBlock><Run Text="Folder"/></TextBlock>
                                     </RadioButton>
-                                    <RadioButton  IsEnabled="False" IsChecked="True" x:Name="CheckinFlatViewRadioButton" Style="{StaticResource {x:Type ToggleButton}}" GroupName="CheckinPendingChangesViewStyle">
+                                    <RadioButton  IsEnabled="False" IsChecked="True" x:Name="CheckinFlatViewRadioButton" Style="{StaticResource ToggleButtonType}" GroupName="CheckinPendingChangesViewStyle">
                                         <TextBlock><Run Text="Flat"/></TextBlock>
                                     </RadioButton>
 
@@ -142,11 +144,11 @@
                         <TextBox DockPanel.Dock="Top" Text="{Binding Comment, UpdateSourceTrigger=PropertyChanged}"/>
 
                         <ListView x:Name="PendingChangesListView" 
-                					AttachedProperties:PreviewSpaceKeyDownSelectPendingChanges.Command="{Binding Path=SelectPendingChangesCommand}"
+                					attachedProperties:PreviewSpaceKeyDownSelectPendingChanges.Command="{Binding Path=SelectPendingChangesCommand}"
                                     
                                     listViewLayout:ListViewLayoutManager.Enabled="true"
 
-                                    AttachedProperties:GridViewSort.AutoSort="True"
+                                    attachedProperties:GridViewSort.AutoSort="True"
                                       
                                     ItemsSource="{Binding Path=PendingChanges}">
 
@@ -155,7 +157,7 @@
                                 </Style>
                             </ListView.ItemContainerStyle>
                             <ListView.ContextMenu>
-                                <ContextMenu d:DataContext="{d:DesignInstance {x:Type ShelveChanges:ShelvesetServiceModel}}" x:Name="PendingChangesContextMenu">
+                                <ContextMenu d:DataContext="{d:DesignInstance {x:Type shelveChanges:ShelvesetServiceModel}}" x:Name="PendingChangesContextMenu">
 
                                     <MenuItem Header="View"/>
 
@@ -197,14 +199,14 @@
                                                 x:Name="GridViewColumnPendingChangesFileName"
                                            
                                                 listViewLayout:RangeColumn.MinWidth="150"
-                                                AttachedProperties:GridViewSort.PropertyName="Change.FileName">
+                                                attachedProperties:GridViewSort.PropertyName="Change.FileName">
 
                                         <GridViewColumn.Header>
                                             <GridViewColumnHeader>File</GridViewColumnHeader>
                                         </GridViewColumn.Header>
 
                                         <GridViewColumn.CellTemplate>
-                                            <DataTemplate DataType="PendingChanges:PendingChangeModel">
+                                            <DataTemplate DataType="pendingChanges:PendingChangeModel">
                                                 <TextBlock Text="{Binding Change.FileName, Mode=OneWay}" DockPanel.Dock="Right"/>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
@@ -215,14 +217,14 @@
                                                 
                                                 listViewLayout:RangeColumn.MinWidth="70"
                                                 
-                                                AttachedProperties:GridViewSort.PropertyName="Change.ChangeTypeName">
+                                                attachedProperties:GridViewSort.PropertyName="Change.ChangeTypeName">
 
                                         <GridViewColumn.Header>
                                             <GridViewColumnHeader>Change</GridViewColumnHeader>
                                         </GridViewColumn.Header>
 
                                         <GridViewColumn.CellTemplate>
-                                            <DataTemplate DataType="PendingChanges:PendingChangeModel">
+                                            <DataTemplate DataType="pendingChanges:PendingChangeModel">
                                                 <TextBlock Text="{Binding Change.ChangeTypeName, Mode=OneWay}"/>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
@@ -233,14 +235,14 @@
                                                         
                                                 listViewLayout:RangeColumn.MinWidth="200"
                                                 listViewLayout:RangeColumn.IsFillColumn="true"
-                                                AttachedProperties:GridViewSort.PropertyName="Change.LocalOrServerFolder">
+                                                attachedProperties:GridViewSort.PropertyName="Change.LocalOrServerFolder">
 
                                         <GridViewColumn.Header>
                                             <GridViewColumnHeader>Folder</GridViewColumnHeader>
                                         </GridViewColumn.Header>
 
                                         <GridViewColumn.CellTemplate>
-                                            <DataTemplate DataType="PendingChanges:PendingChangeModel">
+                                            <DataTemplate DataType="pendingChanges:PendingChangeModel">
                                                 <TextBlock Text="{Binding Change.LocalOrServerFolder, Mode=OneWay}"/>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
@@ -273,7 +275,7 @@
 
                         <ListView x:Name="WorkItemsListView" DockPanel.Dock="Bottom" 
                               listViewLayout:ListViewLayoutManager.Enabled="true"
-                              AttachedProperties:PreviewSpaceKeyDownSelectWorkItems.Command="{Binding Path=SelectWorkItemsCommand}"
+                              attachedProperties:PreviewSpaceKeyDownSelectWorkItems.Command="{Binding Path=SelectWorkItemsCommand}"
                               ItemsSource="{Binding Path=WorkItems}">
 
                             <ListView.ItemContainerStyle>
@@ -338,7 +340,7 @@
                 <TabItem x:Name="CheckInNotesTabItem"  IsSelected="{Binding IsChecked, ElementName=CheckInNotesRadioButton}">
                     <ListView DockPanel.Dock="Bottom"  ItemsSource="{Binding Path=CheckinNotes}" HorizontalContentAlignment="Stretch">
                         <ListView.ItemTemplate>
-                            <DataTemplate DataType="PendingChanges:CheckinNoteModel">
+                            <DataTemplate DataType="pendingChanges:CheckinNoteModel">
                                 <Expander Header="{Binding CheckinNoteFieldDefinition.Name}" IsExpanded="True">
                                     <xctk:WatermarkTextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}">
                                         <xctk:WatermarkTextBox.Style>
@@ -368,7 +370,7 @@
                             <GridView>
                                 <GridViewColumn Header="Description">
                                     <GridViewColumn.CellTemplate>
-                                        <DataTemplate DataType="VersionControlClient:PolicyFailure">
+                                        <DataTemplate DataType="versionControlClient:PolicyFailure">
                                             <TextBlock Text="{Binding Message}"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>

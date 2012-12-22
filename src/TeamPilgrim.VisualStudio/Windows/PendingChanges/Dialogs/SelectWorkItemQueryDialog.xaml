@@ -3,15 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:Model="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model"
-        xmlns:Client="clr-namespace:Microsoft.TeamFoundation.WorkItemTracking.Client;assembly=Microsoft.TeamFoundation.WorkItemTracking.Client"
-        xmlns:Explorer="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer"
+        xmlns:model="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:behaviours="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Behaviors"
-        xmlns:Children="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery"
-        xmlns:core="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core" Height="300" Width="300"
+        xmlns:core="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core"
+        xmlns:workItemQuery="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery" Height="300" Width="300"
         mc:Ignorable="d" 
-        d:DataContext="{d:DesignInstance Model:SelectWorkItemQueryModel}">
+        d:DataContext="{d:DesignInstance model:SelectWorkItemQueryModel}">
     
     <DockPanel>
         
@@ -39,7 +37,7 @@
                         <HierarchicalDataTemplate.ItemContainerStyle>
                             <Style TargetType="TreeViewItem">
                                 <Style.Triggers>
-                                    <DataTrigger d:DataContext="{d:DesignInstance Children:WorkItemQueryChildModel}" Binding="{Binding Path=Depth}" Value="1">
+                                    <DataTrigger d:DataContext="{d:DesignInstance workItemQuery:WorkItemQueryChildModel}" Binding="{Binding Path=Depth}" Value="1">
                                         <Setter Property="IsExpanded" Value="True"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -49,11 +47,11 @@
                         <TextBlock Text="{Binding Path=Project.Name}" />
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type Children:WorkItemQueryFolderModel}" ItemsSource="{Binding Path=QueryItems}">
+                    <HierarchicalDataTemplate DataType="{x:Type workItemQuery:WorkItemQueryFolderModel}" ItemsSource="{Binding Path=QueryItems}">
                         <TextBlock Text="{Binding Path=Name}" />
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type Children:WorkItemQueryDefinitionModel}">
+                    <HierarchicalDataTemplate DataType="{x:Type workItemQuery:WorkItemQueryDefinitionModel}">
                         <TextBlock Text="{Binding Path=Name}" />
                     </HierarchicalDataTemplate>
                     
