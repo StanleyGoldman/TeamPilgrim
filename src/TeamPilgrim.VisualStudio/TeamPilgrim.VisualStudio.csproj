@@ -222,6 +222,7 @@
     <Compile Include="Common\Extensions\CheckinEvaluationResultExtensions.cs" />
     <Compile Include="Model\CommandArguments\SelectPendingChangesCommandArgument.cs" />
     <Compile Include="Model\CommandArguments\SelectWorkItemsCommandArgument.cs" />
+    <Compile Include="Model\PendingChanges\PendingChangesSummaryEnum.cs" />
     <Compile Include="Model\ShelveChanges\ShelvesetServiceModel.cs" />
     <Compile Include="Model\PendingChanges\PreviouslySelectedWorkItemQuery.cs" />
     <Compile Include="Model\PendingChanges\ShowPendingChangesTabItemEnum.cs" />

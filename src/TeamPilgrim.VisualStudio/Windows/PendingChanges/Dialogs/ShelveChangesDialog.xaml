@@ -12,6 +12,7 @@
         xmlns:VersionControlClient="clr-namespace:Microsoft.TeamFoundation.VersionControl.Client;assembly=Microsoft.TeamFoundation.VersionControl.Client"
         xmlns:ShelveChanges="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges"
         xmlns:listViewLayout="clr-namespace:Itenso.Windows.Controls.ListViewLayout;assembly=Itenso.Windows.Controls.ListViewLayout"
+        xmlns:controls="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Controls"
         mc:Ignorable="d" 
         x:Class="JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs.ShelveChangesDialog"
         Title="Team Pilgrim Shelve Changes" MinHeight="405" Width="761" MinWidth="400"
@@ -25,6 +26,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <Converters:SelectedPendingChangesSummaryEnumIsCheckedBooleanConverter x:Key="SelectedPendingChangesSummaryEnumIsCheckedBooleanConverter" />
             <Converters:SingleObjectToObservableCollectionConverter x:Key="SingleObjectToListConverter" />
             <Converters:AndClauseBooleanConverter x:Key="AndClauseBooleanConverter" />
 
@@ -172,6 +174,14 @@
                             <ListView.View>
                                 <GridView>
                                     <GridViewColumn listViewLayout:FixedColumn.Width="20" >
+                                        <GridViewColumn.Header>
+                                            <controls:CustomCheckBox
+                                            x:Name="PendingChangesAllCheckbox"
+                                            IsThreeState="true"
+                                            IsChecked="{Binding Path=PendingChangesSummary, Converter={StaticResource SelectedPendingChangesSummaryEnumIsCheckedBooleanConverter}, Mode=OneWay}"
+                                            Click="PendingChangesAllCheckboxOnClick" />
+                                        </GridViewColumn.Header>
+                                        
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
                                                 <CheckBox DockPanel.Dock="Left"

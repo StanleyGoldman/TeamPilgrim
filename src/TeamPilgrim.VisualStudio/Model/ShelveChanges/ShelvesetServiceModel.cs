@@ -189,6 +189,21 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
             }
         }
 
+        private PendingChangesSummaryEnum _pendingChangesSummary = PendingChangesSummaryEnum.None;
+        public PendingChangesSummaryEnum PendingChangesSummary
+        {
+            get { return _pendingChangesSummary; }
+            set
+            {
+                if (_pendingChangesSummary == value)
+                    return;
+
+                _pendingChangesSummary = value;
+
+                SendPropertyChanged("PendingChangesSummary");
+            }
+        }
+
         private bool _evaluatePoliciesAndCheckinNotes = TeamPilgrimPackage.TeamPilgrimSettings.EvaluatePoliciesDuringShelve;
         public bool EvaluatePoliciesAndCheckinNotes
         {
@@ -245,7 +260,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
             }
         }
 
-        private bool _backgroundFunctionPreventEvaluateCheckin;
+        private bool _backgroundFunctionPreventDataUpdate;
 
         public ShelvesetServiceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider,
                                      ITeamPilgrimVsService teamPilgrimVsService,
@@ -316,6 +331,31 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
             PreviouslySelectedWorkItemQueries = previouslySelectedWorkItemsQuery.Select(workItemQueryPath => new PreviouslySelectedWorkItemQuery(workItemQueryPath)).ToArray();
         }
 
+        private void PopulateSelectedPendingChangesSummary()
+        {
+            if (_backgroundFunctionPreventDataUpdate)
+                return;
+
+            this.Logger().Trace("PopulateSelectedPendingChangesSummary");
+
+            if (PendingChanges.Count == 0)
+            {
+                PendingChangesSummary = PendingChangesSummaryEnum.None;
+                return;
+            }
+
+            var includedCount = PendingChanges.Count(model => model.IncludeChange);
+            if (includedCount == 0)
+            {
+                PendingChangesSummary = PendingChangesSummaryEnum.None;
+                return;
+            }
+
+            PendingChangesSummary = PendingChanges.Count == includedCount
+                                        ? PendingChangesSummaryEnum.All
+                                        : PendingChangesSummaryEnum.Some;
+        }
+
         protected virtual void OnShowPendingChangesItem(ShowPendingChangesTabItemEnum showpendingchangestabitemenum)
         {
             var handler = ShowPendingChangesItem;
@@ -337,6 +377,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
         {
             this.Logger().Trace("PendingChangesOnCollectionChanged");
 
+            PopulateSelectedPendingChangesSummary();
             EvaluateCheckInCommand.Execute(null);
         }
 
@@ -363,15 +404,16 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
         {
             this.Logger().Debug("Select Pending Changes: {0}, Count: {1}", selectPendingChangesCommandArgument.Value, selectPendingChangesCommandArgument.Collection.Count());
 
-            _backgroundFunctionPreventEvaluateCheckin = true;
+            _backgroundFunctionPreventDataUpdate = true;
 
             foreach (var pendingChangeModel in selectPendingChangesCommandArgument.Collection)
             {
                 pendingChangeModel.IncludeChange = selectPendingChangesCommandArgument.Value;
             }
 
-            _backgroundFunctionPreventEvaluateCheckin = false;
+            _backgroundFunctionPreventDataUpdate = false;
 
+            PopulateSelectedPendingChangesSummary();
             EvaluateCheckInCommand.Execute(null);
         }
 
@@ -390,14 +432,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
         {
             this.Logger().Debug("Select Work Items: {0}, Count: {1}", selectWorkItemsCommandArgument.Value, selectWorkItemsCommandArgument.Collection.Count());
 
-            _backgroundFunctionPreventEvaluateCheckin = true;
+            _backgroundFunctionPreventDataUpdate = true;
 
             foreach (var workItemModel in selectWorkItemsCommandArgument.Collection)
             {
                 workItemModel.IsSelected = selectWorkItemsCommandArgument.Value;
             }
 
-            _backgroundFunctionPreventEvaluateCheckin = false;
+            _backgroundFunctionPreventDataUpdate = false;
             EvaluateCheckInCommand.Execute(null);
         }
 
@@ -542,7 +584,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
                     .Where(pendingChange => !intersectedModels.Select(model => model.Change.ItemId).Contains(pendingChange.ItemId))
                     .Select(change => new PendingChangeModel(change)).ToArray();
 
-                _backgroundFunctionPreventEvaluateCheckin = true;
+                _backgroundFunctionPreventDataUpdate = true;
 
                 foreach (var intersection in intersections)
                 {
@@ -559,8 +601,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
                     PendingChanges.Remove(modelToRemove);
                 }
 
-                _backgroundFunctionPreventEvaluateCheckin = false;
+                _backgroundFunctionPreventDataUpdate = false;
 
+                PopulateSelectedPendingChangesSummary();
                 EvaluateCheckInCommand.Execute(null);
             }
         }
@@ -749,7 +792,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
                     .Where(workItem => !modelIntersection.Select(workItemModel => workItemModel.WorkItem.Id).Contains(workItem.Id))
                     .Select(workItem => new WorkItemModel(workItem) { WorkItemCheckinAction = selectedWorkItemCheckinActionEnum }).ToArray();
 
-                _backgroundFunctionPreventEvaluateCheckin = false;
+                _backgroundFunctionPreventDataUpdate = false;
 
                 foreach (var modelToAdd in modelsToAdd)
                 {
@@ -761,7 +804,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
                     WorkItems.Remove(modelToRemove);
                 }
 
-                _backgroundFunctionPreventEvaluateCheckin = false;
+                _backgroundFunctionPreventDataUpdate = false;
                 EvaluateCheckInCommand.Execute(null);
             }
         }
@@ -842,7 +885,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges
 
         private bool CanEvaluateCheckIn()
         {
-            var canEvaluateCheckIn = !_backgroundFunctionPreventEvaluateCheckin;
+            var canEvaluateCheckIn = !_backgroundFunctionPreventDataUpdate;
 
             this.Logger().Trace("CanEvaluateCheckIn: Result: {0}", canEvaluateCheckIn);
 

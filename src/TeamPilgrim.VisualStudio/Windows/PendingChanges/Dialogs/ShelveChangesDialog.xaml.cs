@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.CommandArguments;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges;
@@ -136,6 +137,20 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialog
                     Collection = collection,
                     Value = checkedWorkItemModel.IsSelected
                 });
+        }
+
+        private void PendingChangesAllCheckboxOnClick(object sender, RoutedEventArgs e)
+        {
+            var shelvesetServiceModel = (ShelvesetServiceModel)DataContext;
+
+            var checkAll =
+                shelvesetServiceModel.PendingChangesSummary == PendingChangesSummaryEnum.None;
+
+            shelvesetServiceModel.SelectPendingChangesCommand.Execute(new SelectPendingChangesCommandArgument()
+            {
+                Collection = shelvesetServiceModel.PendingChanges.ToArray(),
+                Value = checkAll
+            });
         }
     }
 }

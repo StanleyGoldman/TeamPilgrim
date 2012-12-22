@@ -179,7 +179,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
             var selectedWorkspaceModel = teamPilgrimModel.SelectedWorkspaceModel;
 
             var checkAll =
-                selectedWorkspaceModel.PendingChangesSummary == WorkspaceServiceModel.PendingChangesSummaryEnum.None;
+                selectedWorkspaceModel.PendingChangesSummary == PendingChangesSummaryEnum.None;
 
             selectedWorkspaceModel.SelectPendingChangesCommand.Execute(new SelectPendingChangesCommandArgument()
             {

@@ -14,15 +14,15 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            switch ((WorkspaceServiceModel.PendingChangesSummaryEnum)value)
+            switch ((PendingChangesSummaryEnum)value)
             {
-                case WorkspaceServiceModel.PendingChangesSummaryEnum.All:
+                case PendingChangesSummaryEnum.All:
                     return true;
 
-                case WorkspaceServiceModel.PendingChangesSummaryEnum.Some:
+                case PendingChangesSummaryEnum.Some:
                     return null;
 
-                case WorkspaceServiceModel.PendingChangesSummaryEnum.None:
+                case PendingChangesSummaryEnum.None:
                     return false;
             }
 

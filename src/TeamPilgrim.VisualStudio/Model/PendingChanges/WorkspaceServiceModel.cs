@@ -204,13 +204,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             }
         }
 
-        public enum PendingChangesSummaryEnum
-        {
-            All,
-            Some,
-            None
-        }
-
         private PendingChangesSummaryEnum _pendingChangesSummary = PendingChangesSummaryEnum.None;
         public PendingChangesSummaryEnum PendingChangesSummary
         {
@@ -290,6 +283,31 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
             PreviouslySelectedWorkItemQueries = previouslySelectedWorkItemsQuery.Select(workItemQueryPath => new PreviouslySelectedWorkItemQuery(workItemQueryPath)).ToArray();
         }
 
+        private void PopulateSelectedPendingChangesSummary()
+        {
+            if (_backgroundFunctionPreventDataUpdate)
+                return;
+
+            this.Logger().Trace("PopulateSelectedPendingChangesSummary");
+
+            if (PendingChanges.Count == 0)
+            {
+                PendingChangesSummary = PendingChangesSummaryEnum.None;
+                return;
+            }
+
+            var includedCount = PendingChanges.Count(model => model.IncludeChange);
+            if (includedCount == 0)
+            {
+                PendingChangesSummary = PendingChangesSummaryEnum.None;
+                return;
+            }
+
+            PendingChangesSummary = PendingChanges.Count == includedCount
+                                        ? PendingChangesSummaryEnum.All
+                                        : PendingChangesSummaryEnum.Some;
+        }
+
         private void VersionControlServerOnPendingChangesChanged(object sender, WorkspaceEventArgs workspaceEventArgs)
         {
             this.Logger().Debug("VersionControlServerOnPendingChangesChanged");
@@ -313,31 +331,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
            
             PopulateSelectedPendingChangesSummary();
             EvaluateCheckInCommand.Execute(null);
-        }
-
-        private void PopulateSelectedPendingChangesSummary()
-        {
-            if (_backgroundFunctionPreventDataUpdate)
-                return;
-
-            this.Logger().Trace("PopulateSelectedPendingChangesSummary");
-
-            if (PendingChanges.Count == 0)
-            {
-                PendingChangesSummary = PendingChangesSummaryEnum.None;
-                return;
-            }
-
-            var includedCount = PendingChanges.Count(model => model.IncludeChange);
-            if (includedCount == 0)
-            {
-                PendingChangesSummary = PendingChangesSummaryEnum.None;
-                return;
-            }
-
-            PendingChangesSummary = PendingChanges.Count == includedCount
-                                                    ? PendingChangesSummaryEnum.All
-                                                    : PendingChangesSummaryEnum.Some;
         }
 
         #endregion
