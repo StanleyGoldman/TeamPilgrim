@@ -439,43 +439,37 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
 
         int IVsSolutionEvents.OnAfterOpenProject(IVsHierarchy pHierarchy, int fAdded)
         {
-            this.Logger().Trace("OnAfterOpenProject");
             return VSConstants.S_OK;
         }
 
         int IVsSolutionEvents.OnQueryCloseProject(IVsHierarchy pHierarchy, int fRemoving, ref int pfCancel)
         {
-            this.Logger().Trace("OnQueryCloseProject");
             return VSConstants.S_OK;
         }
 
         int IVsSolutionEvents.OnBeforeCloseProject(IVsHierarchy pHierarchy, int fRemoved)
         {
-            this.Logger().Trace("OnBeforeCloseProject");
             return VSConstants.S_OK;
         }
 
         int IVsSolutionEvents.OnAfterLoadProject(IVsHierarchy pStubHierarchy, IVsHierarchy pRealHierarchy)
         {
-            this.Logger().Trace("OnAfterLoadProject");
             return VSConstants.S_OK;
         }
 
         int IVsSolutionEvents.OnQueryUnloadProject(IVsHierarchy pRealHierarchy, ref int pfCancel)
         {
-            this.Logger().Trace("OnQueryUnloadProject");
             return VSConstants.S_OK;
         }
 
         int IVsSolutionEvents.OnBeforeUnloadProject(IVsHierarchy pRealHierarchy, IVsHierarchy pStubHierarchy)
         {
-            this.Logger().Trace("OnBeforeUnloadProject");
             return VSConstants.S_OK;
         }
 
         int IVsSolutionEvents.OnAfterOpenSolution(object pUnkReserved, int fNewSolution)
         {
-            this.Logger().Trace("OnAfterOpenSolution");
+            Logger.Trace("OnAfterOpenSolution");
             if (SolutionStateChanged != null)
                 SolutionStateChanged();
 
@@ -484,19 +478,17 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
 
         int IVsSolutionEvents.OnQueryCloseSolution(object pUnkReserved, ref int pfCancel)
         {
-            this.Logger().Trace("OnQueryCloseSolution");
             return VSConstants.S_OK;
         }
 
         int IVsSolutionEvents.OnBeforeCloseSolution(object pUnkReserved)
         {
-            this.Logger().Trace("OnBeforeCloseSolution");
             return VSConstants.S_OK;
         }
 
         int IVsSolutionEvents.OnAfterCloseSolution(object pUnkReserved)
         {
-            this.Logger().Trace("OnAfterCloseSolution");
+            Logger.Trace("OnAfterCloseSolution");
             if (SolutionStateChanged != null)
                 SolutionStateChanged();
 
