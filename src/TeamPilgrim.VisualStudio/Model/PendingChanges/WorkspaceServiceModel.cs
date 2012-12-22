@@ -322,25 +322,22 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges
 
             this.Logger().Trace("PopulateSelectedPendingChangesSummary");
 
-            PendingChangesSummaryEnum pendingChangesSummaryEnum;
-
             if (PendingChanges.Count == 0)
             {
-                pendingChangesSummaryEnum = PendingChangesSummaryEnum.None;
+                PendingChangesSummary = PendingChangesSummaryEnum.None;
+                return;
             }
 
             var includedCount = PendingChanges.Count(model => model.IncludeChange);
-
             if (includedCount == 0)
             {
-                pendingChangesSummaryEnum = PendingChangesSummaryEnum.None;
+                PendingChangesSummary = PendingChangesSummaryEnum.None;
+                return;
             }
 
-            pendingChangesSummaryEnum = PendingChanges.Count == includedCount
+            PendingChangesSummary = PendingChanges.Count == includedCount
                                                     ? PendingChangesSummaryEnum.All
                                                     : PendingChangesSummaryEnum.Some;
-
-            PendingChangesSummary = pendingChangesSummaryEnum;
         }
 
         #endregion

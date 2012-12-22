@@ -13,6 +13,7 @@
              xmlns:Enums="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Enums"
              xmlns:workItemQuery="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery"
              xmlns:listViewLayout="clr-namespace:Itenso.Windows.Controls.ListViewLayout;assembly=Itenso.Windows.Controls.ListViewLayout"
+             xmlns:controls="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Controls"
              mc:Ignorable="d" 
              Height="Auto" d:DesignHeight="300" d:DesignWidth="850"
              d:DataContext="{d:DesignInstance Model:TeamPilgrimServiceModel}">
@@ -24,7 +25,6 @@
             
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <Converters:SelectedPendingChangesSummaryEnumIsCheckedBooleanConverter x:Key="SelectedPendingChangesSummaryEnumIsCheckedBooleanConverter" />
-            <Converters:SelectedPendingChangesSummaryEnumIsTriStateBooleanConverter x:Key="SelectedPendingChangesSummaryEnumIsTriStateBooleanConverter" />
             <Converters:SingleObjectToObservableCollectionConverter x:Key="SingleObjectToListConverter" />
 
             <ObjectDataProvider x:Key="workItemCheckinActions" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
@@ -220,14 +220,11 @@
                             <GridView>
                                 <GridViewColumn listViewLayout:FixedColumn.Width="20">
                                     <GridViewColumn.Header>
-                                        <CheckBox
+                                        <controls:CustomCheckBox
                                             x:Name="PendingChangesAllCheckbox"
                                             IsThreeState="true"
-                                            IsChecked="{Binding Path=PendingChangesSummary, Converter={StaticResource SelectedPendingChangesSummaryEnumIsCheckedBooleanConverter}, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}"
-                                            TargetUpdated="PendingChangesAllCheckbox_OnTargetUpdated"
-                                            
-                                            SourceUpdated="PendingChangesAllCheckbox_OnSourceUpdated"
-                                            />
+                                            IsChecked="{Binding Path=PendingChangesSummary, Converter={StaticResource SelectedPendingChangesSummaryEnumIsCheckedBooleanConverter}, Mode=OneWay}"
+                                            Click="PendingChangesAllCheckboxOnClick" />
                                     </GridViewColumn.Header>
                                     
                                     <GridViewColumn.CellTemplate>

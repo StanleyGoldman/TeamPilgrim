@@ -187,15 +187,5 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
                 Value = checkAll
             });
         }
-
-        private void PendingChangesAllCheckbox_OnTargetUpdated(object sender, DataTransferEventArgs e)
-        {
-            
-        }
-
-        private void PendingChangesAllCheckbox_OnSourceUpdated(object sender, DataTransferEventArgs e)
-        {
-            
-        }
     }
 }
