@@ -45,27 +45,24 @@
     <DockPanel>
         <ToolBarTray Orientation="Vertical">
             <ToolBar>
-                <ToolBar.Resources>
-                    <Style x:Key="ToggleButtonType" TargetType="{x:Type ToggleButton}" />
-                </ToolBar.Resources>
-                <RadioButton IsChecked="True" x:Name="SourceFilesRadioButton" Style="{StaticResource ToggleButtonType}" GroupName="PendingChangesMainView">
-                    <Image Source="/TeamPilgrim.VisualStudio;component/Resources\Textfile_818_32x.png" Width="32" Height="32" />
+                <RadioButton x:Name="SourceFilesRadioButton" Style="{StaticResource SourceFilesRadioButtonStyle}">
+                    <Image />
                 </RadioButton>
 
-                <RadioButton x:Name="WorkItemsRadioButton" Style="{StaticResource ToggleButtonType}" GroupName="PendingChangesMainView">
-                    <Image Source="..\..\Resources\clipboard_sign.png" Width="32" Height="32" />
+                <RadioButton x:Name="WorkItemsRadioButton" Style="{StaticResource WorkItemsRadioButtonStyle}">
+                    <Image />
                 </RadioButton>
 
-                <RadioButton x:Name="CheckInNotesRadioButton" Style="{StaticResource ToggleButtonType}" GroupName="PendingChangesMainView">
-                    <Image Source="..\..\Resources\note.png" Width="32" Height="32" />
+                <RadioButton x:Name="CheckInNotesRadioButton" Style="{StaticResource CheckInNotesRadioButtonStyle}">
+                    <Image />
                 </RadioButton>
 
-                <RadioButton x:Name="PolicyWarningsRadioButton" Style="{StaticResource ToggleButtonType}" GroupName="PendingChangesMainView">
-                    <Image Source="/TeamPilgrim.VisualStudio;component/Resources\PolicyWarnings(large)_7879.png" Width="32" Height="32" />
+                <RadioButton x:Name="PolicyWarningsRadioButton" Style="{StaticResource PolicyWarningsRadioButtonStyle}">
+                    <Image />
                 </RadioButton>
 
-                <Button Command="{Binding Path=ShowResolveConflicttManagerCommand}">
-                    <Image Source="/TeamPilgrim.VisualStudio;component/Resources\Conflicts(large)_11131.png" Width="32" Height="32" />
+                <Button Command="{Binding Path=ShowResolveConflicttManagerCommand}" Style="{StaticResource ShowResolveConflicttManagerButtonStyle}">
+                    <Image />
                 </Button>
             </ToolBar>
         </ToolBarTray>
