@@ -186,9 +186,9 @@
                                         
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
-                                                <CheckBox DockPanel.Dock="Left"
+                                                <CheckBox
                 									DataContext="{Binding}"
-                									IsChecked="{Binding IncludeChange}" 
+                									IsChecked="{Binding IncludeChange, Mode=OneWay}" 
                 									Click="PendingChangesCheckboxClicked"/>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>

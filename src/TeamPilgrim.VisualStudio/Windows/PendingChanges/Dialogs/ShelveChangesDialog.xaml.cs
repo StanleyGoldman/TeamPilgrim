@@ -95,20 +95,17 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialog
 
             var selectedPendingChangeModels = PendingChangesListView.SelectedItems.Cast<PendingChangeModel>().ToArray();
 
-            if (selectedPendingChangeModels.Length <= 1)
-                return;
+            var collection = selectedPendingChangeModels.Contains(checkedPendingChangeModel)
+                                ? selectedPendingChangeModels
+                                : new[] { checkedPendingChangeModel };
 
-            if (!selectedPendingChangeModels.Contains(checkedPendingChangeModel))
-                return;
+            Debug.Assert(checkBox.IsChecked != null, "checkBox.IsChecked != null");
 
-
-            var collection = selectedPendingChangeModels;
-
-            shelvesetServiceModel.SelectPendingChangesCommand.Execute(new SelectPendingChangesCommandArgument()
-                {
-                    Collection = collection,
-                    Value = checkedPendingChangeModel.IncludeChange
-                });
+            shelvesetServiceModel.SelectPendingChangesCommand.Execute(new SelectPendingChangesCommandArgument
+            {
+                Collection = collection,
+                Value = checkBox.IsChecked.Value
+            });
         }
 
         private void PendingChangeWorkItemCheckboxClicked(object sender, RoutedEventArgs e)
@@ -121,23 +118,19 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialog
             var checkedWorkItemModel = checkBox.DataContext as WorkItemModel;
             Debug.Assert(checkedWorkItemModel != null, "checkedWorkItemModel != null");
 
-            var selectedPendingChangeModels = WorkItemsListView.SelectedItems.Cast<WorkItemModel>().ToArray();
+            var selectedWorkItemModels = WorkItemsListView.SelectedItems.Cast<WorkItemModel>().ToArray();
 
-            if (selectedPendingChangeModels.Length <= 1)
-                return;
+            var collection = selectedWorkItemModels.Contains(checkedWorkItemModel)
+                    ? selectedWorkItemModels
+                    : new[] { checkedWorkItemModel };
 
-            if (!selectedPendingChangeModels.Contains(checkedWorkItemModel))
-                return;
-
-            e.Handled = true;
-
-            var collection = selectedPendingChangeModels;
+            Debug.Assert(checkBox.IsChecked != null, "checkBox.IsChecked != null");
 
             shelvesetServiceModel.SelectWorkItemsCommand.Execute(new SelectWorkItemsCommandArgument()
-                {
-                    Collection = collection,
-                    Value = checkedWorkItemModel.IsSelected
-                });
+            {
+                Collection = collection,
+                Value = checkBox.IsChecked.Value
+            });
         }
 
         private void PendingChangesAllCheckboxOnClick(object sender, RoutedEventArgs e)

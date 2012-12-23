@@ -17,8 +17,10 @@ using JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl.CommandArgum
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs;
+using Microsoft.TeamFoundation.MVVM;
 using Microsoft.TeamFoundation.VersionControl.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
+using RelayCommand = GalaSoft.MvvmLight.Command.RelayCommand;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 {
@@ -33,7 +35,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
         public delegate void ShowPendingChangesItemDelegate(ShowPendingChangesTabItemEnum showPendingChangesTabItemEnum);
         public event ShowPendingChangesItemDelegate ShowPendingChangesItem;
 
-        public ObservableCollection<CheckinNoteModel> CheckinNotes { get; private set; }
+        public BatchedObservableCollection<CheckinNoteModel> CheckinNotes { get; private set; }
 
         public Workspace Workspace { get; private set; }
 
@@ -245,9 +247,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
             UndoPendingChangeCommand = new RelayCommand<ObservableCollection<object>>(UndoPendingChange, CanUndoPendingChange);
             PendingChangePropertiesCommand = new RelayCommand<ObservableCollection<object>>(PendingChangeProperties, CanPendingChangeProperties);
 
-            CheckinNotes = new ObservableCollection<CheckinNoteModel>();
+            CheckinNotes = new BatchedObservableCollection<CheckinNoteModel>();
 
-            PendingChanges = new TrulyObservableCollection<PendingChangeModel>();
+            PendingChanges = new BatchedObservableCollection<PendingChangeModel>();
 
             PendingChange[] pendingChanges;
             if (teamPilgrimServiceModelProvider.TryGetPendingChanges(out pendingChanges, Workspace))
@@ -267,7 +269,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
                 SolutionIsOpen = teamPilgrimVsService.Solution.IsOpen && !string.IsNullOrEmpty(teamPilgrimVsService.Solution.FileName);
             };
 
-            WorkItems = new TrulyObservableCollection<WorkItemModel>();
+            WorkItems = new BatchedObservableCollection<WorkItemModel>();
             WorkItems.CollectionChanged += WorkItemsOnCollectionChanged;
 
             PopulatePreviouslySelectedWorkItemQueryModels();
@@ -318,22 +320,22 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
         #region PendingChanges Collection
 
-        public TrulyObservableCollection<PendingChangeModel> PendingChanges { get; private set; }
+        public BatchedObservableCollection<PendingChangeModel> PendingChanges { get; private set; }
 
         private void PendingChangesOnCollectionChanged(object sender,
                                                        NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             this.Logger().Trace("PendingChangesOnCollectionChanged");
-           
-            PopulateSelectedPendingChangesSummary();
-            EvaluateCheckInCommand.Execute(null);
+
+            Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)PopulateSelectedPendingChangesSummary);
+            Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => EvaluateCheckInCommand.Execute(null)));
         }
 
         #endregion
 
         #region WorkItems Collection
 
-        public TrulyObservableCollection<WorkItemModel> WorkItems { get; private set; }
+        public BatchedObservableCollection<WorkItemModel> WorkItems { get; private set; }
 
         private void WorkItemsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -634,10 +636,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
                 .Where(checkinNoteFieldDefinition => !modelIntersection.Select(model => model.CheckinNoteFieldDefinition).Contains(checkinNoteFieldDefinition, equalityComparer))
                 .Select(checkinNoteFieldDefinition => new CheckinNoteModel(checkinNoteFieldDefinition)).ToArray();
 
-            foreach (var modelToAdd in modelsToAdd)
-            {
-                CheckinNotes.Add(modelToAdd);
-            }
+            CheckinNotes.AddRange(modelsToAdd);
 
             foreach (var modelToRemove in modelsToRemove)
             {
@@ -662,7 +661,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
             if (teamPilgrimServiceModelProvider.TryEvaluateCheckin(out checkinEvaluationResult, Workspace, pendingChanges, Comment, checkinNote, workItemChanges))
             {
                 CheckinEvaluationResult = checkinEvaluationResult;
-                this.Logger().Debug("EvaluateCheckIn: Valid:{0}", checkinEvaluationResult.IsValid());
             }
         }
 
@@ -725,11 +723,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
                 {
                     intersection.model.Change = intersection.change;
                 }
-
-                foreach (var modelToAdd in modelsToAdd)
-                {
-                    PendingChanges.Add(modelToAdd);
-                }
+                
+                PendingChanges.AddRange(modelsToAdd);
 
                 foreach (var modelToRemove in modelsToRemove)
                 {
@@ -792,10 +787,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
                 _backgroundFunctionPreventDataUpdate = false;
 
-                foreach (var modelToAdd in modelsToAdd)
-                {
-                    WorkItems.Add(modelToAdd);
-                }
+                WorkItems.AddRange(modelsToAdd);
 
                 foreach (var modelToRemove in modelsToRemove)
                 {

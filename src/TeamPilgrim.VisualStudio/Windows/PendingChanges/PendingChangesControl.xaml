@@ -232,9 +232,9 @@
                                     
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <CheckBox DockPanel.Dock="Left"
+                                            <CheckBox
                                                     DataContext="{Binding}"
-                                                    IsChecked="{Binding Path=IncludeChange}" 
+                                                    IsChecked="{Binding Path=IncludeChange, Mode=OneWay}" 
                                                     Click="PendingChangesCheckboxClicked"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
@@ -353,7 +353,7 @@
                                     
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate DataType="workItemQuery:WorkItemModel">
-                                            <CheckBox IsChecked="{Binding Path=IsSelected}"
+                                            <CheckBox IsChecked="{Binding Path=IsSelected, Mode=OneWay}"
                                                       DataContext="{Binding}"
                                                       Click="PendingChangeWorkItemCheckboxClicked" />
                                         </DataTemplate>
