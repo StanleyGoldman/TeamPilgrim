@@ -45,21 +45,18 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core
             Project[] projects;
             if (teamPilgrimServiceModelProvider.TryGetProjects(out projects, TfsTeamProjectCollection))
             {
-                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new ThreadStart(delegate
-                    {
-                        ProjectModels.Clear();
+                ProjectModels.Clear();
 
-                        var pilgrimProjectModels = projects
-                            .Select(
-                                project =>
-                                new ProjectServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService,
-                                                        TeamPilgrimServiceModel, TfsTeamProjectCollection, project));
+                var pilgrimProjectModels = projects
+                    .Select(
+                        project =>
+                        new ProjectServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService,
+                                                TeamPilgrimServiceModel, TfsTeamProjectCollection, project));
 
-                        foreach (var pilgrimProjectModel in pilgrimProjectModels)
-                        {
-                            ProjectModels.Add(pilgrimProjectModel);
-                        }
-                    }));
+                foreach (var pilgrimProjectModel in pilgrimProjectModels)
+                {
+                    ProjectModels.Add(pilgrimProjectModel);
+                }
             }
         }
 

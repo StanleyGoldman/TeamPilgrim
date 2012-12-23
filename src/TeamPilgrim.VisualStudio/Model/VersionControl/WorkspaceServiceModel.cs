@@ -327,8 +327,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
         {
             this.Logger().Trace("PendingChangesOnCollectionChanged");
 
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)PopulateSelectedPendingChangesSummary);
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => EvaluateCheckInCommand.Execute(null)));
+            PopulateSelectedPendingChangesSummary();
+            EvaluateCheckInCommand.Execute(null);
         }
 
         #endregion

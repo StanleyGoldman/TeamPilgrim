@@ -203,13 +203,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core
 
         private void TeamFoundationHostOnContextChanged(object sender, ContextChangedEventArgs contextChangedEventArgs)
         {
-            if (contextChangedEventArgs.TeamProjectCollectionChanged)
-            {
-                Task.Run(() => PopulateTeamPilgrimServiceModel());
-            }
-            else if (contextChangedEventArgs.TeamProjectChanged)
-            {
-                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new ThreadStart(() =>
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new ThreadStart(delegate
+                {
+                    if (contextChangedEventArgs.TeamProjectCollectionChanged)
+                    {
+                        PopulateTeamPilgrimServiceModel();
+                    }
+                    else if (contextChangedEventArgs.TeamProjectChanged)
                     {
                         var activeProjectContext = teamPilgrimVsService.ActiveProjectContext;
 
@@ -217,8 +217,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core
                         {
                             projectModel.IsActive = projectModel.Project.Name == activeProjectContext.ProjectName;
                         }
-                    }));
-            }
+                    }
+                }));
         }
 
         private void PopulateTeamPilgrimServiceModel()
@@ -228,8 +228,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core
             if (activeProjectContext == null ||
                 activeProjectContext.DomainUri == null)
             {
-                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                    new ThreadStart(() => ProjectCollectionModels.Clear()));
+                ProjectCollectionModels.Clear();
 
                 return;
             }
@@ -239,45 +238,39 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core
 
             if (teamPilgrimServiceModelProvider.TryGetCollection(out collection, tpcAddress))
             {
-                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new ThreadStart(() =>
-                    {
-                        ProjectCollectionModels.Clear();
-                        if (collection != null)
-                        {
-                            var projectCollectionServiceModel = new ProjectCollectionServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, this, collection);
-                            ProjectCollectionModels.Add(projectCollectionServiceModel);
-                        }
-                    }));
+                ProjectCollectionModels.Clear();
+                if (collection != null)
+                {
+                    var projectCollectionServiceModel = new ProjectCollectionServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, this, collection);
+                    ProjectCollectionModels.Add(projectCollectionServiceModel);
+                }
             }
 
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new ThreadStart(delegate
+            WorkspaceInfo[] workspaceInfos;
+            if (teamPilgrimServiceModelProvider.TryGetLocalWorkspaceInfos(out workspaceInfos, collection.InstanceId))
             {
-                WorkspaceInfo[] workspaceInfos;
-                if (teamPilgrimServiceModelProvider.TryGetLocalWorkspaceInfos(out workspaceInfos, collection.InstanceId))
+                WorkspaceInfoModels.Clear();
+
+                var activeWorkspace = teamPilgrimVsService.ActiveWorkspace;
+
+                WorkspaceInfoModel selectedWorkspaceInfoModel = null;
+
+                foreach (var workspaceInfo in workspaceInfos)
                 {
-                    WorkspaceInfoModels.Clear();
+                    var workspaceInfoModel = new WorkspaceInfoModel(workspaceInfo);
+                    WorkspaceInfoModels.Add(workspaceInfoModel);
 
-                    var activeWorkspace = teamPilgrimVsService.ActiveWorkspace;
-
-                    WorkspaceInfoModel selectedWorkspaceInfoModel = null;
-
-                    foreach (var workspaceInfo in workspaceInfos)
+                    if (activeWorkspace != null && activeWorkspace.QualifiedName == workspaceInfo.QualifiedName)
                     {
-                        var workspaceInfoModel = new WorkspaceInfoModel(workspaceInfo);
-                        WorkspaceInfoModels.Add(workspaceInfoModel);
-
-                        if (activeWorkspace != null && activeWorkspace.QualifiedName == workspaceInfo.QualifiedName)
-                        {
-                            selectedWorkspaceInfoModel = workspaceInfoModel;
-                        }
-                    }
-
-                    if (selectedWorkspaceInfoModel != null)
-                    {
-                        SelectedWorkspaceInfoModel = selectedWorkspaceInfoModel;
+                        selectedWorkspaceInfoModel = workspaceInfoModel;
                     }
                 }
-            }));
+
+                if (selectedWorkspaceInfoModel != null)
+                {
+                    SelectedWorkspaceInfoModel = selectedWorkspaceInfoModel;
+                }
+            }
         }
 
         private void LoadWorkspaceModel(WorkspaceInfoModel selectedWorkspaceInfoModel)
@@ -287,13 +280,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core
 
             Debug.Assert(projectCollectionModel != null, "projectCollectionModel != null");
 
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new ThreadStart(delegate
-                {
-                    if (teamPilgrimServiceModelProvider.TryGetWorkspace(out workspace, selectedWorkspaceInfoModel.WorkspaceInfo, projectCollectionModel.TfsTeamProjectCollection))
-                    {
-                        SelectedWorkspaceModel = new WorkspaceServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, this.ActiveProjectCollectionModel, workspace);
-                    }
-                }));
+            if (teamPilgrimServiceModelProvider.TryGetWorkspace(out workspace, selectedWorkspaceInfoModel.WorkspaceInfo, projectCollectionModel.TfsTeamProjectCollection))
+            {
+                SelectedWorkspaceModel = new WorkspaceServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, this.ActiveProjectCollectionModel, workspace);
+            }
         }
 
         #region Refresh Command
