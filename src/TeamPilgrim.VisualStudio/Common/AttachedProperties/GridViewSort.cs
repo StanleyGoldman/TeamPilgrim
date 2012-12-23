@@ -185,7 +185,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties
                 string propertyName = GetPropertyName(headerClicked.Column);
                 if (!string.IsNullOrEmpty(propertyName))
                 {
-                    ListView listView = GetAncestor<ListView>(headerClicked);
+                    ListView listView = VisualTreeHelpers.FindAncestor<ListView>(headerClicked); ;
                     if (listView != null)
                     {
                         ICommand command = GetCommand(listView);
@@ -208,19 +208,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties
         #endregion
 
         #region Helper methods
-
-        public static T GetAncestor<T>(DependencyObject reference) where T : DependencyObject
-        {
-            DependencyObject parent = VisualTreeHelper.GetParent(reference);
-            while (!(parent is T))
-            {
-                parent = VisualTreeHelper.GetParent(parent);
-            }
-            if (parent != null)
-                return (T)parent;
-            else
-                return null;
-        }
 
         public static void ApplySort(ICollectionView view, string propertyName, ListView listView, GridViewColumnHeader sortedColumnHeader)
         {
@@ -257,10 +244,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties
 
         private static void AddSortGlyph(GridViewColumnHeader columnHeader, ListSortDirection direction, ImageSource sortGlyph)
         {
-            AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(columnHeader);
+            var textBlock = VisualTreeHelpers.FindChild<TextBlock>(columnHeader);
+
+            AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(textBlock);
             adornerLayer.Add(
                 new SortGlyphAdorner(
-                    columnHeader,
+                    textBlock,
                     direction,
                     sortGlyph
                     ));
@@ -268,8 +257,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties
 
         private static void RemoveSortGlyph(GridViewColumnHeader columnHeader)
         {
-            AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(columnHeader);
-            Adorner[] adorners = adornerLayer.GetAdorners(columnHeader);
+            var textBlock = VisualTreeHelpers.FindChild<TextBlock>(columnHeader);
+
+            AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(textBlock);
+            Adorner[] adorners = adornerLayer.GetAdorners(textBlock);
+
             if (adorners != null)
             {
                 foreach (Adorner adorner in adorners)
@@ -286,39 +278,39 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties
 
         private class SortGlyphAdorner : Adorner
         {
-            private GridViewColumnHeader _columnHeader;
+            private TextBlock _textBlock;
             private ListSortDirection _direction;
             private ImageSource _sortGlyph;
 
-            public SortGlyphAdorner(GridViewColumnHeader columnHeader, ListSortDirection direction, ImageSource sortGlyph)
-                : base(columnHeader)
+            public SortGlyphAdorner(TextBlock textBlock, ListSortDirection direction, ImageSource sortGlyph)
+                : base(textBlock)
             {
-                _columnHeader = columnHeader;
+                _textBlock = textBlock;
                 _direction = direction;
                 _sortGlyph = sortGlyph;
             }
 
             private Geometry GetDefaultGlyph()
             {
-                double x1 = _columnHeader.ActualWidth - 13;
-                double x2 = x1 + 10;
-                double x3 = x1 + 5;
-                double y1 = _columnHeader.ActualHeight / 2 - 3;
-                double y2 = y1 + 5;
+                double triangleLeftEdge = _textBlock.ActualWidth + 10;
+                double triangleRightEdge = triangleLeftEdge + 10;
+                double triangleCenter = triangleLeftEdge + 5;
+                double triangleBottom = _textBlock.ActualHeight / 2 - 3;
+                double triangleHeight = triangleBottom + 5;
 
                 if (_direction == ListSortDirection.Ascending)
                 {
-                    double tmp = y1;
-                    y1 = y2;
-                    y2 = tmp;
+                    double tmp = triangleBottom;
+                    triangleBottom = triangleHeight;
+                    triangleHeight = tmp;
                 }
 
                 PathSegmentCollection pathSegmentCollection = new PathSegmentCollection();
-                pathSegmentCollection.Add(new LineSegment(new Point(x2, y1), true));
-                pathSegmentCollection.Add(new LineSegment(new Point(x3, y2), true));
+                pathSegmentCollection.Add(new LineSegment(new Point(triangleRightEdge, triangleBottom), true));
+                pathSegmentCollection.Add(new LineSegment(new Point(triangleCenter, triangleHeight), true));
 
                 PathFigure pathFigure = new PathFigure(
-                    new Point(x1, y1),
+                    new Point(triangleLeftEdge, triangleBottom),
                     pathSegmentCollection,
                     true);
 
@@ -335,8 +327,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties
 
                 if (_sortGlyph != null)
                 {
-                    double x = _columnHeader.ActualWidth - 13;
-                    double y = _columnHeader.ActualHeight / 2 - 5;
+                    double x = _textBlock.ActualWidth + 10;
+                    double y = _textBlock.ActualHeight / 2 - 5;
                     Rect rect = new Rect(x, y, 10, 10);
                     drawingContext.DrawImage(_sortGlyph, rect);
                 }

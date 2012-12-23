@@ -198,6 +198,7 @@
     <Compile Include="Common\Converters\WorkItemQueryFolderModelImageConverter.cs" />
     <Compile Include="Common\Extensions\LoggerExtensions.cs" />
     <Compile Include="Common\Extensions\WorkItemQueryChildModelExtensions.cs" />
+    <Compile Include="Common\VisualTreeHelpers.cs" />
     <Compile Include="Domain\BusinessInterfaces\VisualStudio\ITeamFoundationHostWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\TeamFoundation\ServerConnectedEventArgs.cs" />
     <Compile Include="Business\Services\VisualStudio\TeamFoundation\ServerConnectingEventArgs.cs" />
