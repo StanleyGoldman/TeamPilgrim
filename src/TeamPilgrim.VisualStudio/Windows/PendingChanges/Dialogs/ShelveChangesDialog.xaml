@@ -204,7 +204,7 @@
                                                 attachedProperties:GridViewSort.PropertyName="Change.FileName">
 
                                         <GridViewColumn.Header>
-                                            <GridViewColumnHeader>File</GridViewColumnHeader>
+                                            <GridViewColumnHeader Style="{StaticResource TextGridViewColumnHeader}">File</GridViewColumnHeader>
                                         </GridViewColumn.Header>
 
                                         <GridViewColumn.CellTemplate>
@@ -222,7 +222,7 @@
                                                 attachedProperties:GridViewSort.PropertyName="Change.ChangeTypeName">
 
                                         <GridViewColumn.Header>
-                                            <GridViewColumnHeader>Change</GridViewColumnHeader>
+                                            <GridViewColumnHeader Style="{StaticResource TextGridViewColumnHeader}">Change</GridViewColumnHeader>
                                         </GridViewColumn.Header>
 
                                         <GridViewColumn.CellTemplate>
@@ -240,7 +240,7 @@
                                                 attachedProperties:GridViewSort.PropertyName="Change.LocalOrServerFolder">
 
                                         <GridViewColumn.Header>
-                                            <GridViewColumnHeader>Folder</GridViewColumnHeader>
+                                            <GridViewColumnHeader Style="{StaticResource TextGridViewColumnHeader}">Folder</GridViewColumnHeader>
                                         </GridViewColumn.Header>
 
                                         <GridViewColumn.CellTemplate>
@@ -300,8 +300,13 @@
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
 
-                                    <GridViewColumn Header="Check-in Action"
-                                                listViewLayout:RangeColumn.MinWidth="100" >
+                                    <GridViewColumn
+                                        listViewLayout:RangeColumn.MinWidth="100" >
+                                        
+                                        <GridViewColumn.Header>
+                                            <GridViewColumnHeader Style="{StaticResource TextGridViewColumnHeader}">Check-in Action</GridViewColumnHeader>
+                                        </GridViewColumn.Header>
+                                        
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate DataType="workItemQuery:WorkItemModel">
                                                 <ComboBox 
@@ -312,7 +317,12 @@
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
 
-                                    <GridViewColumn Header="ID" listViewLayout:RangeColumn.MinWidth="75">
+                                    <GridViewColumn listViewLayout:RangeColumn.MinWidth="75">
+                                        
+                                        <GridViewColumn.Header>
+                                            <GridViewColumnHeader Style="{StaticResource TextGridViewColumnHeader}">ID</GridViewColumnHeader>
+                                        </GridViewColumn.Header>
+                                        
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate DataType="workItemQuery:WorkItemModel">
                                                 <TextBlock Text="{Binding WorkItem.Id, Mode=OneWay}"/>
@@ -320,7 +330,12 @@
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
 
-                                    <GridViewColumn Header="Type" listViewLayout:RangeColumn.MinWidth="80">
+                                    <GridViewColumn listViewLayout:RangeColumn.MinWidth="80">
+                                    
+                                        <GridViewColumn.Header>
+                                            <GridViewColumnHeader Style="{StaticResource TextGridViewColumnHeader}">Type</GridViewColumnHeader>
+                                        </GridViewColumn.Header>
+                                        
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate DataType="workItemQuery:WorkItemModel">
                                                 <TextBlock Text="{Binding WorkItem.Type.Name, Mode=OneWay}"/>
@@ -328,9 +343,14 @@
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
 
-                                    <GridViewColumn Header="Title"
-                                    		listViewLayout:RangeColumn.MinWidth="80"
+                                    <GridViewColumn
+                                        listViewLayout:RangeColumn.MinWidth="80"
                                     		listViewLayout:RangeColumn.IsFillColumn="True">
+                                        
+                                        <GridViewColumn.Header>
+                                            <GridViewColumnHeader Style="{StaticResource TextGridViewColumnHeader}">Title</GridViewColumnHeader>
+                                        </GridViewColumn.Header>
+                                        
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate DataType="workItemQuery:WorkItemModel">
                                                 <TextBlock Text="{Binding WorkItem.Title, Mode=OneWay}"/>
@@ -380,11 +400,19 @@
                         VirtualizingStackPanel.IsVirtualizing="True"
                         VirtualizingStackPanel.VirtualizationMode="Recycling"
                         
+                        listViewLayout:ListViewLayoutManager.Enabled="true"
+                        
                         DataContext="{Binding Path=CheckinEvaluationResult}" 
                         ItemsSource="{Binding Path=PolicyFailures}">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="Description">
+                                <GridViewColumn listViewLayout:RangeColumn.MinWidth="200"
+                                                listViewLayout:RangeColumn.IsFillColumn="True">
+                                    
+                                    <GridViewColumn.Header>
+                                        <GridViewColumnHeader Style="{StaticResource TextGridViewColumnHeader}">Description</GridViewColumnHeader>
+                                    </GridViewColumn.Header>
+                                    
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate DataType="versionControlClient:PolicyFailure">
                                             <TextBlock Text="{Binding Message}"/>
