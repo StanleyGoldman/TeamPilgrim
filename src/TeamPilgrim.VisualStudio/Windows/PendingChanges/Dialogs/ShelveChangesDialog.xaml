@@ -143,6 +143,9 @@
                         <TextBox DockPanel.Dock="Top" Text="{Binding Comment, UpdateSourceTrigger=PropertyChanged}"/>
 
                         <ListView x:Name="PendingChangesListView" 
+                                    VirtualizingStackPanel.IsVirtualizing="True"
+                                    VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                  
                 					attachedProperties:PreviewSpaceKeyDownSelectPendingChanges.Command="{Binding Path=SelectPendingChangesCommand}"
                                     
                                     listViewLayout:ListViewLayoutManager.Enabled="true"
@@ -273,6 +276,9 @@
                         </ToolBar>
 
                         <ListView x:Name="WorkItemsListView" DockPanel.Dock="Bottom" 
+                              VirtualizingStackPanel.IsVirtualizing="True"
+                              VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                  
                               listViewLayout:ListViewLayoutManager.Enabled="true"
                               attachedProperties:PreviewSpaceKeyDownSelectWorkItems.Command="{Binding Path=SelectWorkItemsCommand}"
                               ItemsSource="{Binding Path=WorkItems}">
@@ -337,7 +343,13 @@
                     </DockPanel>
                 </TabItem>
                 <TabItem x:Name="CheckInNotesTabItem"  IsSelected="{Binding IsChecked, ElementName=CheckInNotesRadioButton}">
-                    <ListView DockPanel.Dock="Bottom"  ItemsSource="{Binding Path=CheckinNotes}" HorizontalContentAlignment="Stretch">
+                    <ListView DockPanel.Dock="Bottom"
+                              HorizontalContentAlignment="Stretch"
+                              
+                              VirtualizingStackPanel.IsVirtualizing="True"
+                              VirtualizingStackPanel.VirtualizationMode="Recycling"
+                              
+                              ItemsSource="{Binding Path=CheckinNotes}">
                         <ListView.ItemTemplate>
                             <DataTemplate DataType="versionControl:CheckinNoteModel">
                                 <Expander Header="{Binding CheckinNoteFieldDefinition.Name}" IsExpanded="True">
@@ -364,7 +376,12 @@
                     </ListView>
                 </TabItem>
                 <TabItem x:Name="PolicyWarningsTabItem" IsSelected="{Binding IsChecked, ElementName=PolicyWarningsRadioButton}">
-                    <ListView DataContext="{Binding Path=CheckinEvaluationResult}" ItemsSource="{Binding Path=PolicyFailures}">
+                    <ListView
+                        VirtualizingStackPanel.IsVirtualizing="True"
+                        VirtualizingStackPanel.VirtualizationMode="Recycling"
+                        
+                        DataContext="{Binding Path=CheckinEvaluationResult}" 
+                        ItemsSource="{Binding Path=PolicyFailures}">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="Description">

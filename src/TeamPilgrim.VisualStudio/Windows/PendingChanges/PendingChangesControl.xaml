@@ -171,6 +171,9 @@
 
                     <ListView x:Name="PendingChangesListView" HorizontalAlignment="Stretch"
                               
+                              VirtualizingStackPanel.IsVirtualizing="True"
+                              VirtualizingStackPanel.VirtualizationMode="Recycling"
+                              
                               listViewLayout:ListViewLayoutManager.Enabled="true"
                               
                               attachedProperties:GridViewSort.AutoSort="True"
@@ -330,6 +333,9 @@
 
                     <ListView x:Name="WorkItemsListView" DockPanel.Dock="Bottom" 
                               
+                              VirtualizingStackPanel.IsVirtualizing="True"
+                              VirtualizingStackPanel.VirtualizationMode="Recycling"
+                              
                               listViewLayout:ListViewLayoutManager.Enabled="true"
                               
                               attachedProperties:PreviewSpaceKeyDownSelectWorkItems.Command="{Binding Path=SelectWorkItemsCommand}"
@@ -413,7 +419,13 @@
                             </StackPanel>
                         </Button>
                     </ToolBar>
-                    <ListView DataContext="{Binding Path=SelectedWorkspaceModel}" ItemsSource="{Binding Path=CheckinNotes}" DockPanel.Dock="Bottom" HorizontalContentAlignment="Stretch">
+                    <ListView DockPanel.Dock="Bottom" HorizontalContentAlignment="Stretch"
+                              
+                              VirtualizingStackPanel.IsVirtualizing="True"
+                              VirtualizingStackPanel.VirtualizationMode="Recycling"
+                              
+                              DataContext="{Binding Path=SelectedWorkspaceModel}"
+                              ItemsSource="{Binding Path=CheckinNotes}">
                         <ListView.ItemTemplate>
                             <DataTemplate DataType="versionControl:CheckinNoteModel">
                                 <Expander Header="{Binding Path=CheckinNoteFieldDefinition.Name}" IsExpanded="True">
@@ -444,7 +456,12 @@
                             </StackPanel>
                         </Button>
                     </ToolBar>
-                    <ListView DataContext="{Binding Path=SelectedWorkspaceModel.CheckinEvaluationResult}" ItemsSource="{Binding Path=PolicyFailures}">
+                    <ListView
+                        VirtualizingStackPanel.IsVirtualizing="True"
+                        VirtualizingStackPanel.VirtualizationMode="Recycling"
+                        
+                        DataContext="{Binding Path=SelectedWorkspaceModel.CheckinEvaluationResult}" 
+                        ItemsSource="{Binding Path=PolicyFailures}">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="Description">
