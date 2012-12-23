@@ -28,6 +28,7 @@
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <converters:SelectedPendingChangesSummaryEnumIsCheckedBooleanConverter x:Key="SelectedPendingChangesSummaryEnumIsCheckedBooleanConverter" />
             <converters:AndClauseBooleanConverter x:Key="AndClauseBooleanConverter" />
+            <converters:ChangeTypeDescriptionConverter x:Key="ChangeTypeDescriptionConverter" />
 
             <ObjectDataProvider x:Key="WorkItemCheckinActions" MethodName="GetValues" ObjectType="{x:Type system:Enum}">
                 <ObjectDataProvider.MethodParameters>
@@ -209,7 +210,7 @@
 
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate DataType="versionControl:PendingChangeModel">
-                                                <TextBlock Text="{Binding Change.FileName, Mode=OneWay}" DockPanel.Dock="Right"/>
+                                                <TextBlock Text="{Binding Path=Change, Mode=OneWay, Converter={StaticResource ChangeTypeDescriptionConverter}}"/>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>

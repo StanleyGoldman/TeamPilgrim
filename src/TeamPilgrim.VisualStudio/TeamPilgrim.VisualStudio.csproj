@@ -193,6 +193,7 @@
     <Compile Include="Common\AttachedProperties\PreviewSpaceKeyDownSelectWorkItems.cs" />
     <Compile Include="Common\Controls\CustomCheckbox.cs" />
     <Compile Include="Common\Converters\BooleanToAlternateFontWeightConverter.cs" />
+    <Compile Include="Common\Converters\ChangeTypeDescriptionConverter.cs" />
     <Compile Include="Common\Converters\SelectedPendingChangesSummaryEnumIsCheckedBooleanConverter.cs" />
     <Compile Include="Common\Converters\WorkItemQueryFolderModelImageConverter.cs" />
     <Compile Include="Common\Extensions\LoggerExtensions.cs" />
