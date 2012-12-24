@@ -109,7 +109,16 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 
         public Shelveset[] QueryShelvesets(TfsTeamProjectCollection tfsTeamProjectCollection, string shelvesetName = null, string shelvesetOwner = null)
         {
+            this.Logger().Trace("QueryShelvesets ProjectCollection: {0} ShelvesetName: {1} ShelvesetOwner: {2}", tfsTeamProjectCollection.Name, shelvesetName, shelvesetOwner);
+
             return GetVersionControlServer(tfsTeamProjectCollection).QueryShelvesets(shelvesetName, shelvesetOwner);
+        }
+
+        public Shelveset WorkspaceUnshelve(Workspace workspace, string shelvesetName, string shelvesetOwner)
+        {
+            this.Logger().Trace("Unshelve ShelvesetName: {0} ShelvesetOwner: {1}", shelvesetName, shelvesetOwner);
+
+            return workspace.Unshelve(shelvesetName, shelvesetOwner);
         }
 
         public IBuildDefinition[] QueryBuildDefinitions(TfsTeamProjectCollection tfsTeamProjectCollection, string teamProject)

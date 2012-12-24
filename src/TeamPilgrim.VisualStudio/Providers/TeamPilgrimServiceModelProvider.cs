@@ -243,6 +243,23 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             return false;
         }
 
+        public bool TryWorkspaceUnshelve(Workspace workspace, out Shelveset shelveset, string shelvesetName, string shelvesetOwner)
+        {
+            try
+            {
+                shelveset = _teamPilgrimTfsService.WorkspaceUnshelve(workspace, shelvesetName, shelvesetOwner);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                this.Logger().DebugException(ex);
+                LastException = ex;
+            }
+
+            shelveset = null;
+            return false;
+        }
+
         public bool TryWorkspaceQueryShelvedChanges(Workspace workspace, out PendingSet[] pendingSets, string shelvesetName, string shelvesetOwner, ItemSpec[] itemSpecs)
         {
             try

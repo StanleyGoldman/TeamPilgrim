@@ -111,14 +111,23 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
         public RelayCommand<ShelvesetModel> UnshelveCommand { get; private set; }
 
-        private void Unshelve(ShelvesetModel shelveset)
+        private void Unshelve(ShelvesetModel shelvesetModel)
         {
-            OnDismiss(true);
+            var success = false;
+
+            Shelveset shelveset;
+            if (teamPilgrimServiceModelProvider.TryWorkspaceUnshelve(WorkspaceServiceModel.Workspace, out shelveset,
+                                                                     shelvesetModel.Shelveset.Name, shelvesetModel.Shelveset.OwnerName))
+            {
+                success = true;
+            }
+
+            OnDismiss(success);
         }
 
         private bool CanUnshelve(ShelvesetModel shelveset)
         {
-            return true;
+            return shelveset != null;
         }
 
         #endregion

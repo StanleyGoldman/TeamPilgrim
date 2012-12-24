@@ -34,5 +34,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces
         VersionControlServer GetVersionControlServer(TfsTeamProjectCollection tfsTeamProjectCollection);
         PendingSet[] WorkspaceQueryShelvedChanges(Workspace workspace, string shelvesetName, string shelvesetOwner, ItemSpec[] itemSpecs);
         Shelveset[] QueryShelvesets(TfsTeamProjectCollection tfsTeamProjectCollection, string shelvesetName = null, string shelvesetOwner = null);
+        Shelveset WorkspaceUnshelve(Workspace workspace, string shelvesetName, string shelvesetOwner);
     }
 }

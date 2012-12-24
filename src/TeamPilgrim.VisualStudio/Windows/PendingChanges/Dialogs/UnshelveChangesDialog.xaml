@@ -30,7 +30,7 @@
             <Button HorizontalAlignment="Center" DockPanel.Dock="Left">Delete</Button>
             
             <Button HorizontalAlignment="Center" DockPanel.Dock="Right" Command="{Binding Path=CancelCommand}">Close</Button>
-            <Button HorizontalAlignment="Center" DockPanel.Dock="Right" Command="{Binding Path=UnshelveCommand}">Unshelve</Button>
+            <Button HorizontalAlignment="Center" DockPanel.Dock="Right" Command="{Binding Path=UnshelveCommand}" CommandParameter="{Binding ElementName=PendingSetsListView, Path=SelectedItem}">Unshelve</Button>
         </DockPanel>
         <ListView DockPanel.Dock="Bottom" x:Name="PendingSetsListView"
                   
