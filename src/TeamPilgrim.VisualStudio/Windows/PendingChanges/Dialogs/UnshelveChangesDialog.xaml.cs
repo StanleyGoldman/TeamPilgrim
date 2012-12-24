@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs
 {
@@ -22,6 +13,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialog
         public UnshelveChangesDialog()
         {
             InitializeComponent();
+            
+            Loaded += OnLoaded;
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            GridViewSort.ApplySort(PendingSetsListView.Items, "Shelveset.CreationDate", PendingSetsListView, (GridViewColumnHeader)GridViewColumnPendingSetsShelvesetCreationDate.Header, ListSortDirection.Descending);
         }
     }
 }

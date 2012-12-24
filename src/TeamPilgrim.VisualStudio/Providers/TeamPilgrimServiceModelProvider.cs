@@ -264,6 +264,23 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             pendingSets = null;
             return false;
         }
+		
+        public bool TryQueryShelvesets(TfsTeamProjectCollection tfsTeamProjectCollection, out Shelveset[] shelvesets, string shelvesetName = null, string shelvesetOwner = null)
+        {
+            try
+            {
+                shelvesets = _teamPilgrimTfsService.QueryShelvesets(tfsTeamProjectCollection: tfsTeamProjectCollection, shelvesetName: shelvesetName, shelvesetOwner: shelvesetOwner);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                this.Logger().DebugException(ex);
+                LastException = ex;
+            }
+
+            shelvesets = null;
+            return false;
+        }
 
         public bool TryGetVersionControlServer(out VersionControlServer versionControlServer, TfsTeamProjectCollection tfsTeamProjectCollection)
         {

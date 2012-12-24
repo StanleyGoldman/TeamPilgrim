@@ -4,10 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:versionControl="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl"
+        xmlns:listViewLayout="clr-namespace:Itenso.Windows.Controls.ListViewLayout;assembly=Itenso.Windows.Controls.ListViewLayout"
+        xmlns:attachedProperties="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties"
         mc:Ignorable="d" 
         
         Title="Team Pilgrim Unshelve Changes"
-        Height="300" Width="300"
+        Height="400" Width="675"
         
         x:Name="ShelveChangesDialogWindow"
         d:DataContext="{d:DesignInstance versionControl:UnshelveChangesServiceModel}">
@@ -17,8 +19,8 @@
             <DockPanel>
                 <TextBlock DockPanel.Dock="Top">Owner name:</TextBlock>
                 <DockPanel>
-                    <Button HorizontalAlignment="Center" DockPanel.Dock="Right">Find</Button>
-                    <TextBox Text="{Binding Path=ShelvesetOwner}" />
+                    <Button HorizontalAlignment="Center" DockPanel.Dock="Right" Command="{Binding FindShelvesetsCommand}">Find</Button>
+                    <TextBox Text="{Binding Path=ShelvesetOwner, UpdateSourceTrigger=PropertyChanged}" />
                 </DockPanel>
             </DockPanel>
         </GroupBox>
@@ -30,30 +32,72 @@
             <Button HorizontalAlignment="Center" DockPanel.Dock="Right">Close</Button>
             <Button HorizontalAlignment="Center" DockPanel.Dock="Right">Unshelve</Button>
         </DockPanel>
-        <ListView DockPanel.Dock="Bottom">
+        <ListView DockPanel.Dock="Bottom" x:Name="PendingSetsListView"
+                  
+                VirtualizingStackPanel.IsVirtualizing="True"
+                VirtualizingStackPanel.VirtualizationMode="Recycling"
+                              
+                listViewLayout:ListViewLayoutManager.Enabled="true"
+                              
+                attachedProperties:GridViewSort.AutoSort="True"
+                                                           
+                attachedProperties:PreviewReturnKeyDown.Command="{Binding Path=ViewPendingSetCommand}"
+                attachedProperties:PreviewReturnKeyDown.CommandParameter="{Binding ElementName=PendingSetsListView, Path=SelectedItem}"
+                              
+                ItemsSource="{Binding Path=Shelvesets}">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn>
+                    <GridViewColumn 
+                        x:Name="GridViewColumnPendingSetsShelvesetName"
+                        
+                        listViewLayout:RangeColumn.MinWidth="150"
+                        attachedProperties:GridViewSort.PropertyName="Shelveset.Name">
 
                         <GridViewColumn.Header>
                             <GridViewColumnHeader>Shelveset Name</GridViewColumnHeader>
                         </GridViewColumn.Header>
+
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="versionControl:ShelvesetModel">
+                                <TextBlock Text="{Binding Path=Shelveset.Name}"></TextBlock>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-                    <GridViewColumn>
+                    <GridViewColumn 
+                        x:Name="GridViewColumnPendingSetsShelvesetCreationDate"
+                
+                        listViewLayout:RangeColumn.MinWidth="150"
+                        attachedProperties:GridViewSort.PropertyName="Shelveset.CreationDate">
 
                         <GridViewColumn.Header>
                             <GridViewColumnHeader>Date</GridViewColumnHeader>
                         </GridViewColumn.Header>
 
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="versionControl:ShelvesetModel">
+                                <TextBlock Text="{Binding Path=Shelveset.CreationDate}"></TextBlock>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-                    <GridViewColumn>
+                    <GridViewColumn
+                        x:Name="GridViewColumnPendingSetsShelvesetComment"
+                     
+                        listViewLayout:RangeColumn.MinWidth="150"
+                        listViewLayout:RangeColumn.IsFillColumn="True"
+                        
+                        attachedProperties:GridViewSort.PropertyName="Shelveset.Comment">
 
                         <GridViewColumn.Header>
                             <GridViewColumnHeader>Comment</GridViewColumnHeader>
                         </GridViewColumn.Header>
 
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="versionControl:ShelvesetModel">
+                                <TextBlock Text="{Binding Path=Shelveset.Comment}"></TextBlock>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                 </GridView>
             </ListView.View>

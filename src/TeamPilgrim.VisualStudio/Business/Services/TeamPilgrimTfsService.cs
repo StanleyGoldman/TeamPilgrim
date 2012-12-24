@@ -107,6 +107,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
             return tfsTeamProjectCollection.GetService<VersionControlServer>();
         }
 
+        public Shelveset[] QueryShelvesets(TfsTeamProjectCollection tfsTeamProjectCollection, string shelvesetName = null, string shelvesetOwner = null)
+        {
+            return GetVersionControlServer(tfsTeamProjectCollection).QueryShelvesets(shelvesetName, shelvesetOwner);
+        }
+
         public IBuildDefinition[] QueryBuildDefinitions(TfsTeamProjectCollection tfsTeamProjectCollection, string teamProject)
         {
             this.Logger().Trace("QueryBuildDefinitions ProjectCollection: {0} Project: {1}", tfsTeamProjectCollection.Name, teamProject);
