@@ -368,8 +368,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
         protected virtual void OnDismiss(bool success)
         {
-            var handler = Dismiss;
-            if (handler != null) handler(success);
+            if (Dismiss != null) 
+                Dismiss(success);
         }
 
         #region PendingChanges Collection

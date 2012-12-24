@@ -10,6 +10,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 {
     public class UnshelveChangesServiceModel : BaseServiceModel
     {
+        public delegate void DismissDelegate(bool success);
+        public event DismissDelegate Dismiss;
+
         public ProjectCollectionServiceModel ProjectCollectionServiceModel { get; private set; }
         public WorkspaceServiceModel WorkspaceServiceModel { get; private set; }
 
@@ -56,6 +59,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
             FindShelvesetsCommand = new RelayCommand<string>(FindShelvesets, CanFindShelvesets);
             ViewPendingSetCommand = new RelayCommand<ShelvesetModel>(ViewPendingSet, CanViewPendingSet);
+            UnshelveCommand = new RelayCommand<ShelvesetModel>(Unshelve, CanUnshelve);
+            CancelCommand = new RelayCommand(Cancel, CanCancel);
+        }
+
+        protected virtual void OnDismiss(bool success)
+        {
+            if (Dismiss != null)
+                Dismiss(success);
         }
 
         #region FindShelvesets Command
@@ -90,6 +101,38 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
         }
 
         private bool CanViewPendingSet(ShelvesetModel shelvesetModel)
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region Unshelve Command
+
+        public RelayCommand<ShelvesetModel> UnshelveCommand { get; private set; }
+
+        private void Unshelve(ShelvesetModel shelveset)
+        {
+            OnDismiss(true);
+        }
+
+        private bool CanUnshelve(ShelvesetModel shelveset)
+        {
+            return true;
+        }
+
+        #endregion
+
+        #region Cancel Command
+
+        public RelayCommand CancelCommand { get; private set; }
+
+        public void Cancel()
+        {
+            OnDismiss(false);
+        }
+
+        public bool CanCancel()
         {
             return true;
         }
