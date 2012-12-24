@@ -5,12 +5,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:Model="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model"
         xmlns:Client="clr-namespace:Microsoft.TeamFoundation.WorkItemTracking.Client;assembly=Microsoft.TeamFoundation.WorkItemTracking.Client"
-        xmlns:Explorer="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:behaviours="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Behaviors"
-        xmlns:Children="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery" Height="110" Width="415"
+        xmlns:Children="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery"
+        xmlns:licensing="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Licensing" Height="110" Width="415"
         mc:Ignorable="d" 
-        d:DataContext="{d:DesignInstance Model:LicenseModel}">
+        d:DataContext="{d:DesignInstance licensing:LicenseModel}">
     
     <DockPanel>
         <DockPanel DockPanel.Dock="Bottom" LastChildFill="False">

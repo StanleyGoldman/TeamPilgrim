@@ -110,7 +110,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
             QueryFolder parentFolder = workItemQueryFolderModel.QueryFolder;
             if (teamPilgrimServiceModelProvider.TryAddNewQueryFolder(out queryFolder, _projectCollection, _project, parentFolder.Id))
             {
-                workItemQueryFolderModel.QueryItems.Insert(0, new WorkItemQueryFolderModel(this, _project, workItemQueryFolderModel.Depth + 1, queryFolder, new WorkItemQueryChildModel[0]));
+                workItemQueryFolderModel.QueryItems.Insert(0, new WorkItemQueryFolderModel(this, _project, workItemQueryFolderModel.Depth + 1, queryFolder, new WorkItemQueryChildModel[0], null));
             }
         }
 

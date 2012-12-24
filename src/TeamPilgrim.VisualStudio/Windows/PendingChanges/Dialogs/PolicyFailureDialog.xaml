@@ -3,20 +3,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:Model="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model"
-        xmlns:Client="clr-namespace:Microsoft.TeamFoundation.WorkItemTracking.Client;assembly=Microsoft.TeamFoundation.WorkItemTracking.Client"
-        xmlns:Explorer="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer"
-        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-        xmlns:behaviours="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Behaviors"
-        xmlns:Children="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery"
-        xmlns:Converters="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Converters" Height="300" Width="300"
+        xmlns:model="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model"
+        xmlns:converters="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Converters"
+        xmlns:versionControl="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl" Height="300" Width="300"
         mc:Ignorable="d" 
-        d:DataContext="{d:DesignInstance Model:PolicyFailureModel}">
+        d:DataContext="{d:DesignInstance versionControl:PolicyFailureModel}">
     
     <DockPanel>
         <DockPanel.Resources>
-            <Converters:AndClauseBooleanConverter x:Key="AndClauseBooleanConverter"></Converters:AndClauseBooleanConverter>
-            <Converters:StringNotNullOrWhitespaceBooleanConverter x:Key="StringNotNullOrWhitespaceBooleanConverter"></Converters:StringNotNullOrWhitespaceBooleanConverter>
+            <converters:AndClauseBooleanConverter x:Key="AndClauseBooleanConverter"></converters:AndClauseBooleanConverter>
+            <converters:StringNotNullOrWhitespaceBooleanConverter x:Key="StringNotNullOrWhitespaceBooleanConverter"></converters:StringNotNullOrWhitespaceBooleanConverter>
         </DockPanel.Resources>
         <DockPanel DockPanel.Dock="Bottom" LastChildFill="False">
             <Button DockPanel.Dock="Right" Click="CancelButtonClick">

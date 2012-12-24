@@ -11,6 +11,7 @@ using JustAProgrammer.TeamPilgrim.Core;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Explorer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges;
@@ -38,8 +39,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
     [Guid(GuidList.guidTeamPilgrimPkgString)]
     public sealed class TeamPilgrimPackage : Package, IVsShellPropertyEvents
     {
-        private static readonly Logger Logger = TeamPilgrimLogManager.Instance.GetCurrentClassLogger();
-
         private static TeamPilgrimPackage _singleInstance;
 
         private static DTE Dte { get; set; }
@@ -67,7 +66,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
 
         public TeamPilgrimPackage()
         {
-            Logger.Debug("Start Constructor");
+            this.Logger().Debug("Start Constructor");
 
             Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", this.ToString()));
 
@@ -83,7 +82,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             //Certain Visual Studio dialogs like the "Work Item Query" can be expected to throw binding errors
             //BindingErrorTraceListener.SetTrace();
 
-            Logger.Debug("End Constructor");
+            this.Logger().Debug("End Constructor");
         }
 
         private void ShowExplorerWindow(object sender, EventArgs e)
@@ -120,8 +119,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
 
         protected override void Initialize()
         {
-            Logger.Info("Initialization: " + VersionInfo.Full);
-            Logger.Debug("Start First Pass Initialization");
+            this.Logger().Info("Initialization: " + VersionInfo.Full);
+            this.Logger().Debug("Start First Pass Initialization");
 
             Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
             TeamPilgrimPackage._singleInstance = this;
@@ -154,7 +153,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             TeamPilgrimPackage.MenuCommandService = base.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             TeamPilgrimPackage._teamPilgrimVsService.Initialize(_singleInstance, UIShell);
 
-            Logger.Debug("End First Pass Initialization");
+            this.Logger().Debug("End First Pass Initialization");
 
             CompletePackageInitialization();
         }
@@ -167,7 +166,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             {
                 if ((bool)var == false)
                 {
-                    Logger.Debug("Shell Exit Zombie State");
+                    this.Logger().Debug("Shell Exit Zombie State");
 
                     // zombie state dependent code
                     CompletePackageInitialization();
@@ -187,11 +186,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
 
         private void CompletePackageInitialization()
         {
-            Logger.Debug("Start Second Pass Initialization");
+            this.Logger().Debug("Start Second Pass Initialization");
 
             if (Dte != null)
             {
-                Logger.Warn("Package Previously Initialized"); 
+                this.Logger().Warn("Package Previously Initialized"); 
                 return;
             }
 
@@ -199,7 +198,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
 
             if (Dte == null)
             {
-                Logger.Warn("DTE not found");
+                this.Logger().Warn("DTE not found");
                 return;
             }
 
@@ -210,7 +209,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             _teamPilgrimVsService.InitializeGlobals(Dte2, VsSolution);
             TeamPilgrimServiceModel = new TeamPilgrimServiceModel(new TeamPilgrimServiceModelProvider(), _teamPilgrimVsService);
 
-            Logger.Debug("End Second Pass Initialization");
+            this.Logger().Debug("End Second Pass Initialization");
         }
 
         #endregion

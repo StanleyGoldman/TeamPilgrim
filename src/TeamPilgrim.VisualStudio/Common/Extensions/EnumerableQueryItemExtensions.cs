@@ -17,8 +17,23 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common.Extensions
                     var queryFolder = item as QueryFolder;
                     if (queryFolder != null)
                     {
+                        QueryFolderTypeEnum? queryFolderType = null;
+                        if (depth == 1)
+                        {
+                            switch (queryFolder.Name)
+                            {
+                                case "My Queries":
+                                    queryFolderType = QueryFolderTypeEnum.MyQueries;
+                                    break;
+
+                                case "Team Queries":
+                                    queryFolderType = QueryFolderTypeEnum.TeamQueries;
+                                    break;
+                            }
+                        }
+
                         var foldersChildren = queryFolder.GetQueryItemViewModels(workItemQueryCommandModel, teamPilgrimServiceModelProvider, teamPilgrimVsService, project, depth + 1);
-                        return new WorkItemQueryFolderModel(workItemQueryCommandModel, project, depth, queryFolder, foldersChildren);
+                        return new WorkItemQueryFolderModel(workItemQueryCommandModel, project, depth, queryFolder, foldersChildren, queryFolderType);
                     }
 
                     var queryDefinition = item as QueryDefinition;

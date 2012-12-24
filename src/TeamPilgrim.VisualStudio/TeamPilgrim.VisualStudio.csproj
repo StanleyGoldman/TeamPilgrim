@@ -98,6 +98,7 @@
     <Reference Include="NLog">
       <HintPath>..\..\lib\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationFramework.Aero" />
     <Reference Include="SlowCheetah.Tasks">
       <HintPath>..\..\lib\SlowCheetah.Tasks.Unofficial.1.0.0\lib\SlowCheetah.Tasks.dll</HintPath>
     </Reference>
@@ -190,11 +191,14 @@
     <Compile Include="Common\AttachedProperties\PreviewReturnKeyDown.cs" />
     <Compile Include="Common\AttachedProperties\PreviewSpaceKeyDown.cs" />
     <Compile Include="Common\AttachedProperties\PreviewSpaceKeyDownSelectWorkItems.cs" />
+    <Compile Include="Common\Controls\CustomCheckbox.cs" />
     <Compile Include="Common\Converters\BooleanToAlternateFontWeightConverter.cs" />
-    <Compile Include="Common\Converters\ObservableCollectionToTrulyObservableCollectionCoverter.cs" />
-    <Compile Include="Common\TrulyObservableCollection.cs" />
-    <Compile Include="Common\LoggerExtensions.cs" />
-    <Compile Include="Common\WorkItemQueryChildModelExtensions.cs" />
+    <Compile Include="Common\Converters\ChangeTypeDescriptionConverter.cs" />
+    <Compile Include="Common\Converters\SelectedPendingChangesSummaryEnumIsCheckedBooleanConverter.cs" />
+    <Compile Include="Common\Converters\WorkItemQueryFolderModelImageConverter.cs" />
+    <Compile Include="Common\Extensions\LoggerExtensions.cs" />
+    <Compile Include="Common\Extensions\WorkItemQueryChildModelExtensions.cs" />
+    <Compile Include="Common\VisualTreeHelpers.cs" />
     <Compile Include="Domain\BusinessInterfaces\VisualStudio\ITeamFoundationHostWrapper.cs" />
     <Compile Include="Business\Services\VisualStudio\TeamFoundation\ServerConnectedEventArgs.cs" />
     <Compile Include="Business\Services\VisualStudio\TeamFoundation\ServerConnectingEventArgs.cs" />
@@ -216,21 +220,23 @@
     <Compile Include="Common\VsWindowFrameEditorTypeIds.cs" />
     <Compile Include="Common\AttachedProperties\MouseDoubleClick.cs" />
     <Compile Include="Common\Extensions\CheckinEvaluationResultExtensions.cs" />
-    <Compile Include="Model\CommandArguments\SelectPendingChangesCommandArgument.cs" />
-    <Compile Include="Model\CommandArguments\SelectWorkItemsCommandArgument.cs" />
-    <Compile Include="Model\ShelveChanges\ShelvesetServiceModel.cs" />
-    <Compile Include="Model\PendingChanges\PreviouslySelectedWorkItemQuery.cs" />
-    <Compile Include="Model\PendingChanges\ShowPendingChangesTabItemEnum.cs" />
+    <Compile Include="Model\VersionControl\CommandArguments\SelectPendingChangesCommandArgument.cs" />
+    <Compile Include="Model\VersionControl\CommandArguments\SelectWorkItemsCommandArgument.cs" />
+    <Compile Include="Common\Enums\CollectionSelectionSummaryEnum.cs" />
+    <Compile Include="Model\VersionControl\ShelvesetServiceModel.cs" />
+    <Compile Include="Model\VersionControl\PreviouslySelectedWorkItemQuery.cs" />
+    <Compile Include="Common\Enums\ShowPendingChangesTabItemEnum.cs" />
+    <Compile Include="Model\WorkItemQuery\QueryFolderTypeEnum.cs" />
     <Compile Include="Model\UnshelveChangesServiceModel.cs" />
     <Compile Include="TeamPilgrimLogManager.cs" />
     <Compile Include="Model\BaseModel.cs" />
-    <Compile Include="Model\LicenseModel.cs" />
-    <Compile Include="Model\PendingChanges\CheckinNoteModel.cs" />
+    <Compile Include="Model\Licensing\LicenseModel.cs" />
+    <Compile Include="Model\VersionControl\CheckinNoteModel.cs" />
     <Compile Include="Common\Enums\SelectedWorkItemCheckinActionEnum.cs" />
     <Compile Include="Common\Extensions\SelectedWorkItemCheckinActionEnumExtensions.cs" />
-    <Compile Include="Model\PendingChanges\WorkItemModel.cs" />
-    <Compile Include="Model\PolicyFailureModel.cs" />
-    <Compile Include="Model\SelectWorkItemQueryModel.cs" />
+    <Compile Include="Model\WorkItemQuery\WorkItemModel.cs" />
+    <Compile Include="Model\VersionControl\PolicyFailureModel.cs" />
+    <Compile Include="Model\VersionControl\SelectWorkItemQueryModel.cs" />
     <Compile Include="Windows\PendingChanges\Dialogs\UnshelveChangesDialog.xaml.cs">
       <DependentUpon>UnshelveChangesDialog.xaml</DependentUpon>
     </Compile>
@@ -258,19 +264,19 @@
     <Compile Include="Domain\BusinessInterfaces\ITeamPilgrimTfsService.cs" />
     <Compile Include="Business\Services\VisualStudio\TeamPilgrimVsService.cs" />
     <Compile Include="Model\BaseServiceModel.cs" />
-    <Compile Include="Model\Explorer\BuildDefinitions\BuildDefinitionModel.cs" />
-    <Compile Include="Model\Explorer\BuildDefinitions\IBuildDefinitionCommandModel.cs" />
-    <Compile Include="Model\Explorer\ReportsModel.cs">
+    <Compile Include="Model\BuildDefinitions\BuildDefinitionModel.cs" />
+    <Compile Include="Model\BuildDefinitions\IBuildDefinitionCommandModel.cs" />
+    <Compile Include="Model\Reporting\ReportsModel.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Model\WorkItemQuery\IWorkItemQueryCommandModel.cs" />
-    <Compile Include="Model\Explorer\BuildDefinitions\BuildDefinitionsServiceModel.cs" />
-    <Compile Include="Model\PendingChanges\PendingChangeModel.cs" />
-    <Compile Include="Model\TeamPilgrimServiceModel.cs" />
-    <Compile Include="Model\Explorer\ProjectCollectionServiceModel.cs" />
-    <Compile Include="Model\Explorer\ProjectServiceModel.cs" />
-    <Compile Include="Model\PendingChanges\WorkspaceInfoModel.cs" />
-    <Compile Include="Model\PendingChanges\WorkspaceServiceModel.cs" />
+    <Compile Include="Model\BuildDefinitions\BuildDefinitionsServiceModel.cs" />
+    <Compile Include="Model\VersionControl\PendingChangeModel.cs" />
+    <Compile Include="Model\Core\TeamPilgrimServiceModel.cs" />
+    <Compile Include="Model\Core\ProjectCollectionServiceModel.cs" />
+    <Compile Include="Model\Core\ProjectServiceModel.cs" />
+    <Compile Include="Model\VersionControl\WorkspaceInfoModel.cs" />
+    <Compile Include="Model\VersionControl\WorkspaceServiceModel.cs" />
     <Compile Include="Providers\TeamPilgrimServiceModelProvider.cs" />
     <Compile Include="Windows\Explorer\ExplorerTreeViewStyleSelector.cs" />
     <Compile Include="Windows\Explorer\ExplorerControl.xaml.cs">
@@ -304,8 +310,8 @@
     </None>
     <Compile Include="PkgCmdID.cs" />
     <Compile Include="Common\Extensions\EnumerableQueryItemExtensions.cs" />
-    <Compile Include="Model\Explorer\SourceControlModel.cs" />
-    <Compile Include="Model\Explorer\TeamMembersModel.cs" />
+    <Compile Include="Model\VersionControl\SourceControlModel.cs" />
+    <Compile Include="Model\Teams\TeamMembersModel.cs" />
     <Compile Include="Model\WorkItemQuery\WorkItemQueryDefinitionModel.cs" />
     <Compile Include="Model\WorkItemQuery\WorkItemQueryFolderModel.cs" />
     <Compile Include="Model\WorkItemQuery\WorkItemQueryServiceModel.cs" />
@@ -336,6 +342,15 @@
       <SubType>Designer</SubType>
       <TransformOnBuild>true</TransformOnBuild>
     </Content>
+    <Resource Include="Resources\ServerProject.png" />
+    <Resource Include="Resources\Team_16xLG.png" />
+    <Resource Include="Resources\user_16xLG.png" />
+    <Resource Include="Resources\WorkItem_16xLG.png" />
+    <Resource Include="Resources\TFSServer_13310_16x.png" />
+    <Resource Include="Resources\Textfile_818_32x.png" />
+    <Resource Include="Resources\PolicyWarnings%28large%29_7879.png" />
+    <Resource Include="Resources\Solution_8308.png" />
+    <Resource Include="Resources\refresh_16xLG.png" />
     <None Include="NLog.Debug.config">
       <DependentUpon>NLog.config</DependentUpon>
       <IsTransformFile>True</IsTransformFile>
@@ -365,17 +380,30 @@
   <ItemGroup>
     <Resource Include="Resources\Shelve.png" />
     <Resource Include="Resources\Unshelve.png" />
-    <Resource Include="Resources\page_save.png" />
     <Resource Include="Resources\page_white_delete.png" />
     <Resource Include="Resources\page_white_text.png" />
-    <Resource Include="Resources\tfs_connect.png" />
-    <Resource Include="Resources\arrow_refresh.png" />
     <Resource Include="Resources\clipboard_sign.png" />
     <Resource Include="Resources\note.png" />
     <Resource Include="Resources\edit_diff.png" />
+    <Resource Include="Resources\Arrow_UndoRevertRestore_16xLG_color.png" />
+    <Resource Include="Resources\Conflicts%28large%29_11131.png" />
+    <Resource Include="Resources\CheckIn_13188_32x.png" />
+    <Resource Include="Resources\CheckIn_13188.png" />
+    <Resource Include="Resources\Arrow_UndoRevertRestore_16xLG.png" />
+    <Resource Include="Resources\clock_16xLG.png" />
+    <Resource Include="Resources\build_Selection_16xLG.png" />
+    <Resource Include="Resources\build_Solution_16xLG.png" />
+    <Resource Include="Resources\folder_Closed_16xLG.png" />
+    <Resource Include="Resources\images_querylist.png" />
+    <Resource Include="Resources\icons_generalicons_connecttotfs.png" />
+    <Resource Include="Resources\LinkedServer_12789_16x.png" />
     <Content Include="Resources\Package.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Windows\ResourceDictionary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Windows\Dialogs\LicenseDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

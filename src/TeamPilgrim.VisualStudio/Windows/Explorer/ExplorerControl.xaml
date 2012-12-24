@@ -3,84 +3,112 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:Model="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model"
-             xmlns:AttachedProperties="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties"
-             xmlns:Explorer="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Explorer"
-             xmlns:ExplorerModels="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer"
-             xmlns:BuildDefinitions="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.BuildDefinitions"
-             xmlns:WorkItemQuery="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery"
+             xmlns:attachedProperties="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties"
+             xmlns:explorer="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Explorer"
+             xmlns:workItemQuery="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery"
              xmlns:converters="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Converters"
+             xmlns:core="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core"
+             xmlns:buildDefinitions="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions"
+             xmlns:reporting="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Reporting"
+             xmlns:teams="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Teams"
+             xmlns:versionControl="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d" 
              Height="Auto" d:DesignHeight="300" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance Model:TeamPilgrimServiceModel}">
+             d:DataContext="{d:DesignInstance core:TeamPilgrimServiceModel}">
     <DockPanel>
         <DockPanel.Resources>
-            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-            <converters:BooleanToAlternateFontWeightConverter x:Key="BooleanToAlternateFontWeightConverter" TrueWeight="Bold" FalseWeight="Normal" />
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <ResourceDictionary Source="/TeamPilgrim.VisualStudio;component/Windows\ResourceDictionary.xaml"/>
+                </ResourceDictionary.MergedDictionaries>
+                
+                <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+                <converters:BooleanToAlternateFontWeightConverter x:Key="BooleanToAlternateFontWeightConverter" TrueWeight="Bold" FalseWeight="Normal" />
+                <converters:WorkItemQueryFolderModelImageConverter x:Key="WorkItemQueryFolderModelImageConverter"/>
             
-            <Style TargetType="{x:Type TreeViewItem}"  x:Key="DefaultStyle">
-                <EventSetter Event="UIElement.PreviewMouseRightButtonDown" Handler="OnPreviewMouseRightButtonDown"/>
-            </Style>
+                <Style TargetType="{x:Type TreeViewItem}"  x:Key="DefaultStyle">
+                    <EventSetter Event="UIElement.PreviewMouseRightButtonDown" Handler="OnPreviewMouseRightButtonDown"/>
+                </Style>
 
-            <Style TargetType="{x:Type TreeViewItem}"  x:Key="ProjectCollectionStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
-                <Setter Property="IsExpanded" Value="True" />
-            </Style>
+                <Style TargetType="{x:Type TreeViewItem}"  x:Key="ProjectCollectionStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
+                    <Setter Property="IsExpanded" Value="True" />
+                </Style>
 
-            <Style TargetType="{x:Type TreeViewItem}"  x:Key="ProjectStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
-                <Setter Property="IsExpanded" Value="True" />
-                <EventSetter Event="Selected" Handler="OnProjectTreeViewItemSelected"></EventSetter>
-            </Style>
+                <Style TargetType="{x:Type TreeViewItem}"  x:Key="ProjectStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
+                    <Setter Property="IsExpanded" Value="True" />
+                    <EventSetter Event="Selected" Handler="OnProjectTreeViewItemSelected"></EventSetter>
+                </Style>
 
-            <Style TargetType="{x:Type TreeViewItem}"  x:Key="WorkItemQueryContainerStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
-            </Style>
+                <Style TargetType="{x:Type TreeViewItem}"  x:Key="WorkItemQueryContainerStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
+                </Style>
 
-            <Style TargetType="{x:Type TreeViewItem}"  x:Key="WorkItemQueryFolderStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
-            </Style>
+                <Style TargetType="{x:Type TreeViewItem}"  x:Key="WorkItemQueryFolderStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
+                </Style>
+               
+                <!-- ReSharper disable Xaml.BindingWithContextNotResolved -->
+                <Style TargetType="{x:Type TreeViewItem}"  x:Key="WorkItemQueryDefinitionStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
+                    <Setter Property="attachedProperties:MouseDoubleClick.Command" Value="{Binding Path=WorkItemQueryCommandModel.OpenQueryDefinitionCommand}"/>
+                    <Setter Property="attachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding}"/>
 
-            <Style TargetType="{x:Type TreeViewItem}"  x:Key="WorkItemQueryDefinitionStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
-                <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding Path=WorkItemQueryCommandModel.OpenQueryDefinitionCommand}"/>
-                <Setter Property="AttachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding}"/>
+                    <Setter Property="attachedProperties:PreviewReturnKeyDown.Command" Value="{Binding Path=WorkItemQueryCommandModel.OpenQueryDefinitionCommand}"/>
+                    <Setter Property="attachedProperties:PreviewReturnKeyDown.CommandParameter" Value="{Binding}"/>
+                </Style>
 
-                <Setter Property="AttachedProperties:PreviewReturnKeyDown.Command" Value="{Binding Path=WorkItemQueryCommandModel.OpenQueryDefinitionCommand}"/>
-                <Setter Property="AttachedProperties:PreviewReturnKeyDown.CommandParameter" Value="{Binding}"/>
-            </Style>
+                <Style TargetType="{x:Type TreeViewItem}"  x:Key="BuildDefinitionStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
+                    <Setter Property="attachedProperties:MouseDoubleClick.Command" Value="{Binding Path=BuildDefinitionCommandModel.ViewBuildsCommand}"/>
+                    <Setter Property="attachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding}"/>
 
-            <Style TargetType="{x:Type TreeViewItem}"  x:Key="BuildDefinitionStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
-                <Setter Property="AttachedProperties:MouseDoubleClick.Command" Value="{Binding Path=BuildDefinitionCommandModel.ViewBuildsCommand}"/>
-                <Setter Property="AttachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding}"/>
+                    <Setter Property="attachedProperties:PreviewReturnKeyDown.Command" Value="{Binding Path=BuildDefinitionCommandModel.ViewBuildsCommand}"/>
+                    <Setter Property="attachedProperties:PreviewReturnKeyDown.CommandParameter" Value="{Binding}"/>
+                </Style>
 
-                <Setter Property="AttachedProperties:PreviewReturnKeyDown.Command" Value="{Binding Path=BuildDefinitionCommandModel.ViewBuildsCommand}"/>
-                <Setter Property="AttachedProperties:PreviewReturnKeyDown.CommandParameter" Value="{Binding}"/>
-            </Style>
+                <Style TargetType="{x:Type TreeViewItem}"  x:Key="SourceControlStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
+                    <Setter Property="attachedProperties:MouseDoubleClick.Command" 
+                            Value="{Binding Path=DataContext.OpenSourceControlCommand, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"/>
 
-            <Style TargetType="{x:Type TreeViewItem}"  x:Key="SourceControlStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
-                <Setter Property="AttachedProperties:MouseDoubleClick.Command" 
-                        Value="{Binding Path=DataContext.OpenSourceControlCommand, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"/>
+                    <Setter Property="attachedProperties:PreviewReturnKeyDown.Command"
+                            Value="{Binding Path=DataContext.OpenSourceControlCommand, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"/>
+                </Style>
 
-                <Setter Property="AttachedProperties:PreviewReturnKeyDown.Command"
-                        Value="{Binding Path=DataContext.OpenSourceControlCommand, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"/>
-            </Style>
+                <Style TargetType="{x:Type DockPanel}" x:Key="TreeViewDockPanel">
+                    <Style.Resources>
+                        
+                        <!-- ReSharper disable Xaml.RedundantResource -->
+                        <Style TargetType="Image">
+                            <Setter Property="Height" Value="16" />
+                            <Setter Property="Width" Value="16" />
+                            <Setter Property="Margin" Value="2,1,4,1" />
+                        </Style>
 
-            <Explorer:ExplorerTreeViewStyleSelector
-				x:Key="teamPilgrilViewStyleSelector"
-				DefaultStyle="{StaticResource ResourceKey=DefaultStyle}"
-				ProjectCollectionStyle="{StaticResource ResourceKey=ProjectCollectionStyle}"
-				ProjectStyle="{StaticResource ResourceKey=ProjectStyle}"
-				WorkItemQueryContainerStyle="{StaticResource ResourceKey=WorkItemQueryContainerStyle}"
-				WorkItemQueryFolderStyle="{StaticResource ResourceKey=WorkItemQueryFolderStyle}"
-				WorkItemQueryDefinitionStyle="{StaticResource ResourceKey=WorkItemQueryDefinitionStyle}"
-				SourceControlStyle="{StaticResource ResourceKey=SourceControlStyle}"
-				BuildDefinitionStyle="{StaticResource ResourceKey=BuildDefinitionStyle}" />
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Height" Value="18" />
+                        </Style>
+                        <!-- ReSharper restore Xaml.RedundantResource -->
+                        
+                    </Style.Resources>
+                </Style>
+                <!-- ReSharper restore Xaml.BindingWithContextNotResolved -->
 
+                <explorer:ExplorerTreeViewStyleSelector
+				    x:Key="TeamPilgrilViewStyleSelector"
+				    DefaultStyle="{StaticResource ResourceKey=DefaultStyle}"
+				    ProjectCollectionStyle="{StaticResource ResourceKey=ProjectCollectionStyle}"
+				    ProjectStyle="{StaticResource ResourceKey=ProjectStyle}"
+				    WorkItemQueryContainerStyle="{StaticResource ResourceKey=WorkItemQueryContainerStyle}"
+				    WorkItemQueryFolderStyle="{StaticResource ResourceKey=WorkItemQueryFolderStyle}"
+				    WorkItemQueryDefinitionStyle="{StaticResource ResourceKey=WorkItemQueryDefinitionStyle}"
+				    SourceControlStyle="{StaticResource ResourceKey=SourceControlStyle}"
+				    BuildDefinitionStyle="{StaticResource ResourceKey=BuildDefinitionStyle}" />
+            </ResourceDictionary>
         </DockPanel.Resources>
-        <ToolBar ToolBarTray.IsLocked="True" ToolBar.OverflowMode="AsNeeded" DockPanel.Dock="Top">
+        <ToolBar ToolBarTray.IsLocked="True" ToolBar.OverflowMode="AsNeeded" DockPanel.Dock="Top" Height="26" Template="{DynamicResource ToolbarTemplate}" Margin="0,0,0,2">
             <Button Command="{Binding Path=RefreshCommand}">
-                <Image Source="..\..\Resources\arrow_refresh.png" Width="16" Height="16" />
+                <Image Source="/TeamPilgrim.VisualStudio;component/Resources\refresh_16xLG.png" Width="16" Height="16" />
             </Button>
             <Button Command="{Binding Path=TfsConnectCommand}">
-                <Image Source="..\..\Resources\tfs_connect.png" Width="16" Height="16" />
+                <Image Source="/TeamPilgrim.VisualStudio;component/Resources\icons_generalicons_connecttotfs.png" Width="16" Height="16" />
             </Button>
         </ToolBar>
         
@@ -90,10 +118,12 @@
             Text="{Binding ConnectingServer, StringFormat=Connecting to \{0\}...}" />
 
         <ScrollViewer DockPanel.Dock="Bottom" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-            <TreeView ItemsSource="{Binding Path=ProjectCollectionModels}" ItemContainerStyleSelector="{StaticResource teamPilgrilViewStyleSelector}">
+            <TreeView ItemsSource="{Binding Path=ProjectCollectionModels}" ItemContainerStyleSelector="{StaticResource TeamPilgrilViewStyleSelector}" BorderBrush="#00828790" BorderThickness="1">
                 <TreeView.Resources>
-                    <ContextMenu x:Key="ProjectCollectionContextMenu" d:DataContext="{d:DesignInstance ExplorerModels:ProjectCollectionServiceModel}">
+                    <ContextMenu x:Key="ProjectCollectionContextMenu" d:DataContext="{d:DesignInstance core:ProjectCollectionServiceModel}">
+                        <!-- ReSharper disable Xaml.BindingWithContextNotResolved -->
                         <MenuItem Header="Connect to Team Project..." Command="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.DataContext.TeamPilgrimServiceModel.TfsConnectCommand}"/>
+                        <!-- ReSharper restore Xaml.BindingWithContextNotResolved -->
                         <MenuItem Header="New Team Project..." Command="{Binding NewTeamProjectCommand}"/>
                         <Separator />
                         <MenuItem Header="Disconnect" Command="{Binding DisconnectCommand}"/>
@@ -108,7 +138,7 @@
                         </MenuItem>
                     </ContextMenu>
 
-                    <ContextMenu x:Key="ProjectContextMenu" d:DataContext="{d:DesignInstance ExplorerModels:ProjectServiceModel}">
+                    <ContextMenu x:Key="ProjectContextMenu" d:DataContext="{d:DesignInstance core:ProjectServiceModel}">
                         <MenuItem Header="Project Alerts..." Command="{Binding ShowProjectAlertsCommand}"/>
                         <Separator />
                         <MenuItem Header="Refresh" Command="{Binding RefreshCommand}"/>
@@ -122,7 +152,7 @@
                         </MenuItem>
                     </ContextMenu>
 
-                    <ContextMenu x:Key="WorkItemQueryContainerContextMenu" d:DataContext="{d:DesignInstance WorkItemQuery:WorkItemQueryServiceModel}">
+                    <ContextMenu x:Key="WorkItemQueryContainerContextMenu" d:DataContext="{d:DesignInstance workItemQuery:WorkItemQueryServiceModel}">
                         <MenuItem Header="1 New Task"
                             Command="{Binding Path=NewWorkItemCommand}" 
                             CommandParameter="Task" />
@@ -173,7 +203,7 @@
                         <MenuItem Header="Refresh" Command="{Binding RefreshCommand}"/>
                     </ContextMenu>
 
-                    <ContextMenu x:Key="WorkItemQueryFolderContextMenu" d:DataContext="{d:DesignInstance WorkItemQuery:WorkItemQueryFolderModel}">
+                    <ContextMenu x:Key="WorkItemQueryFolderContextMenu" d:DataContext="{d:DesignInstance workItemQuery:WorkItemQueryFolderModel}">
 
                         <MenuItem Header="New Query" 
                             Command="{Binding Path=WorkItemQueryCommandModel.NewQueryDefinitionCommand}" 
@@ -202,7 +232,7 @@
 					        CommandParameter="{Binding}" />
                     </ContextMenu>
 
-                    <ContextMenu x:Key="WorkItemQueryDefinitionContextMenu" d:DataContext="{d:DesignInstance WorkItemQuery:WorkItemQueryDefinitionModel}">
+                    <ContextMenu x:Key="WorkItemQueryDefinitionContextMenu" d:DataContext="{d:DesignInstance workItemQuery:WorkItemQueryDefinitionModel}">
                         <MenuItem Header="View Results" 
 					        Command="{Binding Path=WorkItemQueryCommandModel.OpenQueryDefinitionCommand}" 
 					        CommandParameter="{Binding}"/>
@@ -234,7 +264,7 @@
 					        CommandParameter="{Binding}" />
                     </ContextMenu>
 
-                    <ContextMenu x:Key="BuildDefinitionsContextMenu" d:DataContext="{d:DesignInstance BuildDefinitions:BuildDefinitionsServiceModel}">
+                    <ContextMenu x:Key="BuildDefinitionsContextMenu" d:DataContext="{d:DesignInstance buildDefinitions:BuildDefinitionsServiceModel}">
                         <MenuItem Header="View Builds" 
                             Command="{Binding Path=ViewBuildsCommand}" 
                             CommandParameter="{x:Null}" />
@@ -263,7 +293,7 @@
                             Command="{Binding Path=ManageBuildSecurityCommand}" />
                     </ContextMenu>
 
-                    <ContextMenu x:Key="BuildDefinitionContextMenu" d:DataContext="{d:DesignInstance BuildDefinitions:BuildDefinitionModel}">
+                    <ContextMenu x:Key="BuildDefinitionContextMenu" d:DataContext="{d:DesignInstance buildDefinitions:BuildDefinitionModel}">
                         <MenuItem Header="View Builds" 
                             Command="{Binding Path=BuildDefinitionCommandModel.ViewBuildsCommand}" 
                             CommandParameter="{Binding}" />
@@ -297,49 +327,78 @@
                             CommandParameter="{Binding}" />
                     </ContextMenu>
 
-                    <HierarchicalDataTemplate DataType="{x:Type ExplorerModels:ProjectCollectionServiceModel}" ItemsSource="{Binding Path=ProjectModels}">
-                        <TextBlock Text="{Binding Path=TfsTeamProjectCollection.Name}" ContextMenu="{StaticResource ResourceKey=ProjectCollectionContextMenu}" />
+                    <HierarchicalDataTemplate DataType="{x:Type core:ProjectCollectionServiceModel}" ItemsSource="{Binding Path=ProjectModels}">
+                        <DockPanel Style="{StaticResource TreeViewDockPanel}">
+                            <Image Source="/TeamPilgrim.VisualStudio;component/Resources\TFSServer_13310_16x.png" Margin="0,0,2,0" />
+                            <TextBlock Text="{Binding Path=TfsTeamProjectCollection.Name}" ContextMenu="{StaticResource ResourceKey=ProjectCollectionContextMenu}" />
+                        </DockPanel>
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type ExplorerModels:ProjectServiceModel}" ItemsSource="{Binding Path=ChildObjects}">
+                    <HierarchicalDataTemplate DataType="{x:Type core:ProjectServiceModel}" ItemsSource="{Binding Path=ChildObjects}">
                         <HierarchicalDataTemplate.Resources>
                             <Style x:Key="ProjectContextTextStyle" TargetType="{x:Type TextBlock}">
                                 <Setter Property="FontWeight" Value="{Binding Path=IsActive, Converter={StaticResource BooleanToAlternateFontWeightConverter}}" />
                             </Style>
                         </HierarchicalDataTemplate.Resources>
-                        <TextBlock Text="{Binding Path=Project.Name}" ContextMenu="{StaticResource ResourceKey=ProjectContextMenu}" Style="{StaticResource ProjectContextTextStyle}" />
+                        
+                        <DockPanel Style="{StaticResource TreeViewDockPanel}">
+                            <Image Source="/TeamPilgrim.VisualStudio;component/Resources\LinkedServer_12789_16x.png" Margin="0,0,2,0" />
+                            <TextBlock Text="{Binding Path=Project.Name}" ContextMenu="{StaticResource ResourceKey=ProjectContextMenu}" Style="{StaticResource ProjectContextTextStyle}" />
+                        </DockPanel>
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type WorkItemQuery:WorkItemQueryServiceModel}" ItemsSource="{Binding Path=QueryItems}">
-                        <TextBlock Text="Work Items" ContextMenu="{StaticResource ResourceKey=WorkItemQueryContainerContextMenu}"  />
+                    <HierarchicalDataTemplate DataType="{x:Type workItemQuery:WorkItemQueryServiceModel}" ItemsSource="{Binding Path=QueryItems}">
+                        <DockPanel Style="{StaticResource TreeViewDockPanel}">
+                            <Image Source="/TeamPilgrim.VisualStudio;component/Resources\WorkItem_16xLG.png" Margin="0,0,2,0" />
+                            <TextBlock Text="Work Items" ContextMenu="{StaticResource ResourceKey=WorkItemQueryContainerContextMenu}"  />
+                        </DockPanel>
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type WorkItemQuery:WorkItemQueryFolderModel}" ItemsSource="{Binding Path=QueryItems}">
-                        <TextBlock Text="{Binding Path=Name}" ContextMenu="{StaticResource ResourceKey=WorkItemQueryFolderContextMenu}"  />
+                    <HierarchicalDataTemplate DataType="{x:Type workItemQuery:WorkItemQueryFolderModel}" ItemsSource="{Binding Path=QueryItems}">
+                        <DockPanel Style="{StaticResource TreeViewDockPanel}">
+                            <Image Source="{Binding Converter={StaticResource WorkItemQueryFolderModelImageConverter}}" Margin="0,0,2,0" />
+                            <TextBlock Text="{Binding Path=Name}" ContextMenu="{StaticResource ResourceKey=WorkItemQueryFolderContextMenu}"  />
+                        </DockPanel>
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type WorkItemQuery:WorkItemQueryDefinitionModel}">
-                        <TextBlock Text="{Binding Path=Name}" ContextMenu="{StaticResource ResourceKey=WorkItemQueryDefinitionContextMenu}"  />
+                    <HierarchicalDataTemplate DataType="{x:Type workItemQuery:WorkItemQueryDefinitionModel}">
+                        <DockPanel Style="{StaticResource TreeViewDockPanel}">
+                            <Image Source="/TeamPilgrim.VisualStudio;component/Resources\images_querylist.png" Margin="0,0,2,0" />
+                            <TextBlock Text="{Binding Path=Name}" ContextMenu="{StaticResource ResourceKey=WorkItemQueryDefinitionContextMenu}"  />
+                        </DockPanel>
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type BuildDefinitions:BuildDefinitionsServiceModel}" ItemsSource="{Binding Path=BuildDefinitions}">
-                        <TextBlock Text="Builds" ContextMenu="{StaticResource ResourceKey=BuildDefinitionsContextMenu}" />
+                    <HierarchicalDataTemplate DataType="{x:Type buildDefinitions:BuildDefinitionsServiceModel}" ItemsSource="{Binding Path=BuildDefinitions}">
+                        <DockPanel Style="{StaticResource TreeViewDockPanel}">
+                            <Image Source="/TeamPilgrim.VisualStudio;component/Resources\build_Selection_16xLG.png" Margin="0,0,2,0" />
+                            <TextBlock Text="Builds" ContextMenu="{StaticResource ResourceKey=BuildDefinitionsContextMenu}" />
+                        </DockPanel>
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type BuildDefinitions:BuildDefinitionModel}">
-                        <TextBlock Text="{Binding Path=Definition.Name}" ContextMenu="{StaticResource ResourceKey=BuildDefinitionContextMenu}" />
+                    <HierarchicalDataTemplate DataType="{x:Type buildDefinitions:BuildDefinitionModel}">
+                        <DockPanel Style="{StaticResource TreeViewDockPanel}">
+                            <Image Source="/TeamPilgrim.VisualStudio;component/Resources\build_Solution_16xLG.png" Margin="0,0,2,0" />
+                            <TextBlock Text="{Binding Path=Definition.Name}" ContextMenu="{StaticResource ResourceKey=BuildDefinitionContextMenu}" />
+                        </DockPanel>
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type ExplorerModels:ReportsModel}">
-                        <TextBlock Text="Reports" />
+                    <HierarchicalDataTemplate DataType="{x:Type reporting:ReportsModel}">
+                        <DockPanel Style="{StaticResource TreeViewDockPanel}">
+                            <TextBlock Text="Reports" />
+                        </DockPanel>
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type ExplorerModels:TeamMembersModel}">
-                        <TextBlock Text="Team Members" />
+                    <HierarchicalDataTemplate DataType="{x:Type teams:TeamMembersModel}">
+                        <DockPanel Style="{StaticResource TreeViewDockPanel}">
+                            <TextBlock Text="Team Members" />
+                        </DockPanel>
                     </HierarchicalDataTemplate>
 
-                    <HierarchicalDataTemplate DataType="{x:Type ExplorerModels:SourceControlModel}">
-                        <TextBlock Text="Source Control" />
+                    <HierarchicalDataTemplate DataType="{x:Type versionControl:SourceControlModel}">
+                        <DockPanel Style="{StaticResource TreeViewDockPanel}">
+                            <Image Source="/TeamPilgrim.VisualStudio;component/Resources\ServerProject.png" Margin="0,0,2,0" />
+                            <TextBlock Text="Source Control" />
+                        </DockPanel>
                     </HierarchicalDataTemplate>
 
                 </TreeView.Resources>

@@ -1,6 +1,6 @@
 ﻿using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model

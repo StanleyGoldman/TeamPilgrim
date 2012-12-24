@@ -6,11 +6,15 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Threading;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Enums;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.CommandArguments;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.PendingChanges;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.ShelveChanges;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl.CommandArguments;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
@@ -25,7 +29,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
             InitializeComponent();
 
             NameScope.SetNameScope(PendingChangesContextMenu, NameScope.GetNameScope(this));
-       
+
             Loaded += OnLoaded;
         }
 
@@ -41,7 +45,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
             {
                 base.DataContext = value;
 
-                var teamPilgrimServiceModel = (TeamPilgrimServiceModel) value;
+                var teamPilgrimServiceModel = (TeamPilgrimServiceModel)value;
                 if (teamPilgrimServiceModel == null) return;
 
                 teamPilgrimServiceModel.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
@@ -99,15 +103,15 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
                 case ShowPendingChangesTabItemEnum.PolicyWarnings:
                     PolicyWarningsRadioButton.IsChecked = true;
                     break;
-            
+
                 case ShowPendingChangesTabItemEnum.CheckinNotes:
                     CheckInNotesRadioButton.IsChecked = true;
                     break;
-            
+
                 case ShowPendingChangesTabItemEnum.WorkItems:
                     WorkItemsRadioButton.IsChecked = true;
                     break;
-            
+
                 case ShowPendingChangesTabItemEnum.SourceFiles:
                     SourceFilesRadioButton.IsChecked = true;
                     break;
@@ -124,22 +128,18 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
             var checkedWorkItemModel = checkBox.DataContext as WorkItemModel;
             Debug.Assert(checkedWorkItemModel != null, "checkedWorkItemModel != null");
 
-            var selectedPendingChangeModels = WorkItemsListView.SelectedItems.Cast<WorkItemModel>().ToArray();
+            var selectedWorkItemModels = WorkItemsListView.SelectedItems.Cast<WorkItemModel>().ToArray();
 
-            if (selectedPendingChangeModels.Length <= 1)
-                return;
+            var collection = selectedWorkItemModels.Contains(checkedWorkItemModel)
+                                ? selectedWorkItemModels
+                                : new[] { checkedWorkItemModel };
 
-            if (!selectedPendingChangeModels.Contains(checkedWorkItemModel))
-                return;
-
-            e.Handled = true;
-
-            var collection = selectedPendingChangeModels;
+            Debug.Assert(checkBox.IsChecked != null, "checkBox.IsChecked != null");
 
             teamPilgrimModel.SelectedWorkspaceModel.SelectWorkItemsCommand.Execute(new SelectWorkItemsCommandArgument()
             {
                 Collection = collection,
-                Value = checkedWorkItemModel.IsSelected
+                Value = checkBox.IsChecked.Value
             });
         }
 
@@ -155,21 +155,32 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
 
             var selectedPendingChangeModels = PendingChangesListView.SelectedItems.Cast<PendingChangeModel>().ToArray();
 
-            if (selectedPendingChangeModels.Length <= 1)
-                return;
-            
-            if (!selectedPendingChangeModels.Contains(checkedPendingChangeModel))
-                return;
+            var collection = selectedPendingChangeModels.Contains(checkedPendingChangeModel)
+                                ? selectedPendingChangeModels
+                                : new[] { checkedPendingChangeModel };
 
-            e.Handled = true;
+            Debug.Assert(checkBox.IsChecked != null, "checkBox.IsChecked != null");
 
-            var collection = selectedPendingChangeModels;
+            teamPilgrimModel.SelectedWorkspaceModel.SelectPendingChangesCommand.Execute(new SelectPendingChangesCommandArgument
+            {
+                Collection = collection,
+                Value = checkBox.IsChecked.Value
+            });
+        }
 
-            teamPilgrimModel.SelectedWorkspaceModel.SelectPendingChangesCommand.Execute(new SelectPendingChangesCommandArgument()
-                {
-                    Collection = collection,
-                    Value = checkedPendingChangeModel.IncludeChange
-                });
+        private void PendingChangesAllCheckboxOnClick(object sender, RoutedEventArgs e)
+        {
+            var teamPilgrimModel = (TeamPilgrimServiceModel)DataContext;
+            var selectedWorkspaceModel = teamPilgrimModel.SelectedWorkspaceModel;
+
+            var checkAll =
+                selectedWorkspaceModel.PendingChangesSummary == CollectionSelectionSummaryEnum.None;
+
+            selectedWorkspaceModel.SelectPendingChangesCommand.Execute(new SelectPendingChangesCommandArgument()
+            {
+                Collection = selectedWorkspaceModel.PendingChanges.ToArray(),
+                Value = checkAll
+            });
         }
     }
 }

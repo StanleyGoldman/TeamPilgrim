@@ -1,8 +1,9 @@
 using System.Windows;
 using System.Windows.Controls;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer.BuildDefinitions;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Explorer

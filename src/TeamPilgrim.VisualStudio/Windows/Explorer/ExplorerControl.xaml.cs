@@ -4,7 +4,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Explorer;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Explorer
 {
@@ -13,14 +14,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Explorer
     /// </summary>
     public partial class ExplorerControl : UserControl
     {
-        static TreeViewItem VisualUpwardSearchForTreeViewItem(DependencyObject source)
-        {
-            while (source != null && !(source is TreeViewItem))
-                source = VisualTreeHelper.GetParent(source);
-
-            return source as TreeViewItem;
-        }
-
         public ExplorerControl()
         {
             InitializeComponent();
@@ -29,7 +22,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Explorer
 
         private void OnPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            TreeViewItem treeViewItem = VisualUpwardSearchForTreeViewItem(e.OriginalSource as DependencyObject);
+            var treeViewItem = VisualTreeHelpers.FindAncestor<TreeViewItem>((DependencyObject) e.OriginalSource);
 
             if (treeViewItem == null) return;
 
