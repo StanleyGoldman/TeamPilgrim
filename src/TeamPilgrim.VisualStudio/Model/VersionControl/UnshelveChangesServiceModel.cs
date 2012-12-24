@@ -1,9 +1,8 @@
 ﻿using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core;
-using JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 
-namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model
+namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 {
     public class UnshelveChangesServiceModel : BaseServiceModel
     {
