@@ -217,7 +217,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties
                 var currentSort = view.SortDescriptions[0];
                 if (currentSort.PropertyName == propertyName)
                 {
-                    if (!overrideListSortDirection.HasValue)
+                    if (overrideListSortDirection.HasValue)
+                    {
+                        if (currentSort.Direction == ListSortDirection.Ascending)
+                        {
+                            return;
+                        }
+                    }
+                    else
                     {
                         if (currentSort.Direction == ListSortDirection.Ascending)
                             direction = ListSortDirection.Descending;
