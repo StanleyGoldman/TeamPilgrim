@@ -209,18 +209,28 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties
 
         #region Helper methods
 
-        public static void ApplySort(ICollectionView view, string propertyName, ListView listView, GridViewColumnHeader sortedColumnHeader)
+        public static void ApplySort(ICollectionView view, string propertyName, ListView listView, GridViewColumnHeader sortedColumnHeader, ListSortDirection? overrideListSortDirection = null)
         {
-            ListSortDirection direction = ListSortDirection.Ascending;
+            var direction = overrideListSortDirection ?? ListSortDirection.Ascending;
             if (view.SortDescriptions.Count > 0)
             {
-                SortDescription currentSort = view.SortDescriptions[0];
+                var currentSort = view.SortDescriptions[0];
                 if (currentSort.PropertyName == propertyName)
                 {
-                    if (currentSort.Direction == ListSortDirection.Ascending)
-                        direction = ListSortDirection.Descending;
+                    if (overrideListSortDirection.HasValue)
+                    {
+                        if (currentSort.Direction == ListSortDirection.Ascending)
+                        {
+                            return;
+                        }
+                    }
                     else
-                        direction = ListSortDirection.Ascending;
+                    {
+                        if (currentSort.Direction == ListSortDirection.Ascending)
+                            direction = ListSortDirection.Descending;
+                        else
+                            direction = ListSortDirection.Ascending;
+                    }
                 }
                 view.SortDescriptions.Clear();
 
