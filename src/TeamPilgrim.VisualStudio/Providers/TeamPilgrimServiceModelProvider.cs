@@ -260,6 +260,22 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             return false;
         }
 
+        public bool TryWorkspaceDeleteShelveset(TfsTeamProjectCollection tfsTeamProjectCollection, string shelvesetName, string shelvesetOwner)
+        {
+            try
+            {
+                _teamPilgrimTfsService.DeleteShelveset(tfsTeamProjectCollection, shelvesetName, shelvesetOwner);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                this.Logger().DebugException(ex);
+                LastException = ex;
+            }
+
+            return false;
+        }
+
         public bool TryWorkspaceQueryShelvedChanges(Workspace workspace, out PendingSet[] pendingSets, string shelvesetName, string shelvesetOwner, ItemSpec[] itemSpecs)
         {
             try
