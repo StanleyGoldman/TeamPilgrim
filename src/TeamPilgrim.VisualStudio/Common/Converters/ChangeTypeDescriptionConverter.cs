@@ -12,18 +12,32 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Common.Converters
         {
             var pendingChange = (PendingChange)value;
 
-            var changeList = new List<string> { };
+            return GetChangeTypeDescription(pendingChange.ChangeType, pendingChange.ChangeTypeName);
+        }
 
-            if (pendingChange.IsAdd)
-                changeList.Add("add");
+        public static string GetChangeTypeDescription(ChangeType changeType, string changeTypeName)
+        {
+            var isLock = (changeType & ChangeType.Lock) == ChangeType.Lock;
+            var isAdd = (changeType & ChangeType.Add) == ChangeType.Add;
+            var isDelete = (changeType & ChangeType.Delete) == ChangeType.Delete;
+            var isEdit = (changeType & ChangeType.Edit) == ChangeType.Edit;
+
+            if (isAdd && isLock)
+            {
+                return "add, lock";
+            }
+
+            if (isDelete && isLock)
+            {
+                return "delete, lock";
+            }
             
-            if (pendingChange.IsLock)
-                changeList.Add("lock");
+            if (!isAdd && isLock && isEdit)
+            {
+                return "lock, edit";
+            }
 
-            if (pendingChange.IsEdit && !pendingChange.IsAdd)
-                changeList.Add("edit");
-
-            return (changeList.Count == 0) ? pendingChange.ChangeTypeName : string.Join(", ", changeList);
+            return changeTypeName;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
