@@ -319,6 +319,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
             };
 
             PopulatePreviouslySelectedWorkItemQueryModels();
+            PopulateSelectedPendingChangesSummary();
 
             EvaluateCheckInCommand.Execute(null);
         }
