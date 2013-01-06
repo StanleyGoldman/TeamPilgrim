@@ -147,7 +147,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
            
             Messenger.Default.Send(new ShowUnshelveDetailsDialogMessage
                 {
-                    UnshelveDetailsServiceModel = new UnshelveDetailsServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, shelvesetModel.Shelveset)
+                    UnshelveDetailsServiceModel = new UnshelveDetailsServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, WorkspaceServiceModel, shelvesetModel.Shelveset)
                 });
         }
 

@@ -50,25 +50,25 @@
         <DockPanel DockPanel.Dock="Top">
             <DockPanel DockPanel.Dock="Top">
                 <TextBlock Text="Shelveset Name" MinWidth="150"/>
-                <TextBox IsEnabled="False" />
+                <TextBox IsEnabled="False" Text="{Binding Path=Shelveset.Name}" />
             </DockPanel>
             <DockPanel DockPanel.Dock="Top">
                 <TextBlock Text="Owner" MinWidth="150"/>
-                <TextBox IsEnabled="False" />
+                <TextBox IsEnabled="False" Text="{Binding Path=Shelveset.OwnerDisplayName}" />
             </DockPanel>
             <DockPanel DockPanel.Dock="Top">
                 <TextBlock Text="Date" MinWidth="150"/>
-                <TextBox IsEnabled="False" />
+                <TextBox IsEnabled="False" Text="{Binding Path=Shelveset.CreationDate}" />
             </DockPanel>
         </DockPanel>
         <DockPanel DockPanel.Dock="Bottom" LastChildFill="False">
             <DockPanel DockPanel.Dock="Left">
                 <DockPanel DockPanel.Dock="Top">
-                    <CheckBox />
+                    <CheckBox IsChecked="{Binding Path=RestoreWorkItemsAndCheckinNotes}" />
                     <TextBlock><Run Text="Restore work items and check-in notes"/></TextBlock>
                 </DockPanel>
                 <DockPanel DockPanel.Dock="Top">
-                    <CheckBox/>
+                    <CheckBox IsChecked="{Binding Path=PreserveShelveset}" />
                     <TextBlock><Run Text="Preserve shelveset on server"/></TextBlock>
                 </DockPanel>
             </DockPanel>
@@ -115,7 +115,7 @@
                             <ToolBar/>
                         </ToolBarTray>
                         <TextBlock DockPanel.Dock="Top"><Run Text="Comment:"/></TextBlock>
-                        <TextBox DockPanel.Dock="Top" />
+                        <TextBox DockPanel.Dock="Top" Text="{Binding Path=Shelveset.Comment}" />
 
                         <ListView x:Name="PendingChangesListView" 
     						VirtualizingPanel.IsVirtualizing="True"
@@ -123,13 +123,15 @@
                                   
     						listViewLayout:ListViewLayoutManager.Enabled="true"
 
-    						attachedProperties:GridViewSort.AutoSort="True">
+    						attachedProperties:GridViewSort.AutoSort="True"
+                            
+                            ItemsSource="{Binding Path=PendingChanges}">
 
                             <ListView.ItemContainerStyle>
                                 <Style TargetType="{x:Type ListViewItem}"/>
                             </ListView.ItemContainerStyle>
                             <ListView.ContextMenu>
-                                <ContextMenu d:DataContext="{d:DesignInstance {x:Type versionControl:ShelveServiceModel}}" x:Name="PendingChangesContextMenu">
+                                <ContextMenu d:DataContext="{d:DesignInstance {x:Type versionControl:UnshelveDetailsServiceModel}}" x:Name="PendingChangesContextMenu">
 
                                     <MenuItem Header="View"/>
 
@@ -153,13 +155,16 @@
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
                                                 <CheckBox
+                                                    DataContext="{Binding}"
+                                                    IsChecked="{Binding Path=IncludeChange, Mode=OneWay}" 
     												Click="PendingChangesCheckboxClicked"/>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                         <controls:CustomCheckBox
     										x:Name="PendingChangesAllCheckbox"
     										IsThreeState="true"
-    										Click="PendingChangesAllCheckboxOnClick" />
+    									    IsChecked="{Binding Path=PendingChangesSummary, Converter={StaticResource SelectedPendingChangesSummaryEnumIsCheckedBooleanConverter}, Mode=OneWay}"
+                                            Click="PendingChangesAllCheckboxOnClick" />
                                     </GridViewColumn>
 
                                     <GridViewColumn
