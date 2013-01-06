@@ -145,8 +145,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
         {
             var shelvesetModel = (ShelvesetModel) shelvesetModels.First();
            
-            OnDismiss(false);
-
             Messenger.Default.Send(new ShowUnshelveDetailsDialogMessage
                 {
                     UnshelveDetailsServiceModel = new UnshelveDetailsServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, shelvesetModel.Shelveset)
