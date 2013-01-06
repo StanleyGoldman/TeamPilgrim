@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using GalaSoft.MvvmLight.Messaging;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Messages;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs
@@ -28,16 +30,24 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialog
             get { return base.DataContext; }
             set
             {
+                if (base.DataContext == value)
+                    return;
+
+                if (base.DataContext != null)
+                {
+                    Messenger.Default.Unregister<DismissMessage>(this, DataContext);
+                }
+
                 base.DataContext = value;
 
-                var unshelveChangesServiceModel = (UnshelveChangesServiceModel)value;
-                if (unshelveChangesServiceModel == null) return;
-
-                unshelveChangesServiceModel.Dismiss += delegate(bool success)
+                Messenger.Default.Register<DismissMessage>(this, DataContext, dismissMessage =>
                 {
-                    DialogResult = success;
+                    DialogResult = dismissMessage.Success;
                     Close();
-                };
+                });
+
+                var unshelveDetailsServiceModel = (UnshelveChangesServiceModel)value;
+                if (unshelveDetailsServiceModel == null) return;
             }
         }
     }
