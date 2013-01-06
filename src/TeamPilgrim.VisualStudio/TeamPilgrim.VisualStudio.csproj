@@ -99,9 +99,6 @@
       <HintPath>..\..\lib\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework.Aero" />
-    <Reference Include="SlowCheetah.Tasks">
-      <HintPath>..\..\lib\SlowCheetah.Tasks.Unofficial.1.0.0\lib\SlowCheetah.Tasks.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -229,14 +226,14 @@
     <Compile Include="Model\VersionControl\CommandArguments\SelectWorkItemsCommandArgument.cs" />
     <Compile Include="Common\Enums\CollectionSelectionSummaryEnum.cs" />
     <Compile Include="Model\VersionControl\ShelvesetModel.cs" />
-    <Compile Include="Model\VersionControl\ShelvesetServiceModel.cs" />
+    <Compile Include="Model\VersionControl\ShelveServiceModel.cs" />
     <Compile Include="Model\VersionControl\PreviouslySelectedWorkItemQuery.cs" />
     <Compile Include="Common\Enums\ShowPendingChangesTabItemEnum.cs" />
     <Compile Include="Model\VersionControl\UnshelveDetailsServiceModel.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Model\WorkItemQuery\QueryFolderTypeEnum.cs" />
-    <Compile Include="Model\VersionControl\UnshelveChangesServiceModel.cs" />
+    <Compile Include="Model\VersionControl\UnshelveServiceModel.cs" />
     <Compile Include="TeamPilgrimLogManager.cs" />
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Model\Licensing\LicenseModel.cs" />
@@ -246,8 +243,8 @@
     <Compile Include="Model\WorkItemQuery\WorkItemModel.cs" />
     <Compile Include="Model\VersionControl\PolicyFailureModel.cs" />
     <Compile Include="Model\VersionControl\SelectWorkItemQueryModel.cs" />
-    <Compile Include="Windows\PendingChanges\Dialogs\UnshelveChangesDialog.xaml.cs">
-      <DependentUpon>UnshelveChangesDialog.xaml</DependentUpon>
+    <Compile Include="Windows\PendingChanges\Dialogs\UnshelveDialog.xaml.cs">
+      <DependentUpon>UnshelveDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\PendingChanges\Dialogs\UnshelveDetailsDialog.xaml.cs">
       <DependentUpon>UnshelveDetailsDialog.xaml</DependentUpon>
@@ -309,8 +306,8 @@
     <Compile Include="..\TeamPilgrim.Core\Properties\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Windows\PendingChanges\Dialogs\ShelveChangesDialog.xaml.cs">
-      <DependentUpon>ShelveChangesDialog.xaml</DependentUpon>
+    <Compile Include="Windows\PendingChanges\Dialogs\ShelveDialog.xaml.cs">
+      <DependentUpon>ShelveDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\PendingChanges\PendingChangesControl.xaml.cs">
       <DependentUpon>PendingChangesControl.xaml</DependentUpon>
@@ -425,7 +422,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\PendingChanges\Dialogs\UnshelveChangesDialog.xaml">
+    <Page Include="Windows\PendingChanges\Dialogs\UnshelveDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -441,7 +438,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\PendingChanges\Dialogs\ShelveChangesDialog.xaml">
+    <Page Include="Windows\PendingChanges\Dialogs\ShelveDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

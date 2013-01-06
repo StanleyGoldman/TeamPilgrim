@@ -12,7 +12,7 @@ using Microsoft.TeamFoundation.VersionControl.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 {
-    public class UnshelveChangesServiceModel : BaseServiceModel
+    public class UnshelveServiceModel : BaseServiceModel
     {
         public ProjectCollectionServiceModel ProjectCollectionServiceModel { get; private set; }
         public WorkspaceServiceModel WorkspaceServiceModel { get; private set; }
@@ -48,7 +48,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
             }
         }
 
-        public UnshelveChangesServiceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider,
+        public UnshelveServiceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider,
                                            ITeamPilgrimVsService teamPilgrimVsService,
                                            ProjectCollectionServiceModel projectCollectionServiceModel, WorkspaceServiceModel workspaceServiceModel)
             : base(teamPilgrimServiceModelProvider, teamPilgrimVsService)

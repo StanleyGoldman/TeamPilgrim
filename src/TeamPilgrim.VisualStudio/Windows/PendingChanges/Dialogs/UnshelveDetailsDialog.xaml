@@ -129,7 +129,7 @@
                                 <Style TargetType="{x:Type ListViewItem}"/>
                             </ListView.ItemContainerStyle>
                             <ListView.ContextMenu>
-                                <ContextMenu d:DataContext="{d:DesignInstance {x:Type versionControl:ShelvesetServiceModel}}" x:Name="PendingChangesContextMenu">
+                                <ContextMenu d:DataContext="{d:DesignInstance {x:Type versionControl:ShelveServiceModel}}" x:Name="PendingChangesContextMenu">
 
                                     <MenuItem Header="View"/>
 

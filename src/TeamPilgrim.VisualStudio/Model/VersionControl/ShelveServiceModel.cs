@@ -23,7 +23,7 @@ using RelayCommand = GalaSoft.MvvmLight.Command.RelayCommand;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 {
-    public class ShelvesetServiceModel : BaseServiceModel
+    public class ShelveServiceModel : BaseServiceModel
     {
         public delegate void ShowPendingChangesItemDelegate(ShowPendingChangesTabItemEnum showPendingChangesTabItemEnum);
         public event ShowPendingChangesItemDelegate ShowPendingChangesItem;
@@ -263,7 +263,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
         private bool _backgroundFunctionPreventDataUpdate;
 
-        public ShelvesetServiceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider,
+        public ShelveServiceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider,
                                      ITeamPilgrimVsService teamPilgrimVsService,
                                      ProjectCollectionServiceModel projectCollectionServiceModel, WorkspaceServiceModel workspaceServiceModel)
 

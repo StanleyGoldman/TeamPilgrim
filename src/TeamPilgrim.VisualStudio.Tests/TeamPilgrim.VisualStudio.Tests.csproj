@@ -64,9 +64,6 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="SlowCheetah.Tasks">
-      <HintPath>..\..\lib\SlowCheetah.Tasks.Unofficial.1.0.0\lib\SlowCheetah.Tasks.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />

@@ -26,10 +26,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 {
     public class WorkspaceServiceModel : BaseServiceModel
     {
-        public delegate void ShowShelveDialogDelegate(ShelvesetServiceModel shelvesetServiceModel);
+        public delegate void ShowShelveDialogDelegate(ShelveServiceModel shelveServiceModel);
         public event ShowShelveDialogDelegate ShowShelveDialog;
 
-        public delegate void ShowUnshelveDialogDelegate(UnshelveChangesServiceModel unshelveChangesServiceModel);
+        public delegate void ShowUnshelveDialogDelegate(UnshelveServiceModel unshelveServiceModel);
         public event ShowUnshelveDialogDelegate ShowUnshelveDialog;
 
         public delegate void ShowPendingChangesItemDelegate(ShowPendingChangesTabItemEnum showPendingChangesTabItemEnum);
@@ -838,15 +838,15 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
         public RelayCommand ShelveCommand { get; private set; }
 
-        protected virtual void OnShowShelveDialog(ShelvesetServiceModel shelvesetServiceModel)
+        protected virtual void OnShowShelveDialog(ShelveServiceModel shelveServiceModel)
         {
             var handler = ShowShelveDialog;
-            if (handler != null) handler(shelvesetServiceModel);
+            if (handler != null) handler(shelveServiceModel);
         }
 
         private void Shelve()
         {
-            OnShowShelveDialog(new ShelvesetServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, _projectCollectionServiceModel, this));
+            OnShowShelveDialog(new ShelveServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, _projectCollectionServiceModel, this));
         }
 
         private bool CanShelve()
@@ -860,15 +860,15 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
         public RelayCommand UnshelveCommand { get; private set; }
 
-        protected virtual void OnShowUnshelveDialog(UnshelveChangesServiceModel unshelveChangesServiceModel)
+        protected virtual void OnShowUnshelveDialog(UnshelveServiceModel unshelveServiceModel)
         {
-            var handler = ShowUnshelveDialog;
-            if (handler != null) handler(unshelveChangesServiceModel);
+            if (ShowUnshelveDialog != null)
+                ShowUnshelveDialog(unshelveServiceModel);
         }
 
         private void Unshelve()
         {
-            OnShowUnshelveDialog(new UnshelveChangesServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, _projectCollectionServiceModel, this));
+            OnShowUnshelveDialog(new UnshelveServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, _projectCollectionServiceModel, this));
         }
 
         private bool CanUnshelve()
