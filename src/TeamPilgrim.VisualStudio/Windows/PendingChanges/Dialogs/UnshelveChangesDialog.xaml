@@ -26,7 +26,7 @@
         </GroupBox>
         <TextBlock DockPanel.Dock="Top">Results:</TextBlock>
         <DockPanel DockPanel.Dock="Bottom" LastChildFill="False">
-            <Button HorizontalAlignment="Center" DockPanel.Dock="Left">Details...</Button>
+            <Button HorizontalAlignment="Center" DockPanel.Dock="Left" Command="{Binding Path=DetailsCommand}" CommandParameter="{Binding ElementName=PendingSetsListView, Path=SelectedItems}">Details...</Button>
             <Button HorizontalAlignment="Center" DockPanel.Dock="Left" Command="{Binding Path=DeleteCommand}" CommandParameter="{Binding ElementName=PendingSetsListView, Path=SelectedItems}">Delete</Button>
             
             <Button HorizontalAlignment="Center" DockPanel.Dock="Right" Command="{Binding Path=CancelCommand}">Close</Button>

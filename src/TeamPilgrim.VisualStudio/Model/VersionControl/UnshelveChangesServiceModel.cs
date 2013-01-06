@@ -2,8 +2,10 @@
 using System.Linq;
 using System.Windows;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Messages;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.VersionControl.Client;
@@ -63,6 +65,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
             ViewPendingSetCommand = new RelayCommand<ShelvesetModel>(ViewPendingSet, CanViewPendingSet);
             UnshelveCommand = new RelayCommand<ObservableCollection<object>>(Unshelve, CanUnshelve);
             DeleteCommand = new RelayCommand<ObservableCollection<object>>(Delete, CanDelete);
+            DetailsCommand = new RelayCommand<ObservableCollection<object>>(Details, CanDetails);
             CancelCommand = new RelayCommand(Cancel, CanCancel);
 
             FindShelvesetsCommand.Execute(null);
@@ -132,6 +135,29 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
         }
 
         private bool CanUnshelve(ObservableCollection<object> shelvesetModels)
+        {
+            return shelvesetModels != null && shelvesetModels.Count == 1;
+        }
+
+        #endregion
+
+        #region Details Command
+
+        public RelayCommand<ObservableCollection<object>> DetailsCommand { get; private set; }
+
+        private void Details(ObservableCollection<object> shelvesetModels)
+        {
+            var shelvesetModel = (ShelvesetModel) shelvesetModels.First();
+           
+            OnDismiss(false);
+
+            Messenger.Default.Send(new ShowUnshelveDetailsDialogMessage
+                {
+                    UnshelveDetailsServiceModel = new UnshelveDetailsServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, shelvesetModel.Shelveset)
+                });
+        }
+
+        private bool CanDetails(ObservableCollection<object> shelvesetModels)
         {
             return shelvesetModels != null && shelvesetModels.Count == 1;
         }

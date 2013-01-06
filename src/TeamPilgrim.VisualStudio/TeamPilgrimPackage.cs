@@ -7,14 +7,17 @@ using System.ComponentModel.Design;
 using System.Windows.Forms;
 using EnvDTE;
 using EnvDTE80;
+using GalaSoft.MvvmLight.Messaging;
 using JustAProgrammer.TeamPilgrim.Core;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Messages;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Explorer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Settings;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -115,6 +118,20 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }
 
+        public void ShowUnshelveDetailsDialog(ShowUnshelveDetailsDialogMessage showUnshelveDetailsDialogMessage)
+        {
+            var unshelveDetailsDialog = new UnshelveDetailsDialog
+            {
+                DataContext = showUnshelveDetailsDialogMessage.UnshelveDetailsServiceModel
+            };
+
+            var dialogResult = unshelveDetailsDialog.ShowDialog();
+            if (dialogResult.HasValue && dialogResult.Value)
+            {
+
+            }
+        }
+
         #region Package Members
 
         protected override void Initialize()
@@ -208,6 +225,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
 
             _teamPilgrimVsService.InitializeGlobals(Dte2, VsSolution);
             TeamPilgrimServiceModel = new TeamPilgrimServiceModel(new TeamPilgrimServiceModelProvider(), _teamPilgrimVsService);
+
+            Messenger.Default.Register<ShowUnshelveDetailsDialogMessage>(this, ShowUnshelveDetailsDialog);
 
             this.Logger().Debug("End Second Pass Initialization");
         }

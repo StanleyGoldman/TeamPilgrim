@@ -222,6 +222,9 @@
     <Compile Include="Common\Extensions\CheckinEvaluationResultExtensions.cs" />
     <Compile Include="Messages\BaseMessage.cs" />
     <Compile Include="Messages\DismissMessage.cs" />
+    <Compile Include="Messages\ShowUnshelveDetailsDialogMessage.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Model\VersionControl\CommandArguments\SelectPendingChangesCommandArgument.cs" />
     <Compile Include="Model\VersionControl\CommandArguments\SelectWorkItemsCommandArgument.cs" />
     <Compile Include="Common\Enums\CollectionSelectionSummaryEnum.cs" />
@@ -229,6 +232,9 @@
     <Compile Include="Model\VersionControl\ShelvesetServiceModel.cs" />
     <Compile Include="Model\VersionControl\PreviouslySelectedWorkItemQuery.cs" />
     <Compile Include="Common\Enums\ShowPendingChangesTabItemEnum.cs" />
+    <Compile Include="Model\VersionControl\UnshelveDetailsServiceModel.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Model\WorkItemQuery\QueryFolderTypeEnum.cs" />
     <Compile Include="Model\VersionControl\UnshelveChangesServiceModel.cs" />
     <Compile Include="TeamPilgrimLogManager.cs" />
@@ -242,6 +248,10 @@
     <Compile Include="Model\VersionControl\SelectWorkItemQueryModel.cs" />
     <Compile Include="Windows\PendingChanges\Dialogs\UnshelveChangesDialog.xaml.cs">
       <DependentUpon>UnshelveChangesDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\PendingChanges\Dialogs\UnshelveDetailsDialog.xaml.cs">
+      <DependentUpon>UnshelveDetailsDialog.xaml</DependentUpon>
+      <SubType>Code</SubType>
     </Compile>
     <Compile Include="Windows\Settings\SettingsPage.cs">
       <SubType>Component</SubType>
@@ -403,6 +413,10 @@
     <Content Include="Resources\Package.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Windows\PendingChanges\Dialogs\UnshelveDetailsDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\ResourceDictionary.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
