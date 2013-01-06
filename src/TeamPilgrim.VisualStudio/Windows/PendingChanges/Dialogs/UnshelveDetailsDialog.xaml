@@ -65,11 +65,11 @@
             <DockPanel DockPanel.Dock="Left">
                 <DockPanel DockPanel.Dock="Top">
                     <CheckBox />
-                    <TextBlock><Run Text="Preserve pending changes locally"/></TextBlock>
+                    <TextBlock><Run Text="Restore work items and check-in notes"/></TextBlock>
                 </DockPanel>
                 <DockPanel DockPanel.Dock="Top">
                     <CheckBox/>
-                    <TextBlock><Run Text="Evaluate policies and check-in notes before shelving"/></TextBlock>
+                    <TextBlock><Run Text="Preserve shelveset on server"/></TextBlock>
                 </DockPanel>
             </DockPanel>
             <DockPanel DockPanel.Dock="Right" LastChildFill="False">
