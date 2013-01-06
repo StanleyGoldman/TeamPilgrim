@@ -15,9 +15,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialog
     /// <summary>
     /// Interaction logic for ShelveChangesDialog.xaml
     /// </summary>
-    public partial class ShelveChangesDialog : Window
+    public partial class ShelveDialog : Window
     {
-        public ShelveChangesDialog()
+        public ShelveDialog()
         {
             InitializeComponent();
             
@@ -36,7 +36,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialog
             {
                 base.DataContext = value;
 
-                var shelvesetServiceModel = (ShelvesetServiceModel) value;
+                var shelvesetServiceModel = (ShelveServiceModel) value;
                 if (shelvesetServiceModel == null) return;
 
                 shelvesetServiceModel.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
@@ -85,7 +85,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialog
 
         private void PendingChangesCheckboxClicked(object sender, RoutedEventArgs e)
         {
-            var shelvesetServiceModel = (ShelvesetServiceModel)DataContext;
+            var shelvesetServiceModel = (ShelveServiceModel)DataContext;
 
             var checkBox = sender as CheckBox;
             Debug.Assert(checkBox != null, "checkBox != null");
@@ -110,7 +110,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialog
 
         private void PendingChangeWorkItemCheckboxClicked(object sender, RoutedEventArgs e)
         {
-            var shelvesetServiceModel = (ShelvesetServiceModel)DataContext;
+            var shelvesetServiceModel = (ShelveServiceModel)DataContext;
 
             var checkBox = sender as CheckBox;
             Debug.Assert(checkBox != null, "checkBox != null");
@@ -135,7 +135,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialog
 
         private void PendingChangesAllCheckboxOnClick(object sender, RoutedEventArgs e)
         {
-            var shelvesetServiceModel = (ShelvesetServiceModel)DataContext;
+            var shelvesetServiceModel = (ShelveServiceModel)DataContext;
 
             var checkAll =
                 shelvesetServiceModel.PendingChangesSummary == CollectionSelectionSummaryEnum.None;

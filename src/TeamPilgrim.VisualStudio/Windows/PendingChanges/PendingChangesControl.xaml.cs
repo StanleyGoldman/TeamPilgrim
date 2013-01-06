@@ -83,11 +83,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
                 }
         }
 
-        private void SelectedWorkspaceModelOnShowShelveDialog(ShelvesetServiceModel shelvesetServiceModel)
+        private void SelectedWorkspaceModelOnShowShelveDialog(ShelveServiceModel shelveServiceModel)
         {
-            var shelveChangesDialog = new ShelveChangesDialog
+            var shelveChangesDialog = new ShelveDialog
                 {
-                    DataContext = shelvesetServiceModel
+                    DataContext = shelveServiceModel
                 };
 
             var dialogResult = shelveChangesDialog.ShowDialog();

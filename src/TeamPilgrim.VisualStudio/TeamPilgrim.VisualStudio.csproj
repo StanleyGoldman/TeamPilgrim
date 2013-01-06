@@ -226,7 +226,7 @@
     <Compile Include="Model\VersionControl\CommandArguments\SelectWorkItemsCommandArgument.cs" />
     <Compile Include="Common\Enums\CollectionSelectionSummaryEnum.cs" />
     <Compile Include="Model\VersionControl\ShelvesetModel.cs" />
-    <Compile Include="Model\VersionControl\ShelvesetServiceModel.cs" />
+    <Compile Include="Model\VersionControl\ShelveServiceModel.cs" />
     <Compile Include="Model\VersionControl\PreviouslySelectedWorkItemQuery.cs" />
     <Compile Include="Common\Enums\ShowPendingChangesTabItemEnum.cs" />
     <Compile Include="Model\WorkItemQuery\QueryFolderTypeEnum.cs" />
@@ -299,8 +299,8 @@
     <Compile Include="..\TeamPilgrim.Core\Properties\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Windows\PendingChanges\Dialogs\ShelveChangesDialog.xaml.cs">
-      <DependentUpon>ShelveChangesDialog.xaml</DependentUpon>
+    <Compile Include="Windows\PendingChanges\Dialogs\ShelveDialog.xaml.cs">
+      <DependentUpon>ShelveDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\PendingChanges\PendingChangesControl.xaml.cs">
       <DependentUpon>PendingChangesControl.xaml</DependentUpon>
@@ -427,7 +427,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\PendingChanges\Dialogs\ShelveChangesDialog.xaml">
+    <Page Include="Windows\PendingChanges\Dialogs\ShelveDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
