@@ -7,7 +7,6 @@ using System.ComponentModel.Design;
 using System.Windows.Forms;
 using EnvDTE;
 using EnvDTE80;
-using JustAProgrammer.TeamPilgrim.Core;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model;

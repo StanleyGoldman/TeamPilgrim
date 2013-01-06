@@ -9,8 +9,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{14A28DB2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamPilgrim.VisualStudio.Tests", "TeamPilgrim.VisualStudio.Tests\TeamPilgrim.VisualStudio.Tests.csproj", "{A1665C09-1291-43CA-8E1F-EE1B40E34563}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamPilgrim.Core", "TeamPilgrim.Core\TeamPilgrim.Core.csproj", "{6D661FC1-0805-4E2B-91D1-6C56B0044818}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,10 +27,6 @@ Global
 		{A1665C09-1291-43CA-8E1F-EE1B40E34563}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1665C09-1291-43CA-8E1F-EE1B40E34563}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1665C09-1291-43CA-8E1F-EE1B40E34563}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6D661FC1-0805-4E2B-91D1-6C56B0044818}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6D661FC1-0805-4E2B-91D1-6C56B0044818}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6D661FC1-0805-4E2B-91D1-6C56B0044818}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6D661FC1-0805-4E2B-91D1-6C56B0044818}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

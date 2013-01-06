@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using JustAProgrammer.TeamPilgrim.Core;
+using JustAProgrammer.TeamPilgrim.VisualStudio;
 
 [assembly: AssemblyTitle("TeamPilgrim.VisualStudio.Tests" + VersionInfo.DebugBuild + VersionInfo.DirtyBuild)]
 

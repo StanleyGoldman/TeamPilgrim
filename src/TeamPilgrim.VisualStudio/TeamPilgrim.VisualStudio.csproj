@@ -18,7 +18,7 @@
     <RootNamespace>JustAProgrammer.TeamPilgrim.VisualStudio</RootNamespace>
     <AssemblyName>TeamPilgrim.VisualStudio</AssemblyName>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\TeamPilgrim.Core\Key.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -231,6 +231,8 @@
     <Compile Include="Common\Enums\ShowPendingChangesTabItemEnum.cs" />
     <Compile Include="Model\WorkItemQuery\QueryFolderTypeEnum.cs" />
     <Compile Include="Model\VersionControl\UnshelveServiceModel.cs" />
+    <Compile Include="Properties\CommonAssemblyInfo.cs" />
+    <Compile Include="Properties\VersionInfo.cs" />
     <Compile Include="TeamPilgrimLogManager.cs" />
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Model\Licensing\LicenseModel.cs" />
@@ -296,9 +298,6 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="TeamPilgrimPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="..\TeamPilgrim.Core\Properties\CommonAssemblyInfo.cs">
-      <Link>Properties\CommonAssemblyInfo.cs</Link>
-    </Compile>
     <Compile Include="Windows\PendingChanges\Dialogs\ShelveDialog.xaml.cs">
       <DependentUpon>ShelveDialog.xaml</DependentUpon>
     </Compile>
@@ -308,9 +307,6 @@
     <Compile Include="Windows\PendingChanges\PendingChangesWindow.cs" />
     <Compile Include="Common\Converters\SingleObjectToObservableCollectionConverter.cs" />
     <Compile Include="TeamPilgrimSettings.cs" />
-    <None Include="..\TeamPilgrim.Core\Key.snk">
-      <Link>Key.snk</Link>
-    </None>
     <Compile Include="PkgCmdID.cs" />
     <Compile Include="Common\Extensions\EnumerableQueryItemExtensions.cs" />
     <Compile Include="Model\VersionControl\SourceControlModel.cs" />
@@ -354,6 +350,7 @@
     <Resource Include="Resources\PolicyWarnings%28large%29_7879.png" />
     <Resource Include="Resources\Solution_8308.png" />
     <Resource Include="Resources\refresh_16xLG.png" />
+    <None Include="Key.snk" />
     <None Include="NLog.Debug.config">
       <DependentUpon>NLog.config</DependentUpon>
       <IsTransformFile>True</IsTransformFile>
@@ -368,6 +365,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+    <None Include="Properties\VersionInfo.cs.tmp" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
@@ -436,12 +434,6 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\TeamPilgrim.Core\TeamPilgrim.Core.csproj">
-      <Project>{6d661fc1-0805-4e2b-91d1-6c56b0044818}</Project>
-      <Name>TeamPilgrim.Core</Name>
-    </ProjectReference>
-  </ItemGroup>
   <ItemGroup />
   <PropertyGroup>
     <UseCodebase>true</UseCodebase>
@@ -455,7 +447,9 @@
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   -->
+  <Import Project="..\..\lib\VersionTasks.1.2.0.0\tools\VersionTasks.targets" />
   <Target Name="BeforeBuild">
+    <GitVersionFile TemplateFile="Properties\VersionInfo.cs.tmp" DestinationFile="Properties\VersionInfo.cs" />
   </Target>
   <Target Name="AfterBuild">
   </Target>
