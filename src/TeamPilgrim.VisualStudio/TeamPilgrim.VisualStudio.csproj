@@ -220,6 +220,8 @@
     <Compile Include="Common\VsWindowFrameEditorTypeIds.cs" />
     <Compile Include="Common\AttachedProperties\MouseDoubleClick.cs" />
     <Compile Include="Common\Extensions\CheckinEvaluationResultExtensions.cs" />
+    <Compile Include="Messages\BaseMessage.cs" />
+    <Compile Include="Messages\DismissMessage.cs" />
     <Compile Include="Model\VersionControl\CommandArguments\SelectPendingChangesCommandArgument.cs" />
     <Compile Include="Model\VersionControl\CommandArguments\SelectWorkItemsCommandArgument.cs" />
     <Compile Include="Common\Enums\CollectionSelectionSummaryEnum.cs" />
