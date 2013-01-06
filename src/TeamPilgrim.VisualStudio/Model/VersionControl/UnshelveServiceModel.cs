@@ -2,15 +2,17 @@
 using System.Linq;
 using System.Windows;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Messages;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.VersionControl.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 {
-    public class UnshelveChangesServiceModel : BaseServiceModel
+    public class UnshelveServiceModel : BaseServiceModel
     {
         public ProjectCollectionServiceModel ProjectCollectionServiceModel { get; private set; }
         public WorkspaceServiceModel WorkspaceServiceModel { get; private set; }
@@ -46,7 +48,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
             }
         }
 
-        public UnshelveChangesServiceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider,
+        public UnshelveServiceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider,
                                            ITeamPilgrimVsService teamPilgrimVsService,
                                            ProjectCollectionServiceModel projectCollectionServiceModel, WorkspaceServiceModel workspaceServiceModel)
             : base(teamPilgrimServiceModelProvider, teamPilgrimVsService)

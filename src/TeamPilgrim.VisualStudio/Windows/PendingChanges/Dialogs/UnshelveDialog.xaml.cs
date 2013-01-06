@@ -11,9 +11,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialog
     /// <summary>
     /// Interaction logic for ShelveChangesDialog.xaml
     /// </summary>
-    public partial class UnshelveChangesDialog : Window
+    public partial class UnshelveDialog : Window
     {
-        public UnshelveChangesDialog()
+        public UnshelveDialog()
         {
             InitializeComponent();
             
@@ -46,7 +46,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialog
                     Close();
                 });
 
-                var unshelveDetailsServiceModel = (UnshelveChangesServiceModel)value;
+                var unshelveDetailsServiceModel = (UnshelveServiceModel)value;
                 if (unshelveDetailsServiceModel == null) return;
             }
         }

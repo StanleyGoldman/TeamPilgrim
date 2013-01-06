@@ -69,11 +69,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges
             teamPilgrimServiceModel.SelectedWorkspaceModel.ShowUnshelveDialog += SelectedWorkspaceModelOnShowUnshelveDialog;
         }
 
-        private void SelectedWorkspaceModelOnShowUnshelveDialog(UnshelveChangesServiceModel unshelveChangesServiceModel)
+        private void SelectedWorkspaceModelOnShowUnshelveDialog(UnshelveServiceModel unshelveServiceModel)
         {
-                var unshelveChangesDialog = new UnshelveChangesDialog
+                var unshelveChangesDialog = new UnshelveDialog
                 {
-                    DataContext = unshelveChangesServiceModel
+                    DataContext = unshelveServiceModel
                 };
 
                 var dialogResult = unshelveChangesDialog.ShowDialog();
