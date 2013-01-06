@@ -13,6 +13,7 @@ using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Enums;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Extensions;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Messages;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Messages.ShowSelectWorkItemQueryDialog;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl.CommandArguments;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery;
@@ -25,7 +26,7 @@ using RelayCommand = GalaSoft.MvvmLight.Command.RelayCommand;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 {
-    public class ShelvesetServiceModel : BaseServiceModel
+    public class ShelvesetServiceModel : BaseServiceModel, IShowSelectWorkItemQueryDialogSender
     {
         public delegate void ShowPendingChangesItemDelegate(ShowPendingChangesTabItemEnum showPendingChangesTabItemEnum);
         public event ShowPendingChangesItemDelegate ShowPendingChangesItem;
@@ -245,7 +246,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
             {
                 return _selectedWorkWorkItemQueryDefinition;
             }
-            private set
+            set
             {
                 if (_selectedWorkWorkItemQueryDefinition == value) return;
 
@@ -255,7 +256,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
                 RefreshSelectedDefinitionWorkItems();
 
-                TeamPilgrimPackage.TeamPilgrimSettings.AddPreviouslySelectedWorkItemQuery(_projectCollectionServiceModel.TfsTeamProjectCollection.Uri.ToString(), value.QueryDefinition.Path);
                 PopulatePreviouslySelectedWorkItemQueryModels();
             }
         }
@@ -524,16 +524,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
         private void ShowSelectWorkItemQuery()
         {
             var selectWorkItemQueryModel = new SelectWorkItemQueryModel(_projectCollectionServiceModel);
-            var selectWorkItemQueryDialog = new SelectWorkItemQueryDialog
-                {
-                    DataContext = selectWorkItemQueryModel
-                };
 
-            var dialogResult = selectWorkItemQueryDialog.ShowDialog();
-            if (dialogResult.HasValue && dialogResult.Value)
-            {
-                SelectedWorkItemQueryDefinition = selectWorkItemQueryModel.SelectedWorkItemQueryDefinition;
-            }
+            Messenger.Default.Send(new ShowSelectWorkItemQueryDialogMessage
+                {
+                    Sender = this,
+                    TfsTeamProjectCollection = _projectCollectionServiceModel.TfsTeamProjectCollection,
+                    SelectWorkItemQueryModel = selectWorkItemQueryModel    
+                });
         }
 
         private bool CanShowSelectWorkItemQuery()

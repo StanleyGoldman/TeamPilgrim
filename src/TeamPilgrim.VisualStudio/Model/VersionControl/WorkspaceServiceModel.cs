@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.WorkItems;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
@@ -12,6 +13,7 @@ using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Comparer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Enums;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Extensions;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Messages.ShowSelectWorkItemQueryDialog;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl.CommandArguments;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery;
@@ -24,7 +26,7 @@ using RelayCommand = GalaSoft.MvvmLight.Command.RelayCommand;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 {
-    public class WorkspaceServiceModel : BaseServiceModel
+    public class WorkspaceServiceModel : BaseServiceModel, IShowSelectWorkItemQueryDialogSender
     {
         public delegate void ShowShelveDialogDelegate(ShelvesetServiceModel shelvesetServiceModel);
         public event ShowShelveDialogDelegate ShowShelveDialog;
@@ -149,7 +151,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
             {
                 return _selectedWorkWorkItemQueryDefinition;
             }
-            private set
+            set
             {
                 if (_selectedWorkWorkItemQueryDefinition == value) return;
 
@@ -159,7 +161,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
                 RefreshSelectedDefinitionWorkItems();
 
-                TeamPilgrimPackage.TeamPilgrimSettings.AddPreviouslySelectedWorkItemQuery(_projectCollectionServiceModel.TfsTeamProjectCollection.Uri.ToString(), value.QueryDefinition.Path);
                 PopulatePreviouslySelectedWorkItemQueryModels();
             }
         }
@@ -812,19 +813,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
         private void ShowSelectWorkItemQuery()
         {
-            //TODO: This should be an event, and the dialog should be displayed by a control object
-
             var selectWorkItemQueryModel = new SelectWorkItemQueryModel(_projectCollectionServiceModel);
-            var selectWorkItemQueryDialog = new SelectWorkItemQueryDialog
-                {
-                    DataContext = selectWorkItemQueryModel
-                };
 
-            var dialogResult = selectWorkItemQueryDialog.ShowDialog();
-            if (dialogResult.HasValue && dialogResult.Value)
+            Messenger.Default.Send(new ShowSelectWorkItemQueryDialogMessage
             {
-                SelectedWorkItemQueryDefinition = selectWorkItemQueryModel.SelectedWorkItemQueryDefinition;
-            }
+                Sender = this,
+                TfsTeamProjectCollection = _projectCollectionServiceModel.TfsTeamProjectCollection,
+                SelectWorkItemQueryModel = selectWorkItemQueryModel
+            });
         }
 
         private bool CanShowSelectWorkItemQuery()

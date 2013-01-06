@@ -222,6 +222,8 @@
     <Compile Include="Common\Extensions\CheckinEvaluationResultExtensions.cs" />
     <Compile Include="Messages\BaseMessage.cs" />
     <Compile Include="Messages\DismissMessage.cs" />
+    <Compile Include="Messages\ShowSelectWorkItemQueryDialog\IShowSelectWorkItemQueryDialogSender.cs" />
+    <Compile Include="Messages\ShowSelectWorkItemQueryDialog\ShowSelectWorkItemQueryDialogMessage.cs" />
     <Compile Include="Model\VersionControl\CommandArguments\SelectPendingChangesCommandArgument.cs" />
     <Compile Include="Model\VersionControl\CommandArguments\SelectWorkItemsCommandArgument.cs" />
     <Compile Include="Common\Enums\CollectionSelectionSummaryEnum.cs" />

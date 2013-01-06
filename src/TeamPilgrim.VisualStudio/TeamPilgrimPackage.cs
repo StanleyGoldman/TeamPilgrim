@@ -10,11 +10,14 @@ using EnvDTE80;
 using JustAProgrammer.TeamPilgrim.Core;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Messages;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Messages.ShowSelectWorkItemQueryDialog;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Explorer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Settings;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -59,7 +62,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
         private static TeamPilgrimVsService _teamPilgrimVsService;
 
         public static TeamPilgrimServiceModel TeamPilgrimServiceModel { get; private set; }
-        
+
         public static TeamPilgrimSettings TeamPilgrimSettings { get; private set; }
 
         private uint _shellPropertyChangeCookie;
@@ -115,6 +118,23 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }
 
+        private void ShowSelectWorkItemQueryDialog(ShowSelectWorkItemQueryDialogMessage showSelectWorkItemQueryDialogMessage)
+        {
+            var selectWorkItemQueryModel = showSelectWorkItemQueryDialogMessage.SelectWorkItemQueryModel;
+            var selectWorkItemQueryDialog = new SelectWorkItemQueryDialog
+            {
+                DataContext = selectWorkItemQueryModel
+            };
+
+            var dialogResult = selectWorkItemQueryDialog.ShowDialog();
+            if (dialogResult.HasValue && dialogResult.Value)
+            {
+                var selectedWorkItemQueryDefinition = selectWorkItemQueryModel.SelectedWorkItemQueryDefinition;
+                TeamPilgrimSettings.AddPreviouslySelectedWorkItemQuery(showSelectWorkItemQueryDialogMessage.TfsTeamProjectCollection.Uri.ToString(), selectedWorkItemQueryDefinition.QueryDefinition.Path);
+                showSelectWorkItemQueryDialogMessage.Sender.SelectedWorkItemQueryDefinition = selectedWorkItemQueryDefinition;
+            }
+        }
+
         #region Package Members
 
         protected override void Initialize()
@@ -153,6 +173,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             TeamPilgrimPackage.MenuCommandService = base.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             TeamPilgrimPackage._teamPilgrimVsService.Initialize(_singleInstance, UIShell);
 
+            GalaSoft.MvvmLight.Messaging.Messenger.Default.Register<ShowSelectWorkItemQueryDialogMessage>(this, ShowSelectWorkItemQueryDialog);
+
             this.Logger().Debug("End First Pass Initialization");
 
             CompletePackageInitialization();
@@ -190,7 +212,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
 
             if (Dte != null)
             {
-                this.Logger().Warn("Package Previously Initialized"); 
+                this.Logger().Warn("Package Previously Initialized");
                 return;
             }
 
