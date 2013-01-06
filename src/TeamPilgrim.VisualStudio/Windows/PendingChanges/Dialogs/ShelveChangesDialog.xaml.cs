@@ -3,8 +3,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using GalaSoft.MvvmLight.Messaging;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Enums;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Messages;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl.CommandArguments;
@@ -34,7 +36,21 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialog
             get { return base.DataContext; }
             set
             {
+                if (base.DataContext == value)
+                    return;
+
+                if (base.DataContext != null)
+                {
+                    Messenger.Default.Unregister<DismissMessage>(this, DataContext);
+                }
+
                 base.DataContext = value;
+
+                Messenger.Default.Register<DismissMessage>(this, DataContext, dismissMessage =>
+                {
+                    DialogResult = dismissMessage.Success;
+                    Close();
+                });
 
                 var shelvesetServiceModel = (ShelvesetServiceModel) value;
                 if (shelvesetServiceModel == null) return;
@@ -51,12 +67,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialog
                                 }
                             }
                         }
-                    };
-
-                shelvesetServiceModel.Dismiss += delegate(bool success)
-                    {
-                        DialogResult = success;
-                        Close();
                     };
 
                 shelvesetServiceModel.ShowPendingChangesItem += delegate(ShowPendingChangesTabItemEnum showPendingChangesTabItem)

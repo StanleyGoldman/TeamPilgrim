@@ -6,11 +6,13 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Comparer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Enums;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Extensions;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Messages;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl.CommandArguments;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery;
@@ -27,9 +29,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
     {
         public delegate void ShowPendingChangesItemDelegate(ShowPendingChangesTabItemEnum showPendingChangesTabItemEnum);
         public event ShowPendingChangesItemDelegate ShowPendingChangesItem;
-
-        public delegate void DismissDelegate(bool success);
-        public event DismissDelegate Dismiss;
 
         public BatchedObservableCollection<CheckinNoteModel> CheckinNotes { get; private set; }
 
@@ -369,8 +368,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
         protected virtual void OnDismiss(bool success)
         {
-            if (Dismiss != null) 
-                Dismiss(success);
+            Messenger.Default.Send(new DismissMessage {Success = success}, this);
         }
 
         #region PendingChanges Collection
