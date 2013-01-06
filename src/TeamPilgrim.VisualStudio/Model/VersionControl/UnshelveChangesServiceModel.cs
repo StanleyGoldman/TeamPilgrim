@@ -14,9 +14,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 {
     public class UnshelveChangesServiceModel : BaseServiceModel
     {
-        public delegate void DismissDelegate(bool success);
-        public event DismissDelegate Dismiss;
-
         public ProjectCollectionServiceModel ProjectCollectionServiceModel { get; private set; }
         public WorkspaceServiceModel WorkspaceServiceModel { get; private set; }
 
@@ -73,8 +70,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
         protected virtual void OnDismiss(bool success)
         {
-            if (Dismiss != null)
-                Dismiss(success);
+            Messenger.Default.Send(new DismissMessage { Success = success }, this);
         }
 
         #region FindShelvesets Command
