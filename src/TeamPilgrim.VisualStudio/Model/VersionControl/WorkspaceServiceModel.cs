@@ -216,6 +216,21 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
             }
         }
 
+        private bool _hideShowComments = true;
+        public bool HideShowComments
+        {
+            get { return _hideShowComments; }
+            set
+            {
+                if(_hideShowComments == value)
+                    return;
+
+                _hideShowComments = value;
+
+                SendPropertyChanged("HideShowComments");
+            }
+        }
+
         private bool _backgroundFunctionPreventDataUpdate;
 
         public WorkspaceServiceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, ProjectCollectionServiceModel projectCollectionServiceModel, Workspace workspace)
