@@ -175,22 +175,43 @@
                     </ToolBarTray>
 
                     <Grid DockPanel.Dock="Top">
-                        <Grid.RowDefinitions>
-                            <RowDefinition MinHeight="40" Height="55" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
                         
-                        <DockPanel Grid.Row="0">
+                        <Grid.Resources>
+                            <Style x:Key="CommentAreaRowDefinition" TargetType="RowDefinition">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=SelectedWorkspaceModel.HideShowComments}" Value="True">
+                                        <Setter Property="MinHeight" Value="40" />
+                                        <Setter Property="Height" Value="55" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=SelectedWorkspaceModel.HideShowComments}" Value="False">
+                                        <Setter Property="MinHeight" Value="0" />
+                                        <Setter Property="Height" Value="0" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Resources>
+                        
+                        <Grid.RowDefinitions>
+                            <RowDefinition Style="{DynamicResource CommentAreaRowDefinition}" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <DockPanel Grid.Row="0"
+                                   DataContext="{Binding Path=SelectedWorkspaceModel}"
+                                   Visibility="{Binding Path=HideShowComments, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            
                             <TextBlock DockPanel.Dock="Top">Comment:</TextBlock>
                             <TextBox DockPanel.Dock="Top" TextWrapping="Wrap" AcceptsReturn="True"
                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                      ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                     DataContext="{Binding Path=SelectedWorkspaceModel}" Text="{Binding Path=Comment, UpdateSourceTrigger=PropertyChanged}" HorizontalScrollBarVisibility="Auto">
+                                     Text="{Binding Path=Comment, UpdateSourceTrigger=PropertyChanged}" HorizontalScrollBarVisibility="Auto">
                             </TextBox>
                         </DockPanel>
 
-                        <GridSplitter Grid.Row="1" Width="Auto" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0"/>
+                        <GridSplitter Grid.Row="1" Width="Auto" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0" 
+                                      DataContext="{Binding Path=SelectedWorkspaceModel}" 
+                                      Visibility="{Binding Path=HideShowComments, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
                         <ListView x:Name="PendingChangesListView" HorizontalAlignment="Stretch"
                               
