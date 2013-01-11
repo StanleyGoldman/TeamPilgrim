@@ -91,10 +91,6 @@
                     <RadioButton x:Name="CheckInNotesRadioButton" Style="{StaticResource CheckInNotesRadioButtonStyle}">
                         <Image />
                     </RadioButton>
-
-                    <RadioButton x:Name="PolicyWarningsRadioButton" Style="{StaticResource PolicyWarningsRadioButtonStyle}">
-                        <Image />
-                    </RadioButton>
                 </ToolBar>
             </ToolBarTray>
             <TabControl DockPanel.Dock="Right">
@@ -319,29 +315,6 @@
                                 </Expander>
                             </DataTemplate>
                         </ListView.ItemTemplate>
-                    </ListView>
-                </TabItem>
-                <TabItem x:Name="PolicyWarningsTabItem" IsSelected="{Binding IsChecked, ElementName=PolicyWarningsRadioButton}">
-                    <ListView
-    					VirtualizingPanel.IsVirtualizing="True"
-    					VirtualizingPanel.VirtualizationMode="Recycling"
-                        
-    					listViewLayout:ListViewLayoutManager.Enabled="true">
-
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn listViewLayout:RangeColumn.MinWidth="200"
-    								listViewLayout:RangeColumn.IsFillColumn="True">
-
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate DataType="versionControlClient:PolicyFailure">
-                                            <TextBlock Text="{Binding Message}"/>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                    <GridViewColumnHeader Style="{StaticResource TextGridViewColumnHeader}" Content="Description"/>
-                                </GridViewColumn>
-                            </GridView>
-                        </ListView.View>
                     </ListView>
                 </TabItem>
             </TabControl>
