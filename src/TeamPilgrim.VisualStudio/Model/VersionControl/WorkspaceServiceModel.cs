@@ -201,7 +201,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
             }
         }
 
-        private CollectionSelectionSummaryEnum _pendingChangesSummary = CollectionSelectionSummaryEnum.None;
+        private CollectionSelectionSummaryEnum _pendingChangesSummary = CollectionSelectionSummaryEnum.All;
         public CollectionSelectionSummaryEnum PendingChangesSummary
         {
             get { return _pendingChangesSummary; }
