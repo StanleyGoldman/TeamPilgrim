@@ -209,7 +209,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
             {
                 if (_pendingChangesSummary == value)
                     return;
-                
+
                 _pendingChangesSummary = value;
 
                 SendPropertyChanged("PendingChangesSummary");
@@ -256,7 +256,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
             {
                 foreach (var pendingChange in pendingChanges)
                 {
-                    var pendingChangeModel = new PendingChangeModel(pendingChange);
+                    var pendingChangeModel = new PendingChangeModel(pendingChange) { IncludeChange = true };
                     PendingChanges.Add(pendingChangeModel);
                 }
             }
@@ -747,7 +747,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
                 var modelsToAdd = currentPendingChanges
                     .Where(pendingChange => !intersectedModels.Select(model => model.Change.ItemId).Contains(pendingChange.ItemId))
-                    .Select(change => new PendingChangeModel(change)).ToArray();
+                    .Select(change => new PendingChangeModel(change) { IncludeChange = true }).ToArray();
 
                 _backgroundFunctionPreventDataUpdate = true;
 
@@ -755,7 +755,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
                 {
                     intersection.model.Change = intersection.change;
                 }
-                
+
                 PendingChanges.AddRange(modelsToAdd);
 
                 foreach (var modelToRemove in modelsToRemove)
