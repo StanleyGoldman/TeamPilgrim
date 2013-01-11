@@ -128,6 +128,16 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
                                                                      shelvesetModel.Shelveset.Name, shelvesetModel.Shelveset.OwnerName))
             {
                 success = true;
+
+                foreach (var workItemCheckinInfo in shelveset.WorkItemInfo)
+                {
+                    WorkspaceServiceModel.SelectWorkItemById(workItemCheckinInfo.WorkItem.Id);
+                }
+
+                foreach (var checkinNoteFieldValue in shelveset.CheckinNote.Values)
+                {
+                    WorkspaceServiceModel.RestoreCheckinNoteFieldValue(checkinNoteFieldValue);
+                }
             }
 
             Dismiss(success);
@@ -150,7 +160,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
            
             Messenger.Default.Send(new ShowUnshelveDetailsDialogMessage
                 {
-                    UnshelveDetailsServiceModel = new UnshelveDetailsServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, WorkspaceServiceModel, this, shelvesetModel.Shelveset)
+                    UnshelveDetailsServiceModel = new UnshelveDetailsServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, ProjectCollectionServiceModel , WorkspaceServiceModel, this, shelvesetModel.Shelveset)
                 });
         }
 
@@ -172,7 +182,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
             foreach (var shelvesetModel in shelvesetModels.Cast<ShelvesetModel>())
             {
-                teamPilgrimServiceModelProvider.TryWorkspaceDeleteShelveset(ProjectCollectionServiceModel.TfsTeamProjectCollection, shelvesetModel.Shelveset.Name, shelvesetModel.Shelveset.OwnerName);
+                teamPilgrimServiceModelProvider.TryDeleteShelveset(ProjectCollectionServiceModel.TfsTeamProjectCollection, shelvesetModel.Shelveset.Name, shelvesetModel.Shelveset.OwnerName);
             }
 
             FindShelvesetsCommand.Execute(null);

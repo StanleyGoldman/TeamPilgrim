@@ -318,6 +318,38 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
             if (handler != null) handler(showpendingchangestabitemenum);
         }
 
+        public void SelectWorkItemById(int workItemId)
+        {
+            this.Logger().Trace("SelectWorkItemById: {0}", workItemId);
+
+            foreach (var workItemModel in WorkItems)
+            {
+                if (workItemModel.WorkItem.Id == workItemId)
+                {
+                    workItemModel.IsSelected = true;
+                    break;
+                }
+            }
+
+            this.Logger().Warn("SelectWorkItemById: {0} not found", workItemId);
+        }
+
+        public void RestoreCheckinNoteFieldValue(CheckinNoteFieldValue checkinNoteFieldValue)
+        {
+            this.Logger().Trace("RestoreCheckinNoteFieldValue: '{0}'", checkinNoteFieldValue.Name);
+
+            foreach (var checkinNoteModel in CheckinNotes)
+            {
+                if (checkinNoteModel.CheckinNoteFieldDefinition.Name == checkinNoteFieldValue.Name)
+                {
+                    checkinNoteModel.Value = checkinNoteFieldValue.Value;
+                    break;
+                }
+            }
+
+            this.Logger().Warn("RestoreCheckinNoteFieldValue: '{0}' not found", checkinNoteFieldValue.Name);
+        }
+
         #region PendingChanges Collection
 
         public BatchedObservableCollection<PendingChangeModel> PendingChanges { get; private set; }

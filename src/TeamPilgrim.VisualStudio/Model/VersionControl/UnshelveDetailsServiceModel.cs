@@ -5,7 +5,9 @@ using GalaSoft.MvvmLight.Messaging;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Enums;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Messages;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Messages.Dismiss;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl.CommandArguments;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.VersionControl.Client;
@@ -15,6 +17,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 {
     public class UnshelveDetailsServiceModel : BaseServiceModel
     {
+        public ProjectCollectionServiceModel ProjectCollectionServiceModel { get; set; }
         public WorkspaceServiceModel WorkspaceServiceModel { get; private set; }
         public UnshelveServiceModel UnshelveServiceModel { get; set; }
         public Shelveset Shelveset { get; private set; }
@@ -67,9 +70,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
         private bool _backgroundFunctionPreventDataUpdate;
 
-        public UnshelveDetailsServiceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, WorkspaceServiceModel workspaceServiceModel, UnshelveServiceModel unshelveServiceModel, Shelveset shelveset)
+        public UnshelveDetailsServiceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, ProjectCollectionServiceModel projectCollectionServiceModel, WorkspaceServiceModel workspaceServiceModel, UnshelveServiceModel unshelveServiceModel, Shelveset shelveset)
             : base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
         {
+            ProjectCollectionServiceModel = projectCollectionServiceModel;
             WorkspaceServiceModel = workspaceServiceModel;
             UnshelveServiceModel = unshelveServiceModel;
             Shelveset = shelveset;
@@ -169,6 +173,27 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
                 result = teamPilgrimServiceModelProvider.TryWorkspaceUnshelve(WorkspaceServiceModel.Workspace, out shelveset,
                                                                  Shelveset.Name, Shelveset.OwnerName, itemSpecs);
+            }
+
+            if (result)
+            {
+                if (RestoreWorkItemsAndCheckinNotes)
+                {
+                    foreach (var workItemCheckinInfo in Shelveset.WorkItemInfo)
+                    {
+                        WorkspaceServiceModel.SelectWorkItemById(workItemCheckinInfo.WorkItem.Id);
+                    }
+
+                    foreach (var checkinNoteFieldValue in this.Shelveset.CheckinNote.Values)
+                    {
+                        WorkspaceServiceModel.RestoreCheckinNoteFieldValue(checkinNoteFieldValue);
+                    }
+                }
+
+                if (!PreserveShelveset)
+                {
+                    teamPilgrimServiceModelProvider.TryDeleteShelveset(ProjectCollectionServiceModel.TfsTeamProjectCollection, shelveset.Name, shelveset.OwnerName);
+                }
             }
 
             OnDismiss(result, true);
