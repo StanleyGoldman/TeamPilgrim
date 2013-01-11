@@ -327,7 +327,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
                 if (workItemModel.WorkItem.Id == workItemId)
                 {
                     workItemModel.IsSelected = true;
-                    break;
+                    return;
                 }
             }
 
@@ -343,7 +343,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
                 if (checkinNoteModel.CheckinNoteFieldDefinition.Name == checkinNoteFieldValue.Name)
                 {
                     checkinNoteModel.Value = checkinNoteFieldValue.Value;
-                    break;
+                    return;
                 }
             }
 
