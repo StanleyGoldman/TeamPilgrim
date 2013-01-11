@@ -218,13 +218,14 @@
     <Compile Include="Common\AttachedProperties\MouseDoubleClick.cs" />
     <Compile Include="Common\Extensions\CheckinEvaluationResultExtensions.cs" />
     <Compile Include="Messages\BaseMessage.cs" />
-    <Compile Include="Messages\DismissMessage.cs" />
+    <Compile Include="Messages\Dismiss\DismissMessage.cs" />
     <Compile Include="Messages\ShowUnshelveDetailsDialogMessage.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Model\VersionControl\CommandArguments\SelectPendingChangesCommandArgument.cs" />
     <Compile Include="Model\VersionControl\CommandArguments\SelectWorkItemsCommandArgument.cs" />
     <Compile Include="Common\Enums\CollectionSelectionSummaryEnum.cs" />
+    <Compile Include="Messages\Dismiss\DismissUnshelveDetailsMessage.cs" />
     <Compile Include="Model\VersionControl\ShelvesetModel.cs" />
     <Compile Include="Model\VersionControl\ShelveServiceModel.cs" />
     <Compile Include="Model\VersionControl\PreviouslySelectedWorkItemQuery.cs" />

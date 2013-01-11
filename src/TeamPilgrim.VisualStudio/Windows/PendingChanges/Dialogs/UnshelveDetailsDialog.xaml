@@ -73,7 +73,7 @@
                 </DockPanel>
             </DockPanel>
             <DockPanel DockPanel.Dock="Right" LastChildFill="False">
-                <Button VerticalAlignment="Center" Content="Shelve"/>
+                <Button VerticalAlignment="Center" Content="Unshelve" Command="{Binding Path=UnshelveCommand}"/>
                 <Button VerticalAlignment="Center" Content="Cancel" Command="{Binding Path=CancelCommand}"/>
             </DockPanel>
         </DockPanel>

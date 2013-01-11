@@ -114,11 +114,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
             return GetVersionControlServer(tfsTeamProjectCollection).QueryShelvesets(shelvesetName, shelvesetOwner);
         }
 
-        public Shelveset WorkspaceUnshelve(Workspace workspace, string shelvesetName, string shelvesetOwner)
+        public Shelveset WorkspaceUnshelve(Workspace workspace, string shelvesetName, string shelvesetOwner, ItemSpec[] items = null)
         {
-            this.Logger().Trace("Unshelve ShelvesetName: {0} ShelvesetOwner: {1}", shelvesetName, shelvesetOwner);
+            this.Logger().Trace("Unshelve ShelvesetName: {0} ShelvesetOwner: {1}, Item Count: {2}", shelvesetName, shelvesetOwner, items == null ? "[null]" : items.Count().ToString());
 
-            return workspace.Unshelve(shelvesetName, shelvesetOwner);
+            return workspace.Unshelve(shelvesetName, shelvesetOwner, items);
         }
 
         public void DeleteShelveset(TfsTeamProjectCollection tfsTeamProjectCollection, string shelvesetName, string shelvesetOwner)

@@ -6,6 +6,7 @@ using GalaSoft.MvvmLight.Messaging;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Messages;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Messages.Dismiss;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.VersionControl.Client;
@@ -59,16 +60,18 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
             ShelvesetOwner = projectCollectionServiceModel.TfsTeamProjectCollection.AuthorizedIdentity.UniqueName;
 
             FindShelvesetsCommand = new RelayCommand<string>(FindShelvesets, CanFindShelvesets);
+            CancelCommand = new RelayCommand(Cancel, CanCancel);
+
             ViewPendingSetCommand = new RelayCommand<ShelvesetModel>(ViewPendingSet, CanViewPendingSet);
+
             UnshelveCommand = new RelayCommand<ObservableCollection<object>>(Unshelve, CanUnshelve);
             DeleteCommand = new RelayCommand<ObservableCollection<object>>(Delete, CanDelete);
             DetailsCommand = new RelayCommand<ObservableCollection<object>>(Details, CanDetails);
-            CancelCommand = new RelayCommand(Cancel, CanCancel);
 
             FindShelvesetsCommand.Execute(null);
         }
 
-        protected virtual void OnDismiss(bool success)
+        public virtual void Dismiss(bool success)
         {
             Messenger.Default.Send(new DismissMessage { Success = success }, this);
         }
@@ -127,7 +130,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
                 success = true;
             }
 
-            OnDismiss(success);
+            Dismiss(success);
         }
 
         private bool CanUnshelve(ObservableCollection<object> shelvesetModels)
@@ -147,7 +150,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
            
             Messenger.Default.Send(new ShowUnshelveDetailsDialogMessage
                 {
-                    UnshelveDetailsServiceModel = new UnshelveDetailsServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, WorkspaceServiceModel, shelvesetModel.Shelveset)
+                    UnshelveDetailsServiceModel = new UnshelveDetailsServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, WorkspaceServiceModel, this, shelvesetModel.Shelveset)
                 });
         }
 
@@ -188,7 +191,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
         public void Cancel()
         {
-            OnDismiss(false);
+            Dismiss(false);
         }
 
         public bool CanCancel()
@@ -197,6 +200,5 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
         }
 
         #endregion
-
     }
 }

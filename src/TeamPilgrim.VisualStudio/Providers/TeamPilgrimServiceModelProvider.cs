@@ -243,11 +243,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             return false;
         }
 
-        public bool TryWorkspaceUnshelve(Workspace workspace, out Shelveset shelveset, string shelvesetName, string shelvesetOwner)
+        public bool TryWorkspaceUnshelve(Workspace workspace, out Shelveset shelveset, string shelvesetName, string shelvesetOwner, ItemSpec[] items = null)
         {
             try
             {
-                shelveset = _teamPilgrimTfsService.WorkspaceUnshelve(workspace, shelvesetName, shelvesetOwner);
+                shelveset = _teamPilgrimTfsService.WorkspaceUnshelve(workspace, shelvesetName, shelvesetOwner, items);
                 return true;
             }
             catch (Exception ex)

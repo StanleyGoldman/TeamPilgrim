@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using GalaSoft.MvvmLight.Messaging;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Messages;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Messages.Dismiss;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs
