@@ -290,28 +290,15 @@
     					HorizontalContentAlignment="Stretch"
                               
     					VirtualizingPanel.IsVirtualizing="True"
-    					VirtualizingPanel.VirtualizationMode="Recycling">
+    					VirtualizingPanel.VirtualizationMode="Recycling"
+
+                        DataContext="{Binding Path=Shelveset.CheckinNote}"
+                        ItemsSource="{Binding Path=Values}">
 
                         <ListView.ItemTemplate>
-                            <DataTemplate DataType="versionControl:CheckinNoteModel">
-                                <Expander Header="{Binding CheckinNoteFieldDefinition.Name}" IsExpanded="True">
-                                    <xctk:WatermarkTextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}">
-                                        <xctk:WatermarkTextBox.Style>
-                                            <Style TargetType="{x:Type xctk:WatermarkTextBox}">
-                                                <Style.Triggers>
-                                                    <DataTrigger Value="True">
-                                                        <DataTrigger.Binding>
-                                                            <MultiBinding Converter="{StaticResource AndClauseBooleanConverter}">
-                                                                <Binding ElementName="ShelveChangesDialogWindow" Path="DataContext.EvaluatePoliciesAndCheckinNotes" />
-                                                                <Binding Path="CheckinNoteFieldDefinition.Required" />
-                                                            </MultiBinding>
-                                                        </DataTrigger.Binding>
-                                                        <Setter Property="Watermark" Value="&lt;Required&gt;" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </xctk:WatermarkTextBox.Style>
-                                    </xctk:WatermarkTextBox>
+                            <DataTemplate DataType="versionControlClient:CheckinNoteFieldValue">
+                                <Expander Header="{Binding Path=Name}" IsExpanded="True">
+                                    <TextBox Text="{Binding Path=Value}" IsReadOnly="True" />
                                 </Expander>
                             </DataTemplate>
                         </ListView.ItemTemplate>
