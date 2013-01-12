@@ -283,9 +283,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
         private void PopulateSelectedPendingChangesSummary()
         {
-            if (_backgroundFunctionPreventDataUpdate)
-                return;
-
             this.Logger().Trace("PopulateSelectedPendingChangesSummary");
 
             if (PendingChanges.Count == 0)
@@ -357,6 +354,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
         private void PendingChangesOnCollectionChanged(object sender,
                                                        NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
+            PendingChangesOnCollectionChanged();
+        }
+
+        private void PendingChangesOnCollectionChanged()
+        {
+            if (_backgroundFunctionPreventDataUpdate)
+                return;
+
             this.Logger().Trace("PendingChangesOnCollectionChanged");
 
             PopulateSelectedPendingChangesSummary();
@@ -371,6 +376,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
         private void WorkItemsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            WorkItemsOnCollectionChanged();
+        }
+
+        private void WorkItemsOnCollectionChanged()
+        {
+            if (_backgroundFunctionPreventDataUpdate)
+                return;
+
             this.Logger().Trace("WorkItemsOnCollectionChanged");
 
             EvaluateCheckInCommand.Execute(null);
@@ -411,8 +424,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
             _backgroundFunctionPreventDataUpdate = false;
 
-            PopulateSelectedPendingChangesSummary();
-            EvaluateCheckInCommand.Execute(null);
+            PendingChangesOnCollectionChanged();
         }
 
         private bool CanSelectPendingChanges(SelectPendingChangesCommandArgument commandArgument)
@@ -701,9 +713,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
         private bool CanEvaluateCheckIn()
         {
-            var canEvaluateCheckIn = !_backgroundFunctionPreventDataUpdate;
-
-            return canEvaluateCheckIn;
+            return !_backgroundFunctionPreventDataUpdate;
         }
 
         #endregion
@@ -771,8 +781,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
                 _backgroundFunctionPreventDataUpdate = false;
 
-                PopulateSelectedPendingChangesSummary();
-                EvaluateCheckInCommand.Execute(null);
+                PendingChangesOnCollectionChanged();
             }
         }
 
@@ -836,7 +845,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
                 }
 
                 _backgroundFunctionPreventDataUpdate = false;
-                EvaluateCheckInCommand.Execute(null);
+
+                WorkItemsOnCollectionChanged();
             }
         }
 
