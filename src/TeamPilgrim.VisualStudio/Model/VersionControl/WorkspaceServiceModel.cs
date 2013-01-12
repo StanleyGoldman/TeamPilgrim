@@ -35,7 +35,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
         public delegate void ShowPendingChangesItemDelegate(ShowPendingChangesTabItemEnum showPendingChangesTabItemEnum);
         public event ShowPendingChangesItemDelegate ShowPendingChangesItem;
 
-        public BatchedObservableCollection<CheckinNoteModel> CheckinNotes { get; private set; }
+        public ObservableCollection<CheckinNoteModel> CheckinNotes { get; private set; }
 
         public Workspace Workspace { get; private set; }
 
@@ -247,9 +247,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
             UndoPendingChangeCommand = new RelayCommand<ObservableCollection<object>>(UndoPendingChange, CanUndoPendingChange);
             PendingChangePropertiesCommand = new RelayCommand<ObservableCollection<object>>(PendingChangeProperties, CanPendingChangeProperties);
 
-            CheckinNotes = new BatchedObservableCollection<CheckinNoteModel>();
+            CheckinNotes = new ObservableCollection<CheckinNoteModel>();
 
-            PendingChanges = new BatchedObservableCollection<PendingChangeModel>();
+            PendingChanges = new ObservableCollection<PendingChangeModel>();
 
             PendingChange[] pendingChanges;
             if (teamPilgrimServiceModelProvider.TryGetPendingChanges(out pendingChanges, Workspace))
@@ -269,7 +269,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
                 SolutionIsOpen = teamPilgrimVsService.Solution.IsOpen && !string.IsNullOrEmpty(teamPilgrimVsService.Solution.FileName);
             };
 
-            WorkItems = new BatchedObservableCollection<WorkItemModel>();
+            WorkItems = new ObservableCollection<WorkItemModel>();
             WorkItems.CollectionChanged += WorkItemsOnCollectionChanged;
 
             PopulatePreviouslySelectedWorkItemQueryModels();
@@ -352,7 +352,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
         #region PendingChanges Collection
 
-        public BatchedObservableCollection<PendingChangeModel> PendingChanges { get; private set; }
+        public ObservableCollection<PendingChangeModel> PendingChanges { get; private set; }
 
         private void PendingChangesOnCollectionChanged(object sender,
                                                        NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -367,7 +367,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
         #region WorkItems Collection
 
-        public BatchedObservableCollection<WorkItemModel> WorkItems { get; private set; }
+        public ObservableCollection<WorkItemModel> WorkItems { get; private set; }
 
         private void WorkItemsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -668,7 +668,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
                 .Where(checkinNoteFieldDefinition => !modelIntersection.Select(model => model.CheckinNoteFieldDefinition).Contains(checkinNoteFieldDefinition, equalityComparer))
                 .Select(checkinNoteFieldDefinition => new CheckinNoteModel(checkinNoteFieldDefinition)).ToArray();
 
-            CheckinNotes.AddRange(modelsToAdd);
+            foreach (var checkinNoteModel in modelsToAdd)
+            {
+                CheckinNotes.Add(checkinNoteModel);
+            }
 
             foreach (var modelToRemove in modelsToRemove)
             {
@@ -756,7 +759,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
                     intersection.model.Change = intersection.change;
                 }
 
-                PendingChanges.AddRange(modelsToAdd);
+                foreach (var pendingChangeModel in modelsToAdd)
+                {
+                    PendingChanges.Add(pendingChangeModel);
+                }
 
                 foreach (var modelToRemove in modelsToRemove)
                 {
@@ -817,9 +823,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
                     .Where(workItem => !intersectedModels.Select(workItemModel => workItemModel.WorkItem.Id).Contains(workItem.Id))
                     .Select(workItem => new WorkItemModel(workItem) { WorkItemCheckinAction = selectedWorkItemCheckinActionEnum }).ToArray();
 
-                _backgroundFunctionPreventDataUpdate = false;
+                _backgroundFunctionPreventDataUpdate = true;
 
-                WorkItems.AddRange(modelsToAdd);
+                foreach (var workItemModel in modelsToAdd)
+                {
+                    WorkItems.Add(workItemModel);
+                }
 
                 foreach (var modelToRemove in modelsToRemove)
                 {
