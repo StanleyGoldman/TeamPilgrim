@@ -46,9 +46,26 @@
 
                 <Style TargetType="{x:Type TreeViewItem}"  x:Key="WorkItemQueryFolderStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
                 </Style>
-               
+
                 <!-- ReSharper disable Xaml.BindingWithContextNotResolved -->
-                <Style TargetType="{x:Type TreeViewItem}"  x:Key="WorkItemQueryDefinitionStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">
+                <Style TargetType="{x:Type Image}"  x:Key="WorkItemQueryDefinitionImageStyle">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=QueryDefinition.QueryType}" Value="List">
+                            <Setter Property="Source" Value="/TeamPilgrim.VisualStudio;component/Resources\images_querylist.png" ></Setter>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=QueryDefinition.QueryType}" Value="OneHop">
+                            <Setter Property="Source" Value="/TeamPilgrim.VisualStudio;component/Resources\images_queryonehop.png" ></Setter>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=QueryDefinition.QueryType}" Value="Tree">
+                            <Setter Property="Source" Value="/TeamPilgrim.VisualStudio;component/Resources\images_querytree.png" ></Setter>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=QueryDefinition.QueryType}" Value="Invalid">
+                            <Setter Property="Source" Value="/TeamPilgrim.VisualStudio;component/Resources\images_queryinvalid.png" ></Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+
+                <Style TargetType="{x:Type TreeViewItem}"  x:Key="WorkItemQueryDefinitionStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">                   
                     <Setter Property="attachedProperties:MouseDoubleClick.Command" Value="{Binding Path=WorkItemQueryCommandModel.OpenQueryDefinitionCommand}"/>
                     <Setter Property="attachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding}"/>
 
@@ -363,7 +380,7 @@
 
                     <HierarchicalDataTemplate DataType="{x:Type workItemQuery:WorkItemQueryDefinitionModel}">
                         <DockPanel Style="{StaticResource TreeViewDockPanel}">
-                            <Image Source="/TeamPilgrim.VisualStudio;component/Resources\images_querylist.png" Margin="0,0,2,0" />
+                            <Image Style="{StaticResource WorkItemQueryDefinitionImageStyle}" Margin="0,0,2,0" />
                             <TextBlock Text="{Binding Path=Name}" ContextMenu="{StaticResource ResourceKey=WorkItemQueryDefinitionContextMenu}"  />
                         </DockPanel>
                     </HierarchicalDataTemplate>

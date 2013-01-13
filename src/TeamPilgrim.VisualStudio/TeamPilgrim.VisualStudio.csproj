@@ -408,6 +408,9 @@
     <Resource Include="Resources\images_querylist.png" />
     <Resource Include="Resources\icons_generalicons_connecttotfs.png" />
     <Resource Include="Resources\LinkedServer_12789_16x.png" />
+    <Resource Include="Resources\images_queryinvalid.png" />
+    <Resource Include="Resources\images_queryonehop.png" />
+    <Resource Include="Resources\images_querytree.png" />
     <Content Include="Resources\Package.ico" />
   </ItemGroup>
   <ItemGroup>
