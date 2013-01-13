@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
 using Microsoft.TeamFoundation.Build.Client;
@@ -165,20 +166,41 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
             return queryFolder;
         }
 
-        public WorkItemCollection GetQueryDefinitionWorkItemCollection(TfsTeamProjectCollection collection, QueryDefinition queryDefinition, string projectName)
+        public WorkItemCollection GetQueryDefinitionWorkItemCollection(TfsTeamProjectCollection tfsTeamProjectCollection,
+                                                                       QueryDefinition queryDefinition, string projectName)
+        {
+            switch (queryDefinition.QueryType)
+            {
+                case QueryType.List:
+                    return GetListQueryDefinitionWorkItemCollection(tfsTeamProjectCollection, queryDefinition, projectName);
+
+                case QueryType.OneHop:
+                    return GetOneHopQueryDefinitionWorkItemCollection(tfsTeamProjectCollection, queryDefinition, projectName);
+
+                case QueryType.Tree:
+                    throw new NotImplementedException("Tree Queries are not supported");
+
+                case QueryType.Invalid:
+                    throw new ArgumentException("Invalid QueryType");
+            }
+
+            return null;
+        }
+
+        public WorkItemCollection GetListQueryDefinitionWorkItemCollection(TfsTeamProjectCollection tfsTeamProjectCollection, QueryDefinition queryDefinition, string projectName)
         {
             this.Logger().Trace("GetQueryDefinitionWorkItemCollection QueryType: {0}", queryDefinition.QueryType);
 
-            if(queryDefinition.QueryType != QueryType.List)
+            if (queryDefinition.QueryType != QueryType.List)
                 throw new ArgumentException("List Queries only");
 
             var context = new Dictionary<string, string> { { "project", projectName } };
-            var workItemStore = GetWorkItemStore(collection);
+            var workItemStore = GetWorkItemStore(tfsTeamProjectCollection);
 
             return new Query(workItemStore, queryDefinition.QueryText, context).RunQuery();
         }
 
-        public WorkItemLinkInfo[] GetQueryDefinitionWorkItemLinkInfo(TfsTeamProjectCollection collection, QueryDefinition queryDefinition, string projectName)
+        private WorkItemLinkInfo[] GetOneHopQueryDefinitionWorkItemLinkInfo(TfsTeamProjectCollection tfsTeamProjectCollection, QueryDefinition queryDefinition, string projectName, out WorkItemStore workItemStore, out Query oneHopQuery)
         {
             this.Logger().Trace("GetQueryDefinitionWorkItemLinkInfo QueryType: {0}", queryDefinition.QueryType);
 
@@ -186,9 +208,41 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
                 throw new ArgumentException("OneHop Queries only");
 
             var context = new Dictionary<string, string> { { "project", projectName } };
-            var workItemStore = GetWorkItemStore(collection);
+            workItemStore = GetWorkItemStore(tfsTeamProjectCollection);
 
-            return new Query(workItemStore, queryDefinition.QueryText, context).RunLinkQuery();
+            oneHopQuery = new Query(workItemStore, queryDefinition.QueryText, context);
+            return oneHopQuery.RunLinkQuery();
+        }
+
+        public WorkItemLinkInfo[] GetOneHopQueryDefinitionWorkItemLinkInfo(TfsTeamProjectCollection tfsTeamProjectCollection, QueryDefinition queryDefinition, string projectName)
+        {
+            WorkItemStore workItemStore;
+            Query oneHopQuery;
+            return GetOneHopQueryDefinitionWorkItemLinkInfo(tfsTeamProjectCollection, queryDefinition, projectName, out workItemStore, out oneHopQuery);
+        }
+
+        public WorkItemCollection GetOneHopQueryDefinitionWorkItemCollection(TfsTeamProjectCollection tfsTeamProjectCollection, QueryDefinition queryDefinition, string projectName)
+        {
+            WorkItemStore workItemStore;
+            Query oneHopQuery;
+            var oneHopQueryDefinitionWorkItemLinkInfo = GetOneHopQueryDefinitionWorkItemLinkInfo(tfsTeamProjectCollection, queryDefinition, projectName, out workItemStore, out oneHopQuery);
+            var ids = oneHopQueryDefinitionWorkItemLinkInfo.Select(info => info.TargetId).Distinct().ToArray();
+
+            var detailsWiql = new StringBuilder();
+            detailsWiql.AppendLine("SELECT");
+            bool first = true;
+
+            foreach (FieldDefinition field in oneHopQuery.DisplayFieldList)
+            {
+                detailsWiql.Append(" ");
+                if (!first)
+                    detailsWiql.Append(",");
+                detailsWiql.AppendLine("[" + field.ReferenceName + "]");
+                first = false;
+            }
+            detailsWiql.AppendLine("FROM WorkItems");
+
+            return new Query(workItemStore, detailsWiql.ToString(), ids).RunQuery();
         }
 
         public WorkspaceInfo[] GetLocalWorkspaceInfo(Guid? projectCollectionId = null)

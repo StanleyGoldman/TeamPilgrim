@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
@@ -803,59 +804,58 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
             if (SelectedWorkItemQueryDefinition == null)
                 return;
 
-            if (SelectedWorkItemQueryDefinition.QueryDefinition.QueryType == QueryType.OneHop)
-            {
-                WorkItemLinkInfo[] workItemLinkInfo;
-                var result2 = teamPilgrimServiceModelProvider.TryGetQueryDefinitionWorkItemLinkInfo(out workItemLinkInfo, _projectCollectionServiceModel.TfsTeamProjectCollection, SelectedWorkItemQueryDefinition.QueryDefinition, SelectedWorkItemQueryDefinition.Project.Name);
+            WorkItemCollection workItemCollection = null;
+            
+            var successResult = teamPilgrimServiceModelProvider.TryGetQueryDefinitionWorkItemCollection(out workItemCollection, _projectCollectionServiceModel.TfsTeamProjectCollection, SelectedWorkItemQueryDefinition.QueryDefinition, SelectedWorkItemQueryDefinition.Project.Name);
+            if (!successResult)
+                return;
 
-                throw new NotImplementedException();
+            Debug.Assert(workItemCollection != null, "workItemCollection != null");
+            var currentWorkItems = workItemCollection.Cast<WorkItem>().ToArray();
+
+            var intersections = WorkItems
+                .Join(currentWorkItems, model => model.WorkItem.Id, workItem => workItem.Id,
+                      (model, workitem) => new {model, workitem})
+                .ToArray();
+
+            foreach (var intersection in intersections)
+            {
+                intersection.model.WorkItem = intersection.workitem;
             }
 
-            WorkItemCollection workItemCollection;
-            var result = teamPilgrimServiceModelProvider.TryGetQueryDefinitionWorkItemCollection(out workItemCollection, _projectCollectionServiceModel.TfsTeamProjectCollection, SelectedWorkItemQueryDefinition.QueryDefinition, SelectedWorkItemQueryDefinition.Project.Name);
-
-
-            if (result)
-            {
-                var currentWorkItems = workItemCollection.Cast<WorkItem>().ToArray();
-
-                var intersections = WorkItems
-                    .Join(currentWorkItems, model => model.WorkItem.Id, workItem => workItem.Id, (model, workitem) => new { model, workitem })
+            var intersectedModels =
+                intersections
+                    .Select(arg => arg.model)
                     .ToArray();
 
-                foreach (var intersection in intersections)
-                {
-                    intersection.model.WorkItem = intersection.workitem;
-                }
+            var modelsToRemove = WorkItems.Where(model => !intersectedModels.Contains(model)).ToArray();
 
-                var intersectedModels =
-                    intersections
-                    .Select(arg => arg.model)
-                        .ToArray();
+            var selectedWorkItemCheckinActionEnum =
+                TeamPilgrimPackage.TeamPilgrimSettings.SelectedWorkItemCheckinAction;
+            var modelsToAdd = currentWorkItems
+                .Where(
+                    workItem =>
+                    !intersectedModels.Select(workItemModel => workItemModel.WorkItem.Id).Contains(workItem.Id))
+                .Select(
+                    workItem =>
+                    new WorkItemModel(workItem) {WorkItemCheckinAction = selectedWorkItemCheckinActionEnum})
+                .ToArray();
 
-                var modelsToRemove = WorkItems.Where(model => !intersectedModels.Contains(model)).ToArray();
+            _backgroundFunctionPreventDataUpdate = true;
 
-                var selectedWorkItemCheckinActionEnum = TeamPilgrimPackage.TeamPilgrimSettings.SelectedWorkItemCheckinAction;
-                var modelsToAdd = currentWorkItems
-                    .Where(workItem => !intersectedModels.Select(workItemModel => workItemModel.WorkItem.Id).Contains(workItem.Id))
-                    .Select(workItem => new WorkItemModel(workItem) { WorkItemCheckinAction = selectedWorkItemCheckinActionEnum }).ToArray();
-
-                _backgroundFunctionPreventDataUpdate = true;
-
-                foreach (var workItemModel in modelsToAdd)
-                {
-                    WorkItems.Add(workItemModel);
-                }
-
-                foreach (var modelToRemove in modelsToRemove)
-                {
-                    WorkItems.Remove(modelToRemove);
-                }
-
-                _backgroundFunctionPreventDataUpdate = false;
-
-                WorkItemsOnCollectionChanged();
+            foreach (var workItemModel in modelsToAdd)
+            {
+                WorkItems.Add(workItemModel);
             }
+
+            foreach (var modelToRemove in modelsToRemove)
+            {
+                WorkItems.Remove(modelToRemove);
+            }
+
+            _backgroundFunctionPreventDataUpdate = false;
+
+            WorkItemsOnCollectionChanged();
         }
 
         private bool CanRefreshSelectedDefinitionWorkItems()
@@ -892,7 +892,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
         }
 
         #endregion
-
+        
         #region ShelveCommand Command
 
         public RelayCommand ShelveCommand { get; private set; }

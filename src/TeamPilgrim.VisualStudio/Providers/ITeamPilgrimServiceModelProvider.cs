@@ -57,6 +57,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
         bool TryWorkspaceUnshelve(Workspace workspace, out Shelveset shelveset, string shelvesetName, string shelvesetOwner, ItemSpec[] items = null);
         
         bool TryDeleteShelveset(TfsTeamProjectCollection tfsTeamProjectCollection, string shelvesetName, string shelvesetOwner);
-        bool TryGetQueryDefinitionWorkItemLinkInfo(out WorkItemLinkInfo[] workItemLinkInfos, TfsTeamProjectCollection tfsTeamProjectCollection, QueryDefinition queryDefinition, string projectName);
+        bool TryGetOneHopQueryDefinitionWorkItemLinkInfo(out WorkItemLinkInfo[] workItemLinkInfos, TfsTeamProjectCollection tfsTeamProjectCollection, QueryDefinition queryDefinition, string projectName);
     }
 }

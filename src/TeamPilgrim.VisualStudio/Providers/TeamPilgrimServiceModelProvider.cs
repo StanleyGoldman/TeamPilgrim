@@ -417,11 +417,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             return false;
         }
 
-        public bool TryGetQueryDefinitionWorkItemLinkInfo(out WorkItemLinkInfo[] workItemLinkInfos, TfsTeamProjectCollection tfsTeamProjectCollection, QueryDefinition queryDefinition, string projectName)
+        public bool TryGetOneHopQueryDefinitionWorkItemLinkInfo(out WorkItemLinkInfo[] workItemLinkInfos, TfsTeamProjectCollection tfsTeamProjectCollection, QueryDefinition queryDefinition, string projectName)
         {
             try
             {
-                workItemLinkInfos = _teamPilgrimTfsService.GetQueryDefinitionWorkItemLinkInfo(tfsTeamProjectCollection, queryDefinition, projectName);
+                workItemLinkInfos = _teamPilgrimTfsService.GetOneHopQueryDefinitionWorkItemLinkInfo(tfsTeamProjectCollection, queryDefinition, projectName);
                 return true;
             }
             catch (Exception ex)
