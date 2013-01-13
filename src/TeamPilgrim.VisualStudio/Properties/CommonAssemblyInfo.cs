@@ -1,5 +1,5 @@
 using System.Reflection;
-using JustAProgrammer.TeamPilgrim.Core;
+using JustAProgrammer.TeamPilgrim.VisualStudio;
 
 [assembly: AssemblyProduct("TeamPilgrim")]
 
