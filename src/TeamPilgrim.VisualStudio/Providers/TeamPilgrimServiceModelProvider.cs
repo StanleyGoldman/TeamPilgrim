@@ -421,7 +421,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
         {
             try
             {
-                workItemLinkInfos = _teamPilgrimTfsService.GetOneHopQueryDefinitionWorkItemLinkInfo(tfsTeamProjectCollection, queryDefinition, projectName);
+                workItemLinkInfos = _teamPilgrimTfsService.GetLinkQueryDefinitionWorkItemLinkInfo(tfsTeamProjectCollection, queryDefinition, projectName);
                 return true;
             }
             catch (Exception ex)
