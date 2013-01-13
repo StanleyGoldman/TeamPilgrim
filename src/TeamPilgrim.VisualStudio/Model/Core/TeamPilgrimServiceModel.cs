@@ -292,7 +292,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core
 
         private void Refresh()
         {
-            Task.Run(() => PopulateTeamPilgrimServiceModel());
+            PopulateTeamPilgrimServiceModel();
         }
 
         private bool CanRefresh()
