@@ -25,12 +25,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
         /// <summary>
         /// The minor version number for this assembly.
         /// </summary>
-        public const string Minor = "1";
+        public const string Minor = "2";
 
         /// <summary>
         /// The patch version number for this assembly.
         /// </summary>
-        public const string Patch = "9";
+        public const string Patch = "0";
 
         /// <summary>
         /// The changeset for this assembly.

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="f56b8666-3ef2-46e5-ac26-8aa0efe1f484" Version="0.1.9" Language="en-US" Publisher="JustAProgrammer" />
+    <Identity Id="f56b8666-3ef2-46e5-ac26-8aa0efe1f484" Version="0.2.0" Language="en-US" Publisher="JustAProgrammer" />
     <DisplayName>TeamPilgrim</DisplayName>
     <Description xml:space="preserve">A replacement for Visual Studio 2012's Team Explorer inspired by the Visual Studio 2010's Team Explorer</Description>
   </Metadata>
