@@ -38,5 +38,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces
        
         Shelveset[] QueryShelvesets(TfsTeamProjectCollection tfsTeamProjectCollection, string shelvesetName = null, string shelvesetOwner = null);
         void DeleteShelveset(TfsTeamProjectCollection tfsTeamProjectCollection, string shelvesetName, string shelvesetOwner);
+        WorkItemLinkInfo[] GetQueryDefinitionWorkItemLinkInfo(TfsTeamProjectCollection collection, QueryDefinition queryDefinition, string projectName);
     }
 }

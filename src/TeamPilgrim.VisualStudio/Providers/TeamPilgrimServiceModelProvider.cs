@@ -416,5 +416,22 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             workItemCollection = null;
             return false;
         }
+
+        public bool TryGetQueryDefinitionWorkItemLinkInfo(out WorkItemLinkInfo[] workItemLinkInfos, TfsTeamProjectCollection tfsTeamProjectCollection, QueryDefinition queryDefinition, string projectName)
+        {
+            try
+            {
+                workItemLinkInfos = _teamPilgrimTfsService.GetQueryDefinitionWorkItemLinkInfo(tfsTeamProjectCollection, queryDefinition, projectName);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                this.Logger().DebugException(ex);
+                LastException = ex;
+            }
+
+            workItemLinkInfos = null;
+            return false;
+        }
     }
 }

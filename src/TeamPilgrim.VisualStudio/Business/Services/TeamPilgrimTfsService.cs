@@ -167,19 +167,28 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
 
         public WorkItemCollection GetQueryDefinitionWorkItemCollection(TfsTeamProjectCollection collection, QueryDefinition queryDefinition, string projectName)
         {
-            this.Logger().Trace("GetQueryDefinitionWorkItemCollection");
+            this.Logger().Trace("GetQueryDefinitionWorkItemCollection QueryType: {0}", queryDefinition.QueryType);
+
+            if(queryDefinition.QueryType != QueryType.List)
+                throw new ArgumentException("List Queries only");
 
             var context = new Dictionary<string, string> { { "project", projectName } };
-            
             var workItemStore = GetWorkItemStore(collection);
 
-            var query = new Query(workItemStore, queryDefinition.QueryText, context);
-            if(query.IsLinkQuery)
-            {
-                throw new ArgumentException("Link Queries not supported");
-            }
-            
-            return query.RunQuery();
+            return new Query(workItemStore, queryDefinition.QueryText, context).RunQuery();
+        }
+
+        public WorkItemLinkInfo[] GetQueryDefinitionWorkItemLinkInfo(TfsTeamProjectCollection collection, QueryDefinition queryDefinition, string projectName)
+        {
+            this.Logger().Trace("GetQueryDefinitionWorkItemLinkInfo QueryType: {0}", queryDefinition.QueryType);
+
+            if (queryDefinition.QueryType != QueryType.OneHop)
+                throw new ArgumentException("OneHop Queries only");
+
+            var context = new Dictionary<string, string> { { "project", projectName } };
+            var workItemStore = GetWorkItemStore(collection);
+
+            return new Query(workItemStore, queryDefinition.QueryText, context).RunLinkQuery();
         }
 
         public WorkspaceInfo[] GetLocalWorkspaceInfo(Guid? projectCollectionId = null)

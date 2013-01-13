@@ -803,11 +803,19 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
             if (SelectedWorkItemQueryDefinition == null)
                 return;
 
+            if (SelectedWorkItemQueryDefinition.QueryDefinition.QueryType == QueryType.OneHop)
+            {
+                WorkItemLinkInfo[] workItemLinkInfo;
+                var result2 = teamPilgrimServiceModelProvider.TryGetQueryDefinitionWorkItemLinkInfo(out workItemLinkInfo, _projectCollectionServiceModel.TfsTeamProjectCollection, SelectedWorkItemQueryDefinition.QueryDefinition, SelectedWorkItemQueryDefinition.Project.Name);
+
+                throw new NotImplementedException();
+            }
+
             WorkItemCollection workItemCollection;
-            if (teamPilgrimServiceModelProvider.TryGetQueryDefinitionWorkItemCollection(out workItemCollection,
-                                                                                        _projectCollectionServiceModel.TfsTeamProjectCollection,
-                                                                                        SelectedWorkItemQueryDefinition.QueryDefinition,
-                                                                                        SelectedWorkItemQueryDefinition.Project.Name))
+            var result = teamPilgrimServiceModelProvider.TryGetQueryDefinitionWorkItemCollection(out workItemCollection, _projectCollectionServiceModel.TfsTeamProjectCollection, SelectedWorkItemQueryDefinition.QueryDefinition, SelectedWorkItemQueryDefinition.Project.Name);
+
+
+            if (result)
             {
                 var currentWorkItems = workItemCollection.Cast<WorkItem>().ToArray();
 
