@@ -48,23 +48,6 @@
                 </Style>
 
                 <!-- ReSharper disable Xaml.BindingWithContextNotResolved -->
-                <Style TargetType="{x:Type Image}"  x:Key="WorkItemQueryDefinitionImageStyle">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Path=QueryDefinition.QueryType}" Value="List">
-                            <Setter Property="Source" Value="/TeamPilgrim.VisualStudio;component/Resources\images_querylist.png" ></Setter>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Path=QueryDefinition.QueryType}" Value="OneHop">
-                            <Setter Property="Source" Value="/TeamPilgrim.VisualStudio;component/Resources\images_queryonehop.png" ></Setter>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Path=QueryDefinition.QueryType}" Value="Tree">
-                            <Setter Property="Source" Value="/TeamPilgrim.VisualStudio;component/Resources\images_querytree.png" ></Setter>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Path=QueryDefinition.QueryType}" Value="Invalid">
-                            <Setter Property="Source" Value="/TeamPilgrim.VisualStudio;component/Resources\images_queryinvalid.png" ></Setter>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-
                 <Style TargetType="{x:Type TreeViewItem}"  x:Key="WorkItemQueryDefinitionStyle" BasedOn="{StaticResource ResourceKey=DefaultStyle}">                   
                     <Setter Property="attachedProperties:MouseDoubleClick.Command" Value="{Binding Path=WorkItemQueryCommandModel.OpenQueryDefinitionCommand}"/>
                     <Setter Property="attachedProperties:MouseDoubleClick.CommandParameter" Value="{Binding}"/>
@@ -88,17 +71,11 @@
                     <Setter Property="attachedProperties:PreviewReturnKeyDown.Command"
                             Value="{Binding Path=DataContext.OpenSourceControlCommand, RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type TreeViewItem}, Mode=FindAncestor}}"/>
                 </Style>
-
+                
                 <Style TargetType="{x:Type DockPanel}" x:Key="TreeViewDockPanel">
                     <Style.Resources>
                         
                         <!-- ReSharper disable Xaml.RedundantResource -->
-                        <Style TargetType="Image">
-                            <Setter Property="Height" Value="16" />
-                            <Setter Property="Width" Value="16" />
-                            <Setter Property="Margin" Value="2,1,4,1" />
-                        </Style>
-
                         <Style TargetType="TextBlock">
                             <Setter Property="Height" Value="18" />
                         </Style>
@@ -346,7 +323,7 @@
 
                     <HierarchicalDataTemplate DataType="{x:Type core:ProjectCollectionServiceModel}" ItemsSource="{Binding Path=ProjectModels}">
                         <DockPanel Style="{StaticResource TreeViewDockPanel}">
-                            <Image Source="/TeamPilgrim.VisualStudio;component/Resources\TFSServer_13310_16x.png" Margin="0,0,2,0" />
+                            <Image Style="{StaticResource TreeViewItemImageStyle}" Source="/TeamPilgrim.VisualStudio;component/Resources\TFSServer_13310_16x.png" />
                             <TextBlock Text="{Binding Path=TfsTeamProjectCollection.Name}" ContextMenu="{StaticResource ResourceKey=ProjectCollectionContextMenu}" />
                         </DockPanel>
                     </HierarchicalDataTemplate>
@@ -359,42 +336,42 @@
                         </HierarchicalDataTemplate.Resources>
                         
                         <DockPanel Style="{StaticResource TreeViewDockPanel}">
-                            <Image Source="/TeamPilgrim.VisualStudio;component/Resources\LinkedServer_12789_16x.png" Margin="0,0,2,0" />
+                            <Image Style="{StaticResource TreeViewItemImageStyle}" Source="/TeamPilgrim.VisualStudio;component/Resources\LinkedServer_12789_16x.png" />
                             <TextBlock Text="{Binding Path=Project.Name}" ContextMenu="{StaticResource ResourceKey=ProjectContextMenu}" Style="{StaticResource ProjectContextTextStyle}" />
                         </DockPanel>
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type workItemQuery:WorkItemQueryServiceModel}" ItemsSource="{Binding Path=QueryItems}">
                         <DockPanel Style="{StaticResource TreeViewDockPanel}">
-                            <Image Source="/TeamPilgrim.VisualStudio;component/Resources\WorkItem_16xLG.png" Margin="0,0,2,0" />
+                            <Image Style="{StaticResource TreeViewItemImageStyle}" Source="/TeamPilgrim.VisualStudio;component/Resources\WorkItem_16xLG.png" />
                             <TextBlock Text="Work Items" ContextMenu="{StaticResource ResourceKey=WorkItemQueryContainerContextMenu}"  />
                         </DockPanel>
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type workItemQuery:WorkItemQueryFolderModel}" ItemsSource="{Binding Path=QueryItems}">
                         <DockPanel Style="{StaticResource TreeViewDockPanel}">
-                            <Image Source="{Binding Converter={StaticResource WorkItemQueryFolderModelImageConverter}}" Margin="0,0,2,0" />
+                            <Image Style="{StaticResource TreeViewItemImageStyle}" Source="{Binding Converter={StaticResource WorkItemQueryFolderModelImageConverter}}" />
                             <TextBlock Text="{Binding Path=Name}" ContextMenu="{StaticResource ResourceKey=WorkItemQueryFolderContextMenu}"  />
                         </DockPanel>
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type workItemQuery:WorkItemQueryDefinitionModel}">
                         <DockPanel Style="{StaticResource TreeViewDockPanel}">
-                            <Image Style="{StaticResource WorkItemQueryDefinitionImageStyle}" Margin="0,0,2,0" />
+                            <Image Style="{StaticResource WorkItemQueryDefinitionImageStyle}" />
                             <TextBlock Text="{Binding Path=Name}" ContextMenu="{StaticResource ResourceKey=WorkItemQueryDefinitionContextMenu}"  />
                         </DockPanel>
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type buildDefinitions:BuildDefinitionsServiceModel}" ItemsSource="{Binding Path=BuildDefinitions}">
                         <DockPanel Style="{StaticResource TreeViewDockPanel}">
-                            <Image Source="/TeamPilgrim.VisualStudio;component/Resources\build_Selection_16xLG.png" Margin="0,0,2,0" />
+                            <Image Style="{StaticResource TreeViewItemImageStyle}" Source="/TeamPilgrim.VisualStudio;component/Resources\build_Selection_16xLG.png" />
                             <TextBlock Text="Builds" ContextMenu="{StaticResource ResourceKey=BuildDefinitionsContextMenu}" />
                         </DockPanel>
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type buildDefinitions:BuildDefinitionModel}">
                         <DockPanel Style="{StaticResource TreeViewDockPanel}">
-                            <Image Source="/TeamPilgrim.VisualStudio;component/Resources\build_Solution_16xLG.png" Margin="0,0,2,0" />
+                            <Image Style="{StaticResource TreeViewItemImageStyle}" Source="/TeamPilgrim.VisualStudio;component/Resources\build_Solution_16xLG.png" />
                             <TextBlock Text="{Binding Path=Definition.Name}" ContextMenu="{StaticResource ResourceKey=BuildDefinitionContextMenu}" />
                         </DockPanel>
                     </HierarchicalDataTemplate>
@@ -413,7 +390,7 @@
 
                     <HierarchicalDataTemplate DataType="{x:Type versionControl:SourceControlModel}">
                         <DockPanel Style="{StaticResource TreeViewDockPanel}">
-                            <Image Source="/TeamPilgrim.VisualStudio;component/Resources\ServerProject.png" Margin="0,0,2,0" />
+                            <Image Style="{StaticResource TreeViewItemImageStyle}" Source="/TeamPilgrim.VisualStudio;component/Resources\ServerProject.png" />
                             <TextBlock Text="Source Control" />
                         </DockPanel>
                     </HierarchicalDataTemplate>

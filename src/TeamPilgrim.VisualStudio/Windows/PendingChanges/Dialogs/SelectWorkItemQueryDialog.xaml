@@ -8,12 +8,25 @@
         xmlns:behaviours="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Behaviors"
         xmlns:core="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core"
         xmlns:workItemQuery="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery"
-        xmlns:versionControl="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl" Height="300" Width="300"
+        xmlns:versionControl="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl"
+        xmlns:converters="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Converters" Height="350" Width="350"
         mc:Ignorable="d" 
         d:DataContext="{d:DesignInstance versionControl:SelectWorkItemQueryModel}">
     
     <DockPanel>
         
+        <DockPanel.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <ResourceDictionary Source="/TeamPilgrim.VisualStudio;component/Windows\ResourceDictionary.xaml"/>
+                </ResourceDictionary.MergedDictionaries>
+                
+                <Style TargetType="{x:Type TextBlock}" x:Key="TreeViewItemTextBlockStyle">
+                    <Setter Property="Height" Value="18" />
+                </Style>
+            </ResourceDictionary>
+        </DockPanel.Resources>
+
         <DockPanel DockPanel.Dock="Bottom" LastChildFill="False">
             <Button DockPanel.Dock="Right" Click="CancelButtonClick" Content="Cancel" />
             <Button DockPanel.Dock="Right" Click="OkButtonClick" Content="OK" />
@@ -47,13 +60,21 @@
                         
                         <TextBlock Text="{Binding Path=Project.Name}" />
                     </HierarchicalDataTemplate>
+                   
+                    <converters:WorkItemQueryFolderModelImageConverter x:Key="WorkItemQueryFolderModelImageConverter"/>
 
                     <HierarchicalDataTemplate DataType="{x:Type workItemQuery:WorkItemQueryFolderModel}" ItemsSource="{Binding Path=QueryItems}">
-                        <TextBlock Text="{Binding Path=Name}" />
+                        <DockPanel>
+                            <Image Style="{StaticResource TreeViewItemImageStyle}" Source="{Binding Converter={StaticResource WorkItemQueryFolderModelImageConverter}}" />
+                            <TextBlock Style="{StaticResource TreeViewItemTextBlockStyle}" Text="{Binding Path=Name}" />
+                        </DockPanel>
                     </HierarchicalDataTemplate>
 
                     <HierarchicalDataTemplate DataType="{x:Type workItemQuery:WorkItemQueryDefinitionModel}">
-                        <TextBlock Text="{Binding Path=Name}" />
+                        <DockPanel>
+                            <Image Style="{StaticResource WorkItemQueryDefinitionImageStyle}" />
+                            <TextBlock Style="{StaticResource TreeViewItemTextBlockStyle}" Text="{Binding Path=Name}" />
+                        </DockPanel>
                     </HierarchicalDataTemplate>
                     
                 </TreeView.Resources>
