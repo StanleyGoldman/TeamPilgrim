@@ -402,6 +402,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
         private void WorkItemsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            WorkItemsOnCollectionChanged();
+        }
+
+        private void WorkItemsOnCollectionChanged()
+        {
+            if (_backgroundFunctionPreventDataUpdate)
+                return;
+
             this.Logger().Trace("WorkItemsOnCollectionChanged");
 
             EvaluateCheckInCommand.Execute(null);
@@ -805,7 +813,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
                     .Where(workItem => !modelIntersection.Select(workItemModel => workItemModel.WorkItem.Id).Contains(workItem.Id))
                     .Select(workItem => new WorkItemModel(workItem) { WorkItemCheckinAction = selectedWorkItemCheckinActionEnum }).ToArray();
 
-                _backgroundFunctionPreventDataUpdate = false;
+                _backgroundFunctionPreventDataUpdate = true;
 
                 foreach (var modelToAdd in modelsToAdd)
                 {
@@ -818,7 +826,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
                 }
 
                 _backgroundFunctionPreventDataUpdate = false;
-                EvaluateCheckInCommand.Execute(null);
+
+                WorkItemsOnCollectionChanged();
             }
         }
 
@@ -898,11 +907,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
         private bool CanEvaluateCheckIn()
         {
-            var canEvaluateCheckIn = !_backgroundFunctionPreventDataUpdate;
-
-            this.Logger().Trace("CanEvaluateCheckIn: Result: {0}", canEvaluateCheckIn);
-
-            return canEvaluateCheckIn;
+            return !_backgroundFunctionPreventDataUpdate;
         }
 
         #endregion
