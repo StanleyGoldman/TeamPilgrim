@@ -1,9 +1,11 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using GalaSoft.MvvmLight.Messaging;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Enums;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Messages;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Messages.Dismiss;
@@ -21,6 +23,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialog
         public UnshelveDetailsDialog()
         {
             InitializeComponent();
+
+            Loaded += OnLoaded;
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
+        {
+            GridViewSort.ApplySort(PendingChangesListView.Items, "Change.LocalOrServerFolder", PendingChangesListView, (GridViewColumnHeader)GridViewColumnPendingChangesLocalOrServerFolder.Header, ListSortDirection.Ascending);
         }
 
         public new object DataContext
