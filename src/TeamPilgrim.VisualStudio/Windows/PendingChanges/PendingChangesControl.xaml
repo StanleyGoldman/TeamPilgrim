@@ -242,9 +242,9 @@
                                 
                                 <GridViewColumn
                                         x:Name="GridViewColumnPendingChangesFileName"
-
-                                        listViewLayout:RangeColumn.MinWidth="150"
-                                        attachedProperties:GridViewSort.PropertyName="Change.FileName">
+                                        attachedProperties:GridViewSort.PropertyName="Change.FileName"
+                                    
+                                        listViewLayout:RangeColumn.MinWidth="150">
 
                                     <GridViewColumn.Header>
                                         <GridViewColumnHeader Style="{StaticResource TextGridViewColumnHeader}">File</GridViewColumnHeader>
@@ -335,6 +335,8 @@
                               
                               listViewLayout:ListViewLayoutManager.Enabled="true"
                               
+                              attachedProperties:GridViewSort.AutoSort="True"
+                              
                               attachedProperties:PreviewSpaceKeyDownSelectWorkItems.Command="{Binding Path=SelectWorkItemsCommand}"
                               
                               attachedProperties:PreviewReturnKeyDown.Command="{Binding Path=ViewWorkItemCommand}"
@@ -363,7 +365,12 @@
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
-                                <GridViewColumn listViewLayout:RangeColumn.MinWidth="100" >
+                                <GridViewColumn
+                                    
+                                    x:Name="GridViewColumnWorkItemsCheckinAction"
+                                    attachedProperties:GridViewSort.PropertyName="IsSelectedWorkItemCheckinAction"
+                                    
+                                    listViewLayout:RangeColumn.MinWidth="115" >
                                     
                                     <GridViewColumn.Header>
                                         <GridViewColumnHeader Style="{StaticResource TextGridViewColumnHeader}">Check-in Action</GridViewColumnHeader>
@@ -379,7 +386,12 @@
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
-                                <GridViewColumn listViewLayout:RangeColumn.MinWidth="75">
+                                <GridViewColumn 
+                                    
+                                    x:Name="GridViewColumnWorkItemsId"
+                                    attachedProperties:GridViewSort.PropertyName="WorkItem.Id"
+                                    
+                                    listViewLayout:RangeColumn.MinWidth="75">
                                     <GridViewColumn.Header>
                                         <GridViewColumnHeader Style="{StaticResource TextGridViewColumnHeader}">ID</GridViewColumnHeader>
                                     </GridViewColumn.Header>
@@ -391,7 +403,13 @@
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
-                                <GridViewColumn listViewLayout:RangeColumn.MinWidth="80">
+                                <GridViewColumn
+                                    
+                                    x:Name="GridViewColumnWorkItemsType"
+                                    attachedProperties:GridViewSort.PropertyName="WorkItem.Type.Name"
+                                    
+                                    listViewLayout:RangeColumn.MinWidth="80">
+                                    
                                     <GridViewColumn.Header>
                                         <GridViewColumnHeader Style="{StaticResource TextGridViewColumnHeader}">Type</GridViewColumnHeader>
                                     </GridViewColumn.Header>
@@ -404,6 +422,10 @@
                                 </GridViewColumn>
 
                                 <GridViewColumn
+                                                                        
+                                    x:Name="GridViewColumnWorkItemsTitle"
+                                    attachedProperties:GridViewSort.PropertyName="WorkItem.Title"
+                                    
                                     listViewLayout:RangeColumn.MinWidth="80"
                                     listViewLayout:RangeColumn.IsFillColumn="True">
 
