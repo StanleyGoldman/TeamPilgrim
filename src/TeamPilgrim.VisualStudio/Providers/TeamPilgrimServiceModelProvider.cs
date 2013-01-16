@@ -1,6 +1,7 @@
 ﻿using System;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Extensions;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
 using Microsoft.TeamFoundation.Build.Client;
 using Microsoft.TeamFoundation.Client;
@@ -312,23 +313,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             }
 
             shelvesets = null;
-            return false;
-        }
-
-        public bool TryGetVersionControlServer(out VersionControlServer versionControlServer, TfsTeamProjectCollection tfsTeamProjectCollection)
-        {
-            try
-            {
-                versionControlServer = _teamPilgrimTfsService.GetVersionControlServer(tfsTeamProjectCollection);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                this.Logger().DebugException(ex);
-                LastException = ex;
-            }
-
-            versionControlServer = null;
             return false;
         }
 

@@ -225,7 +225,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
             _projectCollectionServiceModel = projectCollectionServiceModel;
             Workspace = workspace;
 
-            var versionControlServer = _projectCollectionServiceModel.TfsTeamProjectCollection.GetService<VersionControlServer>();
+            var versionControlServer = _projectCollectionServiceModel.TfsTeamProjectCollection.GetVersionControlServer();
+
+            this.Logger().Debug("VersionControlServer - WebServiceLevel: {0}, SupportedFeatures: {1}", versionControlServer.WebServiceLevel, versionControlServer.SupportedFeatures);
+
             versionControlServer.PendingChangesChanged += VersionControlServerOnPendingChangesChanged;
 
             checkinNotesCacheWrapper = new CheckinNotesCacheWrapper(versionControlServer);

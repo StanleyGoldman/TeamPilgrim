@@ -140,6 +140,7 @@
     <Compile Include="Common\Converters\SelectedPendingChangesSummaryEnumIsCheckedBooleanConverter.cs" />
     <Compile Include="Common\Converters\WorkItemQueryFolderModelImageConverter.cs" />
     <Compile Include="Common\Extensions\LoggerExtensions.cs" />
+    <Compile Include="Common\Extensions\TfsExtensions.cs" />
     <Compile Include="Common\Extensions\WorkItemQueryChildModelExtensions.cs" />
     <Compile Include="Common\VisualTreeHelpers.cs" />
     <Compile Include="Domain\BusinessInterfaces\VisualStudio\ITeamFoundationHostWrapper.cs" />

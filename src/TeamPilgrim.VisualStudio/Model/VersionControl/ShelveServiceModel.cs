@@ -657,54 +657,79 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
                 {
                     OnShowPendingChangesItem(ShowPendingChangesTabItemEnum.CheckinNotes);
 
-                    MessageBox.Show("Check-in Validation\r\n\r\nEnter a value for " + string.Join(", ", missingCheckinNotes), "Team Pilgrim", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(
+                        string.Format("Check-in Validation\r\n\r\nEnter a value for {0}", string.Join(", ", missingCheckinNotes)),
+                        "Team Pilgrim", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
             }
 
-            VersionControlServer versionControlServer;
-            if (teamPilgrimServiceModelProvider.TryGetVersionControlServer(out versionControlServer, _projectCollectionServiceModel.TfsTeamProjectCollection))
-            {
-                Debug.Assert(versionControlServer != null, "versionControlServer != null");
+            var workItemInfo = WorkItems
+                .Where(model => model.IsSelected)
+                .Select(model => new WorkItemCheckinInfo(model.WorkItem, model.WorkItemCheckinAction.ToWorkItemCheckinAction()))
+                .ToArray();
 
-                var workItemInfo = WorkItems
-                    .Where(model => model.IsSelected)
-                    .Select(model => new WorkItemCheckinInfo(model.WorkItem, model.WorkItemCheckinAction.ToWorkItemCheckinAction()))
-                    .ToArray();
-
-                var checkinNoteFieldValues =
-                    CheckinNotes
+            var checkinNoteFieldValues =
+                CheckinNotes
                     .Where(model => !string.IsNullOrWhiteSpace(model.Value))
                     .Select(model => new CheckinNoteFieldValue(model.CheckinNoteFieldDefinition.Name, model.Value))
                     .ToArray();
 
-                var checkinNote = new CheckinNote(checkinNoteFieldValues);
+            var checkinNote = new CheckinNote(checkinNoteFieldValues);
 
-                string policyOverrideComment = null;
-                if (EvaluatePoliciesAndCheckinNotes)
+            string policyOverrideComment = null;
+            if (EvaluatePoliciesAndCheckinNotes)
+            {
+                CheckinEvaluationResult checkinEvaluationResult;
+                if (teamPilgrimServiceModelProvider.TryEvaluateCheckin(out checkinEvaluationResult, _workspaceServiceModel.Workspace, pendingChanges, Comment, checkinNote, workItemInfo))
                 {
-                    CheckinEvaluationResult checkinEvaluationResult;
-                    if (teamPilgrimServiceModelProvider.TryEvaluateCheckin(out checkinEvaluationResult, _workspaceServiceModel.Workspace, pendingChanges, Comment, checkinNote, workItemInfo))
+                    if (!checkinEvaluationResult.IsValid())
                     {
-                        if (!checkinEvaluationResult.IsValid())
-                        {
-                            OnShowPendingChangesItem(ShowPendingChangesTabItemEnum.PolicyWarnings);
+                        OnShowPendingChangesItem(ShowPendingChangesTabItemEnum.PolicyWarnings);
 
-                            var policyFailureModel = new PolicyFailureModel();
-                            var policyFailureDialog = new PolicyFailureDialog()
+                        var policyFailureModel = new PolicyFailureModel();
+                        var policyFailureDialog = new PolicyFailureDialog()
                             {
                                 DataContext = policyFailureModel
                             };
 
-                            var dialogResult = policyFailureDialog.ShowDialog();
-                            if (!dialogResult.HasValue || !dialogResult.Value || !policyFailureModel.Override)
-                            {
-                                CheckinEvaluationResult = checkinEvaluationResult;
-                                return;
-                            }
-
-                            policyOverrideComment = policyFailureModel.Reason;
+                        var dialogResult = policyFailureDialog.ShowDialog();
+                        if (!dialogResult.HasValue || !dialogResult.Value || !policyFailureModel.Override)
+                        {
+                            CheckinEvaluationResult = checkinEvaluationResult;
+                            return;
                         }
+
+                        policyOverrideComment = policyFailureModel.Reason;
+                    }
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            var versionControlServer = _projectCollectionServiceModel.TfsTeamProjectCollection.GetVersionControlServer();
+            var shelveset = new Shelveset(versionControlServer, ShelvesetName, _projectCollectionServiceModel.TfsTeamProjectCollection.AuthorizedIdentity.UniqueName)
+                {
+                    Comment = Comment,
+                    ChangesExcluded = PendingChanges.Count() != pendingChanges.Count(),
+                    WorkItemInfo = workItemInfo,
+                    CheckinNote = checkinNote,
+                    PolicyOverrideComment = policyOverrideComment
+                };
+
+            PendingSet[] pendingSets;
+            if (teamPilgrimServiceModelProvider.TryWorkspaceQueryShelvedChanges(_workspaceServiceModel.Workspace, out pendingSets, ShelvesetName,
+                                                                                _projectCollectionServiceModel.TfsTeamProjectCollection.AuthorizedIdentity.UniqueName, null))
+            {
+                bool overwrite = false;
+                if (pendingSets != null && pendingSets.Any())
+                {
+                    if (MessageBox.Show(string.Format("Replace shelveset\r\n\r\nThe shelveset {0} already exists. Replace?", ShelvesetName),
+                        "Team Pilgrim", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+                    {
+                        overwrite = true;
                     }
                     else
                     {
@@ -712,44 +737,16 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
                     }
                 }
 
-                var shelveset = new Shelveset(versionControlServer, ShelvesetName, _projectCollectionServiceModel.TfsTeamProjectCollection.AuthorizedIdentity.UniqueName)
-                    {
-                        Comment = Comment,
-                        ChangesExcluded = PendingChanges.Count() != pendingChanges.Count(),
-                        WorkItemInfo = workItemInfo,
-                        CheckinNote = checkinNote,
-                        PolicyOverrideComment = policyOverrideComment
-                    };
+                var shelvingOptions = ShelvingOptions.None;
 
-                PendingSet[] pendingSets;
-                if (teamPilgrimServiceModelProvider.TryWorkspaceQueryShelvedChanges(_workspaceServiceModel.Workspace, out pendingSets, ShelvesetName,
-                                                                                    _projectCollectionServiceModel.TfsTeamProjectCollection.AuthorizedIdentity.UniqueName, null))
+                if (!PreservePendingChangesLocally)
+                    shelvingOptions |= ShelvingOptions.Move;
+
+                if (overwrite)
+                    shelvingOptions |= ShelvingOptions.Replace;
+
+                if (teamPilgrimServiceModelProvider.TryShelve(_workspaceServiceModel.Workspace, shelveset, pendingChanges, shelvingOptions))
                 {
-                    bool overwrite = false;
-                    if (pendingSets != null && pendingSets.Any())
-                    {
-                        if (MessageBox.Show(string.Format("Replace shelveset\r\n\r\nThe shelveset {0} already exists. Replace?", ShelvesetName),
-                                "Team Pilgrim", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
-                        {
-                            overwrite = true;
-                        }
-                        else
-                        {
-                            return;
-                        }
-                    }
-
-                    var shelvingOptions = ShelvingOptions.None;
-
-                    if (!PreservePendingChangesLocally)
-                        shelvingOptions |= ShelvingOptions.Move;
-
-                    if (overwrite)
-                        shelvingOptions |= ShelvingOptions.Replace;
-
-                    if (teamPilgrimServiceModelProvider.TryShelve(_workspaceServiceModel.Workspace, shelveset, pendingChanges, shelvingOptions))
-                    {
-                    }
                 }
             }
 

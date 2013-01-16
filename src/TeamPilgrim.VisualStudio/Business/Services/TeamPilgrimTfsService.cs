@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Extensions;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
 using Microsoft.TeamFoundation.Build.Client;
 using Microsoft.TeamFoundation.Client;
@@ -101,18 +102,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
             return tfsTeamProjectCollection.GetService<WorkItemStore>();
         }
 
-        public VersionControlServer GetVersionControlServer(TfsTeamProjectCollection tfsTeamProjectCollection)
-        {
-            this.Logger().Trace("GetVersionControlServer");
-
-            return tfsTeamProjectCollection.GetService<VersionControlServer>();
-        }
-
         public Shelveset[] QueryShelvesets(TfsTeamProjectCollection tfsTeamProjectCollection, string shelvesetName = null, string shelvesetOwner = null)
         {
             this.Logger().Trace("QueryShelvesets ProjectCollection: {0} ShelvesetName: {1} ShelvesetOwner: {2}", tfsTeamProjectCollection.Name, shelvesetName, shelvesetOwner);
 
-            return GetVersionControlServer(tfsTeamProjectCollection).QueryShelvesets(shelvesetName, shelvesetOwner);
+            return tfsTeamProjectCollection.GetVersionControlServer().QueryShelvesets(shelvesetName, shelvesetOwner);
         }
 
         public Shelveset WorkspaceUnshelve(Workspace workspace, string shelvesetName, string shelvesetOwner, ItemSpec[] items = null)
@@ -126,8 +120,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
         {
             this.Logger().Trace("DeleteShelveset ShelvesetName: {0} ShelvesetOwner: {1}", shelvesetName, shelvesetOwner);
 
-            var versionControlServer = GetVersionControlServer(tfsTeamProjectCollection);
-            versionControlServer.DeleteShelveset(shelvesetName, shelvesetOwner);
+            tfsTeamProjectCollection.GetVersionControlServer().DeleteShelveset(shelvesetName, shelvesetOwner);
         }
 
         public IBuildDefinition[] QueryBuildDefinitions(TfsTeamProjectCollection tfsTeamProjectCollection, string teamProject)
