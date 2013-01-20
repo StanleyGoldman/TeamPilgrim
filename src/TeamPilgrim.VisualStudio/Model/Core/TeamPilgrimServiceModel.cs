@@ -125,7 +125,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core
 
                 _selectedWorkspaceInfoModel = value;
 
-                if (SelectedWorkspaceInfoModel != null) 
+                if (SelectedWorkspaceInfoModel != null)
                     LoadWorkspaceModel(SelectedWorkspaceInfoModel);
 
                 SendPropertyChanged("SelectedWorkspaceInfoModel");
@@ -165,7 +165,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core
                     Connecting = true;
                     ConnectingServer = args.TeamProjectCollection.Name;
                 };
-            
+
             teamPilgrimVsService.TeamFoundationHost.ServerConnected += delegate(object sender, ServerConnectedEventArgs args)
                 {
                     Connecting = false;
@@ -236,15 +236,17 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core
             var tpcAddress = new Uri(activeProjectContext.DomainUri);
             TfsTeamProjectCollection collection;
 
-            if (teamPilgrimServiceModelProvider.TryGetCollection(out collection, tpcAddress))
-            {
-                ProjectCollectionModels.Clear();
-                if (collection != null)
-                {
-                    var projectCollectionServiceModel = new ProjectCollectionServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, this, collection);
-                    ProjectCollectionModels.Add(projectCollectionServiceModel);
-                }
-            }
+            if (!teamPilgrimServiceModelProvider.TryGetCollection(out collection, tpcAddress))
+                return;
+
+            ProjectCollectionModels.Clear();
+            if (collection == null)
+                return;
+
+            var projectCollectionServiceModel = new ProjectCollectionServiceModel(teamPilgrimServiceModelProvider,
+                                                                                  teamPilgrimVsService, this,
+                                                                                  collection);
+            ProjectCollectionModels.Add(projectCollectionServiceModel);
 
             WorkspaceInfo[] workspaceInfos;
             if (teamPilgrimServiceModelProvider.TryGetLocalWorkspaceInfos(out workspaceInfos, collection.InstanceId))
