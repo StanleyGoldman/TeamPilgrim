@@ -163,13 +163,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core
             teamPilgrimVsService.TeamFoundationHost.ServerConnecting += delegate(object sender, ServerConnectingEventArgs args)
                 {
                     Connecting = true;
-                    ConnectingServer = args.TeamProjectCollection.Name;
+                    ConnectingServer = args.TeamProjectCollection != null ? args.TeamProjectCollection.Name : null;
                 };
 
             teamPilgrimVsService.TeamFoundationHost.ServerConnected += delegate(object sender, ServerConnectedEventArgs args)
                 {
                     Connecting = false;
-                    ConnectingServer = args.TeamProjectCollection.Name;
+                    ConnectingServer = args.TeamProjectCollection != null ? args.TeamProjectCollection.Name : null;
                     ConnectedError = args.Error;
                     ConnectedStatus = args.Status;
                 };
