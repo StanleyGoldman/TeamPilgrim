@@ -46,36 +46,37 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core
                 {
                     WorkerReportsProgress = true
                 };
-            _populateBackgroundWorker.DoWork += (sender, args) =>
-                {
-                    this.Logger().Trace("Begin Populate");
-
-                    Project[] projects;
-                    if (base.teamPilgrimServiceModelProvider.TryGetProjects(out projects, TfsTeamProjectCollection))
-                    {
-                        Application.Current.Dispatcher.Invoke(() => ProjectModels.Clear(), DispatcherPriority.Normal);
-
-                        var pilgrimProjectModels = projects
-                            .Select(project =>
-                                    new ProjectServiceModel(base.teamPilgrimServiceModelProvider, base.teamPilgrimVsService,
-                                                            TeamPilgrimServiceModel, TfsTeamProjectCollection, project))
-                            .ToArray();
-
-                        var index = 0;
-                        foreach (var pilgrimProjectModel in pilgrimProjectModels)
-                        {
-                            var localScoprProjectModel = pilgrimProjectModel;
-                            Application.Current.Dispatcher.Invoke(() => ProjectModels.Add(localScoprProjectModel), DispatcherPriority.Normal);
-
-                            _populateBackgroundWorker.ReportProgress((int)(index++ / (decimal)pilgrimProjectModels.Count() * 100));
-                            index++;
-                        }
-                    }
-
-                    this.Logger().Trace("End Populate");
-                };
-
+            _populateBackgroundWorker.DoWork += PopulateBackgroundWorkerOnDoWork;
             _populateBackgroundWorker.RunWorkerAsync(true);
+        }
+
+        private void PopulateBackgroundWorkerOnDoWork(object sender, DoWorkEventArgs doWorkEventArgs)
+        {
+            this.Logger().Trace("Begin Populate");
+
+            Project[] projects;
+            if (teamPilgrimServiceModelProvider.TryGetProjects(out projects, TfsTeamProjectCollection))
+            {
+                Application.Current.Dispatcher.Invoke(() => ProjectModels.Clear(), DispatcherPriority.Normal);
+
+                var pilgrimProjectModels = projects
+                    .Select(project =>
+                            new ProjectServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService,
+                                                    TeamPilgrimServiceModel, TfsTeamProjectCollection, project))
+                    .ToArray();
+
+                var index = 0;
+                foreach (var pilgrimProjectModel in pilgrimProjectModels)
+                {
+                    var localScoprProjectModel = pilgrimProjectModel;
+                    Application.Current.Dispatcher.Invoke(() => ProjectModels.Add(localScoprProjectModel), DispatcherPriority.Normal);
+
+                    _populateBackgroundWorker.ReportProgress((int)(index++ / (decimal)pilgrimProjectModels.Count() * 100));
+                    index++;
+                }
+            }
+
+            this.Logger().Trace("End Populate");
         }
 
         #region Refresh Command

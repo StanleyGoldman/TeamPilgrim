@@ -45,27 +45,27 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
             ManageBuildSecurityCommand = new RelayCommand(ManageBuildSecurity, CanManageBuildSecurity);
 
             _populateBackgroundWorker = new BackgroundWorker();
-
-            _populateBackgroundWorker.DoWork += (sender, args) =>
-                {
-                    this.Logger().Trace("Begin Populate");
-                    
-                    Application.Current.Dispatcher.Invoke(() => BuildDefinitions.Clear());
-
-                    IBuildDefinition[] buildDefinitions;
-                    if (teamPilgrimServiceModelProvider.TryGetBuildDefinitionsByProjectName(out buildDefinitions, _collection, _project.Name))
-                    {
-                        foreach (var buildDefinitionModel in buildDefinitions.Select(definition => new BuildDefinitionModel(this, definition)))
-                        {
-                            var localScopeModel = buildDefinitionModel;
-                            Application.Current.Dispatcher.Invoke(() => BuildDefinitions.Add(localScopeModel));
-                        }
-                    }
-                 
-                    this.Logger().Trace("End Populate");
-                };
-
+            _populateBackgroundWorker.DoWork += PopulateBackgroundWorkerOnDoWork;
             _populateBackgroundWorker.RunWorkerAsync();
+        }
+
+        private void PopulateBackgroundWorkerOnDoWork(object sender, DoWorkEventArgs doWorkEventArgs)
+        {
+            this.Logger().Trace("Begin Populate");
+
+            Application.Current.Dispatcher.Invoke(() => BuildDefinitions.Clear());
+
+            IBuildDefinition[] buildDefinitions;
+            if (teamPilgrimServiceModelProvider.TryGetBuildDefinitionsByProjectName(out buildDefinitions, _collection, _project.Name))
+            {
+                foreach (var buildDefinitionModel in buildDefinitions.Select(definition => new BuildDefinitionModel(this, definition)))
+                {
+                    var localScopeModel = buildDefinitionModel;
+                    Application.Current.Dispatcher.Invoke(() => BuildDefinitions.Add(localScopeModel));
+                }
+            }
+
+            this.Logger().Trace("End Populate");
         }
 
         #region Refresh Command
