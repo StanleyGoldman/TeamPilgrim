@@ -1,10 +1,13 @@
+using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.TeamFoundation;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.Client;
@@ -20,6 +23,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core
 
         public TfsTeamProjectCollection TfsTeamProjectCollection { get; private set; }
 
+        private readonly BackgroundWorker _populateBackgroundWorker;
+
         public ProjectCollectionServiceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, TeamPilgrimServiceModel teamPilgrimServiceModel, TfsTeamProjectCollection pilgrimProjectCollection)
             : base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
         {
@@ -34,37 +39,50 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core
             ShowProcessTemplateManagerCommand = new RelayCommand(ShowProcessTemplateManager, CanShowProcessTemplateManager);
             ShowSecuritySettingsCommand = new RelayCommand(ShowSecuritySettings, CanShowSecuritySettings);
             OpenSourceControlSettingsCommand = new RelayCommand(OpenSourceControlSettings, CanOpenSourceControlSettings);
-            
+
             SetActiveProjectCommand = new RelayCommand<ProjectServiceModel>(SetActiveProject, CanSetActiveProject);
 
-            Populate();
-        }
-
-        private void Populate()
-        {
-            Project[] projects;
-            if (teamPilgrimServiceModelProvider.TryGetProjects(out projects, TfsTeamProjectCollection))
-            {
-                ProjectModels.Clear();
-
-                var pilgrimProjectModels = projects
-                    .Select(
-                        project =>
-                        new ProjectServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService,
-                                                TeamPilgrimServiceModel, TfsTeamProjectCollection, project));
-
-                foreach (var pilgrimProjectModel in pilgrimProjectModels)
+            _populateBackgroundWorker = new BackgroundWorker
                 {
-                    ProjectModels.Add(pilgrimProjectModel);
-                }
-            }
+                    WorkerReportsProgress = true
+                };
+            _populateBackgroundWorker.DoWork += (sender, args) =>
+                {
+                    this.Logger().Trace("Begin Populate");
+
+                    Project[] projects;
+                    if (base.teamPilgrimServiceModelProvider.TryGetProjects(out projects, TfsTeamProjectCollection))
+                    {
+                        Application.Current.Dispatcher.Invoke(() => ProjectModels.Clear(), DispatcherPriority.Normal);
+
+                        var pilgrimProjectModels = projects
+                            .Select(project =>
+                                    new ProjectServiceModel(base.teamPilgrimServiceModelProvider, base.teamPilgrimVsService,
+                                                            TeamPilgrimServiceModel, TfsTeamProjectCollection, project))
+                            .ToArray();
+
+                        var index = 0;
+                        foreach (var pilgrimProjectModel in pilgrimProjectModels)
+                        {
+                            var localScoprProjectModel = pilgrimProjectModel;
+                            Application.Current.Dispatcher.Invoke(() => ProjectModels.Add(localScoprProjectModel), DispatcherPriority.Normal);
+
+                            _populateBackgroundWorker.ReportProgress((int)(index++ / (decimal)pilgrimProjectModels.Count() * 100));
+                            index++;
+                        }
+                    }
+
+                    this.Logger().Trace("End Populate");
+                };
+
+            _populateBackgroundWorker.RunWorkerAsync(true);
         }
 
         #region Refresh Command
 
         protected override void Refresh()
         {
-            Populate();
+            _populateBackgroundWorker.RunWorkerAsync(true);
         }
 
         protected override bool CanRefresh()
