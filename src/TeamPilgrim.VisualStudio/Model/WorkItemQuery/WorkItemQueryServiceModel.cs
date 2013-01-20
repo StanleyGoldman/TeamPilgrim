@@ -1,7 +1,10 @@
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Windows;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.WorkItems;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Extensions;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
@@ -15,6 +18,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
         private readonly TfsTeamProjectCollection _projectCollection;
 
         private readonly Project _project;
+        private BackgroundWorker _populateBackgroundWorker;
 
         public ObservableCollection<WorkItemQueryChildModel> QueryItems { get; private set; }
 
@@ -39,26 +43,31 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
             DeleteQueryItemCommand = new RelayCommand<WorkItemQueryChildModel>(DeleteQueryDefinition, CanDeleteQueryDefinition);
             OpenSeurityDialogCommand = new RelayCommand<WorkItemQueryChildModel>(OpenSeurityDialog, CanOpenSeurityDialog);
 
-            PopulateQueryHierarchy();
-        }
+            _populateBackgroundWorker = new BackgroundWorker();
+            _populateBackgroundWorker.DoWork += (sender, args) =>
+                {
+                    this.Logger().Trace("Begin Populate");
+                   
+                    Application.Current.Dispatcher.Invoke(() => QueryItems.Clear());
 
-        private void PopulateQueryHierarchy()
-        {
-            var queryItemModels = _project.QueryHierarchy.GetQueryItemViewModels(this, teamPilgrimServiceModelProvider, teamPilgrimVsService, _project, 1);
-            foreach (var queryChildModel in queryItemModels)
-            {
-                QueryItems.Add(queryChildModel);
-            }
+                    var queryItemModels = _project.QueryHierarchy.GetQueryItemViewModels(this, teamPilgrimServiceModelProvider, teamPilgrimVsService, _project, 1);
+                    foreach (var queryChildModel in queryItemModels)
+                    {
+                        var localScopeModel = queryChildModel;
+                        Application.Current.Dispatcher.Invoke(() => QueryItems.Add(localScopeModel));
+                    }
+            
+                    this.Logger().Trace("End Populate");
+                };
+            
+            _populateBackgroundWorker.RunWorkerAsync();
         }
 
         #region Refresh Command
 
         protected override void Refresh()
         {
-            QueryItems.Clear();
-
-            _project.QueryHierarchy.Refresh();
-            PopulateQueryHierarchy();
+            _populateBackgroundWorker.RunWorkerAsync();
         }
 
         protected override bool CanRefresh()
