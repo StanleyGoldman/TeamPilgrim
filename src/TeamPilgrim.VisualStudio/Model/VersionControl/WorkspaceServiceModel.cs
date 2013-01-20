@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
@@ -218,6 +219,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
         }
 
         private bool _backgroundFunctionPreventDataUpdate;
+        private BackgroundWorker _populatePendingChangedBackgroundWorker;
 
         public WorkspaceServiceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, ProjectCollectionServiceModel projectCollectionServiceModel, Workspace workspace)
             : base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
@@ -254,17 +256,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
             CheckinNotes = new ObservableCollection<CheckinNoteModel>();
 
             PendingChanges = new ObservableCollection<PendingChangeModel>();
-
-            PendingChange[] pendingChanges;
-            if (teamPilgrimServiceModelProvider.TryGetPendingChanges(out pendingChanges, Workspace))
-            {
-                foreach (var pendingChange in pendingChanges)
-                {
-                    var pendingChangeModel = new PendingChangeModel(pendingChange) { IncludeChange = true };
-                    PendingChanges.Add(pendingChangeModel);
-                }
-            }
             PendingChanges.CollectionChanged += PendingChangesOnCollectionChanged;
+
+            _populatePendingChangedBackgroundWorker = new BackgroundWorker();
+            _populatePendingChangedBackgroundWorker.DoWork += PopulatePendingChangedBackgroundWorkerOnDoWork;
+            _populatePendingChangedBackgroundWorker.RunWorkerAsync();
 
             SolutionIsOpen = teamPilgrimVsService.Solution.IsOpen && !string.IsNullOrEmpty(teamPilgrimVsService.Solution.FileName);
             teamPilgrimVsService.SolutionStateChanged += () =>
@@ -277,6 +273,78 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
             WorkItems.CollectionChanged += WorkItemsOnCollectionChanged;
 
             PopulatePreviouslySelectedWorkItemQueryModels();
+        }
+
+        private void PopulatePendingChangedBackgroundWorkerOnDoWork(object sender, DoWorkEventArgs doWorkEventArgs)
+        {
+            this.Logger().Trace("Begin Refresh Pending Changes");
+
+            PendingChange[] currentPendingChanges;
+
+            var filterItems = SolutionIsOpen && FilterSolution;
+            string[] solutionFilePaths = null;
+
+            if (filterItems)
+            {
+                try
+                {
+                    solutionFilePaths = teamPilgrimVsService.GetSolutionFilePaths();
+                }
+                catch (Exception)
+                {
+                    filterItems = false;
+                }
+            }
+
+            if (filterItems
+                    ? teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, Workspace,
+                                                                           solutionFilePaths)
+                    : teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, Workspace))
+            {
+                var intersections = PendingChanges
+                    .Join(currentPendingChanges, model => model.Change.ItemId, change => change.ItemId,
+                          (model, change) => new { model, change })
+                    .ToArray();
+
+                var intersectedModels =
+                    intersections
+                        .Select(arg => arg.model)
+                        .ToArray();
+
+                var modelsToRemove = PendingChanges.Where(model => !intersectedModels.Contains(model)).ToArray();
+
+                var modelsToAdd = currentPendingChanges
+                    .Where(
+                        pendingChange =>
+                        !intersectedModels.Select(model => model.Change.ItemId).Contains(pendingChange.ItemId))
+                    .Select(change => new PendingChangeModel(change) { IncludeChange = true }).ToArray();
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    _backgroundFunctionPreventDataUpdate = true;
+
+                    foreach (var intersection in intersections)
+                    {
+                        intersection.model.Change = intersection.change;
+                    }
+
+                    foreach (var pendingChangeModel in modelsToAdd)
+                    {
+                        PendingChanges.Add(pendingChangeModel);
+                    }
+
+                    foreach (var modelToRemove in modelsToRemove)
+                    {
+                        PendingChanges.Remove(modelToRemove);
+                    }
+
+                    _backgroundFunctionPreventDataUpdate = false;
+
+                    PendingChangesOnCollectionChanged();
+                }, DispatcherPriority.Normal);
+            }
+
+            this.Logger().Trace("End Refresh Pending Changes");
         }
 
         private void PopulatePreviouslySelectedWorkItemQueryModels()
@@ -310,7 +378,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
         private void VersionControlServerOnPendingChangesChanged(object sender, WorkspaceEventArgs workspaceEventArgs)
         {
             this.Logger().Debug("VersionControlServerOnPendingChangesChanged");
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)RefreshPendingChanges);
+            RefreshPendingChanges();
         }
 
         protected virtual void OnShowPendingChangesItem(ShowPendingChangesTabItemEnum showpendingchangestabitemenum)
@@ -728,65 +796,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
         private void RefreshPendingChanges()
         {
-            this.Logger().Trace("RefreshPendingChanges");
-
-            PendingChange[] currentPendingChanges;
-
-            var filterItems = SolutionIsOpen && FilterSolution;
-            string[] solutionFilePaths = null;
-
-            if (filterItems)
-            {
-                try
-                {
-                    solutionFilePaths = teamPilgrimVsService.GetSolutionFilePaths();
-                }
-                catch (Exception)
-                {
-                    filterItems = false;
-                }
-            }
-
-            if (filterItems
-                ? teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, Workspace, solutionFilePaths)
-                : teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, Workspace))
-            {
-                var intersections = PendingChanges
-                    .Join(currentPendingChanges, model => model.Change.ItemId, change => change.ItemId, (model, change) => new { model, change })
-                    .ToArray();
-
-                var intersectedModels =
-                    intersections
-                    .Select(arg => arg.model)
-                    .ToArray();
-
-                var modelsToRemove = PendingChanges.Where(model => !intersectedModels.Contains(model)).ToArray();
-
-                var modelsToAdd = currentPendingChanges
-                    .Where(pendingChange => !intersectedModels.Select(model => model.Change.ItemId).Contains(pendingChange.ItemId))
-                    .Select(change => new PendingChangeModel(change) { IncludeChange = true }).ToArray();
-
-                _backgroundFunctionPreventDataUpdate = true;
-
-                foreach (var intersection in intersections)
-                {
-                    intersection.model.Change = intersection.change;
-                }
-
-                foreach (var pendingChangeModel in modelsToAdd)
-                {
-                    PendingChanges.Add(pendingChangeModel);
-                }
-
-                foreach (var modelToRemove in modelsToRemove)
-                {
-                    PendingChanges.Remove(modelToRemove);
-                }
-
-                _backgroundFunctionPreventDataUpdate = false;
-
-                PendingChangesOnCollectionChanged();
-            }
+            _populatePendingChangedBackgroundWorker.RunWorkerAsync();
         }
 
         private bool CanRefreshPendingChanges()
