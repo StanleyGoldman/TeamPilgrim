@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 using GalaSoft.MvvmLight.Command;
@@ -133,8 +134,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core
         }
 
         private WorkspaceServiceModel _selectedWorkspaceModel;
-        private BackgroundWorker _populateBackgroundWorker;
-
         public WorkspaceServiceModel SelectedWorkspaceModel
         {
             get
@@ -150,6 +149,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core
                 SendPropertyChanged("SelectedWorkspaceModel");
             }
         }
+
+        private readonly BackgroundWorker _populateBackgroundWorker;
+        private readonly AutoResetEvent _populateResetEvent = new AutoResetEvent(false);
 
         public TeamPilgrimServiceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService)
             : base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
@@ -179,63 +181,82 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core
             TfsConnectCommand = new RelayCommand(TfsConnect, CanTfsConnect);
             ShowResolveConflicttManagerCommand = new RelayCommand(ShowResolveConflicttManager, CanShowResolveConflicttManager);
 
-            _populateBackgroundWorker = new BackgroundWorker();
-            _populateBackgroundWorker.DoWork += (sender, args) =>
+            _populateBackgroundWorker = new BackgroundWorker
                 {
-                    this.Logger().Trace("Begin Populate");
-
-                    var activeProjectContext = teamPilgrimVsService.ActiveProjectContext;
-
-                    if (activeProjectContext == null ||
-                        activeProjectContext.DomainUri == null)
-                    {
-                        Application.Current.Dispatcher.Invoke(() => ProjectCollectionModels.Clear());
-                        return;
-                    }
-
-                    var tpcAddress = new Uri(activeProjectContext.DomainUri);
-                    TfsTeamProjectCollection collection;
-
-                    if (!teamPilgrimServiceModelProvider.TryGetCollection(out collection, tpcAddress))
-                        return;
-
-                    Application.Current.Dispatcher.Invoke(() => ProjectCollectionModels.Clear());
-                    if (collection == null)
-                        return;
-
-                    var projectCollectionServiceModel = new ProjectCollectionServiceModel(teamPilgrimServiceModelProvider,
-                                                                                          teamPilgrimVsService, this,
-                                                                                          collection);
-                    Application.Current.Dispatcher.Invoke(() => ProjectCollectionModels.Add(projectCollectionServiceModel));
-
-                    WorkspaceInfo[] workspaceInfos;
-                    if (teamPilgrimServiceModelProvider.TryGetLocalWorkspaceInfos(out workspaceInfos, collection.InstanceId))
-                    {
-                        Application.Current.Dispatcher.Invoke(() => WorkspaceInfoModels.Clear());
-
-                        var activeWorkspace = teamPilgrimVsService.ActiveWorkspace;
-
-                        WorkspaceInfoModel selectedWorkspaceInfoModel = null;
-
-                        foreach (var workspaceInfo in workspaceInfos)
-                        {
-                            var workspaceInfoModel = new WorkspaceInfoModel(workspaceInfo);
-                            Application.Current.Dispatcher.Invoke(() => WorkspaceInfoModels.Add(workspaceInfoModel));
-
-                            if (activeWorkspace != null && activeWorkspace.QualifiedName == workspaceInfo.QualifiedName)
-                            {
-                                selectedWorkspaceInfoModel = workspaceInfoModel;
-                            }
-                        }
-
-                        if (selectedWorkspaceInfoModel != null)
-                        {
-                            Application.Current.Dispatcher.Invoke(() => SelectedWorkspaceInfoModel = selectedWorkspaceInfoModel);
-                        }
-                    }
-
-                    this.Logger().Trace("End Populate");
+                    WorkerSupportsCancellation = true
                 };
+            _populateBackgroundWorker.DoWork += PopulateBackgroundWorkerOnDoWork;
+        }
+
+        private void PopulateBackgroundWorkerOnDoWork(object sender, DoWorkEventArgs doWorkEventArgs)
+        {
+            try
+            {
+                var domainUri = (string) doWorkEventArgs.Argument;
+
+                this.Logger().Trace("Begin Populate");
+
+                var tpcAddress = new Uri(domainUri);
+                TfsTeamProjectCollection collection;
+
+                if (!teamPilgrimServiceModelProvider.TryGetCollection(out collection, tpcAddress))
+                    return;
+
+                Application.Current.Dispatcher.Invoke(() => ProjectCollectionModels.Clear(), DispatcherPriority.Normal);
+                if (collection == null)
+                    return;
+
+                var projectCollectionServiceModel = new ProjectCollectionServiceModel(teamPilgrimServiceModelProvider,
+                                                                                      teamPilgrimVsService, this,
+                                                                                      collection);
+                Application.Current.Dispatcher.Invoke(() => ProjectCollectionModels.Add(projectCollectionServiceModel));
+
+                WorkspaceInfo[] workspaceInfos;
+                if (teamPilgrimServiceModelProvider.TryGetLocalWorkspaceInfos(out workspaceInfos, collection.InstanceId))
+                {
+                    Application.Current.Dispatcher.Invoke(() => WorkspaceInfoModels.Clear(), DispatcherPriority.Normal);
+
+                    if (_populateBackgroundWorker.CancellationPending)
+                    {
+                        doWorkEventArgs.Cancel = true;
+                        return;
+                    }
+
+                    var activeWorkspace = teamPilgrimVsService.ActiveWorkspace;
+
+                    WorkspaceInfoModel selectedWorkspaceInfoModel = null;
+
+                    foreach (var workspaceInfo in workspaceInfos)
+                    {
+                        var workspaceInfoModel = new WorkspaceInfoModel(workspaceInfo);
+                        Application.Current.Dispatcher.Invoke(() => WorkspaceInfoModels.Add(workspaceInfoModel),
+                                                              DispatcherPriority.Normal);
+
+                        if (activeWorkspace != null && activeWorkspace.QualifiedName == workspaceInfo.QualifiedName)
+                        {
+                            selectedWorkspaceInfoModel = workspaceInfoModel;
+                        }
+
+                        if (_populateBackgroundWorker.CancellationPending)
+                        {
+                            doWorkEventArgs.Cancel = true;
+                            return;
+                        }
+                    }
+
+                    if (selectedWorkspaceInfoModel != null)
+                    {
+                        Application.Current.Dispatcher.Invoke(
+                            () => SelectedWorkspaceInfoModel = selectedWorkspaceInfoModel, DispatcherPriority.Normal);
+                    }
+                }
+
+                this.Logger().Trace("End Populate");
+            }
+            finally
+            {
+                _populateResetEvent.Set();
+            }
         }
 
         private void ProjectCollectionModelsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -262,7 +283,18 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core
         {
             if (contextChangedEventArgs.TeamProjectCollectionChanged)
             {
-                _populateBackgroundWorker.RunWorkerAsync();
+                CancelBackgroundWorker();
+
+                var domainUri = (contextChangedEventArgs.NewContext == null) ? null: contextChangedEventArgs.NewContext.DomainUri();
+                if (domainUri == null)
+                {
+                    this.Logger().Trace("Disconnected");
+                    Application.Current.Dispatcher.Invoke(() => ProjectCollectionModels.Clear());
+                }
+                else
+                {
+                    _populateBackgroundWorker.RunWorkerAsync(domainUri);
+                }
             }
             else if (contextChangedEventArgs.TeamProjectChanged)
             {
@@ -275,6 +307,20 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core
                             projectModel.IsActive = projectModel.Project.Name == activeProjectContext.ProjectName;
                         }
                     }, DispatcherPriority.Normal);
+            }
+        }
+
+        private void CancelBackgroundWorker()
+        {
+            if (_populateBackgroundWorker.IsBusy)
+            {
+                this.Logger().Trace("Begin Cancel Populate");
+
+                _populateResetEvent.Reset();
+                _populateBackgroundWorker.CancelAsync();
+                _populateResetEvent.WaitOne();
+
+                this.Logger().Trace("End Cancel Populate");
             }
         }
 
