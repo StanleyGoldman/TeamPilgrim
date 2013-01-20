@@ -324,7 +324,21 @@
                     <HierarchicalDataTemplate DataType="{x:Type core:ProjectCollectionServiceModel}" ItemsSource="{Binding Path=ProjectModels}">
                         <DockPanel Style="{StaticResource TreeViewDockPanel}">
                             <Image Style="{StaticResource TreeViewItemImageStyle}" Source="/TeamPilgrim.VisualStudio;component/Resources\TFSServer_13310_16x.png" />
-                            <TextBlock Text="{Binding Path=TfsTeamProjectCollection.Name}" ContextMenu="{StaticResource ResourceKey=ProjectCollectionContextMenu}" />
+                            <TextBlock ContextMenu="{StaticResource ResourceKey=ProjectCollectionContextMenu}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=IsPopulating}" Value="False">
+                                                <Setter Property="Text" Value="{Binding Path=TfsTeamProjectCollection.Name}"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Path=IsPopulating}" Value="True">
+                                                <Setter Property="Text" Value="{Binding Path=TfsTeamProjectCollection.Name, StringFormat='Connecting to \{0\}'}"/>
+                                                <Setter Property="FontStyle" Value="Italic"></Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
                         </DockPanel>
                     </HierarchicalDataTemplate>
 
@@ -344,7 +358,21 @@
                     <HierarchicalDataTemplate DataType="{x:Type workItemQuery:WorkItemQueryServiceModel}" ItemsSource="{Binding Path=QueryItems}">
                         <DockPanel Style="{StaticResource TreeViewDockPanel}">
                             <Image Style="{StaticResource TreeViewItemImageStyle}" Source="/TeamPilgrim.VisualStudio;component/Resources\WorkItem_16xLG.png" />
-                            <TextBlock Text="Work Items" ContextMenu="{StaticResource ResourceKey=WorkItemQueryContainerContextMenu}"  />
+                            <TextBlock ContextMenu="{StaticResource ResourceKey=WorkItemQueryContainerContextMenu}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=IsPopulating}" Value="False">
+                                                <Setter Property="Text" Value="Work Items"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Path=IsPopulating}" Value="True">
+                                                <Setter Property="Text" Value="Work Items (Loading)"/>
+                                                <Setter Property="FontStyle" Value="Italic"></Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
                         </DockPanel>
                     </HierarchicalDataTemplate>
 
@@ -365,7 +393,21 @@
                     <HierarchicalDataTemplate DataType="{x:Type buildDefinitions:BuildDefinitionsServiceModel}" ItemsSource="{Binding Path=BuildDefinitions}">
                         <DockPanel Style="{StaticResource TreeViewDockPanel}">
                             <Image Style="{StaticResource TreeViewItemImageStyle}" Source="/TeamPilgrim.VisualStudio;component/Resources\build_Selection_16xLG.png" />
-                            <TextBlock Text="Builds" ContextMenu="{StaticResource ResourceKey=BuildDefinitionsContextMenu}" />
+                            <TextBlock ContextMenu="{StaticResource ResourceKey=BuildDefinitionsContextMenu}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=IsPopulating}" Value="False">
+                                                <Setter Property="Text" Value="Builds"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Path=IsPopulating}" Value="True">
+                                                <Setter Property="Text" Value="Builds (Loading)"/>
+                                                <Setter Property="FontStyle" Value="Italic"></Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
                         </DockPanel>
                     </HierarchicalDataTemplate>
 

@@ -25,6 +25,23 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core
 
         private readonly BackgroundWorker _populateBackgroundWorker;
 
+        private bool _isPopulating;
+        public bool IsPopulating
+        {
+            get
+            {
+                return _isPopulating;
+            }
+            set
+            {
+                if (_isPopulating == value) return;
+
+                _isPopulating = value;
+
+                SendPropertyChanged("IsPopulating");
+            }
+        }
+
         public ProjectCollectionServiceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, TeamPilgrimServiceModel teamPilgrimServiceModel, TfsTeamProjectCollection pilgrimProjectCollection)
             : base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
         {
@@ -54,6 +71,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core
         {
             this.Logger().Trace("Begin Populate");
 
+            Application.Current.Dispatcher.Invoke(() => IsPopulating = true, DispatcherPriority.Normal);
+
             Project[] projects;
             if (teamPilgrimServiceModelProvider.TryGetProjects(out projects, TfsTeamProjectCollection))
             {
@@ -75,6 +94,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core
                     index++;
                 }
             }
+          
+            Application.Current.Dispatcher.Invoke(() => IsPopulating = false, DispatcherPriority.Normal);
 
             this.Logger().Trace("End Populate");
         }

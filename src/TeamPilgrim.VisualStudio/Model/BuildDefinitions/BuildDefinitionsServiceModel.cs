@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
+using System.Windows.Threading;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
@@ -21,7 +22,25 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
 
         private readonly TfsTeamProjectCollection _collection;
         private readonly Project _project;
-        private BackgroundWorker _populateBackgroundWorker;
+        
+        private readonly BackgroundWorker _populateBackgroundWorker;
+
+        private bool _isPopulating;
+        public bool IsPopulating
+        {
+            get
+            {
+                return _isPopulating;
+            }
+            set
+            {
+                if (_isPopulating == value) return;
+
+                _isPopulating = value;
+
+                SendPropertyChanged("IsPopulating");
+            }
+        }
 
         public BuildDefinitionsServiceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, TfsTeamProjectCollection collection, Project project)
             : base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
@@ -53,7 +72,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
         {
             this.Logger().Trace("Begin Populate");
 
-            Application.Current.Dispatcher.Invoke(() => BuildDefinitions.Clear());
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                IsPopulating = true;
+                BuildDefinitions.Clear();
+            }, DispatcherPriority.Normal);
 
             IBuildDefinition[] buildDefinitions;
             if (teamPilgrimServiceModelProvider.TryGetBuildDefinitionsByProjectName(out buildDefinitions, _collection, _project.Name))
@@ -64,6 +88,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
                     Application.Current.Dispatcher.Invoke(() => BuildDefinitions.Add(localScopeModel));
                 }
             }
+
+            Application.Current.Dispatcher.Invoke(() => IsPopulating = false, DispatcherPriority.Normal);
 
             this.Logger().Trace("End Populate");
         }

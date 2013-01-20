@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Threading;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.WorkItems;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
@@ -19,7 +20,25 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
         private readonly TfsTeamProjectCollection _projectCollection;
 
         private readonly Project _project;
+        
         private readonly BackgroundWorker _populateBackgroundWorker;
+
+        private bool _isPopulating;
+        public bool IsPopulating
+        {
+            get
+            {
+                return _isPopulating;
+            }
+            set
+            {
+                if (_isPopulating == value) return;
+
+                _isPopulating = value;
+
+                SendPropertyChanged("IsPopulating");
+            }
+        }
 
         public ObservableCollection<WorkItemQueryChildModel> QueryItems { get; private set; }
 
@@ -53,7 +72,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
         {
             this.Logger().Trace("Begin Populate");
 
-            Application.Current.Dispatcher.Invoke(() => QueryItems.Clear());
+            Application.Current.Dispatcher.Invoke(() =>
+                {
+                    IsPopulating = true;
+                    QueryItems.Clear();
+                }, DispatcherPriority.Normal);
 
             var queryItemModels = _project.QueryHierarchy.GetQueryItemViewModels(this,
                                                                                  teamPilgrimServiceModelProvider,
@@ -64,6 +87,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
                 var localScopeModel = queryChildModel;
                 Application.Current.Dispatcher.Invoke(() => QueryItems.Add(localScopeModel));
             }
+
+            Application.Current.Dispatcher.Invoke(() => IsPopulating = false, DispatcherPriority.Normal);
 
             this.Logger().Trace("End Populate");
         }
