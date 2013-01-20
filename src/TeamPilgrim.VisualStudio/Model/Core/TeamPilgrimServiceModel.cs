@@ -186,6 +186,13 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core
                     WorkerSupportsCancellation = true
                 };
             _populateBackgroundWorker.DoWork += PopulateBackgroundWorkerOnDoWork;
+
+            var activeProjectContext = teamPilgrimVsService.ActiveProjectContext;
+            if (activeProjectContext != null &&
+                activeProjectContext.DomainUri != null)
+            {
+                _populateBackgroundWorker.RunWorkerAsync(activeProjectContext.DomainUri);
+            }
         }
 
         private void PopulateBackgroundWorkerOnDoWork(object sender, DoWorkEventArgs doWorkEventArgs)
@@ -343,7 +350,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core
 
         private void Refresh()
         {
-            _populateBackgroundWorker.RunWorkerAsync();
+            var activeProjectContext = teamPilgrimVsService.ActiveProjectContext;
+            if (activeProjectContext != null &&
+                activeProjectContext.DomainUri != null)
+            {
+                _populateBackgroundWorker.RunWorkerAsync(activeProjectContext.DomainUri);
+            }
         }
 
         private bool CanRefresh()
