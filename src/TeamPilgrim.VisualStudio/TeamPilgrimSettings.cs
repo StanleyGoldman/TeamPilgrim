@@ -26,10 +26,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
 
         static TeamPilgrimSettings()
         {
-            var directoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var directoryName = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             Debug.Assert(directoryName != null, "directoryName != null");
 
-            GetSettingsFilePath = Path.Combine(directoryName, @"teampilgrim.ini");
+            GetSettingsFilePath = Path.Combine(directoryName, "TeamPilgrim", @"teampilgrim.ini");
         }
 
         private static readonly string GetSettingsFilePath;
