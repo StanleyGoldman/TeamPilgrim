@@ -18,7 +18,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
             {
                 return _value;
             }
-            private set
+            set
             {
                 if (_value == value) return;
 

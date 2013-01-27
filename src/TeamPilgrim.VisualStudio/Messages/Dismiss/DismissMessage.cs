@@ -1,4 +1,4 @@
-﻿namespace JustAProgrammer.TeamPilgrim.VisualStudio.Messages
+﻿namespace JustAProgrammer.TeamPilgrim.VisualStudio.Messages.Dismiss
 {
     public class DismissMessage :BaseMessage
     {

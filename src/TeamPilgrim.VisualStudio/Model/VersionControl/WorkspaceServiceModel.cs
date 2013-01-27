@@ -1,6 +1,8 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
@@ -35,7 +37,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
         public delegate void ShowPendingChangesItemDelegate(ShowPendingChangesTabItemEnum showPendingChangesTabItemEnum);
         public event ShowPendingChangesItemDelegate ShowPendingChangesItem;
 
-        public BatchedObservableCollection<CheckinNoteModel> CheckinNotes { get; private set; }
+        public ObservableCollection<CheckinNoteModel> CheckinNotes { get; private set; }
 
         public Workspace Workspace { get; private set; }
 
@@ -201,7 +203,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
             }
         }
 
-        private CollectionSelectionSummaryEnum _pendingChangesSummary = CollectionSelectionSummaryEnum.None;
+        private CollectionSelectionSummaryEnum _pendingChangesSummary = CollectionSelectionSummaryEnum.All;
         public CollectionSelectionSummaryEnum PendingChangesSummary
         {
             get { return _pendingChangesSummary; }
@@ -209,7 +211,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
             {
                 if (_pendingChangesSummary == value)
                     return;
-                
+
                 _pendingChangesSummary = value;
 
                 SendPropertyChanged("PendingChangesSummary");
@@ -232,6 +234,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
         }
 
         private bool _backgroundFunctionPreventDataUpdate;
+        private BackgroundWorker _populatePendingChangedBackgroundWorker;
 
         public WorkspaceServiceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, ProjectCollectionServiceModel projectCollectionServiceModel, Workspace workspace)
             : base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
@@ -239,7 +242,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
             _projectCollectionServiceModel = projectCollectionServiceModel;
             Workspace = workspace;
 
-            var versionControlServer = _projectCollectionServiceModel.TfsTeamProjectCollection.GetService<VersionControlServer>();
+            var versionControlServer = _projectCollectionServiceModel.TfsTeamProjectCollection.GetVersionControlServer();
+
+            this.Logger().Debug("VersionControlServer - WebServiceLevel: {0}, SupportedFeatures: {1}", versionControlServer.WebServiceLevel, versionControlServer.SupportedFeatures);
+
             versionControlServer.PendingChangesChanged += VersionControlServerOnPendingChangesChanged;
 
             checkinNotesCacheWrapper = new CheckinNotesCacheWrapper(versionControlServer);
@@ -262,20 +268,16 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
             UndoPendingChangeCommand = new RelayCommand<ObservableCollection<object>>(UndoPendingChange, CanUndoPendingChange);
             PendingChangePropertiesCommand = new RelayCommand<ObservableCollection<object>>(PendingChangeProperties, CanPendingChangeProperties);
 
-            CheckinNotes = new BatchedObservableCollection<CheckinNoteModel>();
+            CheckinNotes = new ObservableCollection<CheckinNoteModel>();
 
-            PendingChanges = new BatchedObservableCollection<PendingChangeModel>();
+            PendingChanges = new ObservableCollection<PendingChangeModel>();
+            _backgroundFunctionPreventDataUpdate = true;
 
-            PendingChange[] pendingChanges;
-            if (teamPilgrimServiceModelProvider.TryGetPendingChanges(out pendingChanges, Workspace))
-            {
-                foreach (var pendingChange in pendingChanges)
-                {
-                    var pendingChangeModel = new PendingChangeModel(pendingChange);
-                    PendingChanges.Add(pendingChangeModel);
-                }
-            }
             PendingChanges.CollectionChanged += PendingChangesOnCollectionChanged;
+
+            _populatePendingChangedBackgroundWorker = new BackgroundWorker();
+            _populatePendingChangedBackgroundWorker.DoWork += PopulatePendingChangedBackgroundWorkerOnDoWork;
+            _populatePendingChangedBackgroundWorker.RunWorkerAsync();
 
             SolutionIsOpen = teamPilgrimVsService.Solution.IsOpen && !string.IsNullOrEmpty(teamPilgrimVsService.Solution.FileName);
             teamPilgrimVsService.SolutionStateChanged += () =>
@@ -284,10 +286,84 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
                 SolutionIsOpen = teamPilgrimVsService.Solution.IsOpen && !string.IsNullOrEmpty(teamPilgrimVsService.Solution.FileName);
             };
 
-            WorkItems = new BatchedObservableCollection<WorkItemModel>();
+            WorkItems = new ObservableCollection<WorkItemModel>();
             WorkItems.CollectionChanged += WorkItemsOnCollectionChanged;
 
             PopulatePreviouslySelectedWorkItemQueryModels();
+
+            _backgroundFunctionPreventDataUpdate = false;
+        }
+
+        private void PopulatePendingChangedBackgroundWorkerOnDoWork(object sender, DoWorkEventArgs doWorkEventArgs)
+        {
+            this.Logger().Trace("Begin Refresh Pending Changes");
+
+            PendingChange[] currentPendingChanges;
+
+            var filterItems = SolutionIsOpen && FilterSolution;
+            string[] solutionFilePaths = null;
+
+            if (filterItems)
+            {
+                try
+                {
+                    solutionFilePaths = teamPilgrimVsService.GetSolutionFilePaths();
+                }
+                catch (Exception)
+                {
+                    filterItems = false;
+                }
+            }
+
+            if (filterItems
+                    ? teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, Workspace,
+                                                                           solutionFilePaths)
+                    : teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, Workspace))
+            {
+                var intersections = PendingChanges
+                    .Join(currentPendingChanges, model => model.Change.ItemId, change => change.ItemId,
+                          (model, change) => new { model, change })
+                    .ToArray();
+
+                var intersectedModels =
+                    intersections
+                        .Select(arg => arg.model)
+                        .ToArray();
+
+                var modelsToRemove = PendingChanges.Where(model => !intersectedModels.Contains(model)).ToArray();
+
+                var modelsToAdd = currentPendingChanges
+                    .Where(
+                        pendingChange =>
+                        !intersectedModels.Select(model => model.Change.ItemId).Contains(pendingChange.ItemId))
+                    .Select(change => new PendingChangeModel(change) { IncludeChange = true }).ToArray();
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    _backgroundFunctionPreventDataUpdate = true;
+
+                    foreach (var intersection in intersections)
+                    {
+                        intersection.model.Change = intersection.change;
+                    }
+
+                    foreach (var pendingChangeModel in modelsToAdd)
+                    {
+                        PendingChanges.Add(pendingChangeModel);
+                    }
+
+                    foreach (var modelToRemove in modelsToRemove)
+                    {
+                        PendingChanges.Remove(modelToRemove);
+                    }
+
+                    _backgroundFunctionPreventDataUpdate = false;
+
+                    PendingChangesOnCollectionChanged();
+                }, DispatcherPriority.Normal);
+            }
+
+            this.Logger().Trace("End Refresh Pending Changes");
         }
 
         private void PopulatePreviouslySelectedWorkItemQueryModels()
@@ -298,9 +374,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
         private void PopulateSelectedPendingChangesSummary()
         {
-            if (_backgroundFunctionPreventDataUpdate)
-                return;
-
             this.Logger().Trace("PopulateSelectedPendingChangesSummary");
 
             if (PendingChanges.Count == 0)
@@ -324,7 +397,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
         private void VersionControlServerOnPendingChangesChanged(object sender, WorkspaceEventArgs workspaceEventArgs)
         {
             this.Logger().Debug("VersionControlServerOnPendingChangesChanged");
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)RefreshPendingChanges);
+            RefreshPendingChanges();
         }
 
         protected virtual void OnShowPendingChangesItem(ShowPendingChangesTabItemEnum showpendingchangestabitemenum)
@@ -333,13 +406,53 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
             if (handler != null) handler(showpendingchangestabitemenum);
         }
 
+        public void SelectWorkItemById(int workItemId)
+        {
+            this.Logger().Trace("SelectWorkItemById: {0}", workItemId);
+
+            foreach (var workItemModel in WorkItems)
+            {
+                if (workItemModel.WorkItem.Id == workItemId)
+                {
+                    workItemModel.IsSelected = true;
+                    return;
+                }
+            }
+
+            this.Logger().Warn("SelectWorkItemById: {0} not found", workItemId);
+        }
+
+        public void RestoreCheckinNoteFieldValue(CheckinNoteFieldValue checkinNoteFieldValue)
+        {
+            this.Logger().Trace("RestoreCheckinNoteFieldValue: '{0}'", checkinNoteFieldValue.Name);
+
+            foreach (var checkinNoteModel in CheckinNotes)
+            {
+                if (checkinNoteModel.CheckinNoteFieldDefinition.Name == checkinNoteFieldValue.Name)
+                {
+                    checkinNoteModel.Value = checkinNoteFieldValue.Value;
+                    return;
+                }
+            }
+
+            this.Logger().Warn("RestoreCheckinNoteFieldValue: '{0}' not found", checkinNoteFieldValue.Name);
+        }
+
         #region PendingChanges Collection
 
-        public BatchedObservableCollection<PendingChangeModel> PendingChanges { get; private set; }
+        public ObservableCollection<PendingChangeModel> PendingChanges { get; private set; }
 
         private void PendingChangesOnCollectionChanged(object sender,
                                                        NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
+            PendingChangesOnCollectionChanged();
+        }
+
+        private void PendingChangesOnCollectionChanged()
+        {
+            if (_backgroundFunctionPreventDataUpdate)
+                return;
+
             this.Logger().Trace("PendingChangesOnCollectionChanged");
 
             PopulateSelectedPendingChangesSummary();
@@ -350,10 +463,18 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
         #region WorkItems Collection
 
-        public BatchedObservableCollection<WorkItemModel> WorkItems { get; private set; }
+        public ObservableCollection<WorkItemModel> WorkItems { get; private set; }
 
         private void WorkItemsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            WorkItemsOnCollectionChanged();
+        }
+
+        private void WorkItemsOnCollectionChanged()
+        {
+            if (_backgroundFunctionPreventDataUpdate)
+                return;
+
             this.Logger().Trace("WorkItemsOnCollectionChanged");
 
             EvaluateCheckInCommand.Execute(null);
@@ -394,8 +515,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
             _backgroundFunctionPreventDataUpdate = false;
 
-            PopulateSelectedPendingChangesSummary();
-            EvaluateCheckInCommand.Execute(null);
+            PendingChangesOnCollectionChanged();
         }
 
         private bool CanSelectPendingChanges(SelectPendingChangesCommandArgument commandArgument)
@@ -651,7 +771,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
                 .Where(checkinNoteFieldDefinition => !modelIntersection.Select(model => model.CheckinNoteFieldDefinition).Contains(checkinNoteFieldDefinition, equalityComparer))
                 .Select(checkinNoteFieldDefinition => new CheckinNoteModel(checkinNoteFieldDefinition)).ToArray();
 
-            CheckinNotes.AddRange(modelsToAdd);
+            foreach (var checkinNoteModel in modelsToAdd)
+            {
+                CheckinNotes.Add(checkinNoteModel);
+            }
 
             foreach (var modelToRemove in modelsToRemove)
             {
@@ -681,9 +804,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
         private bool CanEvaluateCheckIn()
         {
-            var canEvaluateCheckIn = !_backgroundFunctionPreventDataUpdate;
-
-            return canEvaluateCheckIn;
+            return !_backgroundFunctionPreventDataUpdate;
         }
 
         #endregion
@@ -694,68 +815,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
         private void RefreshPendingChanges()
         {
-            this.Logger().Trace("RefreshPendingChanges");
-
-            PendingChange[] currentPendingChanges;
-
-            var filterItems = SolutionIsOpen && FilterSolution;
-            string[] solutionFilePaths = null;
-
-            if (filterItems)
-            {
-                try
-                {
-                    solutionFilePaths = teamPilgrimVsService.GetSolutionFilePaths();
-                }
-                catch (Exception)
-                {
-                    filterItems = false;
-                }
-            }
-
-            if (filterItems
-                ? teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, Workspace, solutionFilePaths)
-                : teamPilgrimServiceModelProvider.TryGetPendingChanges(out currentPendingChanges, Workspace))
-            {
-                var intersections = PendingChanges
-                    .Join(currentPendingChanges, model => model.Change.ItemId, change => change.ItemId, (model, change) => new { model, change })
-                    .ToArray();
-
-                var intersectedModels =
-                    intersections
-                    .Select(arg => arg.model)
-                    .ToArray();
-
-                var modelsToRemove = PendingChanges.Where(model => !intersectedModels.Contains(model)).ToArray();
-
-                var modelsToAdd = currentPendingChanges
-                    .Where(pendingChange => !intersectedModels.Select(model => model.Change.ItemId).Contains(pendingChange.ItemId))
-                    .Select(change => new PendingChangeModel(change)).ToArray();
-
-                _backgroundFunctionPreventDataUpdate = true;
-
-                foreach (var intersection in intersections)
-                {
-                    intersection.model.Change = intersection.change;
-                }
-                
-                PendingChanges.AddRange(modelsToAdd);
-
-                foreach (var modelToRemove in modelsToRemove)
-                {
-                    PendingChanges.Remove(modelToRemove);
-                }
-
-                _backgroundFunctionPreventDataUpdate = false;
-
-                PopulateSelectedPendingChangesSummary();
-                EvaluateCheckInCommand.Execute(null);
-            }
+            _populatePendingChangedBackgroundWorker.RunWorkerAsync();
         }
 
         private bool CanRefreshPendingChanges()
         {
-            return true;
+            return !_backgroundFunctionPreventDataUpdate;
         }
 
         #endregion
@@ -771,47 +836,58 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
             if (SelectedWorkItemQueryDefinition == null)
                 return;
 
-            WorkItemCollection workItemCollection;
-            if (teamPilgrimServiceModelProvider.TryGetQueryDefinitionWorkItemCollection(out workItemCollection,
-                                                                                        _projectCollectionServiceModel.TfsTeamProjectCollection,
-                                                                                        SelectedWorkItemQueryDefinition.QueryDefinition,
-                                                                                        SelectedWorkItemQueryDefinition.Project.Name))
-            {
-                var currentWorkItems = workItemCollection.Cast<WorkItem>().ToArray();
+            WorkItemCollection workItemCollection = null;
+            
+            var successResult = teamPilgrimServiceModelProvider.TryGetQueryDefinitionWorkItemCollection(out workItemCollection, _projectCollectionServiceModel.TfsTeamProjectCollection, SelectedWorkItemQueryDefinition.QueryDefinition, SelectedWorkItemQueryDefinition.Project.Name);
+            if (!successResult)
+                return;
 
-                var intersections = WorkItems
-                    .Join(currentWorkItems, model => model.WorkItem.Id, workItem => workItem.Id, (model, workitem) => new { model, workitem })
+            Debug.Assert(workItemCollection != null, "workItemCollection != null");
+            var currentWorkItems = workItemCollection.Cast<WorkItem>().ToArray();
+
+            var intersections = WorkItems
+                .Join(currentWorkItems, model => model.WorkItem.Id, workItem => workItem.Id,
+                      (model, workitem) => new {model, workitem})
+                .ToArray();
+
+            var intersectedModels =
+                intersections
+                    .Select(arg => arg.model)
                     .ToArray();
 
-                foreach (var intersection in intersections)
-                {
-                    intersection.model.WorkItem = intersection.workitem;
-                }
+            var modelsToRemove = WorkItems.Where(model => !intersectedModels.Contains(model)).ToArray();
 
-                var intersectedModels =
-                    intersections
-                    .Select(arg => arg.model)
-                        .ToArray();
+            var selectedWorkItemCheckinActionEnum =
+                TeamPilgrimPackage.TeamPilgrimSettings.SelectedWorkItemCheckinAction;
+            var modelsToAdd = currentWorkItems
+                .Where(
+                    workItem =>
+                    !intersectedModels.Select(workItemModel => workItemModel.WorkItem.Id).Contains(workItem.Id))
+                .Select(
+                    workItem =>
+                    new WorkItemModel(workItem) {WorkItemCheckinAction = selectedWorkItemCheckinActionEnum})
+                .ToArray();
 
-                var modelsToRemove = WorkItems.Where(model => !intersectedModels.Contains(model)).ToArray();
+            _backgroundFunctionPreventDataUpdate = true;
 
-                var selectedWorkItemCheckinActionEnum = TeamPilgrimPackage.TeamPilgrimSettings.SelectedWorkItemCheckinAction;
-                var modelsToAdd = currentWorkItems
-                    .Where(workItem => !intersectedModels.Select(workItemModel => workItemModel.WorkItem.Id).Contains(workItem.Id))
-                    .Select(workItem => new WorkItemModel(workItem) { WorkItemCheckinAction = selectedWorkItemCheckinActionEnum }).ToArray();
-
-                _backgroundFunctionPreventDataUpdate = false;
-
-                WorkItems.AddRange(modelsToAdd);
-
-                foreach (var modelToRemove in modelsToRemove)
-                {
-                    WorkItems.Remove(modelToRemove);
-                }
-
-                _backgroundFunctionPreventDataUpdate = false;
-                EvaluateCheckInCommand.Execute(null);
+            foreach (var intersectedModel in intersections)
+            {
+                intersectedModel.model.WorkItem = intersectedModel.workitem;
             }
+
+            foreach (var modelToAdd in modelsToAdd)
+            {
+                WorkItems.Add(modelToAdd);
+            }
+
+            foreach (var modelToRemove in modelsToRemove)
+            {
+                WorkItems.Remove(modelToRemove);
+            }
+
+            _backgroundFunctionPreventDataUpdate = false;
+
+            WorkItemsOnCollectionChanged();
         }
 
         private bool CanRefreshSelectedDefinitionWorkItems()
@@ -848,7 +924,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
         }
 
         #endregion
-
+        
         #region ShelveCommand Command
 
         public RelayCommand ShelveCommand { get; private set; }

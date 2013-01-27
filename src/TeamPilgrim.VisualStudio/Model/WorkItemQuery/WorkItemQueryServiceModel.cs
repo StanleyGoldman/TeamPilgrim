@@ -1,7 +1,12 @@
+using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Windows;
+using System.Windows.Threading;
 using GalaSoft.MvvmLight.Command;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio.WorkItems;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Extensions;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
@@ -15,6 +20,25 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
         private readonly TfsTeamProjectCollection _projectCollection;
 
         private readonly Project _project;
+        
+        private readonly BackgroundWorker _populateBackgroundWorker;
+
+        private bool _isPopulating;
+        public bool IsPopulating
+        {
+            get
+            {
+                return _isPopulating;
+            }
+            set
+            {
+                if (_isPopulating == value) return;
+
+                _isPopulating = value;
+
+                SendPropertyChanged("IsPopulating");
+            }
+        }
 
         public ObservableCollection<WorkItemQueryChildModel> QueryItems { get; private set; }
 
@@ -39,26 +63,41 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
             DeleteQueryItemCommand = new RelayCommand<WorkItemQueryChildModel>(DeleteQueryDefinition, CanDeleteQueryDefinition);
             OpenSeurityDialogCommand = new RelayCommand<WorkItemQueryChildModel>(OpenSeurityDialog, CanOpenSeurityDialog);
 
-            PopulateQueryHierarchy();
+            _populateBackgroundWorker = new BackgroundWorker();
+            _populateBackgroundWorker.DoWork +=PopulateBackgroundWorkerOnDoWork;
+            _populateBackgroundWorker.RunWorkerAsync();
         }
 
-        private void PopulateQueryHierarchy()
+        private void PopulateBackgroundWorkerOnDoWork(object sender, DoWorkEventArgs doWorkEventArgs)
         {
-            var queryItemModels = _project.QueryHierarchy.GetQueryItemViewModels(this, teamPilgrimServiceModelProvider, teamPilgrimVsService, _project, 1);
+            this.Logger().Trace("Begin Populate");
+
+            Application.Current.Dispatcher.Invoke(() =>
+                {
+                    IsPopulating = true;
+                    QueryItems.Clear();
+                }, DispatcherPriority.Normal);
+
+            var queryItemModels = _project.QueryHierarchy.GetQueryItemViewModels(this,
+                                                                                 teamPilgrimServiceModelProvider,
+                                                                                 teamPilgrimVsService, _project,
+                                                                                 1);
             foreach (var queryChildModel in queryItemModels)
             {
-                QueryItems.Add(queryChildModel);
+                var localScopeModel = queryChildModel;
+                Application.Current.Dispatcher.Invoke(() => QueryItems.Add(localScopeModel));
             }
+
+            Application.Current.Dispatcher.Invoke(() => IsPopulating = false, DispatcherPriority.Normal);
+
+            this.Logger().Trace("End Populate");
         }
 
         #region Refresh Command
 
         protected override void Refresh()
         {
-            QueryItems.Clear();
-
-            _project.QueryHierarchy.Refresh();
-            PopulateQueryHierarchy();
+            _populateBackgroundWorker.RunWorkerAsync();
         }
 
         protected override bool CanRefresh()

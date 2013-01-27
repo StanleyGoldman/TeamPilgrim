@@ -18,7 +18,7 @@
     <RootNamespace>JustAProgrammer.TeamPilgrim.VisualStudio</RootNamespace>
     <AssemblyName>TeamPilgrim.VisualStudio</AssemblyName>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\TeamPilgrim.Core\Key.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -40,12 +40,6 @@
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Extensibility, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="GalaSoft.MvvmLight.Extras.WPF4">
-      <HintPath>..\..\lib\MvvmLight.4.1.23.0\lib\net40\GalaSoft.MvvmLight.Extras.WPF4.dll</HintPath>
-    </Reference>
     <Reference Include="GalaSoft.MvvmLight.WPF4">
       <HintPath>..\..\lib\MvvmLight.4.1.23.0\lib\net40\GalaSoft.MvvmLight.WPF4.dll</HintPath>
     </Reference>
@@ -54,10 +48,6 @@
     </Reference>
     <Reference Include="Itenso.Windows.Controls.ListViewLayout">
       <HintPath>..\..\lib2\ListViewLayoutManager\Release\Itenso.Windows.Controls.ListViewLayout.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Practices.ServiceLocation">
-      <HintPath>..\..\lib\MvvmLight.4.1.23.0\lib\net40\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.TeamFoundation.Build.Client, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
@@ -70,7 +60,6 @@
     <Reference Include="Microsoft.TeamFoundation.Common, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.TeamFoundation.Controls, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.TeamFoundation.VersionControl.Client, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.TeamFoundation.VersionControl.Common, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.TeamFoundation.WorkItemTracking.Client, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.TeamFoundation.WorkItemTracking.Controls, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.OLE.Interop" />
@@ -91,17 +80,14 @@
       <HintPath>C:\Windows\Microsoft.NET\assembly\GAC_MSIL\Microsoft.VisualStudio.TeamFoundation.VersionControl\v4.0_11.0.0.0__b03f5f7f11d50a3a\Microsoft.VisualStudio.TeamFoundation.VersionControl.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.TeamFoundation.WorkItemTracking, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.VisualStudio.TextManager.Interop" />
     <Reference Include="Microsoft.VisualStudio.Shell.11.0" />
     <Reference Include="Microsoft.VisualStudio.Shell.Immutable.10.0" />
-    <Reference Include="Microsoft.VisualStudio.Shell.Immutable.11.0" />
     <Reference Include="NLog">
       <HintPath>..\..\lib\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -111,14 +97,10 @@
     <Reference Include="System.Xml" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="WindowsBase" />
     <Reference Include="System.Xaml" />
     <Reference Include="WPFToolkit.Extended">
       <HintPath>..\..\lib\Extended.Wpf.Toolkit.1.8.0\lib\net40\WPFToolkit.Extended.dll</HintPath>
-    </Reference>
-    <Reference Include="Xceed.Wpf.DataGrid">
-      <HintPath>..\..\lib\Extended.Wpf.Toolkit.1.8.0\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -131,45 +113,9 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </COMReference>
-    <COMReference Include="EnvDTE100">
-      <Guid>{26AD1324-4B7C-44BC-84F8-B86AED45729F}</Guid>
-      <VersionMajor>10</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </COMReference>
     <COMReference Include="EnvDTE80">
       <Guid>{1A31287A-4D7D-413E-8E32-3B374931BD89}</Guid>
       <VersionMajor>8</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </COMReference>
-    <COMReference Include="EnvDTE90">
-      <Guid>{2CE2370E-D744-4936-A090-3FFFE667B0E1}</Guid>
-      <VersionMajor>9</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </COMReference>
-    <COMReference Include="Microsoft.VisualStudio.CommandBars">
-      <Guid>{1CBA492E-7263-47BB-87FE-639000619B15}</Guid>
-      <VersionMajor>8</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </COMReference>
-    <COMReference Include="stdole">
-      <Guid>{00020430-0000-0000-C000-000000000046}</Guid>
-      <VersionMajor>2</VersionMajor>
       <VersionMinor>0</VersionMinor>
       <Lcid>0</Lcid>
       <WrapperTool>primary</WrapperTool>
@@ -194,6 +140,7 @@
     <Compile Include="Common\Converters\SelectedPendingChangesSummaryEnumIsCheckedBooleanConverter.cs" />
     <Compile Include="Common\Converters\WorkItemQueryFolderModelImageConverter.cs" />
     <Compile Include="Common\Extensions\LoggerExtensions.cs" />
+    <Compile Include="Common\Extensions\TfsExtensions.cs" />
     <Compile Include="Common\Extensions\WorkItemQueryChildModelExtensions.cs" />
     <Compile Include="Common\VisualTreeHelpers.cs" />
     <Compile Include="Domain\BusinessInterfaces\VisualStudio\ITeamFoundationHostWrapper.cs" />
@@ -218,16 +165,25 @@
     <Compile Include="Common\AttachedProperties\MouseDoubleClick.cs" />
     <Compile Include="Common\Extensions\CheckinEvaluationResultExtensions.cs" />
     <Compile Include="Messages\BaseMessage.cs" />
-    <Compile Include="Messages\DismissMessage.cs" />
+    <Compile Include="Messages\Dismiss\DismissMessage.cs" />
+    <Compile Include="Messages\ShowUnshelveDetailsDialogMessage.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Model\VersionControl\CommandArguments\SelectPendingChangesCommandArgument.cs" />
     <Compile Include="Model\VersionControl\CommandArguments\SelectWorkItemsCommandArgument.cs" />
     <Compile Include="Common\Enums\CollectionSelectionSummaryEnum.cs" />
+    <Compile Include="Messages\Dismiss\DismissUnshelveDetailsMessage.cs" />
     <Compile Include="Model\VersionControl\ShelvesetModel.cs" />
     <Compile Include="Model\VersionControl\ShelveServiceModel.cs" />
     <Compile Include="Model\VersionControl\PreviouslySelectedWorkItemQuery.cs" />
     <Compile Include="Common\Enums\ShowPendingChangesTabItemEnum.cs" />
+    <Compile Include="Model\VersionControl\UnshelveDetailsServiceModel.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Model\WorkItemQuery\QueryFolderTypeEnum.cs" />
     <Compile Include="Model\VersionControl\UnshelveServiceModel.cs" />
+    <Compile Include="Properties\CommonAssemblyInfo.cs" />
+    <Compile Include="Properties\VersionInfo.cs" />
     <Compile Include="TeamPilgrimLogManager.cs" />
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Model\Licensing\LicenseModel.cs" />
@@ -239,6 +195,10 @@
     <Compile Include="Model\VersionControl\SelectWorkItemQueryModel.cs" />
     <Compile Include="Windows\PendingChanges\Dialogs\UnshelveDialog.xaml.cs">
       <DependentUpon>UnshelveDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\PendingChanges\Dialogs\UnshelveDetailsDialog.xaml.cs">
+      <DependentUpon>UnshelveDetailsDialog.xaml</DependentUpon>
+      <SubType>Code</SubType>
     </Compile>
     <Compile Include="Windows\Settings\SettingsPage.cs">
       <SubType>Component</SubType>
@@ -293,9 +253,6 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="TeamPilgrimPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="..\TeamPilgrim.Core\Properties\CommonAssemblyInfo.cs">
-      <Link>Properties\CommonAssemblyInfo.cs</Link>
-    </Compile>
     <Compile Include="Windows\PendingChanges\Dialogs\ShelveDialog.xaml.cs">
       <DependentUpon>ShelveDialog.xaml</DependentUpon>
     </Compile>
@@ -305,9 +262,6 @@
     <Compile Include="Windows\PendingChanges\PendingChangesWindow.cs" />
     <Compile Include="Common\Converters\SingleObjectToObservableCollectionConverter.cs" />
     <Compile Include="TeamPilgrimSettings.cs" />
-    <None Include="..\TeamPilgrim.Core\Key.snk">
-      <Link>Key.snk</Link>
-    </None>
     <Compile Include="PkgCmdID.cs" />
     <Compile Include="Common\Extensions\EnumerableQueryItemExtensions.cs" />
     <Compile Include="Model\VersionControl\SourceControlModel.cs" />
@@ -351,6 +305,7 @@
     <Resource Include="Resources\PolicyWarnings%28large%29_7879.png" />
     <Resource Include="Resources\Solution_8308.png" />
     <Resource Include="Resources\refresh_16xLG.png" />
+    <None Include="Key.snk" />
     <None Include="NLog.Debug.config">
       <DependentUpon>NLog.config</DependentUpon>
       <IsTransformFile>True</IsTransformFile>
@@ -365,6 +320,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+    <None Include="Properties\VersionInfo.cs.tmp" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
@@ -397,9 +353,16 @@
     <Resource Include="Resources\images_querylist.png" />
     <Resource Include="Resources\icons_generalicons_connecttotfs.png" />
     <Resource Include="Resources\LinkedServer_12789_16x.png" />
+    <Resource Include="Resources\images_queryinvalid.png" />
+    <Resource Include="Resources\images_queryonehop.png" />
+    <Resource Include="Resources\images_querytree.png" />
     <Content Include="Resources\Package.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Windows\PendingChanges\Dialogs\UnshelveDetailsDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\ResourceDictionary.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -433,12 +396,6 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\TeamPilgrim.Core\TeamPilgrim.Core.csproj">
-      <Project>{6d661fc1-0805-4e2b-91d1-6c56b0044818}</Project>
-      <Name>TeamPilgrim.Core</Name>
-    </ProjectReference>
-  </ItemGroup>
   <ItemGroup />
   <PropertyGroup>
     <UseCodebase>true</UseCodebase>
@@ -452,7 +409,9 @@
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   -->
+  <Import Project="..\..\lib\VersionTasks.1.2.0.0\tools\VersionTasks.targets" />
   <Target Name="BeforeBuild">
+    <GitVersionFile TemplateFile="Properties\VersionInfo.cs.tmp" DestinationFile="Properties\VersionInfo.cs" />
   </Target>
   <Target Name="AfterBuild">
   </Target>

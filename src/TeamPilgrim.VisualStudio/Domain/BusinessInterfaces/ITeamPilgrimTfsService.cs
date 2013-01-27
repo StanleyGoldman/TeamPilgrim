@@ -27,16 +27,20 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces
         WorkspaceInfo[] GetLocalWorkspaceInfo(Guid? projectCollectionId = null);
         Workspace GetWorkspace(WorkspaceInfo workspaceInfo, TfsTeamProjectCollection tfsTeamProjectCollection);
         void WorkspaceCheckin(Workspace workspace, PendingChange[] changes, string comment, CheckinNote checkinNote, WorkItemCheckinInfo[] workItemChanges, PolicyOverrideInfo policyOverride);
-        WorkItemCollection GetQueryDefinitionWorkItemCollection(TfsTeamProjectCollection collection, QueryDefinition queryDefinition, string projectName);
         CheckinEvaluationResult EvaluateCheckin(Workspace workspace, PendingChange[] changes, string comment, CheckinNote checkinNote, WorkItemCheckinInfo[] workItemChanges);
         Conflict[] GetAllConflicts(Workspace workspace);
-        VersionControlServer GetVersionControlServer(TfsTeamProjectCollection tfsTeamProjectCollection);
         
         PendingSet[] WorkspaceQueryShelvedChanges(Workspace workspace, string shelvesetName, string shelvesetOwner, ItemSpec[] itemSpecs);
         void WorkspaceShelve(Workspace workspace, Shelveset shelveset, PendingChange[] pendingChanges, ShelvingOptions shelvingOptions);
-        Shelveset WorkspaceUnshelve(Workspace workspace, string shelvesetName, string shelvesetOwner);
+        Shelveset WorkspaceUnshelve(Workspace workspace, string shelvesetName, string shelvesetOwner, ItemSpec[] items = null);
        
         Shelveset[] QueryShelvesets(TfsTeamProjectCollection tfsTeamProjectCollection, string shelvesetName = null, string shelvesetOwner = null);
         void DeleteShelveset(TfsTeamProjectCollection tfsTeamProjectCollection, string shelvesetName, string shelvesetOwner);
+
+        WorkItemLinkInfo[] GetLinkQueryDefinitionWorkItemLinkInfo(TfsTeamProjectCollection tfsTeamProjectCollection, QueryDefinition queryDefinition, string projectName);
+
+        WorkItemCollection GetQueryDefinitionWorkItemCollection(TfsTeamProjectCollection tfsTeamProjectCollection, QueryDefinition queryDefinition, string projectName);
+        WorkItemCollection GetFlatQueryDefinitionWorkItemCollection(TfsTeamProjectCollection tfsTeamProjectCollection, QueryDefinition queryDefinition, string projectName);
+        WorkItemCollection GetLinkQueryDefinitionWorkItemCollection(TfsTeamProjectCollection tfsTeamProjectCollection, QueryDefinition queryDefinition, string projectName);
     }
 }

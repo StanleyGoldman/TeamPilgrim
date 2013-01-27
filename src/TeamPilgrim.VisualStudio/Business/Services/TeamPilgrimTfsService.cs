@@ -3,7 +3,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Extensions;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
 using Microsoft.TeamFoundation.Build.Client;
 using Microsoft.TeamFoundation.Client;
@@ -100,33 +102,25 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
             return tfsTeamProjectCollection.GetService<WorkItemStore>();
         }
 
-        public VersionControlServer GetVersionControlServer(TfsTeamProjectCollection tfsTeamProjectCollection)
-        {
-            this.Logger().Trace("GetVersionControlServer");
-
-            return tfsTeamProjectCollection.GetService<VersionControlServer>();
-        }
-
         public Shelveset[] QueryShelvesets(TfsTeamProjectCollection tfsTeamProjectCollection, string shelvesetName = null, string shelvesetOwner = null)
         {
             this.Logger().Trace("QueryShelvesets ProjectCollection: {0} ShelvesetName: {1} ShelvesetOwner: {2}", tfsTeamProjectCollection.Name, shelvesetName, shelvesetOwner);
 
-            return GetVersionControlServer(tfsTeamProjectCollection).QueryShelvesets(shelvesetName, shelvesetOwner);
+            return tfsTeamProjectCollection.GetVersionControlServer().QueryShelvesets(shelvesetName, shelvesetOwner);
         }
 
-        public Shelveset WorkspaceUnshelve(Workspace workspace, string shelvesetName, string shelvesetOwner)
+        public Shelveset WorkspaceUnshelve(Workspace workspace, string shelvesetName, string shelvesetOwner, ItemSpec[] items = null)
         {
-            this.Logger().Trace("Unshelve ShelvesetName: {0} ShelvesetOwner: {1}", shelvesetName, shelvesetOwner);
+            this.Logger().Trace("Unshelve ShelvesetName: {0} ShelvesetOwner: {1}, Item Count: {2}", shelvesetName, shelvesetOwner, items == null ? "[null]" : items.Count().ToString());
 
-            return workspace.Unshelve(shelvesetName, shelvesetOwner);
+            return workspace.Unshelve(shelvesetName, shelvesetOwner, items);
         }
 
         public void DeleteShelveset(TfsTeamProjectCollection tfsTeamProjectCollection, string shelvesetName, string shelvesetOwner)
         {
             this.Logger().Trace("DeleteShelveset ShelvesetName: {0} ShelvesetOwner: {1}", shelvesetName, shelvesetOwner);
 
-            var versionControlServer = GetVersionControlServer(tfsTeamProjectCollection);
-            versionControlServer.DeleteShelveset(shelvesetName, shelvesetOwner);
+            tfsTeamProjectCollection.GetVersionControlServer().DeleteShelveset(shelvesetName, shelvesetOwner);
         }
 
         public IBuildDefinition[] QueryBuildDefinitions(TfsTeamProjectCollection tfsTeamProjectCollection, string teamProject)
@@ -165,21 +159,81 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services
             return queryFolder;
         }
 
-        public WorkItemCollection GetQueryDefinitionWorkItemCollection(TfsTeamProjectCollection collection, QueryDefinition queryDefinition, string projectName)
+        public WorkItemCollection GetQueryDefinitionWorkItemCollection(TfsTeamProjectCollection tfsTeamProjectCollection,
+                                                                       QueryDefinition queryDefinition, string projectName)
         {
-            this.Logger().Trace("GetQueryDefinitionWorkItemCollection");
+            switch (queryDefinition.QueryType)
+            {
+                case QueryType.List:
+                    return GetFlatQueryDefinitionWorkItemCollection(tfsTeamProjectCollection, queryDefinition, projectName);
+
+                case QueryType.OneHop:
+                case QueryType.Tree:
+                    return GetLinkQueryDefinitionWorkItemCollection(tfsTeamProjectCollection, queryDefinition, projectName);
+
+                case QueryType.Invalid:
+                    throw new ArgumentException("Invalid QueryType");
+            }
+
+            return null;
+        }
+
+        public WorkItemCollection GetFlatQueryDefinitionWorkItemCollection(TfsTeamProjectCollection tfsTeamProjectCollection, QueryDefinition queryDefinition, string projectName)
+        {
+            this.Logger().Trace("GetQueryDefinitionWorkItemCollection QueryType: {0}", queryDefinition.QueryType);
+
+            if (queryDefinition.QueryType != QueryType.List)
+                throw new ArgumentException("Flat Queries only");
 
             var context = new Dictionary<string, string> { { "project", projectName } };
-            
-            var workItemStore = GetWorkItemStore(collection);
+            var workItemStore = GetWorkItemStore(tfsTeamProjectCollection);
 
-            var query = new Query(workItemStore, queryDefinition.QueryText, context);
-            if(query.IsLinkQuery)
+            return new Query(workItemStore, queryDefinition.QueryText, context).RunQuery();
+        }
+
+        private WorkItemLinkInfo[] GetLinkQueryDefinitionWorkItemLinkInfo(TfsTeamProjectCollection tfsTeamProjectCollection, QueryDefinition queryDefinition, string projectName, out WorkItemStore workItemStore, out Query oneHopQuery)
+        {
+            this.Logger().Trace("GetQueryDefinitionWorkItemLinkInfo QueryType: {0}", queryDefinition.QueryType);
+
+            if (queryDefinition.QueryType != QueryType.OneHop && queryDefinition.QueryType != QueryType.Tree)
+                throw new ArgumentException("Link Queries only");
+
+            var context = new Dictionary<string, string> { { "project", projectName } };
+            workItemStore = GetWorkItemStore(tfsTeamProjectCollection);
+
+            oneHopQuery = new Query(workItemStore, queryDefinition.QueryText, context);
+            return oneHopQuery.RunLinkQuery();
+        }
+
+        public WorkItemLinkInfo[] GetLinkQueryDefinitionWorkItemLinkInfo(TfsTeamProjectCollection tfsTeamProjectCollection, QueryDefinition queryDefinition, string projectName)
+        {
+            WorkItemStore workItemStore;
+            Query oneHopQuery;
+            return GetLinkQueryDefinitionWorkItemLinkInfo(tfsTeamProjectCollection, queryDefinition, projectName, out workItemStore, out oneHopQuery);
+        }
+
+        public WorkItemCollection GetLinkQueryDefinitionWorkItemCollection(TfsTeamProjectCollection tfsTeamProjectCollection, QueryDefinition queryDefinition, string projectName)
+        {
+            WorkItemStore workItemStore;
+            Query oneHopQuery;
+            var oneHopQueryDefinitionWorkItemLinkInfo = GetLinkQueryDefinitionWorkItemLinkInfo(tfsTeamProjectCollection, queryDefinition, projectName, out workItemStore, out oneHopQuery);
+            var ids = oneHopQueryDefinitionWorkItemLinkInfo.Select(info => info.TargetId).Distinct().ToArray();
+
+            var detailsWiql = new StringBuilder();
+            detailsWiql.AppendLine("SELECT");
+            bool first = true;
+
+            foreach (FieldDefinition field in oneHopQuery.DisplayFieldList)
             {
-                throw new ArgumentException("Link Queries not supported");
+                detailsWiql.Append(" ");
+                if (!first)
+                    detailsWiql.Append(",");
+                detailsWiql.AppendLine("[" + field.ReferenceName + "]");
+                first = false;
             }
-            
-            return query.RunQuery();
+            detailsWiql.AppendLine("FROM WorkItems");
+
+            return new Query(workItemStore, detailsWiql.ToString(), ids).RunQuery();
         }
 
         public WorkspaceInfo[] GetLocalWorkspaceInfo(Guid? projectCollectionId = null)

@@ -1,6 +1,7 @@
 ﻿using System;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common.Extensions;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces;
 using Microsoft.TeamFoundation.Build.Client;
 using Microsoft.TeamFoundation.Client;
@@ -243,11 +244,11 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             return false;
         }
 
-        public bool TryWorkspaceUnshelve(Workspace workspace, out Shelveset shelveset, string shelvesetName, string shelvesetOwner)
+        public bool TryWorkspaceUnshelve(Workspace workspace, out Shelveset shelveset, string shelvesetName, string shelvesetOwner, ItemSpec[] items = null)
         {
             try
             {
-                shelveset = _teamPilgrimTfsService.WorkspaceUnshelve(workspace, shelvesetName, shelvesetOwner);
+                shelveset = _teamPilgrimTfsService.WorkspaceUnshelve(workspace, shelvesetName, shelvesetOwner, items);
                 return true;
             }
             catch (Exception ex)
@@ -260,7 +261,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             return false;
         }
 
-        public bool TryWorkspaceDeleteShelveset(TfsTeamProjectCollection tfsTeamProjectCollection, string shelvesetName, string shelvesetOwner)
+        public bool TryDeleteShelveset(TfsTeamProjectCollection tfsTeamProjectCollection, string shelvesetName, string shelvesetOwner)
         {
             try
             {
@@ -312,23 +313,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             }
 
             shelvesets = null;
-            return false;
-        }
-
-        public bool TryGetVersionControlServer(out VersionControlServer versionControlServer, TfsTeamProjectCollection tfsTeamProjectCollection)
-        {
-            try
-            {
-                versionControlServer = _teamPilgrimTfsService.GetVersionControlServer(tfsTeamProjectCollection);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                this.Logger().DebugException(ex);
-                LastException = ex;
-            }
-
-            versionControlServer = null;
             return false;
         }
 
@@ -414,6 +398,23 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Providers
             }
 
             workItemCollection = null;
+            return false;
+        }
+
+        public bool TryGetOneHopQueryDefinitionWorkItemLinkInfo(out WorkItemLinkInfo[] workItemLinkInfos, TfsTeamProjectCollection tfsTeamProjectCollection, QueryDefinition queryDefinition, string projectName)
+        {
+            try
+            {
+                workItemLinkInfos = _teamPilgrimTfsService.GetLinkQueryDefinitionWorkItemLinkInfo(tfsTeamProjectCollection, queryDefinition, projectName);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                this.Logger().DebugException(ex);
+                LastException = ex;
+            }
+
+            workItemLinkInfos = null;
             return false;
         }
     }

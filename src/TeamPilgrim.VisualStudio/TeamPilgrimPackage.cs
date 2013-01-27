@@ -7,14 +7,16 @@ using System.ComponentModel.Design;
 using System.Windows.Forms;
 using EnvDTE;
 using EnvDTE80;
-using JustAProgrammer.TeamPilgrim.Core;
+using GalaSoft.MvvmLight.Messaging;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudio;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Messages;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Explorer;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Windows.Settings;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -39,7 +41,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
     [Guid(GuidList.guidTeamPilgrimPkgString)]
     public sealed class TeamPilgrimPackage : Package, IVsShellPropertyEvents
     {
-        private static TeamPilgrimPackage _singleInstance;
+        private static TeamPilgrimPackage _teamPilgrimPackageInstance;
 
         private static DTE Dte { get; set; }
         private static DTE2 Dte2 { get; set; }
@@ -59,7 +61,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
         private static TeamPilgrimVsService _teamPilgrimVsService;
 
         public static TeamPilgrimServiceModel TeamPilgrimServiceModel { get; private set; }
-        
+
         public static TeamPilgrimSettings TeamPilgrimSettings { get; private set; }
 
         private uint _shellPropertyChangeCookie;
@@ -70,7 +72,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
 
             Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", this.ToString()));
 
-            _teamPilgrimVsService = new TeamPilgrimVsService();
             TeamPilgrimSettings = new TeamPilgrimSettings();
 
             //http://blogs.msdn.com/b/vsxteam/archive/2008/06/09/dr-ex-why-does-getservice-typeof-envdte-dte-return-null.aspx
@@ -115,45 +116,71 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
             ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }
 
+        public void ShowUnshelveDetailsDialog(ShowUnshelveDetailsDialogMessage showUnshelveDetailsDialogMessage)
+        {
+            var unshelveDetailsDialog = new UnshelveDetailsDialog
+            {
+                DataContext = showUnshelveDetailsDialogMessage.UnshelveDetailsServiceModel
+            };
+
+            var dialogResult = unshelveDetailsDialog.ShowDialog();
+            if (dialogResult.HasValue && dialogResult.Value)
+            {
+
+            }
+        }
+
         #region Package Members
 
         protected override void Initialize()
         {
-            this.Logger().Info("Initialization: " + VersionInfo.Full);
-            this.Logger().Debug("Start First Pass Initialization");
-
-            Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
-            TeamPilgrimPackage._singleInstance = this;
-            base.Initialize();
-
-            // Add our command handlers for menu (commands must exist in the .vsct file)
-            OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            if (null != mcs)
+            try
             {
-                // Create the command for the menu item.
-                //                CommandID menuCommandID = new CommandID(GuidList.guidTeamPilgrimCmdSet, (int)PkgCmdIDList.cmdTeamPilgrimExplorer);
-                //                MenuCommand menuItem = new MenuCommand(MenuItemCallback, menuCommandID );
-                //                mcs.AddCommand( menuItem );
 
-                // Create the command for the tool window
-                var toolTeamPilgrimExplorer = new MenuCommand(ShowExplorerWindow, new CommandID(GuidList.guidTeamPilgrimCmdSet, (int)PkgCmdIDList.toolTeamPilgrimExplorer));
-                mcs.AddCommand(toolTeamPilgrimExplorer);
+                this.Logger().Info("Initialization: " + VersionInfo.Full);
+                this.Logger().Debug("Start First Pass Initialization");
 
-                var cmdTeamPilgrimExplorer = new MenuCommand(ShowExplorerWindow, new CommandID(GuidList.guidTeamPilgrimCmdSet, (int)PkgCmdIDList.cmdTeamPilgrimExplorer));
-                mcs.AddCommand(cmdTeamPilgrimExplorer);
+                Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
+                _teamPilgrimPackageInstance = this;
+                base.Initialize();
 
-                var toolTeamPilgrimPendingChanges = new MenuCommand(ShowPendingChangesWindow, new CommandID(GuidList.guidTeamPilgrimCmdSet, (int)PkgCmdIDList.toolTeamPilgrimPendingChanges));
-                mcs.AddCommand(toolTeamPilgrimPendingChanges);
+                // Add our command handlers for menu (commands must exist in the .vsct file)
+                OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+                if (null != mcs)
+                {
+                    // Create the command for the menu item.
+                    //                CommandID menuCommandID = new CommandID(GuidList.guidTeamPilgrimCmdSet, (int)PkgCmdIDList.cmdTeamPilgrimExplorer);
+                    //                MenuCommand menuItem = new MenuCommand(MenuItemCallback, menuCommandID );
+                    //                mcs.AddCommand( menuItem );
 
-                var cmdTeamPilgrimPendingChanges = new MenuCommand(ShowPendingChangesWindow, new CommandID(GuidList.guidTeamPilgrimCmdSet, (int)PkgCmdIDList.cmdTeamPilgrimPendingChanges));
-                mcs.AddCommand(cmdTeamPilgrimPendingChanges);
+                    // Create the command for the tool window
+                    var toolTeamPilgrimExplorer = new MenuCommand(ShowExplorerWindow, new CommandID(GuidList.guidTeamPilgrimCmdSet, (int)PkgCmdIDList.toolTeamPilgrimExplorer));
+                    mcs.AddCommand(toolTeamPilgrimExplorer);
+
+                    var cmdTeamPilgrimExplorer = new MenuCommand(ShowExplorerWindow, new CommandID(GuidList.guidTeamPilgrimCmdSet, (int)PkgCmdIDList.cmdTeamPilgrimExplorer));
+                    mcs.AddCommand(cmdTeamPilgrimExplorer);
+
+                    var toolTeamPilgrimPendingChanges = new MenuCommand(ShowPendingChangesWindow, new CommandID(GuidList.guidTeamPilgrimCmdSet, (int)PkgCmdIDList.toolTeamPilgrimPendingChanges));
+                    mcs.AddCommand(toolTeamPilgrimPendingChanges);
+
+                    var cmdTeamPilgrimPendingChanges = new MenuCommand(ShowPendingChangesWindow, new CommandID(GuidList.guidTeamPilgrimCmdSet, (int)PkgCmdIDList.cmdTeamPilgrimPendingChanges));
+                    mcs.AddCommand(cmdTeamPilgrimPendingChanges);
+                }
+
+                UIShell = (IVsUIShell)base.GetService(typeof(SVsUIShell));
+
+                if (UIShell == null)
+                    throw new ArgumentException("UIShell cannot be null");
+
+                MenuCommandService = base.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+
+                this.Logger().Debug("End First Pass Initialization");
             }
-
-            TeamPilgrimPackage.UIShell = (IVsUIShell)base.GetService(typeof(SVsUIShell));
-            TeamPilgrimPackage.MenuCommandService = base.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            TeamPilgrimPackage._teamPilgrimVsService.Initialize(_singleInstance, UIShell);
-
-            this.Logger().Debug("End First Pass Initialization");
+            catch (Exception exception)
+            {
+                this.Logger().FatalException("First Pass Initialization", exception);
+                throw;
+            }
 
             CompletePackageInitialization();
         }
@@ -161,6 +188,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
         public int OnShellPropertyChange(int propid, object var)
         {
             // when zombie state changes to false, finish package initialization
+
+            this.Logger().Trace("OnShellPropertyChange Property:{0}, Value:{1}", propid, var);
 
             if ((int)__VSSPROPID.VSSPROPID_Zombie == propid)
             {
@@ -186,42 +215,67 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
 
         private void CompletePackageInitialization()
         {
-            this.Logger().Debug("Start Second Pass Initialization");
-
-            if (Dte != null)
+            try
             {
-                this.Logger().Warn("Package Previously Initialized"); 
-                return;
+
+                this.Logger().Debug("Start Second Pass Initialization");
+
+                if (Dte != null)
+                {
+                    this.Logger().Warn("Package Previously Initialized");
+                    return;
+                }
+
+                Dte = GetService(typeof(SDTE)) as DTE;
+
+                if (Dte == null)
+                {
+                    this.Logger().Warn("DTE not found");
+                    return;
+                }
+
+                Extensibility = (IVsExtensibility)GetGlobalService(typeof(IVsExtensibility));
+                this.Logger().Trace("IVsExtensibility: {0}", Extensibility != null);
+
+                if (Extensibility == null)
+                    throw new ArgumentException("Extensibility cannot be null");
+
+                VsSolution = (IVsSolution)GetService(typeof(SVsSolution));
+                this.Logger().Trace("IVsSolution: {0}", VsSolution != null);
+
+                Dte2 = (DTE2)Extensibility.GetGlobalsObject(null).DTE;
+                this.Logger().Trace("Dte2: {0}", Dte2 != null);
+
+                if (Dte2 == null)
+                    throw new ArgumentException("Dte2 cannot be null");
+
+                if (VsSolution == null)
+                    throw new ArgumentException("VsSolution cannot be null");
+
+                _teamPilgrimVsService = new TeamPilgrimVsService(_teamPilgrimPackageInstance, UIShell, Dte2, VsSolution);
+                TeamPilgrimServiceModel = new TeamPilgrimServiceModel(new TeamPilgrimServiceModelProvider(), _teamPilgrimVsService);
+
+                Messenger.Default.Register<ShowUnshelveDetailsDialogMessage>(this, ShowUnshelveDetailsDialog);
+
+                this.Logger().Debug("End Second Pass Initialization");
             }
-
-            Dte = GetService(typeof(SDTE)) as DTE;
-
-            if (Dte == null)
+            catch (Exception exception)
             {
-                this.Logger().Warn("DTE not found");
-                return;
+                this.Logger().FatalException("Second Pass Initialization", exception);
+                throw;
             }
-
-            Extensibility = (IVsExtensibility)GetGlobalService(typeof(IVsExtensibility));
-            VsSolution = (IVsSolution)GetService(typeof(SVsSolution));
-            Dte2 = (DTE2)Extensibility.GetGlobalsObject(null).DTE;
-
-            _teamPilgrimVsService.InitializeGlobals(Dte2, VsSolution);
-            TeamPilgrimServiceModel = new TeamPilgrimServiceModel(new TeamPilgrimServiceModelProvider(), _teamPilgrimVsService);
-
-            this.Logger().Debug("End Second Pass Initialization");
         }
 
         #endregion
 
         public T GetPackageService<T>()
         {
-            if (_singleInstance == null)
+            if (_teamPilgrimPackageInstance == null)
             {
                 return default(T);
             }
 
-            return (T)_singleInstance.GetService(typeof(T));
+            return (T)_teamPilgrimPackageInstance.GetService(typeof(T));
         }
     }
 }

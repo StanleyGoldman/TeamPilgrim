@@ -31,7 +31,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
         public delegate void DismissDelegate(bool success);
         public event DismissDelegate Dismiss;
 
-        public BatchedObservableCollection<CheckinNoteModel> CheckinNotes { get; private set; }
+        public ObservableCollection<CheckinNoteModel> CheckinNotes { get; private set; }
 
         private readonly ProjectCollectionServiceModel _projectCollectionServiceModel;
         private readonly WorkspaceServiceModel _workspaceServiceModel;
@@ -294,21 +294,29 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
             UndoPendingChangeCommand = new RelayCommand<ObservableCollection<object>>(UndoPendingChange, CanUndoPendingChange);
             PendingChangePropertiesCommand = new RelayCommand<ObservableCollection<object>>(PendingChangeProperties, CanPendingChangeProperties);
 
-            CheckinNotes = new BatchedObservableCollection<CheckinNoteModel>();
+            CheckinNotes = new ObservableCollection<CheckinNoteModel>();
 
-            PendingChanges = new BatchedObservableCollection<PendingChangeModel>();
-            PendingChanges.AddRange(workspaceServiceModel.PendingChanges.Select(model => new PendingChangeModel(model.Change)
+            PendingChanges = new ObservableCollection<PendingChangeModel>();
+            foreach (var pendingChangeModel in workspaceServiceModel.PendingChanges)
             {
-                IncludeChange = model.IncludeChange
-            }).ToList());
+                PendingChanges.Add(new PendingChangeModel(pendingChangeModel.Change)
+                {
+                    IncludeChange = pendingChangeModel.IncludeChange
+                });
+            }
+
             PendingChanges.CollectionChanged += PendingChangesOnCollectionChanged;
 
-            WorkItems = new BatchedObservableCollection<WorkItemModel>();
-            WorkItems.AddRange(workspaceServiceModel.WorkItems.Select(model => new WorkItemModel(model.WorkItem)
+            WorkItems = new ObservableCollection<WorkItemModel>();
+            foreach (var workItemModel in workspaceServiceModel.WorkItems)
             {
-                IsSelected = model.IsSelected,
-                WorkItemCheckinAction = model.WorkItemCheckinAction
-            }).ToList());
+                WorkItems.Add(new WorkItemModel(workItemModel.WorkItem)
+                {
+                    IsSelected = workItemModel.IsSelected,
+                    WorkItemCheckinAction = workItemModel.WorkItemCheckinAction
+                });
+            }
+
             WorkItems.CollectionChanged += WorkItemsOnCollectionChanged;
 
             SolutionIsOpen = teamPilgrimVsService.Solution.IsOpen && !string.IsNullOrEmpty(teamPilgrimVsService.Solution.FileName);
@@ -375,7 +383,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
         #region PendingChanges Collection
 
-        public BatchedObservableCollection<PendingChangeModel> PendingChanges { get; private set; }
+        public ObservableCollection<PendingChangeModel> PendingChanges { get; private set; }
 
         private void PendingChangesOnCollectionChanged(object sender,
                                                        NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -390,10 +398,18 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
         #region WorkItems Collection
 
-        public BatchedObservableCollection<WorkItemModel> WorkItems { get; private set; }
+        public ObservableCollection<WorkItemModel> WorkItems { get; private set; }
 
         private void WorkItemsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            WorkItemsOnCollectionChanged();
+        }
+
+        private void WorkItemsOnCollectionChanged()
+        {
+            if (_backgroundFunctionPreventDataUpdate)
+                return;
+
             this.Logger().Trace("WorkItemsOnCollectionChanged");
 
             EvaluateCheckInCommand.Execute(null);
@@ -596,7 +612,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
                     intersection.model.Change = intersection.change;
                 }
 
-                PendingChanges.AddRange(modelsToAdd);
+                foreach (var modelToAdd in modelsToAdd)
+                {
+                    PendingChanges.Add(modelToAdd);
+                }
 
                 foreach (var modelToRemove in modelsToRemove)
                 {
@@ -638,54 +657,79 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
                 {
                     OnShowPendingChangesItem(ShowPendingChangesTabItemEnum.CheckinNotes);
 
-                    MessageBox.Show("Check-in Validation\r\n\r\nEnter a value for " + string.Join(", ", missingCheckinNotes), "Team Pilgrim", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(
+                        string.Format("Check-in Validation\r\n\r\nEnter a value for {0}", string.Join(", ", missingCheckinNotes)),
+                        "Team Pilgrim", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
             }
 
-            VersionControlServer versionControlServer;
-            if (teamPilgrimServiceModelProvider.TryGetVersionControlServer(out versionControlServer, _projectCollectionServiceModel.TfsTeamProjectCollection))
-            {
-                Debug.Assert(versionControlServer != null, "versionControlServer != null");
+            var workItemInfo = WorkItems
+                .Where(model => model.IsSelected)
+                .Select(model => new WorkItemCheckinInfo(model.WorkItem, model.WorkItemCheckinAction.ToWorkItemCheckinAction()))
+                .ToArray();
 
-                var workItemInfo = WorkItems
-                    .Where(model => model.IsSelected)
-                    .Select(model => new WorkItemCheckinInfo(model.WorkItem, model.WorkItemCheckinAction.ToWorkItemCheckinAction()))
-                    .ToArray();
-
-                var checkinNoteFieldValues =
-                    CheckinNotes
+            var checkinNoteFieldValues =
+                CheckinNotes
                     .Where(model => !string.IsNullOrWhiteSpace(model.Value))
                     .Select(model => new CheckinNoteFieldValue(model.CheckinNoteFieldDefinition.Name, model.Value))
                     .ToArray();
 
-                var checkinNote = new CheckinNote(checkinNoteFieldValues);
+            var checkinNote = new CheckinNote(checkinNoteFieldValues);
 
-                string policyOverrideComment = null;
-                if (EvaluatePoliciesAndCheckinNotes)
+            string policyOverrideComment = null;
+            if (EvaluatePoliciesAndCheckinNotes)
+            {
+                CheckinEvaluationResult checkinEvaluationResult;
+                if (teamPilgrimServiceModelProvider.TryEvaluateCheckin(out checkinEvaluationResult, _workspaceServiceModel.Workspace, pendingChanges, Comment, checkinNote, workItemInfo))
                 {
-                    CheckinEvaluationResult checkinEvaluationResult;
-                    if (teamPilgrimServiceModelProvider.TryEvaluateCheckin(out checkinEvaluationResult, _workspaceServiceModel.Workspace, pendingChanges, Comment, checkinNote, workItemInfo))
+                    if (!checkinEvaluationResult.IsValid())
                     {
-                        if (!checkinEvaluationResult.IsValid())
-                        {
-                            OnShowPendingChangesItem(ShowPendingChangesTabItemEnum.PolicyWarnings);
+                        OnShowPendingChangesItem(ShowPendingChangesTabItemEnum.PolicyWarnings);
 
-                            var policyFailureModel = new PolicyFailureModel();
-                            var policyFailureDialog = new PolicyFailureDialog()
+                        var policyFailureModel = new PolicyFailureModel();
+                        var policyFailureDialog = new PolicyFailureDialog()
                             {
                                 DataContext = policyFailureModel
                             };
 
-                            var dialogResult = policyFailureDialog.ShowDialog();
-                            if (!dialogResult.HasValue || !dialogResult.Value || !policyFailureModel.Override)
-                            {
-                                CheckinEvaluationResult = checkinEvaluationResult;
-                                return;
-                            }
-
-                            policyOverrideComment = policyFailureModel.Reason;
+                        var dialogResult = policyFailureDialog.ShowDialog();
+                        if (!dialogResult.HasValue || !dialogResult.Value || !policyFailureModel.Override)
+                        {
+                            CheckinEvaluationResult = checkinEvaluationResult;
+                            return;
                         }
+
+                        policyOverrideComment = policyFailureModel.Reason;
+                    }
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            var versionControlServer = _projectCollectionServiceModel.TfsTeamProjectCollection.GetVersionControlServer();
+            var shelveset = new Shelveset(versionControlServer, ShelvesetName, _projectCollectionServiceModel.TfsTeamProjectCollection.AuthorizedIdentity.UniqueName)
+                {
+                    Comment = Comment,
+                    ChangesExcluded = PendingChanges.Count() != pendingChanges.Count(),
+                    WorkItemInfo = workItemInfo,
+                    CheckinNote = checkinNote,
+                    PolicyOverrideComment = policyOverrideComment
+                };
+
+            PendingSet[] pendingSets;
+            if (teamPilgrimServiceModelProvider.TryWorkspaceQueryShelvedChanges(_workspaceServiceModel.Workspace, out pendingSets, ShelvesetName,
+                                                                                _projectCollectionServiceModel.TfsTeamProjectCollection.AuthorizedIdentity.UniqueName, null))
+            {
+                bool overwrite = false;
+                if (pendingSets != null && pendingSets.Any())
+                {
+                    if (MessageBox.Show(string.Format("Replace shelveset\r\n\r\nThe shelveset {0} already exists. Replace?", ShelvesetName),
+                        "Team Pilgrim", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+                    {
+                        overwrite = true;
                     }
                     else
                     {
@@ -693,44 +737,16 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
                     }
                 }
 
-                var shelveset = new Shelveset(versionControlServer, ShelvesetName, _projectCollectionServiceModel.TfsTeamProjectCollection.AuthorizedIdentity.UniqueName)
-                    {
-                        Comment = Comment,
-                        ChangesExcluded = PendingChanges.Count() != pendingChanges.Count(),
-                        WorkItemInfo = workItemInfo,
-                        CheckinNote = checkinNote,
-                        PolicyOverrideComment = policyOverrideComment
-                    };
+                var shelvingOptions = ShelvingOptions.None;
 
-                PendingSet[] pendingSets;
-                if (teamPilgrimServiceModelProvider.TryWorkspaceQueryShelvedChanges(_workspaceServiceModel.Workspace, out pendingSets, ShelvesetName,
-                                                                                    _projectCollectionServiceModel.TfsTeamProjectCollection.AuthorizedIdentity.UniqueName, null))
+                if (!PreservePendingChangesLocally)
+                    shelvingOptions |= ShelvingOptions.Move;
+
+                if (overwrite)
+                    shelvingOptions |= ShelvingOptions.Replace;
+
+                if (teamPilgrimServiceModelProvider.TryShelve(_workspaceServiceModel.Workspace, shelveset, pendingChanges, shelvingOptions))
                 {
-                    bool overwrite = false;
-                    if (pendingSets != null && pendingSets.Any())
-                    {
-                        if (MessageBox.Show(string.Format("Replace shelveset\r\n\r\nThe shelveset {0} already exists. Replace?", ShelvesetName),
-                                "Team Pilgrim", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
-                        {
-                            overwrite = true;
-                        }
-                        else
-                        {
-                            return;
-                        }
-                    }
-
-                    var shelvingOptions = ShelvingOptions.None;
-
-                    if (!PreservePendingChangesLocally)
-                        shelvingOptions |= ShelvingOptions.Move;
-
-                    if (overwrite)
-                        shelvingOptions |= ShelvingOptions.Replace;
-
-                    if (teamPilgrimServiceModelProvider.TryShelve(_workspaceServiceModel.Workspace, shelveset, pendingChanges, shelvingOptions))
-                    {
-                    }
                 }
             }
 
@@ -794,9 +810,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
                     .Where(workItem => !modelIntersection.Select(workItemModel => workItemModel.WorkItem.Id).Contains(workItem.Id))
                     .Select(workItem => new WorkItemModel(workItem) { WorkItemCheckinAction = selectedWorkItemCheckinActionEnum }).ToArray();
 
-                _backgroundFunctionPreventDataUpdate = false;
+                _backgroundFunctionPreventDataUpdate = true;
 
-                WorkItems.AddRange(modelsToAdd);
+                foreach (var modelToAdd in modelsToAdd)
+                {
+                    WorkItems.Add(modelToAdd);
+                }
 
                 foreach (var modelToRemove in modelsToRemove)
                 {
@@ -804,7 +823,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
                 }
 
                 _backgroundFunctionPreventDataUpdate = false;
-                EvaluateCheckInCommand.Execute(null);
+
+                WorkItemsOnCollectionChanged();
             }
         }
 
@@ -850,7 +870,10 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
                 .Where(checkinNoteFieldDefinition => !modelIntersection.Select(model => model.CheckinNoteFieldDefinition).Contains(checkinNoteFieldDefinition, equalityComparer))
                 .Select(checkinNoteFieldDefinition => new CheckinNoteModel(checkinNoteFieldDefinition)).ToArray();
 
-            CheckinNotes.AddRange(modelsToAdd);
+            foreach (var modelToAdd in modelsToAdd)
+            {
+                CheckinNotes.Add(modelToAdd);
+            }
 
             foreach (var modelToRemove in modelsToRemove)
             {
@@ -881,11 +904,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
         private bool CanEvaluateCheckIn()
         {
-            var canEvaluateCheckIn = !_backgroundFunctionPreventDataUpdate;
-
-            this.Logger().Trace("CanEvaluateCheckIn: Result: {0}", canEvaluateCheckIn);
-
-            return canEvaluateCheckIn;
+            return !_backgroundFunctionPreventDataUpdate;
         }
 
         #endregion

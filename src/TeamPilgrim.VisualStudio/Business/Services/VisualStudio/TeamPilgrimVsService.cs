@@ -93,14 +93,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
 
         private IWorkItemControlHost _workItemControlHost;
 
-        private uint _adviseSolutionEventsCookie;
+        private readonly uint _adviseSolutionEventsCookie;
 
         static TeamPilgrimVsService()
         {
             TeamFoundationServerExt_TeamFoundationHostField = new Lazy<FieldInfo>(() => typeof(TeamFoundationServerExt).GetField("m_teamFoundationHost", BindingFlags.NonPublic | BindingFlags.Instance));
         }
 
-        public TeamPilgrimVsService()
+        public TeamPilgrimVsService(TeamPilgrimPackage packageInstance, IVsUIShell vsUiShell, DTE2 dte2, IVsSolution vsSolution)
         {
             _teamFoundationBuild = new Lazy<VsTeamFoundationBuildWrapper>(() => new VsTeamFoundationBuildWrapper(_packageInstance.GetPackageService<IVsTeamFoundationBuild>()));
             _portalSettingsLauncher = new Lazy<IPortalSettingsLauncher>(() => _packageInstance.GetPackageService<IPortalSettingsLauncher>());
@@ -110,18 +110,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
             _versionControlPackage = new Lazy<VersionControlPackageWrapper>();
             _querySecurityCommandHelpers = new Lazy<QuerySecurityCommandHelpersWrapper>();
             _pendingChangesPageViewModelUtilsWrapper = new Lazy<PendingChangesPageViewModelUtilsWrapper>();
-        }
 
-        private IWorkItemControlHost WorkItemControlHost
-        {
-            get
-            {
-                return _workItemControlHost ?? (_workItemControlHost = _packageInstance.GetPackageService<IWorkItemControlHost>());
-            }
-        }
-
-        public void InitializeGlobals(DTE2 dte2, IVsSolution vsSolution)
-        {
+            VsUiShell = vsUiShell;
+            _packageInstance = packageInstance;
             Dte2 = dte2;
             VsSolution = vsSolution;
             VersionControlExt = dte2.GetObject("Microsoft.VisualStudio.TeamFoundation.VersionControl.VersionControlExt") as VersionControlExt;
@@ -134,10 +125,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Business.Services.VisualStudi
             vsSolution.AdviseSolutionEvents(this, out _adviseSolutionEventsCookie);
         }
 
-        public void Initialize(TeamPilgrimPackage packageInstance, IVsUIShell vsUiShell)
+        private IWorkItemControlHost WorkItemControlHost
         {
-            VsUiShell = vsUiShell;
-            _packageInstance = packageInstance;
+            get
+            {
+                return _workItemControlHost ?? (_workItemControlHost = _packageInstance.GetPackageService<IWorkItemControlHost>());
+            }
         }
 
         public string[] GetSolutionFilePaths()
