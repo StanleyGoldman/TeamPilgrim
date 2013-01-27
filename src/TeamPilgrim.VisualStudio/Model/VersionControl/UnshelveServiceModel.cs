@@ -6,13 +6,14 @@ using GalaSoft.MvvmLight.Messaging;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Messages;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Messages.Dismiss;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.Core;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.VersionControl.Client;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 {
-    public class UnshelveChangesServiceModel : BaseServiceModel
+    public class UnshelveServiceModel : BaseServiceModel
     {
         public ProjectCollectionServiceModel ProjectCollectionServiceModel { get; private set; }
         public WorkspaceServiceModel WorkspaceServiceModel { get; private set; }
@@ -48,7 +49,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
             }
         }
 
-        public UnshelveChangesServiceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider,
+        public UnshelveServiceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider,
                                            ITeamPilgrimVsService teamPilgrimVsService,
                                            ProjectCollectionServiceModel projectCollectionServiceModel, WorkspaceServiceModel workspaceServiceModel)
             : base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
@@ -59,15 +60,18 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
             ShelvesetOwner = projectCollectionServiceModel.TfsTeamProjectCollection.AuthorizedIdentity.UniqueName;
 
             FindShelvesetsCommand = new RelayCommand<string>(FindShelvesets, CanFindShelvesets);
+            CancelCommand = new RelayCommand(Cancel, CanCancel);
+
             ViewPendingSetCommand = new RelayCommand<ShelvesetModel>(ViewPendingSet, CanViewPendingSet);
+
             UnshelveCommand = new RelayCommand<ObservableCollection<object>>(Unshelve, CanUnshelve);
             DeleteCommand = new RelayCommand<ObservableCollection<object>>(Delete, CanDelete);
-            CancelCommand = new RelayCommand(Cancel, CanCancel);
+            DetailsCommand = new RelayCommand<ObservableCollection<object>>(Details, CanDetails);
 
             FindShelvesetsCommand.Execute(null);
         }
 
-        protected virtual void OnDismiss(bool success)
+        public virtual void Dismiss(bool success)
         {
             Messenger.Default.Send(new DismissMessage { Success = success }, this);
         }
@@ -124,12 +128,43 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
                                                                      shelvesetModel.Shelveset.Name, shelvesetModel.Shelveset.OwnerName))
             {
                 success = true;
+
+                foreach (var workItemCheckinInfo in shelveset.WorkItemInfo)
+                {
+                    WorkspaceServiceModel.SelectWorkItemById(workItemCheckinInfo.WorkItem.Id);
+                }
+
+                foreach (var checkinNoteFieldValue in shelveset.CheckinNote.Values)
+                {
+                    WorkspaceServiceModel.RestoreCheckinNoteFieldValue(checkinNoteFieldValue);
+                }
             }
 
-            OnDismiss(success);
+            Dismiss(success);
         }
 
         private bool CanUnshelve(ObservableCollection<object> shelvesetModels)
+        {
+            return shelvesetModels != null && shelvesetModels.Count == 1;
+        }
+
+        #endregion
+
+        #region Details Command
+
+        public RelayCommand<ObservableCollection<object>> DetailsCommand { get; private set; }
+
+        private void Details(ObservableCollection<object> shelvesetModels)
+        {
+            var shelvesetModel = (ShelvesetModel) shelvesetModels.First();
+           
+            Messenger.Default.Send(new ShowUnshelveDetailsDialogMessage
+                {
+                    UnshelveDetailsServiceModel = new UnshelveDetailsServiceModel(teamPilgrimServiceModelProvider, teamPilgrimVsService, ProjectCollectionServiceModel , WorkspaceServiceModel, this, shelvesetModel.Shelveset)
+                });
+        }
+
+        private bool CanDetails(ObservableCollection<object> shelvesetModels)
         {
             return shelvesetModels != null && shelvesetModels.Count == 1;
         }
@@ -147,7 +182,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
             foreach (var shelvesetModel in shelvesetModels.Cast<ShelvesetModel>())
             {
-                teamPilgrimServiceModelProvider.TryWorkspaceDeleteShelveset(ProjectCollectionServiceModel.TfsTeamProjectCollection, shelvesetModel.Shelveset.Name, shelvesetModel.Shelveset.OwnerName);
+                teamPilgrimServiceModelProvider.TryDeleteShelveset(ProjectCollectionServiceModel.TfsTeamProjectCollection, shelvesetModel.Shelveset.Name, shelvesetModel.Shelveset.OwnerName);
             }
 
             FindShelvesetsCommand.Execute(null);
@@ -166,7 +201,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
         public void Cancel()
         {
-            OnDismiss(false);
+            Dismiss(false);
         }
 
         public bool CanCancel()
@@ -175,6 +210,5 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
         }
 
         #endregion
-
     }
 }

@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows;
+using System.Windows.Threading;
 using GalaSoft.MvvmLight.Command;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Common;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Domain.BusinessInterfaces.VisualStudio;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Providers;
 using Microsoft.TeamFoundation.Build.Client;
@@ -18,6 +22,25 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
 
         private readonly TfsTeamProjectCollection _collection;
         private readonly Project _project;
+        
+        private readonly BackgroundWorker _populateBackgroundWorker;
+
+        private bool _isPopulating;
+        public bool IsPopulating
+        {
+            get
+            {
+                return _isPopulating;
+            }
+            set
+            {
+                if (_isPopulating == value) return;
+
+                _isPopulating = value;
+
+                SendPropertyChanged("IsPopulating");
+            }
+        }
 
         public BuildDefinitionsServiceModel(ITeamPilgrimServiceModelProvider teamPilgrimServiceModelProvider, ITeamPilgrimVsService teamPilgrimVsService, TfsTeamProjectCollection collection, Project project)
             : base(teamPilgrimServiceModelProvider, teamPilgrimVsService)
@@ -40,27 +63,42 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.BuildDefinitions
             ManageBuildQualitiesCommand = new RelayCommand(ManageBuildQualities, CanManageBuildQualities);
             ManageBuildSecurityCommand = new RelayCommand(ManageBuildSecurity, CanManageBuildSecurity);
 
-            PopulateBuildDefinitions();
+            _populateBackgroundWorker = new BackgroundWorker();
+            _populateBackgroundWorker.DoWork += PopulateBackgroundWorkerOnDoWork;
+            _populateBackgroundWorker.RunWorkerAsync();
         }
 
-        private void PopulateBuildDefinitions()
+        private void PopulateBackgroundWorkerOnDoWork(object sender, DoWorkEventArgs doWorkEventArgs)
         {
+            this.Logger().Trace("Begin Populate");
+
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                IsPopulating = true;
+                BuildDefinitions.Clear();
+            }, DispatcherPriority.Normal);
+
             IBuildDefinition[] buildDefinitions;
             if (teamPilgrimServiceModelProvider.TryGetBuildDefinitionsByProjectName(out buildDefinitions, _collection, _project.Name))
             {
                 foreach (var buildDefinitionModel in buildDefinitions.Select(definition => new BuildDefinitionModel(this, definition)))
                 {
-                    BuildDefinitions.Add(buildDefinitionModel);
+                    var localScopeModel = buildDefinitionModel;
+                    Application.Current.Dispatcher.Invoke(() => BuildDefinitions.Add(localScopeModel));
                 }
             }
+
+            Application.Current.Dispatcher.Invoke(() => IsPopulating = false, DispatcherPriority.Normal);
+
+            this.Logger().Trace("End Populate");
         }
 
         #region Refresh Command
 
         protected override void Refresh()
         {
-            BuildDefinitions.Clear();
-            PopulateBuildDefinitions();
+            _populateBackgroundWorker.RunWorkerAsync();
         }
 
         protected override bool CanRefresh()

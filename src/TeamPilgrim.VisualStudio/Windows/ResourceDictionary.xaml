@@ -273,4 +273,27 @@
         </Style.Resources>
     </Style>
 
+    <Style TargetType="{x:Type Image}" x:Key="TreeViewItemImageStyle">
+        <Setter Property="Height" Value="16" />
+        <Setter Property="Width" Value="16" />
+        <Setter Property="Margin" Value="2,1,4,1" />
+    </Style>
+
+    <Style TargetType="{x:Type Image}" x:Key="WorkItemQueryDefinitionImageStyle" BasedOn="{StaticResource TreeViewItemImageStyle}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=QueryDefinition.QueryType}" Value="List">
+                <Setter Property="Source" Value="/TeamPilgrim.VisualStudio;component/Resources\images_querylist.png" ></Setter>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Path=QueryDefinition.QueryType}" Value="OneHop">
+                <Setter Property="Source" Value="/TeamPilgrim.VisualStudio;component/Resources\images_queryonehop.png" ></Setter>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Path=QueryDefinition.QueryType}" Value="Tree">
+                <Setter Property="Source" Value="/TeamPilgrim.VisualStudio;component/Resources\images_querytree.png" ></Setter>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Path=QueryDefinition.QueryType}" Value="Invalid">
+                <Setter Property="Source" Value="/TeamPilgrim.VisualStudio;component/Resources\images_queryinvalid.png" ></Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
 </ResourceDictionary>

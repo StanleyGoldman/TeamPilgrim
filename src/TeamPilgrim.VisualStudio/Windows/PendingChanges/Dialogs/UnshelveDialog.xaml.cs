@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using GalaSoft.MvvmLight.Messaging;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Messages;
+using JustAProgrammer.TeamPilgrim.VisualStudio.Messages.Dismiss;
 using JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl;
 
 namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs
@@ -11,9 +12,9 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialog
     /// <summary>
     /// Interaction logic for ShelveChangesDialog.xaml
     /// </summary>
-    public partial class UnshelveChangesDialog : Window
+    public partial class UnshelveDialog : Window
     {
-        public UnshelveChangesDialog()
+        public UnshelveDialog()
         {
             InitializeComponent();
             
@@ -46,8 +47,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialog
                     Close();
                 });
 
-                var unshelveDetailsServiceModel = (UnshelveChangesServiceModel)value;
-                if (unshelveDetailsServiceModel == null) return;
+                var unshelveServiceModel = (UnshelveServiceModel)value;
+                if (unshelveServiceModel == null) return;
             }
         }
     }

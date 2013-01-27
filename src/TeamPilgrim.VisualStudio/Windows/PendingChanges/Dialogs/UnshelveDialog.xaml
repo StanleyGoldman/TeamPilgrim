@@ -1,4 +1,4 @@
-﻿<Window x:Class="JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs.UnshelveChangesDialog"
+﻿<Window x:Class="JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs.UnshelveDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
@@ -12,7 +12,7 @@
         Height="400" Width="675"
         
         x:Name="ShelveChangesDialogWindow"
-        d:DataContext="{d:DesignInstance versionControl:UnshelveChangesServiceModel}">
+        d:DataContext="{d:DesignInstance versionControl:UnshelveServiceModel}">
     
     <DockPanel>
         <GroupBox DockPanel.Dock="Top" Header="Find shelvesets">
@@ -26,7 +26,7 @@
         </GroupBox>
         <TextBlock DockPanel.Dock="Top">Results:</TextBlock>
         <DockPanel DockPanel.Dock="Bottom" LastChildFill="False">
-            <Button HorizontalAlignment="Center" DockPanel.Dock="Left">Details...</Button>
+            <Button HorizontalAlignment="Center" DockPanel.Dock="Left" Command="{Binding Path=DetailsCommand}" CommandParameter="{Binding ElementName=PendingSetsListView, Path=SelectedItems}">Details...</Button>
             <Button HorizontalAlignment="Center" DockPanel.Dock="Left" Command="{Binding Path=DeleteCommand}" CommandParameter="{Binding ElementName=PendingSetsListView, Path=SelectedItems}">Delete</Button>
             
             <Button HorizontalAlignment="Center" DockPanel.Dock="Right" Command="{Binding Path=CancelCommand}">Close</Button>

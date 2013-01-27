@@ -38,6 +38,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
                 _isSelected = value;
 
                 SendPropertyChanged("IsSelected");
+                SendPropertyChanged("IsSelectedWorkItemCheckinAction");
             }
         }
 
@@ -55,6 +56,15 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery
                 _workItemCheckinAction = value;
 
                 SendPropertyChanged("WorkItemCheckinAction");
+                SendPropertyChanged("IsSelectedWorkItemCheckinAction");
+            }
+        }
+
+        public SelectedWorkItemCheckinActionEnum? IsSelectedWorkItemCheckinAction
+        {
+            get
+            {
+                return (!IsSelected) ? (SelectedWorkItemCheckinActionEnum?) null : WorkItemCheckinAction;
             }
         }
     }

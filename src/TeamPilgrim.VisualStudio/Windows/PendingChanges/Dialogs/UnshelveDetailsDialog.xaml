@@ -1,0 +1,313 @@
+﻿<Window x:Class="JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs.UnshelveDetailsDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:attachedProperties="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.AttachedProperties"
+        xmlns:versionControl="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl"
+        xmlns:enums="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Enums"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:converters="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Converters"
+        xmlns:listViewLayout="clr-namespace:Itenso.Windows.Controls.ListViewLayout;assembly=Itenso.Windows.Controls.ListViewLayout"
+        xmlns:controls="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Controls"
+        xmlns:workItemQuery="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Model.WorkItemQuery"
+        xmlns:xctk="clr-namespace:Xceed.Wpf.Toolkit;assembly=WPFToolkit.Extended"
+        xmlns:versionControlClient="clr-namespace:Microsoft.TeamFoundation.VersionControl.Client;assembly=Microsoft.TeamFoundation.VersionControl.Client"
+        mc:Ignorable="d" 
+        
+        Title="UnshelveDetailsDialog" 
+        Height="381" Width="719"
+      
+        x:Name="ShelveDetailsDialogWindow"
+        
+        d:DataContext="{d:DesignInstance versionControl:UnshelveDetailsServiceModel}">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/TeamPilgrim.VisualStudio;component/Windows\ResourceDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <converters:SelectedPendingChangesSummaryEnumIsCheckedBooleanConverter x:Key="SelectedPendingChangesSummaryEnumIsCheckedBooleanConverter" />
+            <converters:AndClauseBooleanConverter x:Key="AndClauseBooleanConverter" />
+            <converters:ChangeTypeDescriptionConverter x:Key="ChangeTypeDescriptionConverter" />
+
+            <ObjectDataProvider x:Key="WorkItemCheckinActions" MethodName="GetValues" ObjectType="{x:Type system:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="enums:SelectedWorkItemCheckinActionEnum"/>
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+
+            <Style TargetType="ToolBar">
+                <Setter Property="ToolBarTray.IsLocked" Value="True"/>
+                <Setter Property="OverflowMode" Value="AsNeeded"/>
+                <Setter Property="Template" Value="{DynamicResource ToolbarTemplate}" />
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <DockPanel>
+        <DockPanel DockPanel.Dock="Top">
+            <DockPanel DockPanel.Dock="Top">
+                <TextBlock Text="Shelveset Name" MinWidth="150"/>
+                <TextBox IsEnabled="False" Text="{Binding Path=Shelveset.Name}" />
+            </DockPanel>
+            <DockPanel DockPanel.Dock="Top">
+                <TextBlock Text="Owner" MinWidth="150"/>
+                <TextBox IsEnabled="False" Text="{Binding Path=Shelveset.OwnerDisplayName}" />
+            </DockPanel>
+            <DockPanel DockPanel.Dock="Top">
+                <TextBlock Text="Date" MinWidth="150"/>
+                <TextBox IsEnabled="False" Text="{Binding Path=Shelveset.CreationDate}" />
+            </DockPanel>
+        </DockPanel>
+        <DockPanel DockPanel.Dock="Bottom" LastChildFill="False">
+            <DockPanel DockPanel.Dock="Left">
+                <DockPanel DockPanel.Dock="Top">
+                    <CheckBox IsChecked="{Binding Path=RestoreWorkItemsAndCheckinNotes}" />
+                    <TextBlock><Run Text="Restore work items and check-in notes"/></TextBlock>
+                </DockPanel>
+                <DockPanel DockPanel.Dock="Top">
+                    <CheckBox IsChecked="{Binding Path=PreserveShelveset}" />
+                    <TextBlock><Run Text="Preserve shelveset on server"/></TextBlock>
+                </DockPanel>
+            </DockPanel>
+            <DockPanel DockPanel.Dock="Right" LastChildFill="False">
+                <Button VerticalAlignment="Center" Content="Unshelve" Command="{Binding Path=UnshelveCommand}"/>
+                <Button VerticalAlignment="Center" Content="Cancel" Command="{Binding Path=CancelCommand}"/>
+            </DockPanel>
+        </DockPanel>
+        <DockPanel DockPanel.Dock="Top" >
+            <ToolBarTray Orientation="Vertical" DockPanel.Dock="Left">
+                <ToolBar>
+                    <RadioButton x:Name="SourceFilesRadioButton" Style="{StaticResource SourceFilesRadioButtonStyle}">
+                        <Image />
+                    </RadioButton>
+
+                    <RadioButton x:Name="WorkItemsRadioButton" Style="{StaticResource WorkItemsRadioButtonStyle}">
+                        <Image />
+                    </RadioButton>
+
+                    <RadioButton x:Name="CheckInNotesRadioButton" Style="{StaticResource CheckInNotesRadioButtonStyle}">
+                        <Image />
+                    </RadioButton>
+                </ToolBar>
+            </ToolBarTray>
+            <TabControl DockPanel.Dock="Right">
+                <TabControl.Resources>
+                    <!--http://stackoverflow.com/questions/6278720/wpf-toggle-panel-visibility-->
+                    <Style TargetType="{x:Type TabItem}">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type TabItem}"/>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </TabControl.Resources>
+
+                <TabItem x:Name="SourceFilesTabItem" IsSelected="{Binding IsChecked, ElementName=SourceFilesRadioButton}">
+                    <DockPanel>
+                        <ToolBarTray DockPanel.Dock="Top">
+                            <ToolBar/>
+                        </ToolBarTray>
+                        <TextBlock DockPanel.Dock="Top"><Run Text="Comment:"/></TextBlock>
+                        <TextBox DockPanel.Dock="Top" Text="{Binding Path=Shelveset.Comment}" />
+
+                        <ListView x:Name="PendingChangesListView" 
+    						VirtualizingPanel.IsVirtualizing="True"
+    						VirtualizingPanel.VirtualizationMode="Recycling"
+                                  
+    						listViewLayout:ListViewLayoutManager.Enabled="true"
+
+    						attachedProperties:GridViewSort.AutoSort="True"
+                            
+                            ItemsSource="{Binding Path=PendingChanges}">
+
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListViewItem}"/>
+                            </ListView.ItemContainerStyle>
+                            <ListView.ContextMenu>
+                                <ContextMenu d:DataContext="{d:DesignInstance {x:Type versionControl:UnshelveDetailsServiceModel}}" x:Name="PendingChangesContextMenu">
+
+                                    <MenuItem Header="View"/>
+
+                                    <Separator />
+                                    <MenuItem Header="Compare">
+
+                                        <MenuItem Header="With workspace version..." />
+
+                                        <MenuItem Header="With latest version..." />
+
+                                    </MenuItem>
+
+                                    <MenuItem Header="Undo" />
+
+                                </ContextMenu>
+                            </ListView.ContextMenu>
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn listViewLayout:FixedColumn.Width="20" >
+
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <CheckBox
+                                                    DataContext="{Binding}"
+                                                    IsChecked="{Binding Path=IncludeChange, Mode=OneWay}" 
+    												Click="PendingChangesCheckboxClicked"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                        <controls:CustomCheckBox
+    										x:Name="PendingChangesAllCheckbox"
+    										IsThreeState="true"
+    									    IsChecked="{Binding Path=PendingChangesSummary, Converter={StaticResource SelectedPendingChangesSummaryEnumIsCheckedBooleanConverter}, Mode=OneWay}"
+                                            Click="PendingChangesAllCheckboxOnClick" />
+                                    </GridViewColumn>
+
+                                    <GridViewColumn
+    									x:Name="GridViewColumnPendingChangesFileName"
+                                           
+    									listViewLayout:RangeColumn.MinWidth="150"
+    									attachedProperties:GridViewSort.PropertyName="Change.FileName">
+
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate DataType="versionControl:PendingChangeModel">
+                                                <TextBlock Text="{Binding Change.FileName, Mode=OneWay}" DockPanel.Dock="Right"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                        <GridViewColumnHeader Style="{StaticResource TextGridViewColumnHeader}" Content="File"/>
+                                    </GridViewColumn>
+
+                                    <GridViewColumn 
+    									x:Name="GridViewColumnPendingChangesChangeTypeName"
+                                                
+    									listViewLayout:RangeColumn.MinWidth="70"
+                                                
+    									attachedProperties:GridViewSort.PropertyName="Change.ChangeTypeName">
+
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate DataType="versionControl:PendingChangeModel">
+                                                <TextBlock Text="{Binding Change, Converter={StaticResource ChangeTypeDescriptionConverter}, Mode=OneWay}"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                        <GridViewColumnHeader Style="{StaticResource TextGridViewColumnHeader}" Content="Change"/>
+                                    </GridViewColumn>
+
+                                    <GridViewColumn 
+    									x:Name="GridViewColumnPendingChangesLocalOrServerFolder"
+                                                        
+    									listViewLayout:RangeColumn.MinWidth="200"
+    									listViewLayout:RangeColumn.IsFillColumn="true"
+    									attachedProperties:GridViewSort.PropertyName="Change.LocalOrServerFolder">
+
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate DataType="versionControl:PendingChangeModel">
+                                                <TextBlock Text="{Binding Change.LocalOrServerFolder, Mode=OneWay}"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                        <GridViewColumnHeader Style="{StaticResource TextGridViewColumnHeader}" Content="Folder"/>
+                                    </GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </DockPanel>
+                </TabItem>
+                <TabItem x:Name="WorkItemsTabItem" IsSelected="{Binding IsChecked, ElementName=WorkItemsRadioButton}">
+                    <DockPanel>
+                        <ListView x:Name="WorkItemsListView" DockPanel.Dock="Bottom" 
+    						VirtualizingPanel.IsVirtualizing="True"
+    						VirtualizingPanel.VirtualizationMode="Recycling"
+                                  
+    						listViewLayout:ListViewLayoutManager.Enabled="true"
+                                  
+                            ItemsSource="{Binding Path=Shelveset.WorkItemInfo}">
+
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListViewItem}"/>
+                            </ListView.ItemContainerStyle>
+
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn listViewLayout:RangeColumn.MinWidth="75">
+
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate DataType="versionControlClient:WorkItemCheckinInfo">
+                                                <TextBlock Text="{Binding Path=WorkItem.Id, Mode=OneWay}"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                        <GridViewColumnHeader Style="{StaticResource TextGridViewColumnHeader}" Content="ID"/>
+                                    </GridViewColumn>
+                                    
+                                    <GridViewColumn
+    									listViewLayout:RangeColumn.MinWidth="100" >
+
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate DataType="versionControlClient:WorkItemCheckinInfo">
+                                                <TextBlock Text="{Binding Path=CheckinAction}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                        <GridViewColumnHeader Style="{StaticResource TextGridViewColumnHeader}" Content="Check-in Action"/>
+                                    </GridViewColumn>
+
+                                    <GridViewColumn listViewLayout:RangeColumn.MinWidth="80">
+
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate DataType="versionControlClient:WorkItemCheckinInfo">
+                                                <TextBlock Text="{Binding Path=WorkItem.Type.Name, Mode=OneWay}"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                        <GridViewColumnHeader Style="{StaticResource TextGridViewColumnHeader}" Content="Type"/>
+                                    </GridViewColumn>
+
+                                    <GridViewColumn
+    									listViewLayout:RangeColumn.MinWidth="80"
+    									listViewLayout:RangeColumn.IsFillColumn="True">
+
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate DataType="versionControlClient:WorkItemCheckinInfo">
+                                                <TextBlock Text="{Binding Path=WorkItem.Title, Mode=OneWay}"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                        <GridViewColumnHeader Style="{StaticResource TextGridViewColumnHeader}" Content="Title"/>
+                                    </GridViewColumn>
+                                    
+                                    <GridViewColumn
+    									listViewLayout:RangeColumn.MinWidth="80">
+
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate DataType="versionControlClient:WorkItemCheckinInfo">
+                                                <TextBlock Text="{Binding Path=WorkItem.State}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                        <GridViewColumnHeader Style="{StaticResource TextGridViewColumnHeader}" Content="State"/>
+                                    </GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </DockPanel>
+                </TabItem>
+                <TabItem x:Name="CheckInNotesTabItem"  IsSelected="{Binding IsChecked, ElementName=CheckInNotesRadioButton}">
+                    <ListView DockPanel.Dock="Bottom"
+    					HorizontalContentAlignment="Stretch"
+                              
+    					VirtualizingPanel.IsVirtualizing="True"
+    					VirtualizingPanel.VirtualizationMode="Recycling"
+
+                        DataContext="{Binding Path=Shelveset.CheckinNote}"
+                        ItemsSource="{Binding Path=Values}">
+
+                        <ListView.ItemTemplate>
+                            <DataTemplate DataType="versionControlClient:CheckinNoteFieldValue">
+                                <Expander Header="{Binding Path=Name}" IsExpanded="True">
+                                    <TextBox Text="{Binding Path=Value}" IsReadOnly="True" />
+                                </Expander>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </TabItem>
+            </TabControl>
+
+        </DockPanel>
+
+    </DockPanel>
+
+</Window>

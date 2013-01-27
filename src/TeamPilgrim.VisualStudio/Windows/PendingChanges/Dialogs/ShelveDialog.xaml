@@ -1,4 +1,4 @@
-﻿<Window x:Class="JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs.ShelveChangesDialog"
+﻿<Window x:Class="JustAProgrammer.TeamPilgrim.VisualStudio.Windows.PendingChanges.Dialogs.ShelveDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:converters="clr-namespace:JustAProgrammer.TeamPilgrim.VisualStudio.Common.Converters" 
@@ -19,7 +19,7 @@
         MinHeight="405" Width="761" MinWidth="400"
     
         x:Name="ShelveChangesDialogWindow"
-        d:DataContext="{d:DesignInstance versionControl:ShelvesetServiceModel}">
+        d:DataContext="{d:DesignInstance versionControl:ShelveServiceModel}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -158,7 +158,7 @@
                                 </Style>
                             </ListView.ItemContainerStyle>
                             <ListView.ContextMenu>
-                                <ContextMenu d:DataContext="{d:DesignInstance {x:Type versionControl:ShelvesetServiceModel}}" x:Name="PendingChangesContextMenu">
+                                <ContextMenu d:DataContext="{d:DesignInstance {x:Type versionControl:ShelveServiceModel}}" x:Name="PendingChangesContextMenu">
 
                                     <MenuItem Header="View"/>
 
@@ -277,6 +277,8 @@
                         <ListView x:Name="WorkItemsListView" DockPanel.Dock="Bottom" 
                               VirtualizingStackPanel.IsVirtualizing="True"
                               VirtualizingStackPanel.VirtualizationMode="Recycling"
+                              
+                              attachedProperties:GridViewSort.AutoSort="True"
                                   
                               listViewLayout:ListViewLayoutManager.Enabled="true"
                               attachedProperties:PreviewSpaceKeyDownSelectWorkItems.Command="{Binding Path=SelectWorkItemsCommand}"
@@ -299,8 +301,11 @@
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
 
-                                    <GridViewColumn
-                                        listViewLayout:RangeColumn.MinWidth="100" >
+                                    <GridViewColumn                                    
+                                        x:Name="GridViewColumnWorkItemsCheckinAction"
+                                        attachedProperties:GridViewSort.PropertyName="IsSelectedWorkItemCheckinAction"
+                                    
+                                        listViewLayout:RangeColumn.MinWidth="115" >
                                         
                                         <GridViewColumn.Header>
                                             <GridViewColumnHeader Style="{StaticResource TextGridViewColumnHeader}">Check-in Action</GridViewColumnHeader>
@@ -316,7 +321,12 @@
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
 
-                                    <GridViewColumn listViewLayout:RangeColumn.MinWidth="75">
+                                    <GridViewColumn 
+                                    
+                                        x:Name="GridViewColumnWorkItemsId"
+                                        attachedProperties:GridViewSort.PropertyName="WorkItem.Id"
+                                    
+                                        listViewLayout:RangeColumn.MinWidth="75">
                                         
                                         <GridViewColumn.Header>
                                             <GridViewColumnHeader Style="{StaticResource TextGridViewColumnHeader}">ID</GridViewColumnHeader>
@@ -329,7 +339,12 @@
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
 
-                                    <GridViewColumn listViewLayout:RangeColumn.MinWidth="80">
+                                    <GridViewColumn
+                                    
+                                        x:Name="GridViewColumnWorkItemsType"
+                                        attachedProperties:GridViewSort.PropertyName="WorkItem.Type.Name"
+                                    
+                                        listViewLayout:RangeColumn.MinWidth="80">
                                     
                                         <GridViewColumn.Header>
                                             <GridViewColumnHeader Style="{StaticResource TextGridViewColumnHeader}">Type</GridViewColumnHeader>
@@ -343,8 +358,12 @@
                                     </GridViewColumn>
 
                                     <GridViewColumn
+                                                                        
+                                        x:Name="GridViewColumnWorkItemsTitle"
+                                        attachedProperties:GridViewSort.PropertyName="WorkItem.Title"
+                                    
                                         listViewLayout:RangeColumn.MinWidth="80"
-                                    		listViewLayout:RangeColumn.IsFillColumn="True">
+                                        listViewLayout:RangeColumn.IsFillColumn="True">
                                         
                                         <GridViewColumn.Header>
                                             <GridViewColumnHeader Style="{StaticResource TextGridViewColumnHeader}">Title</GridViewColumnHeader>
