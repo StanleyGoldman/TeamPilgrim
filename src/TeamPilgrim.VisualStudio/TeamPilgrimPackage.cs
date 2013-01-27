@@ -72,7 +72,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
 
             Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", this.ToString()));
 
-            _teamPilgrimVsService = new TeamPilgrimVsService();
             TeamPilgrimSettings = new TeamPilgrimSettings();
 
             //http://blogs.msdn.com/b/vsxteam/archive/2008/06/09/dr-ex-why-does-getservice-typeof-envdte-dte-return-null.aspx
@@ -174,7 +173,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
                     throw new ArgumentException("UIShell cannot be null");
 
                 MenuCommandService = base.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-                _teamPilgrimVsService.Initialize(_teamPilgrimPackageInstance, UIShell);
 
                 this.Logger().Debug("End First Pass Initialization");
             }
@@ -254,9 +252,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
                 if (VsSolution == null)
                     throw new ArgumentException("VsSolution cannot be null");
 
-                _teamPilgrimVsService.InitializeGlobals(Dte2, VsSolution);
-                TeamPilgrimServiceModel = new TeamPilgrimServiceModel(new TeamPilgrimServiceModelProvider(),
-                                                                      _teamPilgrimVsService);
+                _teamPilgrimVsService = new TeamPilgrimVsService(_teamPilgrimPackageInstance, UIShell, Dte2, VsSolution);
+                TeamPilgrimServiceModel = new TeamPilgrimServiceModel(new TeamPilgrimServiceModelProvider(), _teamPilgrimVsService);
 
                 Messenger.Default.Register<ShowUnshelveDetailsDialogMessage>(this, ShowUnshelveDetailsDialog);
 
