@@ -256,6 +256,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
             CheckinNotes = new ObservableCollection<CheckinNoteModel>();
 
             PendingChanges = new ObservableCollection<PendingChangeModel>();
+            _backgroundFunctionPreventDataUpdate = true;
+
             PendingChanges.CollectionChanged += PendingChangesOnCollectionChanged;
 
             _populatePendingChangedBackgroundWorker = new BackgroundWorker();
@@ -273,6 +275,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
             WorkItems.CollectionChanged += WorkItemsOnCollectionChanged;
 
             PopulatePreviouslySelectedWorkItemQueryModels();
+
+            _backgroundFunctionPreventDataUpdate = false;
         }
 
         private void PopulatePendingChangedBackgroundWorkerOnDoWork(object sender, DoWorkEventArgs doWorkEventArgs)
@@ -801,7 +805,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
         private bool CanRefreshPendingChanges()
         {
-            return true;
+            return !_backgroundFunctionPreventDataUpdate;
         }
 
         #endregion
@@ -831,11 +835,6 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
                       (model, workitem) => new {model, workitem})
                 .ToArray();
 
-            foreach (var intersection in intersections)
-            {
-                intersection.model.WorkItem = intersection.workitem;
-            }
-
             var intersectedModels =
                 intersections
                     .Select(arg => arg.model)
@@ -856,9 +855,14 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
             _backgroundFunctionPreventDataUpdate = true;
 
-            foreach (var workItemModel in modelsToAdd)
+            foreach (var intersectedModel in intersections)
             {
-                WorkItems.Add(workItemModel);
+                intersectedModel.model.WorkItem = intersectedModel.workitem;
+            }
+
+            foreach (var modelToAdd in modelsToAdd)
+            {
+                WorkItems.Add(modelToAdd);
             }
 
             foreach (var modelToRemove in modelsToRemove)
