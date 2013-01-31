@@ -30,7 +30,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
         /// <summary>
         /// The patch version number for this assembly.
         /// </summary>
-        public const string Patch = "0";
+        public const string Patch = "1";
 
         /// <summary>
         /// The changeset for this assembly.
