@@ -25,6 +25,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 {
     public class ShelveServiceModel : BaseServiceModel
     {
+        const int MAXSHELVESETNAMELENGTH = 64;
         public delegate void ShowPendingChangesItemDelegate(ShowPendingChangesTabItemEnum showPendingChangesTabItemEnum);
         public event ShowPendingChangesItemDelegate ShowPendingChangesItem;
 
@@ -48,6 +49,8 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
                 if (_shelvesetName == value) return;
 
                 _shelvesetName = value;
+                if (_shelvesetName.Length > MAXSHELVESETNAMELENGTH)
+                    _shelvesetName = _shelvesetName.Substring(0, MAXSHELVESETNAMELENGTH); 
 
                 SendPropertyChanged("ShelvesetName");
             }
