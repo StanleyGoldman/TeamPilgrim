@@ -3,9 +3,11 @@
 *.[Cc]ache
 *.docstates
 bin/
+!TeamPilgrim.VisualStudio.vsix
 obj/
 build/
 _NCrunch*/
 _ReSharper*/
-VersionInfo.cs
 build.log
+/src/Backup
+/src/UpgradeLog.htm

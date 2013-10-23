@@ -800,8 +800,12 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio.Model.VersionControl
 
         private void RefreshPendingChanges()
         {
-            _populatePendingChangedBackgroundWorker.RunWorkerAsync();
+            if (!_populatePendingChangedBackgroundWorker.IsBusy)
+                _populatePendingChangedBackgroundWorker.RunWorkerAsync();
+            else
+                this.Logger().Warn("Attempting to run _populatePendingChangedBackgroundWorker twice.");
         }
+
 
         private bool CanRefreshPendingChanges()
         {
