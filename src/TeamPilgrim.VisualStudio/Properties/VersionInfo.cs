@@ -35,17 +35,17 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
         /// <summary>
         /// The changeset for this assembly.
         /// </summary>
-        public const string Changeset = "$changeset$";
+        public const string Changeset = "";
 
         /// <summary>
         /// The shortened changeset for this assembly.
         /// </summary>
-        public const string ChangesetShort = "$changesetshort$";
+        public const string ChangesetShort = "";
 
         /// <summary>
         /// A boolean value indicating if we are runnning a dirty build. Returns <c>true</c> if the folder contains uncommitted changes; otherwise, <c>false</c>.
         /// </summary>
-        public const bool IsDirtyBuild = $dirtybuild$;
+        public const bool IsDirtyBuild = false;
 
         /// <summary>
         /// A string value indicating if we are running a debug build. Returns <c>+debug</c> if debug build; otherwise, empty.
@@ -59,7 +59,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
         /// <summary>
         /// A string value indicating if we are runnning a dirty build. Returns <c>+dirty</c> if the folder contains uncommitted changes; otherwise, empty.
         /// </summary>
-#if $dirtybuild$
+#if false
         public const string DirtyBuild = "+dirty";
 #else // false
         public const string DirtyBuild = "";
@@ -73,7 +73,7 @@ namespace JustAProgrammer.TeamPilgrim.VisualStudio
         /// <summary>
         /// The build version string of this assembly.
         /// </summary>
-        public const string BuildVersion = "+build.$changesetshort$";
+        public const string BuildVersion = "+build.";
 
         /// <summary>
         /// The full version for this assembly.
